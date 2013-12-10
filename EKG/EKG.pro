@@ -6,6 +6,11 @@
 
 QT       += core gui
 
+
+include(Controllers/controllers.pri)
+include(Views/views.pri)
+include(QsLog/QsLog.pri)
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = EKG
@@ -13,10 +18,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    data_input.cpp
 
-HEADERS  += mainwindow.h \
-    data_input.h
 
-FORMS    += mainwindow.ui
+HEADERS  +=
+
+//FORMS    += mainwindow.ui

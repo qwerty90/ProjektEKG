@@ -11,7 +11,7 @@ data_input::data_input(QObject *parent) :
 {
 }
 
-void data_input::LoadData()
+void data_input::LoadSamples()
 {
     //Load Samples
     QList<int> *column1 = new QList<int>();
@@ -20,6 +20,13 @@ void data_input::LoadData()
     QVector<int> data;// = new QVector<int>;
     QFile f(this->directory + "\\" + this->name + ".dat");
     f.open(QIODevice::ReadOnly);
+
+    if (!f.exists())
+    {
+        this->samples_loaded = false;
+        return;
+    }
+
     QDataStream in(&f);
     in >> data;
 
@@ -33,13 +40,17 @@ void data_input::LoadData()
     this->ml2 = column1;
     this->v1  = column2;
     this->samples_loaded = 1;
-    //this->LoadAnnotations();
 }
 
 void data_input::LoadAnnotations()
 {
     QFile f(this->directory + "\\" + this->name + "c.txt");
     f.open(QIODevice::ReadOnly);
+    if (!f.exists())
+    {
+        this->annotations_loaded = false;
+        return;
+    }
 
     QTextStream *in = new QTextStream(&f);
     QString line = in->readLine();
@@ -55,14 +66,28 @@ void data_input::LoadAnnotations()
         line = in->readLine();
         stop = in->atEnd();
     }
+//jeszcze jedna probka powinna byc
+    QStringList elements = line.split("   ");
+   // elements.removeAll("");
+    this->time.push_back(elements.at(0));
+    this->sampleId.push_back(elements.at(1).toInt());
+
+
+
 
     f.close();
+    this->annotations_loaded = true;
 }
 
 void data_input::LoadNotes()
 {
     QFile f(this->directory + "\\" + this->name + "d.txt");
     f.open(QIODevice::ReadOnly);
+    if (!f.exists())
+    {
+        this->notes_loaded = false;
+        return;
+    }
 
     QTextStream *in = new QTextStream(&f);
     QStringList *list = new QStringList();
@@ -108,10 +133,43 @@ void data_input::LoadNotes()
     QString value = this->samplingFreq.mid(0, n-2);
     this->frequencyValue = value.toFloat();
 
+    this->notes_loaded=true;
+
 }
 
 void data_input::setDataFile()
 {
+    //to trzeba będzie wczytywać!!!!!!
     this->directory="C:\\Qt\\workspace\\EKG\\Data";
     this->name="100";
+}
+
+void data_input::validate_data_input()
+{
+    this->data_valid=true;
+
+    this->samples_count=this->time.count();
+//    if (this->samples_count != this->sampleId.count())
+//        this->data_valid=false;
+//    if (this->samples_count != this->ml2->count())
+//        this->data_valid=false;
+//    if (this->samples_count != this->v1->count())
+//        this->data_valid=false;
+}
+
+bool data_input::check_valid()
+{
+    return this->data_valid;
+}
+
+bool data_input::LoadAllData(QString name, QString dir)
+{
+
+    this->setDataFile();
+    this->LoadSamples();
+    this->LoadAnnotations();
+    this->LoadNotes();
+    this->validate_data_input();
+
+    return this->data_valid;
 }
