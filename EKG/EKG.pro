@@ -7,9 +7,13 @@
 QT       += core gui
 
 
+include(Common/common.pri)
 include(Controllers/controllers.pri)
 include(Views/views.pri)
 include(QsLog/QsLog.pri)
+include(ECG_Baseline/ecg_baseline.pri)
+
+#include(ECG_BASELINE/ecg_baseline.pri)
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,8 +22,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    data_input.cpp
 
+#LIBS += -L$$PWD/Libraries/ -lECG_BASELINE
 
-HEADERS  +=
+#dlls.path = $$OUT_PWD/$$DESTDIR
+#dlls.files += $$files($$PWD/Libraries/*.dll)
+INSTALLS += dlls
 
-//FORMS    += mainwindow.ui
+HEADERS  += data_input.h
+
+INCLUDEPATH += Include
+

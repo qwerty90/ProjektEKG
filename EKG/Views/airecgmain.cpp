@@ -71,14 +71,13 @@ void AirEcgMain::on_actionWczytaj_triggered()
     dialogFileBrowser.exec();
 }
 
-/*
 void AirEcgMain::processingDialog()
 {
     processing dialogProcessing;
     connect(this, SIGNAL(closeDialog()), &dialogProcessing, SLOT(close()));
     dialogProcessing.setModal(true);
     dialogProcessing.exec();
-}*/
+}
 
 void AirEcgMain::on_load_clicked()
 {    
@@ -108,7 +107,6 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->qrsFeaturesSettingsGroupBox->setToolTip("");
 }
 
-/*
 void AirEcgMain::receivePatientData(EcgData *data)
 {
     EcgInfo *info = data->info;
@@ -135,9 +133,15 @@ void AirEcgMain::receivePatientData(EcgData *data)
     ui->radioButton_2->setChecked(true);
     ui->radioButton_2->setText(data->info->secondaryName);
 
+    ui->radioButton_3->setText(data->info->primaryName);
+    ui->radioButton_4->setChecked(true);
+    ui->radioButton_4->setText(data->info->secondaryName);
+
     ui->groupBox_2->setEnabled(true);
 
-}*/
+    ui->groupBox_11->setEnabled(true);
+
+}
 
 void AirEcgMain::on_Hilbert_radiobutton_clicked()
 {
@@ -1271,7 +1275,7 @@ QwtPlot* AirEcgMain::plotTWAPlot2(QList<unsigned int> &TWA_positive, QList<doubl
     QVector<double> negDataX = QVector<double>();
     QVector<double> negDataY = QVector<double>();
 
-    unsigned int pos=0,neg=0,i=0;
+    int pos=0,neg=0,i=0;
     while(!(TWA_positive.length()==pos && TWA_negative.length()==neg)) {
         if (pos!=TWA_positive.length() && neg !=TWA_negative.length()) {
             if (TWA_positive.at(pos)<TWA_negative.at(neg)) {
@@ -1555,7 +1559,7 @@ QwtPlot* AirEcgMain::plotPointsPlotDFA(QList<double> &x, QList<double> &y , doub
     magnifier->setAxisEnabled(QwtPlot::yLeft,false);
     return plot;
 }
-/*
+
 QwtPlot *AirEcgMain::plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame *> &ecgFrames, double samplingFrequency)
 {
     QVector<int> yData = QVector<int>::fromList(ecgSignal);
@@ -1729,7 +1733,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame 
 
     return plot;
 }
-*/
+
 QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency)
 {
     QVector<double> yData = QVector<double>::fromList(ecgbaselined);
@@ -1850,24 +1854,28 @@ QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &s
     return plot;
 }
 
-/*
 void AirEcgMain::drawEcgBaseline(EcgData *data)
 {
+    QLOG_INFO() << "Start rysowania baseline";
+    //dla pierwszego taba
     QwtPlot *plotMLII = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->baselinedArea->setWidget(plotMLII);
     ui->baselinedArea->show();
-}*/
+    QLOG_INFO() << "Koniec pierwszego rysowania baseline";
+    //dla sig edr
+    QwtPlot *plotBaseEDR = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
+    ui->Baseline_edr->setWidget(plotBaseEDR);
+    ui->Baseline_edr->show();
+    QLOG_INFO() << "Koniec drugiego rysowania baseline";
+}
 
-/*
 void AirEcgMain::drawRPeaks(EcgData *data)
 {
     QwtPlot *plotVI = plotPointsPlot(*(data->r_peaks),*(data->GetCurrentSignal()),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
 }
-*/
 
-/*
 void AirEcgMain::drawHrv1(EcgData *data)
 {
     ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
@@ -1898,9 +1906,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2));
     ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + "%");
 }
-*/
 
-/*
 void AirEcgMain::drawHrv2(EcgData *data)
 {
     QwtPlot *plotHistogram = plotBarChart(*(data->histogram_x), *(data->histogram_y));
@@ -1922,8 +1928,7 @@ void AirEcgMain::drawHrv2(EcgData *data)
     ui->SD1->setText("SD1 = " % QString::number(*(data->SD1), 'f', 2));
     ui->SD2->setText("  SD2 = " % QString::number(*(data->SD2), 'f', 2));
 }
-*/
-/*
+
 void AirEcgMain::drawStInterval(EcgData *data)
 {
 
@@ -1932,9 +1937,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
     ui->stIntervalArea->setWidget(plotX);
     ui->stIntervalArea->show();
 }
-*/
 
-/*
 void AirEcgMain::drawHrvDfa(EcgData *data)
 {
 //    //DFA
@@ -1952,9 +1955,7 @@ void AirEcgMain::drawHrvDfa(EcgData *data)
        ui->window_plot->setText("box_plot = " % QString::number(*(data->window_plot), 'd', 0));
        ui->boxes2->setText("Boxes: " % QString::number(*(data->boxes), 'd', 0));
 }
-*/
 
-/*
 void AirEcgMain::drawTwa(EcgData *data)
 {
     QwtPlot *plotTWA = plotTWAPlot(*(data->ecg_baselined),*(data->TWA_positive),*(data->TWA_negative),data->info->frequencyValue);
@@ -1973,25 +1974,19 @@ void AirEcgMain::drawTwa(EcgData *data)
     }
     ui->twa_value->setText(QString::number(*(data->twa_highest_val),'f',4));
 }
-*/
 
-/*
 void AirEcgMain::drawWaves(EcgData *data)
 {
-    //QwtPlot *wavesPlot = plotWavesPlot(*(data->GetCurrentSignal()), *(data->waves), 360.0);
-    //ui->scrollAreaWaves->setWidget(wavesPlot);
+    QwtPlot *wavesPlot = plotWavesPlot(*(data->GetCurrentSignal()), *(data->waves), 360.0);
+    ui->scrollAreaWaves->setWidget(wavesPlot);
     ui->scrollAreaWaves->show();
 }
-*/
 
-/*
 void AirEcgMain::drawQrsClass(EcgData *data)
 {
-    //this->resetQrsToolbox(data);
+    this->resetQrsToolbox(data);
 }
-*/
 
-/*
 void AirEcgMain::drawHrt(EcgData *data)
 {
     // rozrysuj hrt tachogram
@@ -2003,9 +1998,7 @@ void AirEcgMain::drawHrt(EcgData *data)
     ui->turbulence_onset_val->setText(QString::number(*(data->turbulence_onset), 'f', 2));
     ui->turbulence_slope_val->setText(QString::number(*(data->turbulence_slope), 'f', 2));
 }
-*/
 
-/*
 void AirEcgMain::receiveResults(EcgData *data)
 {
     this->drawEcgBaseline(data);
@@ -2021,9 +2014,7 @@ void AirEcgMain::receiveResults(EcgData *data)
     emit this->closeDialog();
     return;
 }
-*/
 
-/*
 void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
@@ -2055,9 +2046,7 @@ void AirEcgMain::resetQrsToolbox(EcgData *data)
         ui->QRSClassesToolBox->addItem(listView,labelText);
     }
 }
-*/
 
-/*
 void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
 {
     QVector<double> xAxis;
@@ -2165,8 +2154,7 @@ void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
 
     this->populareQRSClassBox(currClass, type);
 }
-*/
-/*
+
 void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
 {
     QGridLayout* layout;
@@ -2207,8 +2195,6 @@ void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
     }
 }
 
-*/
-/*
 void AirEcgMain::receiveSingleProcessingResult(bool succeeded, EcgData *data)
 {
     if(succeeded)
@@ -2255,11 +2241,10 @@ void AirEcgMain::receiveSingleProcessingResult(bool succeeded, EcgData *data)
     }
 }
 
-*/
+
 void AirEcgMain::on_pushButton_2_clicked()
-{
-    this->hash = "ECG_BASELINE";
-    emit this->runSingle(this->hash);
+{        
+    emit this->runEcgBaseline();
 }
 
 void AirEcgMain::on_pushButton_3_clicked()
@@ -2304,6 +2289,12 @@ void AirEcgMain::on_pushButton_10_clicked()
     emit this->runSingle(this->hash);
 }
 
+void AirEcgMain::on_pushButton_12_clicked()
+{
+    emit this->run();
+    processingDialog();
+}
+
 void AirEcgMain::on_checkBox_toggled(bool checked)
 {
     if (checked)
@@ -2321,7 +2312,7 @@ void AirEcgMain::on_qrscClassSettingsButton_clicked()
 {
     this->ui->stackedWidget->setCurrentIndex(1);
 }
-/*
+
 void AirEcgMain::on_comboBox_currentIndexChanged(int index)
 {
     this->ui->qrsClustererSettingsStackWidget->setCurrentIndex(index);
@@ -2343,7 +2334,7 @@ void AirEcgMain::on_comboBox_currentIndexChanged(int index)
         emit qrsParallelExecutionChanged(ui->qrsSettingsGMeansParallelCheckBox->isEnabled());
     }
 }
-*/
+
 void AirEcgMain::on_qrsSetGMaxItersSpinBox_valueChanged(int arg1)
 {
     emit qrsMaxIterationsChanged(arg1);
@@ -2398,10 +2389,5 @@ void AirEcgMain::on_radioButton_2_clicked()
 
 void AirEcgMain::on_p_onset_toggled(bool checked)
 {
-
-}
-
-void AirEcgMain::on_pushButton_12_clicked()
-{
- emit this->run();
+    emit this->switchWaves_p_onset(checked);
 }

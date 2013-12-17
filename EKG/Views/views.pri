@@ -1,4 +1,4 @@
-QWT_ROOT = C:/qwt-6.0.2/
+QWT_ROOT = C:/Qwt-6.0.2/
 
 include( $${QWT_ROOT}/qwtconfig.pri )
 include( $${QWT_ROOT}/qwtfunctions.pri )

@@ -1,8 +1,6 @@
 HEADERS += \
-    Controllers/app_controller.h \
-    Controllers/results.h        \
-    Controllers/data_input.h
+    Controllers/appcontroller.h\
+    Controllers/results.h
 SOURCES += \
-    Controllers/app_controller.cpp \
-    Controllers/results.cpp        \
-    Controllers/data_input.cpp
+    Controllers/appcontroller.cpp\
+    Controllers/results.cpp

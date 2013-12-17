@@ -1,8 +1,6 @@
 #include <QApplication>
-//#include <QFile>
-//#include <QTextStream>
 #include "Views/airecgmain.h"
-#include "Controllers/app_controller.h"
+#include "Controllers/appcontroller.h"
 
 //include do loggera - korzystajcie smialo
 #include <QsLog.h>
@@ -15,18 +13,26 @@ int main(int argc, char *argv[])
 
     // init the logging mechanism
     QsLogging::Logger& logger = QsLogging::Logger::instance();
+
+    // set minimum log level and file name
+    logger.setLoggingLevel(QsLogging::TraceLevel);
     const QString sLogPath(QDir(a.applicationDirPath()).filePath("log.txt"));
+
     // Create log destinations
     QsLogging::DestinationPtr fileDestination(
-       QsLogging::DestinationFactory::MakeFileDestination(sLogPath) );
+                QsLogging::DestinationFactory::MakeFileDestination(sLogPath) );
+    QsLogging::DestinationPtr debugDestination(
+                QsLogging::DestinationFactory::MakeDebugOutputDestination() );
+
+    // set log destinations on the logger
+    logger.addDestination(debugDestination.get());
     logger.addDestination(fileDestination.get());
- // write an info message
-    QLOG_INFO() << "Program Started";
+
+    // write an info message
+    QLOG_INFO() << "Program started";
 
     AirEcgMain w;
-    app_controller *controller = new app_controller();
-
-    //AppController *controller = new AppController();
+    AppController *controller = new AppController();
     controller->BindView(&w);
     w.show();
     return a.exec();
