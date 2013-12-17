@@ -198,11 +198,11 @@ void AppController::runEcgBaseline()
     QLOG_INFO() <<"ecg started";
 
     ecg_example obiekt;
-    obiekt.raw_data = this->entity->primary;
+    obiekt.get_data(this->entity->primary);
     obiekt.get_params(5,"mean");
     obiekt.run();
 
-    this->entity->ecg_baselined=obiekt.filtered;
+    this->entity->ecg_baselined = obiekt.export_data();
     //if wszystko ok
     QLOG_INFO() << "rysowanie ecg->emit";
     emit EcgBaseline_done(this->entity);

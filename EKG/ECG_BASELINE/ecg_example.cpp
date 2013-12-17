@@ -70,3 +70,12 @@ void ecg_example::get_params(int window_size,QString method)
     this->window = window_size;
     this->method = method;
 }
+
+void ecg_example::get_data(QList<int>* raw_data)
+{
+    this->raw_data=raw_data;
+}
+QList<double> *ecg_example::export_data()
+{
+    return this->filtered;
+}
