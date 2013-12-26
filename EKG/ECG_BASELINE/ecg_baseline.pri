@@ -1,5 +1,5 @@
 HEADERS += \
-    ECG_Baseline/ecg_example.h
+    ECG_BASELINE/ecg_example.h
 
 SOURCES += \    
-    ECG_Baseline/ecg_example.cpp
+    ECG_BASELINE/ecg_example.cpp
