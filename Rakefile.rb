@@ -1,4 +1,6 @@
-task :default => [:build]
+require 'rake'
+
+task :default => :build
 
 task :build do
 	file "ekg" do
