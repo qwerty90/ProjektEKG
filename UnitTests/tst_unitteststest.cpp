@@ -27,7 +27,7 @@ void UnitTestsTest::countRRIntervalsOneInterval(){
 }
 void UnitTestsTest::countRRIntervalsThreeIntervals(){
     vector<double> RRTime = {0.1,0.2,0.5,0.7,0.9};
-    vector<double> ExpIntervals = {0.1,0.3,0.2,0.2};
+    vector<double> ExpIntervals = {0.2-0.1,0.5-0.2,0.7-0.5,0.9-0.7};
     RRIntervalMethod a;
     vector<double> intervals = a.countRRInvervals(RRTime);
     QCOMPARE(intervals.size(),RRTime.size()-1);
