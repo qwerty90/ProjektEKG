@@ -1,8 +1,13 @@
 #include <QString>
 #include <QtTest>
+
+#include <cmath>
+#include <numeric>
+
 #include "../src/rrintervalmethod.h"
 
 using namespace std;
+using namespace Ecg::AtrialFibr;
 
 class UnitTestsTest : public QObject {
   Q_OBJECT
@@ -10,12 +15,13 @@ class UnitTestsTest : public QObject {
 public:
   UnitTestsTest();
 
-private
-Q_SLOTS:
+private Q_SLOTS:
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
   void classifyIntervalsTest();
   void countTransitionsTest();
+  void entropyBig();
+  void entropySmall();
 };
 
 UnitTestsTest::UnitTestsTest() {}
@@ -75,6 +81,29 @@ void UnitTestsTest::countTransitionsTest() {
 
   // Assert
   QVERIFY(a.getMarkovTable() == ExpectedArray);
+}
+
+
+void UnitTestsTest::entropyBig() {
+  // Arrange
+  std::array<std::array<double, 3>, 3> arr = { { { { 0.11, 0.11, 0.11 } },
+                                                 { { 0.11, 0.11, 0.11 } },
+                                                 { { 0.11, 0.11, 0.11 } } } };
+
+  // Assert
+  QVERIFY(abs(entropy(arr) - 1.0) < 0.1);
+}
+
+void UnitTestsTest::entropySmall() {
+  // Arrange
+  std::array<std::array<double, 3>, 3> arr = {
+    { { { 0.001, 0.001, 0.001 } }, { { 0.001, 1.000, 0.001 } },
+      { { 0.001, 0.001, 0.001 } } }
+  };
+
+  // Assert
+  QVERIFY(entropy(arr) < 0.1);
+  QVERIFY(entropy(arr) > -0.1);
 }
 
 QTEST_APPLESS_MAIN(UnitTestsTest)

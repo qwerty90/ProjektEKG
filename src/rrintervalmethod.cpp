@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <functional>
 using namespace std;
+namespace Ecg {
+namespace AtrialFibr {
+
 const static double longintervalpercentage = 1.15;
 const static double shortintervalpercentage = 0.85;
 
@@ -47,3 +50,35 @@ void RRIntervalMethod::countTransitions(
   }
 }
 void RRIntervalMethod::normalizeMarkovTable() {}
+
+using Matrix3_3 = std::array<std::array<double, 3>, 3>;
+
+std::array<double, 3> row(const Matrix3_3 &matrix, int n) { return matrix[n]; }
+
+std::array<double, 3> col(const Matrix3_3 &matrix, int n) {
+  array<double, 3> ans;
+  transform(begin(matrix), end(matrix), begin(ans),
+            [n](const array<double, 3> &row) { return row[n]; });
+  return ans;
+}
+
+double entropy(const Matrix3_3 &matrix) {
+  array<double, 3> H;
+  for (int i = 0; i < 3; i++) {
+    const auto _row = row(matrix, i);
+    array<double, 3> multipliedByLog;
+    transform(begin(_row), end(_row), begin(multipliedByLog),
+              [](double x) { return x * log(x) / log(2); });
+    H[i] = accumulate(begin(multipliedByLog), end(multipliedByLog), 0.0);
+  }
+
+  array<double, 3> P;
+  for (int i = 0; i < 3; i++) {
+    const auto column = col(matrix, i);
+    P[i] = accumulate(begin(column), end(column), 0.0);
+  }
+
+  return -inner_product(begin(P), end(P), begin(H), 0.0);
+}
+}
+}
