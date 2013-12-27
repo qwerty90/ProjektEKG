@@ -6,8 +6,10 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-
 # Compiled Static libraries
 *.lai
 *.la
 *.a
+
+#other files
+*.pro.user
