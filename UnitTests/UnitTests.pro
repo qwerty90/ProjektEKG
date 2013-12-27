@@ -16,7 +16,7 @@ TEMPLATE = app
 
 
 SOURCES += tst_unitteststest.cpp \
-    ../rrintervalmethod.cpp
+    ../src/rrintervalmethod.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
