@@ -19,7 +19,7 @@ void UnitTestsTest::countRRIntervalsOneInterval() {
   vector<double> RRTime = { 0.1, 0.2 };
   RRIntervalMethod a;
   vector<double> intervals = a.countRRInvervals(RRTime);
-  QCOMPARE(*intervals.begin(), 0.1);
+  QCOMPARE(intervals.front(), 0.1);
   QCOMPARE(intervals.size(), RRTime.size() - 1);
 }
 void UnitTestsTest::countRRIntervalsThreeIntervals() {
