@@ -20,5 +20,5 @@ SOURCES += tst_unitteststest.cpp \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
-    ../rrintervalmethod.h
+    ../src/rrintervalmethod.h
 QMAKE_CXXFLAGS += -std=c++0x

@@ -3,9 +3,9 @@ CONFIG += console
 CONFIG -= app_bundle
 SOURCES += \
     main.cpp \
-    rrintervalmethod.cpp
+    src/rrintervalmethod.cpp
 
 QMAKE_CXXFLAGS += -std=c++0x
 
 HEADERS += \
-    rrintervalmethod.h
+    src/rrintervalmethod.h
