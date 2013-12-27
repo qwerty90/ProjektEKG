@@ -11,9 +11,8 @@ RRIntervalMethod::RRIntervalMethod() {}
 vector<double>
 RRIntervalMethod::countRRInvervals(const vector<double> &RRtime) {
   vector<double> RRIntervals;
-  for (auto it = RRtime.begin(); it != RRtime.end() - 1; ++it) {
-    RRIntervals.push_back(*(it + 1) - *it);
-  }
+  transform(begin(RRtime) + 1, end(RRtime), begin(RRtime),
+            back_inserter(RRIntervals), minus<double>());
   return RRIntervals;
 }
 
