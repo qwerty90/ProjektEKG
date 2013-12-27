@@ -26,3 +26,4 @@ HEADERS  += data_input.h
 
 INCLUDEPATH += Include
 
+QMAKE_CXXFLAGS += -std=c++0x
