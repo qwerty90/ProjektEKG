@@ -40,7 +40,6 @@ void RRIntervalMethod::countAvarageInterval(const vector<double> &RRIntervals) {
 
 void RRIntervalMethod::countTransitions(
     const vector<classification> &classifiedIntervals) {
-  std::fill(&markovTable[0][0], &markovTable[3][0], 0.0);
   for (auto it = classifiedIntervals.begin();
        it != classifiedIntervals.end() - 1; ++it) {
     markovTable[*it][*(it + 1)] += 1;

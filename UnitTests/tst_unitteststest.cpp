@@ -1,6 +1,9 @@
 #include <QString>
 #include <QtTest>
 #include "../src/rrintervalmethod.h"
+
+using namespace std;
+
 class UnitTestsTest : public QObject {
   Q_OBJECT
 

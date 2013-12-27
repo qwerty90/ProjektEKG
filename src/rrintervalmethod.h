@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-using std::vector;
+#include <array>
 
 enum classification {
   Short,
@@ -9,13 +9,13 @@ enum classification {
 };
 class RRIntervalMethod {
   double avarageInterval;
-  double markovTable[3][3];
+  std::array<std::array<double, 3>, 3> markovTable;
 
 public:
-  vector<double> countRRInvervals(const vector<double>& RRtime);
-  vector<classification> classifyIntervals(const vector<double>& RRIntervals);
-  void countAvarageInterval(const vector<double> &RRIntervals);
-  void countTransitions(const vector<classification>& classifiedIntervals);
+  std::vector<double> countRRInvervals(const std::vector<double> &RRtime);
+  std::vector<classification> classifyIntervals(const std::vector<double> &RRIntervals);
+  void countAvarageInterval(const std::vector<double> &RRIntervals);
+  void countTransitions(const std::vector<classification> &classifiedIntervals);
   void normalizeMarkovTable();
 
   RRIntervalMethod();
