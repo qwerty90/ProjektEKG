@@ -39,6 +39,8 @@ void RRIntervalMethod::countAvarageInterval(const vector<double> &RRIntervals) {
 
 void RRIntervalMethod::countTransitions(
     const vector<classification> &classifiedIntervals) {
+
+  markovTable.fill({ { 0.0, 0.0, 0.0 } });
   for (auto it = classifiedIntervals.begin();
        it != classifiedIntervals.end() - 1; ++it) {
     markovTable[*it][*(it + 1)] += 1;

@@ -13,10 +13,12 @@ class RRIntervalMethod {
 
 public:
   std::vector<double> countRRInvervals(const std::vector<double> &RRtime);
-  std::vector<classification> classifyIntervals(const std::vector<double> &RRIntervals);
+  std::vector<classification>
+  classifyIntervals(const std::vector<double> &RRIntervals);
   void countAvarageInterval(const std::vector<double> &RRIntervals);
   void countTransitions(const std::vector<classification> &classifiedIntervals);
   void normalizeMarkovTable();
+  std::array<std::array<double, 3>, 3> getMarkovTable() { return markovTable; }
 
   RRIntervalMethod();
 };

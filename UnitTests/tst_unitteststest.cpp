@@ -10,10 +10,12 @@ class UnitTestsTest : public QObject {
 public:
   UnitTestsTest();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
   void classifyIntervalsTest();
+  void countTransitionsTest();
 };
 
 UnitTestsTest::UnitTestsTest() {}
@@ -49,13 +51,30 @@ void UnitTestsTest::classifyIntervalsTest() {
   vector<double> intervals = { 1, 1, 1.5, 0.5 };
   vector<classification> expectedIntervals = { Regular, Regular, Long, Short };
   RRIntervalMethod a;
-  
+
   // Act
   a.countAvarageInterval(intervals);
   vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
 
   // Assert
   QVERIFY(classifiedIntervals == expectedIntervals);
+}
+
+void UnitTestsTest::countTransitionsTest() {
+  // Arrange
+  vector<double> intervals = { 1, 1, 1.5, 0.5 };
+  RRIntervalMethod a;
+  std::array<std::array<double, 3>, 3> ExpectedArray = {
+    { { { 0, 0, 0 } }, { { 0, 1, 1 } }, { { 1, 0, 0 } } }
+  };
+
+  // Act
+  a.countAvarageInterval(intervals);
+  vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
+  a.countTransitions(classifiedIntervals);
+
+  // Assert
+  QVERIFY(a.getMarkovTable() == ExpectedArray);
 }
 
 QTEST_APPLESS_MAIN(UnitTestsTest)
