@@ -10,7 +10,7 @@
 #include "Common/ecginfo.h"
 #include "Controllers/results.h"
 
-#include "ecg_baseline/ecg_example.h"
+#include "ECG_BASELINE/ecg_example.h"
 
 class AppController : public QObject
 {

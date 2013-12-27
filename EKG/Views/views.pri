@@ -1,7 +1,5 @@
-QWT_ROOT = C:/Qwt-6.0.2/
-
-include( $${QWT_ROOT}/qwtconfig.pri )
-include( $${QWT_ROOT}/qwtfunctions.pri )
+include( $(QWT_ROOT)/qwtconfig.pri )
+include( $(QWT_ROOT)/qwtfunctions.pri )
 
 SOURCES += \
     Views/airecgmain.cpp \
@@ -32,18 +30,18 @@ RESOURCES += \
     Views/resources.qrc
 
 
-INCLUDEPATH += $${QWT_ROOT}/src
-DEPENDPATH  += $${QWT_ROOT}/src
+INCLUDEPATH += $(QWT_ROOT)/src
+DEPENDPATH  += $(QWT_ROOT)/src
 
 QMAKE_RPATHDIR *= $${QWT_ROOT}/lib
 
 contains(QWT_CONFIG, QwtFramework) {
 
-    LIBS      += -F$${QWT_ROOT}/lib
+    LIBS      += -F$(QWT_ROOT)/lib
 }
 else {
 
-    LIBS      += -L$${QWT_ROOT}/lib
+    LIBS      += -L$(QWT_ROOT)/lib
 }
 
 qwtAddLibrary(qwt)
