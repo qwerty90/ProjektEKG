@@ -31,10 +31,7 @@ void UnitTestsTest::countRRIntervalsThreeIntervals(){
     RRIntervalMethod a;
     vector<double> intervals = a.countRRInvervals(RRTime);
     QCOMPARE(intervals.size(),RRTime.size()-1);
-    auto itExp = ExpIntervals.begin();
-    for(auto it = intervals.begin(); it != intervals.end(); ++it,++itExp){
-        QCOMPARE(*it,*itExp);
-    }
+    QVERIFY(intervals==ExpIntervals);
 }
 
 void UnitTestsTest::classifyIntervalsTest()
@@ -44,10 +41,7 @@ void UnitTestsTest::classifyIntervalsTest()
     RRIntervalMethod a;
     a.countAvarageInterval(intervals);
     vector<classification>classifiedIntervals = a.classifyIntervals(intervals);
-    auto itExp = expectedIntervals.begin();
-    for(auto it = classifiedIntervals.begin(); it != classifiedIntervals.end(); ++it,++itExp){
-        QCOMPARE(*it,*itExp);
-    }
+    QVERIFY(classifiedIntervals==expectedIntervals);
 }
 
 

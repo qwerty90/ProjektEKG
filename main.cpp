@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "rrintervalmethod.h"
+#include "src/rrintervalmethod.h"
 using namespace std;
 
 
