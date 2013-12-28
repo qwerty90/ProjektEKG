@@ -1,16 +1,15 @@
 QT       += testlib
 QT       -= gui
 
-TARGET = test_AFSanity
+TARGET = tst_unitteststest
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
 
 
-SOURCES += test_RRIntervalsSanity.cpp \
+SOURCES += tst_unitteststest.cpp \
     ../src/RRIntervals.cpp
-
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
