@@ -10,22 +10,29 @@ using namespace std;
 namespace Ecg {
 namespace AtrialFibr {
 
-double correlation(const vector<double> &v1, const vector<double> &v2) {
-  const auto mean1 = mean(v1);
-  const auto mean2 = mean(v2);
+typedef vector<double>::const_iterator Cit;
+
+double correlation(const Cit &start1, const Cit &end1, const Cit &start2) {
+  const auto end2 = start2 + distance(start1, end1);
+  const auto mean1 = accumulate(start1, end1, 0.0) / distance(start1, end1);
+  const auto mean2 = accumulate(start2, end2, 0.0) / distance(start2, end2);
   const auto numerator = inner_product(
-      begin(v1), end(v1), begin(v2), 0.0, plus<double>(),
+      start1, end1, start2, 0.0, plus<double>(),
       [=](double a, double b) noexcept { return (a - mean1) * (b - mean2); });
-  const auto squaredError1 = accumulate(begin(v1), end(v1), 0.0,
-                                        [mean1](double sum, double x) noexcept {
-    return sum + (x - mean1) * (x - mean1);
-  });
-  const auto squaredError2 = accumulate(begin(v2), end(v2), 0.0,
-                                        [mean2](double sum, double x) noexcept {
-    return sum + (x - mean2) * (x - mean2);
-  });
+  const auto squaredError1 =
+      accumulate(start1, end1, 0.0, [mean1](double sum, double x) noexcept {
+        return sum + (x - mean1) * (x - mean1);
+      });
+  const auto squaredError2 =
+      accumulate(start2, end2, 0.0, [mean2](double sum, double x) noexcept {
+        return sum + (x - mean2) * (x - mean2);
+      });
   const auto denominator = sqrt(squaredError1) * sqrt(squaredError2);
   return numerator / denominator;
+}
+
+double correlation(const vector<double> &v1, const vector<double> &v2) {
+  return correlation(begin(v1), end(v1), begin(v2));
 }
 
 const vector<double> averagePWave{
@@ -37,14 +44,11 @@ const vector<double> averagePWave{
     9.484479999999998, 9.491520000000001, 9.48032 }
 };
 
-double pWaveOccurenceRatio(
-    const std::vector<std::vector<double>::const_iterator> &pWaveStarts) {
-
-  const int count = count_if(begin(pWaveStarts), end(pWaveStarts),
-                             [](std::vector<double>::const_iterator it) {
-    return 0.2 < correlation(averagePWave,
-                             vector<double>(it, it + averagePWave.size()));
-  });
+double pWaveOccurenceRatio(const std::vector<Cit> &pWaveStarts) {
+  const int count =
+      count_if(begin(pWaveStarts), end(pWaveStarts), [](const Cit &it) {
+        return 0.2 < correlation(begin(averagePWave), end(averagePWave), it);
+      });
   return double(count) / pWaveStarts.size();
 }
 }
