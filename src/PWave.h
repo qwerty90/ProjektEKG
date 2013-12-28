@@ -13,5 +13,9 @@ template <typename T> auto mean(const T &t) -> typename T::value_type {
 
 double correlation(const std::vector<double> &v1,
                    const std::vector<double> &v2);
+
+extern const std::vector<double> averagePWave;
+double pWaveOccurenceRatio(
+    const std::vector<std::vector<double>::const_iterator> &pWaveStarts);
 }
 }

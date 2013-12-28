@@ -30,6 +30,8 @@ private Q_SLOTS:
   void normalizeMarkovTableTest();
 
   void correlationObviousCases();
+  void pWaveOccurence_AllFound();
+  void pWaveOccurence_HalfFound();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -187,6 +189,31 @@ void RRSanityTest::correlationObviousCases() {
   // Assert
   QCOMPARE(correlation({ 1, 2, 3, 4, 5 }, { 2, 4, 6, 8, 10 }), 1.0);
   QCOMPARE(correlation({ 1, 2, 3, 4, 5 }, { 5, 4, 3, 2, 1 }), -1.0);
+}
+
+void RRSanityTest::pWaveOccurence_AllFound() {
+  // Arrange
+  vector<double> signal(200);
+  vector<vector<double>::iterator> pWaveStarts = { signal.begin() + 10,
+                                                   signal.begin() + 70 };
+  vector<vector<double>::const_iterator> pWaveStartsC = { signal.begin() + 10,
+                                                          signal.begin() + 70 };
+  for (auto it : pWaveStarts)
+    copy(begin(averagePWave), end(averagePWave), it);
+
+  // Assert
+  QCOMPARE(1.0, pWaveOccurenceRatio(pWaveStartsC));
+}
+
+void RRSanityTest::pWaveOccurence_HalfFound() {
+  // Arrange
+  vector<double> signal(200);
+  vector<vector<double>::const_iterator> pWaveStarts = { signal.begin() + 10,
+                                                         signal.begin() + 70 };
+  copy(begin(averagePWave), end(averagePWave), begin(signal) + 10);
+
+  // Assert
+  QCOMPARE(1.0 / 2, pWaveOccurenceRatio(pWaveStarts));
 }
 
 QTEST_APPLESS_MAIN(RRSanityTest)
