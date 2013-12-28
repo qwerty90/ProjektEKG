@@ -6,7 +6,7 @@
 namespace Ecg {
 namespace AtrialFibr {
 
-using Matrix3_3 = std::array<std::array<double, 3>, 3>;
+typedef std::array<std::array<double, 3>, 3>  Matrix3_3 ;
 std::array<double, 3> row(const Matrix3_3 &matrix, int n);
 std::array<double, 3> col(const Matrix3_3 &matrix, int n);
 

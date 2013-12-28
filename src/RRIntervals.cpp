@@ -51,8 +51,6 @@ void RRIntervalMethod::countTransitions(
 }
 void RRIntervalMethod::normalizeMarkovTable() {}
 
-using Matrix3_3 = std::array<std::array<double, 3>, 3>;
-
 std::array<double, 3> row(const Matrix3_3 &matrix, int n) { return matrix[n]; }
 
 std::array<double, 3> col(const Matrix3_3 &matrix, int n) {
