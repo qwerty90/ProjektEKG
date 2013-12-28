@@ -6,9 +6,9 @@
 namespace Ecg {
 namespace AtrialFibr {
 
-template <typename T>
-auto mean(T &&t) -> typename std::remove_reference<T>::type::value_type {
-  return std::accumulate(std::begin(t), std::end(t), 0.0) / t.size();
+template <typename T> auto mean(const T &t) -> typename T::value_type {
+  return std::accumulate(std::begin(t), std::end(t), typename T::value_type()) /
+         t.size();
 }
 
 double correlation(const std::vector<double> &v1,
