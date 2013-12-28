@@ -8,7 +8,7 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += tst_unitteststest.cpp \
+SOURCES += tst_RRSanity.cpp \
     ../src/RRIntervals.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
