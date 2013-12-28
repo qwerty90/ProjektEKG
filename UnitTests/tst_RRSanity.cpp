@@ -27,6 +27,7 @@ Q_SLOTS:
   void KLDivergenceTest();
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
+  void normalizeMarkovTableTest();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -158,6 +159,24 @@ void RRSanityTest::JKDivergenceTest() {
   // Assert
   QVERIFY(JKdivergence(arr, pattern) > 0.49);
   QVERIFY(JKdivergence(arr, pattern) < 0.5);
+}
+
+void RRSanityTest::normalizeMarkovTableTest() {
+  // Arrange
+  vector<double> intervals = { 1, 1, 1, 1.5, 0.5 };
+  RRIntervalMethod a;
+  std::array<std::array<double, 3>, 3> ExpectedArray = {
+    { { { 0, 0, 0 } }, { { 0, 0.5, 0.25 } }, { { 0.25, 0, 0 } } }
+  };
+
+  // Act
+  a.countAvarageInterval(intervals);
+  vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
+  a.countTransitions(classifiedIntervals);
+  a.normalizeMarkovTable();
+  auto b = a.getMarkovTable();
+  // Assert
+  QVERIFY(b == ExpectedArray);
 }
 
 QTEST_APPLESS_MAIN(RRSanityTest)

@@ -23,6 +23,7 @@ enum classification {
 class RRIntervalMethod {
   double avarageInterval;
   Matrix3_3 markovTable;
+  double countNormalization();
 
 public:
   std::vector<double> countRRInvervals(const std::vector<double> &RRtime);

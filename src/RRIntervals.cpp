@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 using namespace std;
+using namespace std::placeholders;
 namespace Ecg {
 namespace AtrialFibr {
 
@@ -49,7 +50,26 @@ void RRIntervalMethod::countTransitions(
     markovTable[*it][*(it + 1)] += 1;
   }
 }
-void RRIntervalMethod::normalizeMarkovTable() {}
+
+double RRIntervalMethod::countNormalization() {
+  double sum = 0;
+  for (int i = 0; i < 3; ++i) {
+    auto _row = row(markovTable, i);
+    sum += accumulate(begin(_row), end(_row), 0.0);
+  }
+  return sum;
+}
+
+void RRIntervalMethod::normalizeMarkovTable() {
+  double normalizationValue = countNormalization();
+  for (int i = 0; i < 3; ++i) {
+    array<double, 3> ans;
+    auto _row = row(markovTable, i);
+    transform(begin(_row), end(_row), begin(ans),
+              bind(divides<double>(), _1, normalizationValue));
+    markovTable[i] = ans;
+  }
+}
 
 std::array<double, 3> row(const Matrix3_3 &matrix, int n) { return matrix[n]; }
 
