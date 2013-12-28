@@ -78,5 +78,28 @@ double entropy(const Matrix3_3 &matrix) {
 
   return -inner_product(begin(P), end(P), begin(H), 0.0);
 }
+
+double KLdivergence(const Matrix3_3 &transitionsMatrix,
+                    const Matrix3_3 &patternMatrix) {
+  double sum = 0;
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      sum += log(patternMatrix[i][j] / transitionsMatrix[i][j]) *
+             patternMatrix[i][j];
+    }
+  }
+  return sum;
+}
+double JKdivergence(const Matrix3_3 &transitionsMatrix,
+                    const Matrix3_3 &patternMatrix) {
+  Matrix3_3 M;
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; ++j) {
+      M[i][j] = 0.5 * (patternMatrix[i][j] + transitionsMatrix[i][j]);
+    }
+  }
+  return 0.5 *
+         (KLdivergence(M, patternMatrix) + KLdivergence(M, transitionsMatrix));
+}
 }
 }

@@ -6,12 +6,15 @@
 namespace Ecg {
 namespace AtrialFibr {
 
-typedef std::array<std::array<double, 3>, 3>  Matrix3_3 ;
+typedef std::array<std::array<double, 3>, 3> Matrix3_3;
 std::array<double, 3> row(const Matrix3_3 &matrix, int n);
 std::array<double, 3> col(const Matrix3_3 &matrix, int n);
 
 double entropy(const Matrix3_3 &matrix);
-
+double KLdivergence(const Matrix3_3 &transitionsMatrix,
+                    const Matrix3_3 &patternMatrix);
+double JKdivergence(const Matrix3_3 &transitionsMatrix,
+                    const Matrix3_3 &patternMatrix);
 enum classification {
   Short,
   Regular,
@@ -19,7 +22,7 @@ enum classification {
 };
 class RRIntervalMethod {
   double avarageInterval;
-  std::array<std::array<double, 3>, 3> markovTable;
+  Matrix3_3 markovTable;
 
 public:
   std::vector<double> countRRInvervals(const std::vector<double> &RRtime);

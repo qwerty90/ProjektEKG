@@ -15,13 +15,18 @@ class RRSanityTest : public QObject {
 public:
   RRSanityTest();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
   void classifyIntervalsTest();
   void countTransitionsTest();
   void entropyBig();
   void entropySmall();
+  void KLDivergenceEqualMatrix();
+  void KLDivergenceTest();
+  void JKDivergenceEqualMatrix();
+  void JKDivergenceTest();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -83,7 +88,6 @@ void RRSanityTest::countTransitionsTest() {
   QVERIFY(a.getMarkovTable() == ExpectedArray);
 }
 
-
 void RRSanityTest::entropyBig() {
   // Arrange
   std::array<std::array<double, 3>, 3> arr = { { { { 0.11, 0.11, 0.11 } },
@@ -104,6 +108,56 @@ void RRSanityTest::entropySmall() {
   // Assert
   QVERIFY(entropy(arr) < 0.1);
   QVERIFY(entropy(arr) > -0.1);
+}
+
+void RRSanityTest::KLDivergenceEqualMatrix() {
+  // Arrange
+  std::array<std::array<double, 3>, 3> pattern = {
+    { { { 0.11, 0.11, 0.11 } }, { { 0.11, 0.11, 0.11 } },
+      { { 0.11, 0.11, 0.11 } } }
+  };
+  std::array<std::array<double, 3>, 3> arr = pattern;
+  // Assert
+  QVERIFY(KLdivergence(arr, pattern) == 0);
+}
+
+void RRSanityTest::KLDivergenceTest() {
+  std::array<std::array<double, 3>, 3> pattern = {
+    { { { 0.11, 0.11, 0.11 } }, { { 0.11, 0.11, 0.11 } },
+      { { 0.11, 0.11, 0.11 } } }
+  };
+  std::array<std::array<double, 3>, 3> arr = {
+    { { { 0.001, 0.001, 0.001 } }, { { 0.001, 1.000, 0.001 } },
+      { { 0.001, 0.001, 0.001 } } }
+  };
+  // Assert
+  QVERIFY(KLdivergence(arr, pattern) > 3.8);
+  QVERIFY(KLdivergence(arr, pattern) < 3.9);
+}
+
+void RRSanityTest::JKDivergenceEqualMatrix() {
+  // Arrange
+  std::array<std::array<double, 3>, 3> pattern = {
+    { { { 0.11, 0.11, 0.11 } }, { { 0.11, 0.11, 0.11 } },
+      { { 0.11, 0.11, 0.11 } } }
+  };
+  std::array<std::array<double, 3>, 3> arr = pattern;
+  // Assert
+  QVERIFY(JKdivergence(arr, pattern) == 0);
+}
+
+void RRSanityTest::JKDivergenceTest() {
+  std::array<std::array<double, 3>, 3> pattern = {
+    { { { 0.11, 0.11, 0.11 } }, { { 0.11, 0.11, 0.11 } },
+      { { 0.11, 0.11, 0.11 } } }
+  };
+  std::array<std::array<double, 3>, 3> arr = {
+    { { { 0.001, 0.001, 0.001 } }, { { 0.001, 1.000, 0.001 } },
+      { { 0.001, 0.001, 0.001 } } }
+  };
+  // Assert
+  QVERIFY(JKdivergence(arr, pattern) > 0.49);
+  QVERIFY(JKdivergence(arr, pattern) < 0.5);
 }
 
 QTEST_APPLESS_MAIN(RRSanityTest)
