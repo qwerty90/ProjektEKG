@@ -5,6 +5,7 @@
 #include <numeric>
 
 #include "../src/RRIntervals.h"
+#include "../src/PWave.h"
 
 using namespace std;
 using namespace Ecg::AtrialFibr;
@@ -15,8 +16,7 @@ class RRSanityTest : public QObject {
 public:
   RRSanityTest();
 
-private
-Q_SLOTS:
+private Q_SLOTS:
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
   void classifyIntervalsTest();
@@ -28,6 +28,8 @@ Q_SLOTS:
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
   void normalizeMarkovTableTest();
+
+  void correlationObviousCases();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -44,6 +46,7 @@ void RRSanityTest::countRRIntervalsOneInterval() {
   QCOMPARE(intervals.front(), 0.1);
   QCOMPARE(intervals.size(), RRTime.size() - 1);
 }
+
 void RRSanityTest::countRRIntervalsThreeIntervals() {
   // Arrange
   vector<double> RRTime = { 0.1, 0.2, 0.5, 0.7, 0.9 };
@@ -55,7 +58,7 @@ void RRSanityTest::countRRIntervalsThreeIntervals() {
 
   // Assert
   QCOMPARE(intervals.size(), RRTime.size() - 1);
-  QVERIFY(intervals == ExpIntervals);
+  QCOMPARE(intervals, ExpIntervals);
 }
 
 void RRSanityTest::classifyIntervalsTest() {
@@ -65,7 +68,7 @@ void RRSanityTest::classifyIntervalsTest() {
   RRIntervalMethod a;
 
   // Act
-  a.countAvarageInterval(intervals);
+  a.countAverageInterval(intervals);
   vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
 
   // Assert
@@ -81,7 +84,7 @@ void RRSanityTest::countTransitionsTest() {
   };
 
   // Act
-  a.countAvarageInterval(intervals);
+  a.countAverageInterval(intervals);
   vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
   a.countTransitions(classifiedIntervals);
 
@@ -170,13 +173,20 @@ void RRSanityTest::normalizeMarkovTableTest() {
   };
 
   // Act
-  a.countAvarageInterval(intervals);
+  a.countAverageInterval(intervals);
   vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
   a.countTransitions(classifiedIntervals);
   a.normalizeMarkovTable();
   auto b = a.getMarkovTable();
+
   // Assert
   QVERIFY(b == ExpectedArray);
+}
+
+void RRSanityTest::correlationObviousCases() {
+  // Assert
+  QCOMPARE(correlation({ 1, 2, 3, 4, 5 }, { 2, 4, 6, 8, 10 }), 1.0);
+  QCOMPARE(correlation({ 1, 2, 3, 4, 5 }, { 5, 4, 3, 2, 1 }), -1.0);
 }
 
 QTEST_APPLESS_MAIN(RRSanityTest)
