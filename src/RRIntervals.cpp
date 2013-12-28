@@ -1,4 +1,4 @@
-#include "rrintervalmethod.h"
+#include "RRIntervals.h"
 #include <iostream>
 #include <algorithm>
 #include <functional>

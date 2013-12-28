@@ -18,3 +18,4 @@
 */Makefile
 *.moc
 */tst_unitteststest
+*~

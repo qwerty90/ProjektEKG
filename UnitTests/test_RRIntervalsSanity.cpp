@@ -4,7 +4,7 @@
 #include <cmath>
 #include <numeric>
 
-#include "../src/rrintervalmethod.h"
+#include "../src/RRIntervals.h"
 
 using namespace std;
 using namespace Ecg::AtrialFibr;
