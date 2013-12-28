@@ -1,11 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-12-27T16:49:22
-#
-#-------------------------------------------------
-
 QT       += testlib
-
 QT       -= gui
 
 TARGET = tst_unitteststest
@@ -21,4 +14,6 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     ../src/rrintervalmethod.h
-QMAKE_CXXFLAGS += -std=c++0x
+
+QMAKE_CXXFLAGS += -std=c++0x -Wall -Werror -Wextra
+QMAKE_CXXFLAGS += -isystem $$[QT_INSTALL_PREFIX]/include/qt4/QtCore -isystem $$[QT_INSTALL_PREFIX]/include/qt4/QtTest
