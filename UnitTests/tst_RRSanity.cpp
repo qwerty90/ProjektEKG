@@ -9,11 +9,11 @@
 using namespace std;
 using namespace Ecg::AtrialFibr;
 
-class RRSanitTest : public QObject {
+class RRSanityTest : public QObject {
   Q_OBJECT
 
 public:
-  RRSanitTest();
+  RRSanityTest();
 
 private Q_SLOTS:
   void countRRIntervalsOneInterval();
@@ -24,9 +24,9 @@ private Q_SLOTS:
   void entropySmall();
 };
 
-RRSanitTest::RRSanitTest() {}
+RRSanityTest::RRSanityTest() {}
 
-void RRSanitTest::countRRIntervalsOneInterval() {
+void RRSanityTest::countRRIntervalsOneInterval() {
   // Arrange
   vector<double> RRTime = { 0.1, 0.2 };
   RRIntervalMethod a;
@@ -38,7 +38,7 @@ void RRSanitTest::countRRIntervalsOneInterval() {
   QCOMPARE(intervals.front(), 0.1);
   QCOMPARE(intervals.size(), RRTime.size() - 1);
 }
-void RRSanitTest::countRRIntervalsThreeIntervals() {
+void RRSanityTest::countRRIntervalsThreeIntervals() {
   // Arrange
   vector<double> RRTime = { 0.1, 0.2, 0.5, 0.7, 0.9 };
   vector<double> ExpIntervals = { 0.2 - 0.1, 0.5 - 0.2, 0.7 - 0.5, 0.9 - 0.7 };
@@ -52,7 +52,7 @@ void RRSanitTest::countRRIntervalsThreeIntervals() {
   QVERIFY(intervals == ExpIntervals);
 }
 
-void RRSanitTest::classifyIntervalsTest() {
+void RRSanityTest::classifyIntervalsTest() {
   // Arrange
   vector<double> intervals = { 1, 1, 1.5, 0.5 };
   vector<classification> expectedIntervals = { Regular, Regular, Long, Short };
@@ -66,7 +66,7 @@ void RRSanitTest::classifyIntervalsTest() {
   QVERIFY(classifiedIntervals == expectedIntervals);
 }
 
-void RRSanitTest::countTransitionsTest() {
+void RRSanityTest::countTransitionsTest() {
   // Arrange
   vector<double> intervals = { 1, 1, 1.5, 0.5 };
   RRIntervalMethod a;
@@ -84,7 +84,7 @@ void RRSanitTest::countTransitionsTest() {
 }
 
 
-void RRSanitTest::entropyBig() {
+void RRSanityTest::entropyBig() {
   // Arrange
   std::array<std::array<double, 3>, 3> arr = { { { { 0.11, 0.11, 0.11 } },
                                                  { { 0.11, 0.11, 0.11 } },
@@ -94,7 +94,7 @@ void RRSanitTest::entropyBig() {
   QVERIFY(abs(entropy(arr) - 1.0) < 0.1);
 }
 
-void RRSanitTest::entropySmall() {
+void RRSanityTest::entropySmall() {
   // Arrange
   std::array<std::array<double, 3>, 3> arr = {
     { { { 0.001, 0.001, 0.001 } }, { { 0.001, 1.000, 0.001 } },
@@ -106,6 +106,6 @@ void RRSanitTest::entropySmall() {
   QVERIFY(entropy(arr) > -0.1);
 }
 
-QTEST_APPLESS_MAIN(RRSanitTest)
+QTEST_APPLESS_MAIN(RRSanityTest)
 
 #include "tst_RRSanity.moc"

@@ -1,7 +1,7 @@
 QT       += testlib
 QT       -= gui
 
-TARGET = tst_unitteststest
+TARGET = tst_RRSanity
 CONFIG   += console
 CONFIG   -= app_bundle
 
