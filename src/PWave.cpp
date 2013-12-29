@@ -44,11 +44,16 @@ const vector<double> averagePWave{
     9.484479999999998, 9.491520000000001, 9.48032 }
 };
 
+bool biggestIteratorTooBig(const vector<Cit> &pWaveStarts,
+                           const Cit &endOfSignal) {
+  return any_of(begin(pWaveStarts), end(pWaveStarts), [&](const Cit &it) {
+    return distance(it + averagePWave.size(), endOfSignal) < 0;
+  });
+}
+
 double pWaveOccurenceRatio(const vector<Cit> &pWaveStarts,
                            const Cit &endOfSignal) {
-  if (any_of(begin(pWaveStarts), end(pWaveStarts), [&](const Cit &it) {
-        return distance(it + averagePWave.size(), endOfSignal) < 0;
-      }))
+  if (biggestIteratorTooBig(pWaveStarts, endOfSignal))
     throw PWaveStartTooCloseToEndOfSignal();
   const int count =
       count_if(begin(pWaveStarts), end(pWaveStarts), [](const Cit &it) {
