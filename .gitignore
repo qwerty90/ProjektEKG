@@ -5,3 +5,4 @@
 *.pro.user
 *~/build-EKG-Clang_Qt4-Debug/qrc_resources.cpp
 */Makefile
+
