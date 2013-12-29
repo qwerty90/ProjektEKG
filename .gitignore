@@ -4,5 +4,5 @@
 *.pro.user*
 *.pro.user
 *~/build-EKG-Clang_Qt4-Debug/qrc_resources.cpp
-*/Makefile/EKG/ATRIAL_FIBR/tests/AfTests
-/EKG/ATRIAL_FIBR/tests/AfTests
+*/Makefile
+
