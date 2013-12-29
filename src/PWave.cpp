@@ -10,7 +10,7 @@ using namespace std;
 namespace Ecg {
 namespace AtrialFibr {
 
-typedef vector<double>::const_iterator Cit;
+typedef std::vector<double>::const_iterator Cit;
 
 double correlation(const Cit &start1, const Cit &end1, const Cit &start2) {
   const auto end2 = start2 + distance(start1, end1);
@@ -44,7 +44,12 @@ const vector<double> averagePWave{
     9.484479999999998, 9.491520000000001, 9.48032 }
 };
 
-double pWaveOccurenceRatio(const std::vector<Cit> &pWaveStarts) {
+double pWaveOccurenceRatio(const vector<Cit> &pWaveStarts,
+                           const Cit &endOfSignal) {
+  if (any_of(begin(pWaveStarts), end(pWaveStarts), [&](const Cit &it) {
+        return distance(it + averagePWave.size(), endOfSignal) < 0;
+      }))
+    throw PWaveStartTooCloseToEndOfSignal();
   const int count =
       count_if(begin(pWaveStarts), end(pWaveStarts), [](const Cit &it) {
         return 0.2 < correlation(begin(averagePWave), end(averagePWave), it);

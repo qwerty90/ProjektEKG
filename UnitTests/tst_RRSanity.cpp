@@ -29,9 +29,10 @@ private Q_SLOTS:
   void JKDivergenceTest();
   void normalizeMarkovTableTest();
 
-  void correlationObviousCases();
+  void correlation_ObviousCases();
   void pWaveOccurence_AllFound();
   void pWaveOccurence_HalfFound();
+  void pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -185,7 +186,7 @@ void RRSanityTest::normalizeMarkovTableTest() {
   QVERIFY(b == ExpectedArray);
 }
 
-void RRSanityTest::correlationObviousCases() {
+void RRSanityTest::correlation_ObviousCases() {
   // Assert
   QCOMPARE(correlation({ 1, 2, 3, 4, 5 }, { 2, 4, 6, 8, 10 }), 1.0);
   QCOMPARE(correlation({ 1, 2, 3, 4, 5 }, { 5, 4, 3, 2, 1 }), -1.0);
@@ -202,7 +203,7 @@ void RRSanityTest::pWaveOccurence_AllFound() {
     copy(begin(averagePWave), end(averagePWave), it);
 
   // Assert
-  QCOMPARE(1.0, pWaveOccurenceRatio(pWaveStartsC));
+  QCOMPARE(pWaveOccurenceRatio(pWaveStartsC, end(signal)), 1.0);
 }
 
 void RRSanityTest::pWaveOccurence_HalfFound() {
@@ -213,7 +214,26 @@ void RRSanityTest::pWaveOccurence_HalfFound() {
   copy(begin(averagePWave), end(averagePWave), begin(signal) + 10);
 
   // Assert
-  QCOMPARE(1.0 / 2, pWaveOccurenceRatio(pWaveStarts));
+  QCOMPARE(pWaveOccurenceRatio(pWaveStarts, end(signal)), 1.0 / 2);
+}
+
+void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
+  // Arrange
+  vector<double> signal(100);
+  copy(begin(averagePWave), begin(averagePWave) + 10, begin(signal) + 90);
+  vector<vector<double>::const_iterator> pWaveStarts = { signal.begin() + 90 };
+  bool thrown = false;
+
+  // Act
+  try {
+    pWaveOccurenceRatio(pWaveStarts, end(signal));
+  }
+  catch (PWaveStartTooCloseToEndOfSignal) {
+    thrown = true;
+  }
+
+  // Assert
+  QVERIFY(thrown);
 }
 
 QTEST_APPLESS_MAIN(RRSanityTest)
