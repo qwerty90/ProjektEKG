@@ -1,0 +1,22 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+#other files
+*.pro.user
+/build-*/*
+/UnitTests/Makefile
+*/Makefile
+*.moc
+*/tst_unitteststest
+*~
+*/tst_RRSanity
