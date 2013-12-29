@@ -11,12 +11,7 @@
 *.la
 *.a
 
-#other files
-*.pro.user
-/build-*/*
-/UnitTests/Makefile
 */Makefile
 *.moc
-*/tst_unitteststest
 *~
-*/tst_RRSanity
+

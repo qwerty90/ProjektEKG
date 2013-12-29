@@ -1,14 +1,14 @@
 QT       += testlib
 QT       -= gui
 
-TARGET = tst_RRSanity
+TARGET = AfTests
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
 
 
-SOURCES += tst_RRSanity.cpp \
+SOURCES += AfTests.cpp \
     ../src/RRIntervals.cpp \
     ../src/PWave.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

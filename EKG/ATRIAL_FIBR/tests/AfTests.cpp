@@ -238,4 +238,4 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
 
 QTEST_APPLESS_MAIN(RRSanityTest)
 
-#include "tst_RRSanity.moc"
+#include "AfTests.moc"
