@@ -7,7 +7,7 @@
 using namespace Ecg::AtrialFibr;
 
 class RRIntervalsApi {
-  std::unique_ptr<RRIntervalMethod> rrmethod;
+  RRIntervalMethod rrmethod;
   double entropyResult;
   double divergenceResult;
 
