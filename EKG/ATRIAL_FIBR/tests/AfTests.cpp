@@ -3,9 +3,11 @@
 
 #include <cmath>
 #include <numeric>
-
+#include <iostream>
 #include "../src/RRIntervals.h"
+#include "../src/RRIntervalsApi.h"
 #include "../src/PWave.h"
+#include <stdlib.h>
 
 using namespace std;
 using namespace Ecg::AtrialFibr;
@@ -32,6 +34,9 @@ Q_SLOTS:
   void KLDivergenceTest();
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
+
+  void GetEntropyTest();
+  void GetDivergenceTest();
 
   void correlation_ObviousCases();
   void pWaveOccurence_AllFound();
@@ -118,21 +123,23 @@ void RRSanityTest::normalizeMarkovTableTest() {
 }
 
 void RRSanityTest::RRRunTest() {
+  // Arrange
   vector<double> signal;
   for (int i = 0; i < 100; i++)
     signal.push_back(i);
 
-  vector<CIterators> SignalIterators;
+  vector<CIterators> RRPeaksIterators;
   RRIntervalMethod a;
   for (vector<double>::const_iterator iters = signal.begin();
        iters < signal.end(); iters += 10) {
-    SignalIterators.push_back(iters);
+    RRPeaksIterators.push_back(iters);
   }
-
-  a.RunRRMethod(SignalIterators);
+  // Act
+  a.RunRRMethod(RRPeaksIterators);
   Matrix3_3 markovTable = a.getMarkovTable();
   Matrix3_3 ExpectedArray = { { { { 0, 0, 0 } }, { { 0, 1, 0 } },
                                 { { 0, 0, 0 } } } };
+  // Assert
   QVERIFY(markovTable == ExpectedArray);
 }
 void RRSanityTest::entropyBig() {
@@ -205,6 +212,51 @@ void RRSanityTest::JKDivergenceTest() {
   // Assert
   QVERIFY(JKdivergence(arr, pattern) > 0.49);
   QVERIFY(JKdivergence(arr, pattern) < 0.5);
+}
+
+void RRSanityTest::GetEntropyTest() {
+  // Arrange
+  vector<double> signal;
+  for (int i = 0; i < 1000; i += rand() % 20) {
+    signal.push_back(i);
+  }
+  vector<CIterators> RRPeaksIterators;
+  RRIntervalMethod a;
+  for (vector<double>::const_iterator iters = signal.begin();
+       iters < signal.end(); iters++)
+    RRPeaksIterators.push_back(iters);
+
+  // Act
+  a.RunRRMethod(RRPeaksIterators);
+  RRIntervalsApi RRintApi(RRPeaksIterators);
+
+  // Assert
+  QVERIFY(RRintApi.GetEntropy() == entropy(a.getMarkovTable()));
+}
+
+void RRSanityTest::GetDivergenceTest() {
+  // Arrange
+  vector<double> signal;
+  for (int i = 0; i < 1000;i += rand() % 25) {
+    signal.push_back(i);
+  }
+  vector<CIterators> RRPeaksIterators;
+  RRIntervalMethod a;
+  for (vector<double>::const_iterator iters = signal.begin();
+       iters < signal.end(); iters++)
+    RRPeaksIterators.push_back(iters);
+
+  Matrix3_3 patternMatrix = { { { { 0.005, 0.023, 0.06 } },
+                                { { 0.007, 0.914, 0.013 } },
+                                { { 0.019, 0.006, 0.003 } } } };
+
+  // Act
+  a.RunRRMethod(RRPeaksIterators);
+  RRIntervalsApi RRintApi(RRPeaksIterators);
+
+  // Assert
+  QVERIFY(RRintApi.GetDivergence() ==
+          JKdivergence(a.getMarkovTable(), patternMatrix));
 }
 
 void RRSanityTest::correlation_ObviousCases() {
