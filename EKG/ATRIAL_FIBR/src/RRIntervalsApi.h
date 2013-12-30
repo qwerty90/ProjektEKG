@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <array>
-#include <memory>
 #include "RRIntervals.h"
 using namespace Ecg::AtrialFibr;
 
