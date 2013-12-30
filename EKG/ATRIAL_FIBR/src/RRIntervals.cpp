@@ -69,6 +69,17 @@ void RRIntervalMethod::normalizeMarkovTable() {
     markovTable[i] = ans;
   }
 }
+void RRIntervalMethod::RunRRMethod(std::vector<CIterators> &RPeaksIterators) {
+  std::vector<double> RPeaks;
+  for (std::vector<CIterators>::const_iterator iter = RPeaksIterators.begin();
+       iter < RPeaksIterators.end(); ++iter) {
+    RPeaks.push_back(**iter);
+  }
+  std::vector<double> RRIntervals = countRRInvervals(RPeaks);
+  countAverageInterval(RRIntervals);
+  countTransitions(classifyIntervals(RRIntervals));
+  normalizeMarkovTable();
+}
 
 std::array<double, 3> row(const Matrix3_3 &matrix, int n) { return matrix[n]; }
 
