@@ -12,6 +12,7 @@ include(Controllers/controllers.pri)
 include(Views/views.pri)
 include(QsLog/QsLog.pri)
 include(ECG_BASELINE/ecg_baseline.pri)
+include(ATRIAL_FIBR/atrial_fibr.pri)
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

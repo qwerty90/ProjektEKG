@@ -12,22 +12,26 @@ using namespace Ecg::AtrialFibr;
 
 class RRSanityTest : public QObject {
   Q_OBJECT
+  RRIntervalMethod rrmethod;
 
 public:
   RRSanityTest();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
+  void initTestCase();
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
   void classifyIntervalsTest();
   void countTransitionsTest();
+  void normalizeMarkovTableTest();
+  void RRRunTest();
   void entropyBig();
   void entropySmall();
   void KLDivergenceEqualMatrix();
   void KLDivergenceTest();
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
-  void normalizeMarkovTableTest();
 
   void correlation_ObviousCases();
   void pWaveOccurence_AllFound();
@@ -37,13 +41,14 @@ private Q_SLOTS:
 
 RRSanityTest::RRSanityTest() {}
 
+void RRSanityTest::initTestCase() {}
+
 void RRSanityTest::countRRIntervalsOneInterval() {
   // Arrange
   vector<double> RRTime = { 0.1, 0.2 };
-  RRIntervalMethod a;
 
   // Act
-  vector<double> intervals = a.countRRInvervals(RRTime);
+  vector<double> intervals = rrmethod.countRRInvervals(RRTime);
 
   // Assert
   QCOMPARE(intervals.front(), 0.1);
@@ -54,10 +59,9 @@ void RRSanityTest::countRRIntervalsThreeIntervals() {
   // Arrange
   vector<double> RRTime = { 0.1, 0.2, 0.5, 0.7, 0.9 };
   vector<double> ExpIntervals = { 0.2 - 0.1, 0.5 - 0.2, 0.7 - 0.5, 0.9 - 0.7 };
-  RRIntervalMethod a;
 
   // Act
-  vector<double> intervals = a.countRRInvervals(RRTime);
+  vector<double> intervals = rrmethod.countRRInvervals(RRTime);
 
   // Assert
   QCOMPARE(intervals.size(), RRTime.size() - 1);
@@ -68,11 +72,11 @@ void RRSanityTest::classifyIntervalsTest() {
   // Arrange
   vector<double> intervals = { 1, 1, 1.5, 0.5 };
   vector<classification> expectedIntervals = { Regular, Regular, Long, Short };
-  RRIntervalMethod a;
 
   // Act
-  a.countAverageInterval(intervals);
-  vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
+  rrmethod.countAverageInterval(intervals);
+  vector<classification> classifiedIntervals =
+      rrmethod.classifyIntervals(intervals);
 
   // Assert
   QVERIFY(classifiedIntervals == expectedIntervals);
@@ -81,20 +85,56 @@ void RRSanityTest::classifyIntervalsTest() {
 void RRSanityTest::countTransitionsTest() {
   // Arrange
   vector<double> intervals = { 1, 1, 1.5, 0.5 };
-  RRIntervalMethod a;
   std::array<std::array<double, 3>, 3> ExpectedArray = {
     { { { 0, 0, 0 } }, { { 0, 1, 1 } }, { { 1, 0, 0 } } }
   };
 
   // Act
-  a.countAverageInterval(intervals);
-  vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
-  a.countTransitions(classifiedIntervals);
+  rrmethod.countAverageInterval(intervals);
+  vector<classification> classifiedIntervals =
+      rrmethod.classifyIntervals(intervals);
+  rrmethod.countTransitions(classifiedIntervals);
 
   // Assert
-  QVERIFY(a.getMarkovTable() == ExpectedArray);
+  QVERIFY(rrmethod.getMarkovTable() == ExpectedArray);
 }
 
+void RRSanityTest::normalizeMarkovTableTest() {
+  // Arrange
+  vector<double> intervals = { 1, 1, 1, 1.5, 0.5 };
+  std::array<std::array<double, 3>, 3> ExpectedArray = {
+    { { { 0, 0, 0 } }, { { 0, 0.5, 0.25 } }, { { 0.25, 0, 0 } } }
+  };
+
+  // Act
+  rrmethod.countAverageInterval(intervals);
+  vector<classification> classifiedIntervals =
+      rrmethod.classifyIntervals(intervals);
+  rrmethod.countTransitions(classifiedIntervals);
+  rrmethod.normalizeMarkovTable();
+
+  // Assert
+  QVERIFY(rrmethod.getMarkovTable() == ExpectedArray);
+}
+
+void RRSanityTest::RRRunTest() {
+  vector<double> signal;
+  for (int i = 0; i < 100; i++)
+    signal.push_back(i);
+
+  vector<CIterators> SignalIterators;
+  RRIntervalMethod a;
+  for (vector<double>::const_iterator iters = signal.begin();
+       iters < signal.end(); iters += 10) {
+    SignalIterators.push_back(iters);
+  }
+
+  a.RunRRMethod(SignalIterators);
+  Matrix3_3 markovTable = a.getMarkovTable();
+  Matrix3_3 ExpectedArray = { { { { 0, 0, 0 } }, { { 0, 1, 0 } },
+                                { { 0, 0, 0 } } } };
+  QVERIFY(markovTable == ExpectedArray);
+}
 void RRSanityTest::entropyBig() {
   // Arrange
   std::array<std::array<double, 3>, 3> arr = { { { { 0.11, 0.11, 0.11 } },
@@ -165,25 +205,6 @@ void RRSanityTest::JKDivergenceTest() {
   // Assert
   QVERIFY(JKdivergence(arr, pattern) > 0.49);
   QVERIFY(JKdivergence(arr, pattern) < 0.5);
-}
-
-void RRSanityTest::normalizeMarkovTableTest() {
-  // Arrange
-  vector<double> intervals = { 1, 1, 1, 1.5, 0.5 };
-  RRIntervalMethod a;
-  std::array<std::array<double, 3>, 3> ExpectedArray = {
-    { { { 0, 0, 0 } }, { { 0, 0.5, 0.25 } }, { { 0.25, 0, 0 } } }
-  };
-
-  // Act
-  a.countAverageInterval(intervals);
-  vector<classification> classifiedIntervals = a.classifyIntervals(intervals);
-  a.countTransitions(classifiedIntervals);
-  a.normalizeMarkovTable();
-  auto b = a.getMarkovTable();
-
-  // Assert
-  QVERIFY(b == ExpectedArray);
 }
 
 void RRSanityTest::correlation_ObviousCases() {

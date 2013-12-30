@@ -7,6 +7,7 @@ namespace Ecg {
 namespace AtrialFibr {
 
 typedef std::array<std::array<double, 3>, 3> Matrix3_3;
+typedef std::vector<double>::const_iterator CIterators;
 std::array<double, 3> row(const Matrix3_3 &matrix, int n);
 std::array<double, 3> col(const Matrix3_3 &matrix, int n);
 
@@ -33,6 +34,7 @@ public:
   void countTransitions(const std::vector<classification> &classifiedIntervals);
   void normalizeMarkovTable();
   std::array<std::array<double, 3>, 3> getMarkovTable() { return markovTable; }
+  void RunRRMethod(std::vector<CIterators> &RPeaksIterators);
 };
 }
 }
