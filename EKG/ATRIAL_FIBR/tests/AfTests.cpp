@@ -5,7 +5,7 @@
 #include <numeric>
 #include <iostream>
 #include "../src/RRIntervals.h"
-#include "../src/RRIntervalsApi.h"
+#include "../src/AtrialFibrApi.h"
 #include "../src/PWave.h"
 #include <stdlib.h>
 
@@ -42,6 +42,7 @@ Q_SLOTS:
   void pWaveOccurence_AllFound();
   void pWaveOccurence_HalfFound();
   void pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal();
+  void GetPWaveOccurenceRatioTest();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -228,16 +229,16 @@ void RRSanityTest::GetEntropyTest() {
 
   // Act
   a.RunRRMethod(RRPeaksIterators);
-  RRIntervalsApi RRintApi(RRPeaksIterators);
+  AtrialFibrApi AtrFibrApi(signal, RRPeaksIterators, RRPeaksIterators);
 
   // Assert
-  QVERIFY(RRintApi.GetEntropy() == entropy(a.getMarkovTable()));
+  QVERIFY(AtrFibrApi.GetEntropy() == entropy(a.getMarkovTable()));
 }
 
 void RRSanityTest::GetDivergenceTest() {
   // Arrange
   vector<double> signal;
-  for (int i = 0; i < 1000;i += rand() % 25) {
+  for (int i = 0; i < 1000; i += rand() % 25) {
     signal.push_back(i);
   }
   vector<CIterators> RRPeaksIterators;
@@ -252,10 +253,10 @@ void RRSanityTest::GetDivergenceTest() {
 
   // Act
   a.RunRRMethod(RRPeaksIterators);
-  RRIntervalsApi RRintApi(RRPeaksIterators);
+  AtrialFibrApi AtrFibrApi(signal, RRPeaksIterators, RRPeaksIterators);
 
   // Assert
-  QVERIFY(RRintApi.GetDivergence() ==
+  QVERIFY(AtrFibrApi.GetDivergence() ==
           JKdivergence(a.getMarkovTable(), patternMatrix));
 }
 
@@ -274,7 +275,6 @@ void RRSanityTest::pWaveOccurence_AllFound() {
                                                           signal.begin() + 70 };
   for (auto it : pWaveStarts)
     copy(begin(averagePWave), end(averagePWave), it);
-
   // Assert
   QCOMPARE(pWaveOccurenceRatio(pWaveStartsC, end(signal)), 1.0);
 }
@@ -309,6 +309,19 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
   QVERIFY(thrown);
 }
 
+void RRSanityTest::GetPWaveOccurenceRatioTest() {
+  // Arrange
+  vector<double> signal(200);
+  vector<vector<double>::iterator> pWaveStarts = { signal.begin() + 10,
+                                                   signal.begin() + 70 };
+  vector<vector<double>::const_iterator> pWaveStartsC = { signal.begin() + 10,
+                                                          signal.begin() + 70 };
+  for (auto it : pWaveStarts)
+    copy(begin(averagePWave), end(averagePWave), it);
+  AtrialFibrApi AtrFibrApi(signal, pWaveStartsC, pWaveStartsC);
+  // Assert
+  QCOMPARE(AtrFibrApi.GetPWaveOccurenceRatio(), 1.0);
+}
 QTEST_APPLESS_MAIN(RRSanityTest)
 
 #include "AfTests.moc"
