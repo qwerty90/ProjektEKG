@@ -31,4 +31,15 @@ double AtrialFibrApi::GetPWaveOccurenceRatio() {
   return pWaveOccurenceRatioResult;
 }
 
-bool AtrialFibrApi::isAtrialFibr() { return true; }
+static const double divergenceFactor = 1;
+static const double entropyFactor = 1;
+static const double pWaveOccFactor = 1;
+static const double AtrialFibrThreshold = 2;
+
+bool AtrialFibrApi::isAtrialFibr() {
+  if (GetDivergence() * divergenceFactor + GetEntropy() * entropyFactor +
+          GetPWaveOccurenceRatio() * pWaveOccFactor >
+      AtrialFibrThreshold)
+    return true;
+  return false;
+}
