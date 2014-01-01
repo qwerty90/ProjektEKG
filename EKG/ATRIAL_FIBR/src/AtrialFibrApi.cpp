@@ -8,13 +8,13 @@ AtrialFibrApi::AtrialFibrApi(
       divergenceResult(0.0), pWaveOccurenceRatioResult(0.0) {
   rrmethod.RunRRMethod(RPeaksIterators);
 }
-double AtrialFibrApi::GetEntropy() {
+double AtrialFibrApi::GetRRIntEntropy() {
   if (!entropyResult)
     entropyResult = entropy(rrmethod.getMarkovTable());
   return entropyResult;
 }
 
-double AtrialFibrApi::GetDivergence() {
+double AtrialFibrApi::GetRRIntDivergence() {
   if (!divergenceResult) {
     Matrix3_3 patternMatrix = { { { { 0.005, 0.023, 0.06 } },
                                   { { 0.007, 0.914, 0.013 } },
@@ -37,7 +37,7 @@ static const double pWaveOccFactor = 1;
 static const double AtrialFibrThreshold = 2;
 
 bool AtrialFibrApi::isAtrialFibr() {
-  if (GetDivergence() * divergenceFactor + GetEntropy() * entropyFactor +
+  if (GetRRIntDivergence() * divergenceFactor + GetRRIntEntropy() * entropyFactor +
           GetPWaveOccurenceRatio() * pWaveOccFactor >
       AtrialFibrThreshold)
     return true;

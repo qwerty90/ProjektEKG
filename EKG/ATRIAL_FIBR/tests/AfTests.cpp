@@ -232,7 +232,7 @@ void RRSanityTest::GetEntropyTest() {
   AtrialFibrApi AtrFibrApi(signal, RRPeaksIterators, RRPeaksIterators);
 
   // Assert
-  QVERIFY(AtrFibrApi.GetEntropy() == entropy(a.getMarkovTable()));
+  QVERIFY(AtrFibrApi.GetRRIntEntropy() == entropy(a.getMarkovTable()));
 }
 
 void RRSanityTest::GetDivergenceTest() {
@@ -256,7 +256,7 @@ void RRSanityTest::GetDivergenceTest() {
   AtrialFibrApi AtrFibrApi(signal, RRPeaksIterators, RRPeaksIterators);
 
   // Assert
-  QVERIFY(AtrFibrApi.GetDivergence() ==
+  QVERIFY(AtrFibrApi.GetRRIntDivergence() ==
           JKdivergence(a.getMarkovTable(), patternMatrix));
 }
 
