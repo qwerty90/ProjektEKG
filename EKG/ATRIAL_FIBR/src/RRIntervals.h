@@ -34,7 +34,7 @@ public:
   void countTransitions(const std::vector<classification> &classifiedIntervals);
   void normalizeMarkovTable();
   std::array<std::array<double, 3>, 3> getMarkovTable() { return markovTable; }
-  void RunRRMethod(std::vector<CIterators> &RPeaksIterators);
+  void RunRRMethod(const std::vector<CIterators> &RPeaksIterators);
 };
 }
 }

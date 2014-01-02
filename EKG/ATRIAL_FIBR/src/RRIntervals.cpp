@@ -69,7 +69,7 @@ void RRIntervalMethod::normalizeMarkovTable() {
     markovTable[i] = ans;
   }
 }
-void RRIntervalMethod::RunRRMethod(std::vector<CIterators> &RPeaksIterators) {
+void RRIntervalMethod::RunRRMethod(const std::vector<CIterators> &RPeaksIterators) {
   std::vector<double> RPeaks;
   for (std::vector<CIterators>::const_iterator iter = RPeaksIterators.begin();
        iter < RPeaksIterators.end(); ++iter) {
