@@ -20,10 +20,7 @@ TARGET = EKG
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-    data_input.cpp
-
-HEADERS  += data_input.h
+SOURCES += main.cpp
 
 INCLUDEPATH += Include
 

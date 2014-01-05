@@ -1,7 +1,7 @@
 #include "appcontroller.h"
 #include "Common/ecgdata.h"
 #include "Common/ecgentry.h"
-#include "Common/supervisorymodule.h"
+//#include "Common/supervisorymodule.h"
 
 #include <QThread>
 
@@ -30,8 +30,12 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
     this->connect(view, SIGNAL(runSingle(QString)), this, SLOT(runSingle(QString)));
+
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
+    this->connect(view, SIGNAL(runAtrialFibr()),this, SLOT (runAtrialFibr()));
+    this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view,  SLOT(drawAtrialFibr(EcgData*)));
+
     this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
     this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
@@ -188,8 +192,9 @@ void AppController::runSingle(QString hash)
 
 void AppController::switchSignal(int index)
 {
-    /*
+
     this->entity->settings->signalIndex = index;
+    /*
     this->supervisor->ResetModules();
     */
 }
@@ -198,8 +203,8 @@ void AppController::runEcgBaseline()
     QLOG_INFO() <<"ecg started";
 
     ecg_example obiekt;
-    obiekt.get_data(this->entity->primary);
-    obiekt.get_params(5,"mean");
+    obiekt.get_data(this->entity->GetCurrentSignal());
+    obiekt.get_params(3,"mean",200);    //to 200 trzeba podmienic
     obiekt.run();
 
     this->entity->ecg_baselined = obiekt.export_data();
@@ -219,5 +224,18 @@ void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
         dest->append(*iter_src);
         iter_src++;
     }
+
+}
+
+void AppController::runAtrialFibr()
+{
+    QLOG_INFO() << "Start AtrialFibr";
+    std::vector<double> signal(200);
+    std::vector<std::vector<double>::const_iterator> pWaveStarts = { signal.begin() + 10,
+                                                           signal.begin() + 70 };
+
+    this->entity->PWaveOccurenceRatio = Ecg::AtrialFibr::pWaveOccurenceRatio(pWaveStarts, signal.end());
+    emit AtrialFibr_done(this->entity);
+    QLOG_INFO() << "AtrialFibr done";
 
 }

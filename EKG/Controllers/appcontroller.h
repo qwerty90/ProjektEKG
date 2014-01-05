@@ -4,13 +4,15 @@
 #include <QObject>
 #include <QList>
 #include <QString>
-#include "Common/supervisorymodule.h"
+#include <vector>
+//#include "Common/supervisorymodule.h"
 #include "Views/airecgmain.h"
 #include "Common/ecgdata.h"
 #include "Common/ecginfo.h"
-#include "Controllers/results.h"
 
 #include "ECG_BASELINE/ecg_example.h"
+#include "ATRIAL_FIBR/src/RRIntervalsApi.h"
+#include "ATRIAL_FIBR/src/PWave.h"
 
 class AppController : public QObject
 {
@@ -33,6 +35,7 @@ signals:
     void processingResults(EcgData *data);
 
     void EcgBaseline_done(EcgData *data);
+    void AtrialFibr_done (EcgData *data);
 public slots:
     void loadData(const QString &directory, const QString &name);
     void switchSignal(int index);
@@ -53,6 +56,7 @@ public slots:
     void run();
     void runSingle(QString hash);
     void runEcgBaseline();//example
+    void runAtrialFibr();
     void onThreadFinished();
 };
 
