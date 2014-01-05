@@ -2,6 +2,7 @@
 #define ECG_EXAMPLE_H
 
 #include <QList>
+#include <QVector>
 #include <QString>
 
 #include <QsLog.h>  //to warto dorzucic
@@ -15,15 +16,16 @@ void calculate_mean();  //tu mnie nie obchodzi co macie
 int window;
 QString method;
 
-QList<int>    *raw_data; //to zostawcie public, to zrobie wam kopiowanie danych
-QList<double> *filtered; // dane wyjsciowe tez public
+QList<int>    *raw_data;
+QVector<double> *filtered;
+int     gain;//wzmocnienie probki
 
 public:
     ecg_example();
 
-    void get_params(int window_size,QString method);//tym przesle wam wszystkie potrzebne parametry
+    void get_params(int window_size,QString method,int gain);//tym przesle wam wszystkie potrzebne parametry
     void get_data(QList<int>* raw_data);            //tym dane
-    QList<double>* export_data();                      //tym zwrocicie wskaznik do wynikow
+    QVector<double>* export_data();                 //tym zwrocicie wskaznik do wynikow
     void run();
 
 };

@@ -65,4 +65,3 @@ win32 {
 
 DEFINES += QWT_DLL
 CONFIG += qwt
-

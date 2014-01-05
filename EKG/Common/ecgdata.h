@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QVector>
 #include <QMap>
 #include "ecgannotation.h"
 #include "ecginfo.h"
@@ -24,7 +25,7 @@ public:
     QList<int> *secondary;
 
     //przefiltrowany sygnal ekg - wyjscie modulu ECG_BASELINE
-    QList<double> *ecg_baselined;
+    QVector<double> *ecg_baselined;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
     QList<unsigned int> *r_peaks;
@@ -87,6 +88,9 @@ public:
     double *turbulence_slope, *turbulence_onset;
     int *vpbs_detected_count;
     QList<double> *hrt_tachogram;
+
+    //modul ATRIAL_FIBR
+    double PWaveOccurenceRatio;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;
