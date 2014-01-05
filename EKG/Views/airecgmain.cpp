@@ -1895,6 +1895,12 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
     QLOG_INFO() << "Koniec drugiego rysowania baseline";
 }
 
+void AirEcgMain::drawAtrialFibr(EcgData *data)
+{
+    QLOG_INFO() << "Start \"rysowania\" AtrialFibr";
+    //
+}
+
 void AirEcgMain::drawRPeaks(EcgData *data)
 {
     QwtPlot *plotVI = plotPointsPlot(*(data->r_peaks),*(data->GetCurrentSignal()),data->info->frequencyValue);
@@ -2277,7 +2283,7 @@ void AirEcgMain::on_pushButton_3_clicked()
 {
     //this->hash = "R_PEAKS";
     //emit this->runSingle(this->hash);
-    emit this->runAtrialFiber();
+    emit this->runAtrialFibr();
 }
 
 void AirEcgMain::on_pushButton_5_clicked()

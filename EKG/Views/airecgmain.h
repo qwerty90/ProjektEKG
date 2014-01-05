@@ -80,7 +80,7 @@ signals:
     void test(int index, int type);
     void runSingle(QString hash);
     void runEcgBaseline();//example
-    void runAtrialFiber();
+    void runAtrialFibr();
     void closeDialog();
 
     void qrsClassChanged(int index, int type);
@@ -98,7 +98,9 @@ public slots:
     void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
     void receiveSingleProcessingResult(bool succeeded, EcgData *data);
+
     void drawEcgBaseline(EcgData* data);//example
+    void drawAtrialFibr(EcgData* data);  //to zostawiam Krzyskowi
 
 private slots:
     void on_actionO_programie_triggered();

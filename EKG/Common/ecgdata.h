@@ -89,6 +89,9 @@ public:
     int *vpbs_detected_count;
     QList<double> *hrt_tachogram;
 
+    //modul ATRIAL_FIBR
+    double PWaveOccurenceRatio;
+
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;
 

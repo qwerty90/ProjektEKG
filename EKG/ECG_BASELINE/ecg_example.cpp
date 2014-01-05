@@ -22,7 +22,7 @@ void ecg_example::calculate_mean()
             suma+=tablica[j];
         }
         wynik = suma/(i+1);
-        *iterator_v = wynik/this->gain;
+        *iterator_v = wynik/this->gain-5;
         iter++;
         iterator_v++;
     }
@@ -38,7 +38,7 @@ void ecg_example::calculate_mean()
         tablica[this->window] = *iter;        
         suma += tablica[this->window];
         wynik = suma/this->window;
-        *iterator_v = wynik/this->gain;
+        *iterator_v = wynik/this->gain-5;
         iter++;
         iterator_v++;
     }
@@ -49,7 +49,7 @@ void ecg_example::calculate_mean()
         tablica[i]=*iter;
         for(int j=0;j<i;j++)
             suma=tablica[j];
-        *iterator_v=suma/(i+1)/this->gain;
+        *iterator_v=suma/(i+1)/this->gain-5;
         iterator_v++;
         iter++;
     }
