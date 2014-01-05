@@ -1,6 +1,7 @@
 HEADERS += \
     Controllers/appcontroller.h\
-    Controllers/results.h
 SOURCES += \
-    Controllers/appcontroller.cpp\
-    Controllers/results.cpp
+    Controllers/appcontroller.cpp
+
+SOURCES += \
+    Controllers/appcontroller.cpp

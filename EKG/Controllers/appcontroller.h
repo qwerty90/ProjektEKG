@@ -8,7 +8,6 @@
 #include "Views/airecgmain.h"
 #include "Common/ecgdata.h"
 #include "Common/ecginfo.h"
-#include "Controllers/results.h"
 
 #include "ECG_BASELINE/ecg_example.h"
 
@@ -53,6 +52,7 @@ public slots:
     void run();
     void runSingle(QString hash);
     void runEcgBaseline();//example
+    void runAtrialFiber();
     void onThreadFinished();
 };
 

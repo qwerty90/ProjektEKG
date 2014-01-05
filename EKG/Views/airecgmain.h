@@ -48,7 +48,7 @@ public:
     explicit AirEcgMain(QWidget *parent = 0);
     ~AirEcgMain();
     QwtPlot* plotPlot(QList<int> &y, float freq);
-    QwtPlot* plotPlot(const QList<double>& y, float freq);
+    QwtPlot* plotPlot(const QVector<double> &yData, float freq);
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
@@ -61,7 +61,7 @@ public:
                         QList<double> interpolateX,  QList<double> interpolateY);
     //*********************
     QwtPlot* plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, double &sd1, double &sd2);
-    QwtPlot* plotTWAPlot(QList<double> &VI_values, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq);
+    QwtPlot* plotTWAPlot(QVector<double> &VI_values, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq);
     QwtPlot* plotTWAPlot2(QList<unsigned int> &TWA_positive, QList<double> &TWA_positive_value, QList<unsigned int> &TWA_negative, QList<double> &TWA_negative_value);
     QwtPlot* plotPlotdfa(QList<double> &y1, QList<double> &y2);
     QwtPlot* plotPointsPlotDFA(QList<double> &x, QList<double> &y, double &wsp_a, double &wsp_b);
@@ -80,6 +80,7 @@ signals:
     void test(int index, int type);
     void runSingle(QString hash);
     void runEcgBaseline();//example
+    void runAtrialFiber();
     void closeDialog();
 
     void qrsClassChanged(int index, int type);
@@ -97,14 +98,11 @@ public slots:
     void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
     void receiveSingleProcessingResult(bool succeeded, EcgData *data);
-    void processingDialog();
     void drawEcgBaseline(EcgData* data);//example
 
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
-    void on_load_clicked();
-
     void on_Hilbert_radiobutton_clicked();
 
     void on_PanTompkins_radiobutton_clicked();
@@ -164,6 +162,8 @@ private slots:
     void on_radioButton_2_clicked();
 
     void on_p_onset_toggled(bool checked);
+
+    void on_butterworthRadioButton_clicked();
 
 private:
     Ui::AirEcgMain *ui;

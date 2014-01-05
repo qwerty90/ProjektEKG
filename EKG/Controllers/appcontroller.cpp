@@ -188,8 +188,9 @@ void AppController::runSingle(QString hash)
 
 void AppController::switchSignal(int index)
 {
-    /*
+
     this->entity->settings->signalIndex = index;
+    /*
     this->supervisor->ResetModules();
     */
 }
@@ -198,8 +199,8 @@ void AppController::runEcgBaseline()
     QLOG_INFO() <<"ecg started";
 
     ecg_example obiekt;
-    obiekt.get_data(this->entity->primary);
-    obiekt.get_params(5,"mean");
+    obiekt.get_data(this->entity->GetCurrentSignal());
+    obiekt.get_params(3,"mean",200);    //to 200 trzeba podmienic
     obiekt.run();
 
     this->entity->ecg_baselined = obiekt.export_data();
@@ -220,4 +221,9 @@ void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
         iter_src++;
     }
 
+}
+
+void AppController::runAtrialFiber()
+{
+    //this->entity
 }

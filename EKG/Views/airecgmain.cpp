@@ -2,7 +2,6 @@
 #include "ui_airecgmain.h"
 #include "about.h"
 #include "filebrowser.h"
-#include "processing.h"
 #include "notready.h"
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -17,6 +16,14 @@
 #include <qwt_legend.h>
 #include <QSignalMapper>
 #include <cmath>
+#include <qapplication.h>
+#include <qlayout.h>
+#include <qwt_plot_spectrocurve.h>
+#include <QVector>
+#include <qwt_point_3d.h>
+#include <qwt_color_map.h>
+#include <qwt_plot_marker.h>
+
 
 
 AirEcgMain::AirEcgMain(QWidget *parent) :
@@ -50,6 +57,7 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->qrsSettingsGMeansParallelCheckBox->setVisible(false);
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
     ui->QRSSampleDataGroupBox->setVisible(false);
+    ui->progressBar->setVisible(false);
 }
 
 
@@ -65,33 +73,21 @@ void AirEcgMain::on_actionO_programie_triggered()
 }
 void AirEcgMain::on_actionWczytaj_triggered()
 {
+    ui->progressBar->setVisible(true);
     fileBrowser dialogFileBrowser;
     this->connect(&dialogFileBrowser, SIGNAL(fbLoadEntity(QString,QString)), this, SLOT(fbLoadData(QString,QString)));
     dialogFileBrowser.setModal(true);
     dialogFileBrowser.exec();
+    ui->progressBar->setVisible(false);
 }
 
-void AirEcgMain::processingDialog()
-{
-    processing dialogProcessing;
-    connect(this, SIGNAL(closeDialog()), &dialogProcessing, SLOT(close()));
-    dialogProcessing.setModal(true);
-    dialogProcessing.exec();
-}
 
-void AirEcgMain::on_load_clicked()
-{    
-    fileBrowser dialogFileBrowser;
-    this->connect(&dialogFileBrowser, SIGNAL(fbLoadEntity(QString,QString)), this, SLOT(fbLoadData(QString,QString)));
-    dialogFileBrowser.setModal(true);
-    dialogFileBrowser.exec();
-}
 
 void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
 {
     emit loadEntity(directory, name);
     ui->pushButton_2->setEnabled(true);
-    ui->pushButton_3->setEnabled(true);
+   // ui->pushButton_3_2->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
     ui->pushButton_6->setEnabled(true);
     ui->pushButton_7->setEnabled(true);
@@ -99,7 +95,7 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->pushButton_9->setEnabled(true);
     ui->pushButton_10->setEnabled(true);
     ui->pushButton_12->setEnabled(true);
-    ui->rpeaksGroupBox->setEnabled(true);
+   ui->rpeaksGroupBox_2->setEnabled(true);
     ui->baselineGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
@@ -126,8 +122,8 @@ void AirEcgMain::receivePatientData(EcgData *data)
     ui->scrollAreaVI->setWidget(plot2);
     ui->scrollAreaVI->show();
 
-    ui->tabPlots->setTabText(0, data->info->primaryName);
-    ui->tabPlots->setTabText(1, data->info->secondaryName);
+    ui->tabWidget_3->setTabText(0, data->info->primaryName);
+    ui->tabWidget_3->setTabText(1, data->info->secondaryName);
 
     ui->radioButton->setText(data->info->primaryName);
     ui->radioButton_2->setChecked(true);
@@ -237,42 +233,86 @@ void AirEcgMain::qrcclasslabel_changed(QString value)
 }
 
 QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
+
     QVector<int> yData = QVector<int>::fromList(y);
     QVector<double> yDataFin = QVector<double>(yData.size());
     QVector<double> sampleNo = QVector<double>(yData.size());
 
-    int max=yData.first();
-    int min=yData.first();
+
+    float max=yData.first();
+    float min=yData.first();
 
     double tos=1/freq;
 
     for (int i=0;i<yData.size();++i)
     {
         sampleNo[i]=(i)*tos;
-        yDataFin[i]=yData[i];
+        yDataFin[i]=yData[i]/200.0;
         if (max<yData[i]) max=yData[i];
-        if (min>yData[i]) min=yData[i];
+        if (min>yData[i]&&min>0) min=yData[i];
     }
+    max/=200;
+    min/=200;
 
     QwtPlot *plot = new QwtPlot();
 
-
     plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, min, max,100 );
+    plot->setAxisScale( QwtPlot::yLeft, min, max,0.5 );
+
     plot->setAxisScale( QwtPlot::xBottom , 0.0,4.0,1);// sampleNo.last());
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-    //zoom->setZoomStack(zoom->zoomStack(), 100);
+
+    QList<double> ticks;
+    for(int i=0; i<100;i++)
+    {
+        ticks.append(i);
+    }
+
+    /* wstawianie lini pionowych
+    QwtPlotMarker *mX = new QwtPlotMarker();
+    mX->setLabel( QString::fromLatin1( "label" ) );
+    mX->setLabelAlignment( Qt::AlignLeft | Qt::AlignBottom );
+    mX->setLabelOrientation( Qt::Vertical );
+    mX->setLineStyle( QwtPlotMarker::VLine );
+    mX->setLinePen( QPen( Qt::black, 0, Qt::DashDotLine ) );
+    mX->setXValue( 2.0);
+    mX->attach( plot );
+    */
+
+    /* linia laczaca 2pkty
+    QwtPlotCurve *curve2 = new QwtPlotCurve();
+    curve2->setPen(QPen( Qt::blue, 3));
+    curve2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    QwtSymbol *symbol = new QwtSymbol( QwtSymbol::Ellipse,
+                                      QBrush( Qt::yellow ), QPen( Qt::red, 2 ), QSize( 8, 8 ) );
+    curve2->setSymbol( symbol );
+    QPolygonF points;
+    points << QPointF( 0.0, 4.4 ) << QPointF( 1.0, 3.0 );
+    curve2->setSamples( points );
+    curve2->attach( plot );
+    */
+
+    /* 3d example
+        double pi = 3.14;
+        double dr = 0.01;
+        double d_angl = 0.0025;
+        double r_max = 0.5;
+        QVector<QwtPoint3D> *vector = new QVector<QwtPoint3D>;
+        QwtPlotSpectroCurve *curve = new QwtPlotSpectroCurve;
+
+
+        curve->setColorRange(QwtInterval(0, r_max));
+        for(double r = dr; r < r_max; r += dr) {
+         for(double angl = 0; angl < 2*pi; angl += d_angl) {
+          vector->append(QwtPoint3D(4+0.5*r*sin(angl), 4+r*sin(angl), r));
+         }
+        }
+        curve->setSamples(*vector);
+    */
 
     QwtText xaxis("Time [ss]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
-
-
 
     plot->setAxisTitle( QwtPlot::yLeft, yaxis );
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
@@ -289,43 +329,30 @@ QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
     grid->setPen( *pen );
     grid->attach( plot );
 
-
-
-
-
     QwtPlotCurve *curve = new QwtPlotCurve();
+
     curve->setPen(QPen( Qt::blue, 1));
     curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
 
-/*
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-*/
+    plot->resize( 1150, 500 );
 
+    plot->canvas()->setFrameStyle( QFrame::Box | QFrame::Plain );
+    plot->canvas()->setLineWidth( 1 );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
 
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    zoom->setZoomBase(plot->canvas()->rect());
+    zoom->setZoomStack(zoom->zoomStack(), 100);
 
-
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotPlot(const QList<double>& y, float freq)
+QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 {
-    QVector<double> yData = y.toVector();
-    QVector<double> sampleNo = QVector<double>(y.size());
+    QVector<double> sampleNo = QVector<double>(yData.size());
 
     double max = yData.first();
     double min = yData.first();
@@ -1132,9 +1159,8 @@ QwtPlot* AirEcgMain::plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, dou
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotTWAPlot(QList<double> &VI_values, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq){
+QwtPlot* AirEcgMain::plotTWAPlot(QVector<double> &yData, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq){
 
-    QVector<double> yData = QVector<double>::fromList(VI_values);
     QVector<double> yDataFin = QVector<double>();
     QVector<double> sampleNo = QVector<double>();
 
@@ -2249,8 +2275,9 @@ void AirEcgMain::on_pushButton_2_clicked()
 
 void AirEcgMain::on_pushButton_3_clicked()
 {
-    this->hash = "R_PEAKS";
-    emit this->runSingle(this->hash);
+    //this->hash = "R_PEAKS";
+    //emit this->runSingle(this->hash);
+    emit this->runAtrialFiber();
 }
 
 void AirEcgMain::on_pushButton_5_clicked()
@@ -2292,7 +2319,7 @@ void AirEcgMain::on_pushButton_10_clicked()
 void AirEcgMain::on_pushButton_12_clicked()
 {
     emit this->run();
-    processingDialog();
+    ui->progressBar->setVisible(true);
 }
 
 void AirEcgMain::on_checkBox_toggled(bool checked)
@@ -2391,3 +2418,7 @@ void AirEcgMain::on_p_onset_toggled(bool checked)
 {
     emit this->switchWaves_p_onset(checked);
 }
+ void  AirEcgMain::on_butterworthRadioButton_clicked()
+ {
+
+ }

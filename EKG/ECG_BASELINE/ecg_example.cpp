@@ -1,13 +1,14 @@
 #include "ecg_example.h"
 ecg_example::ecg_example()
 {
-    this->filtered = new QList<double>;
+    this->filtered = new QVector<double>();
 }
 
 void ecg_example::calculate_mean()
 {
     QList<int>::Iterator iter = this->raw_data->begin();
     int tablica[this->window];
+    QVector<double>::iterator iterator_v = this->filtered->begin();
     int suma;
     double wynik;
     QLOG_INFO() << "Window:" <<QString::number(this->window);
@@ -21,8 +22,9 @@ void ecg_example::calculate_mean()
             suma+=tablica[j];
         }
         wynik = suma/(i+1);
-        this->filtered->append(wynik);
+        *iterator_v = wynik/this->gain;
         iter++;
+        iterator_v++;
     }
 
     while(iter != this->raw_data->end())  //filtracja
@@ -35,19 +37,20 @@ void ecg_example::calculate_mean()
         }
         tablica[this->window] = *iter;        
         suma += tablica[this->window];
-        iter++;
         wynik = suma/this->window;
-        this->filtered->append(wynik);
+        *iterator_v = wynik/this->gain;
+        iter++;
+        iterator_v++;
     }
-
     for (int i=0;i<this->window;i++)  //nadpisanie konca (zle)
-        iter = iter--;
+         iter--;
     for(int i=0;i<this->window;i++)
     {
         tablica[i]=*iter;
         for(int j=0;j<i;j++)
             suma=tablica[j];
-        this->filtered->append(suma/(i+1));
+        *iterator_v=suma/(i+1)/this->gain;
+        iterator_v++;
         iter++;
     }
 }
@@ -65,17 +68,20 @@ void ecg_example::run()
     QLOG_INFO() << "Baseline done.";
 }
 
-void ecg_example::get_params(int window_size,QString method)
+void ecg_example::get_params(int window_size, QString method, int gain)
 {
     this->window = window_size;
     this->method = method;
+    this->gain   = gain;
 }
 
 void ecg_example::get_data(QList<int>* raw_data)
 {
     this->raw_data=raw_data;
+    QLOG_INFO() << "Wczytano " <<QString::number(raw_data->size()) << "probek";
+    this->filtered->resize(this->raw_data->size()+1);
 }
-QList<double> *ecg_example::export_data()
+QVector<double> *ecg_example::export_data()
 {
     return this->filtered;
 }
