@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
+//#include <vector>
 #include <algorithm>
 #include <exception>
+#include <QVector>
 
 namespace Ecg {
 namespace AtrialFibr {
@@ -12,17 +13,17 @@ template <typename T> auto mean(const T &t) -> typename T::value_type {
          t.size();
 }
 
-double correlation(const std::vector<double> &v1,
-                   const std::vector<double> &v2);
+double correlation(const QVector<double> &v1,
+                   const QVector<double> &v2);
 
-double correlation(const std::vector<double>::const_iterator &start1,
-                   const std::vector<double>::const_iterator &end1,
-                   const std::vector<double>::const_iterator &start2);
+double correlation(const QVector<double>::const_iterator &start1,
+                   const QVector<double>::const_iterator &end1,
+                   const QVector<double>::const_iterator &start2);
 
-extern const std::vector<double> averagePWave;
+extern const QVector<double> averagePWave;
 double pWaveOccurenceRatio(
-    const std::vector<std::vector<double>::const_iterator> &pWaveStarts,
-    const std::vector<double>::const_iterator &endOfSignal);
+    const QVector<QVector<double>::const_iterator> &pWaveStarts,
+    const QVector<double>::const_iterator &endOfSignal);
 
 class PWaveStartTooCloseToEndOfSignal : std::exception {};
 }

@@ -10,7 +10,7 @@ using namespace std;
 namespace Ecg {
 namespace AtrialFibr {
 
-typedef std::vector<double>::const_iterator Cit;
+typedef QVector<double>::const_iterator Cit;
 
 double correlation(const Cit &start1, const Cit &end1, const Cit &start2) {
   const auto end2 = start2 + distance(start1, end1);
@@ -31,11 +31,11 @@ double correlation(const Cit &start1, const Cit &end1, const Cit &start2) {
   return numerator / denominator;
 }
 
-double correlation(const vector<double> &v1, const vector<double> &v2) {
+double correlation(const QVector<double> &v1, const QVector<double> &v2) {
   return correlation(begin(v1), end(v1), begin(v2));
 }
 
-const vector<double> averagePWave{
+const QVector<double> averagePWave{
   { 9.381279999999999, 9.371360000000001, 9.397920000000004, 9.425279999999997,
     9.426559999999998, 9.441279999999999, 9.481919999999997, 9.528, 9.55424,
     9.564479999999996, 9.5896, 9.62144, 9.619200000000001, 9.603359999999999,
@@ -44,14 +44,14 @@ const vector<double> averagePWave{
     9.484479999999998, 9.491520000000001, 9.48032 }
 };
 
-bool biggestIteratorTooBig(const vector<Cit> &pWaveStarts,
+bool biggestIteratorTooBig(const QVector<Cit> &pWaveStarts,
                            const Cit &endOfSignal) {
   return any_of(begin(pWaveStarts), end(pWaveStarts), [&](const Cit &it) {
     return distance(it + averagePWave.size(), endOfSignal) < 0;
   });
 }
 
-double pWaveOccurenceRatio(const vector<Cit> &pWaveStarts,
+double pWaveOccurenceRatio(const QVector<Cit> &pWaveStarts,
                            const Cit &endOfSignal) {
   if (biggestIteratorTooBig(pWaveStarts, endOfSignal))
     throw PWaveStartTooCloseToEndOfSignal();

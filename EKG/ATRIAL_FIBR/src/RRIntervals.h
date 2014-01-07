@@ -1,13 +1,14 @@
 #pragma once
 
-#include <vector>
+//#include <vector>
 #include <array>
+#include <QVector>
 
 namespace Ecg {
 namespace AtrialFibr {
 
 typedef std::array<std::array<double, 3>, 3> Matrix3_3;
-typedef std::vector<double>::const_iterator CIterators;
+typedef QVector<double>::const_iterator CIterators;
 std::array<double, 3> row(const Matrix3_3 &matrix, int n);
 std::array<double, 3> col(const Matrix3_3 &matrix, int n);
 
@@ -27,14 +28,14 @@ class RRIntervalMethod {
   double countNormalization();
 
 public:
-  std::vector<double> countRRInvervals(const std::vector<double> &RRtime);
-  std::vector<classification>
-  classifyIntervals(const std::vector<double> &RRIntervals);
-  void countAverageInterval(const std::vector<double> &RRIntervals);
-  void countTransitions(const std::vector<classification> &classifiedIntervals);
+  QVector<double> countRRInvervals(const QVector<double> &RRtime);
+  QVector<classification>
+  classifyIntervals(const QVector<double> &RRIntervals);
+  void countAverageInterval(const QVector<double> &RRIntervals);
+  void countTransitions(const QVector<classification> &classifiedIntervals);
   void normalizeMarkovTable();
   std::array<std::array<double, 3>, 3> getMarkovTable() { return markovTable; }
-  void RunRRMethod(const std::vector<CIterators> &RPeaksIterators);
+  void RunRRMethod(const QVector<CIterators> &RPeaksIterators);
 };
 }
 }
