@@ -911,8 +911,8 @@ QwtPlot* AirEcgMain::plotBarChart(QList<unsigned int> &x, QList<int> &y){
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotPointsPlot(QList<unsigned int> &p, QList<int> &y, float freq){
-    QVector<int> yData = QVector<int>::fromList(y);
+QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterator> &p, const QVector<double> &yData, float freq){
+    //QVector<int> yData = QVector<int>::fromList(y);
     QVector<double> yDataFin = QVector<double>(yData.size());
     QVector<double> sampleNo = QVector<double>(yData.size());
 
@@ -961,9 +961,11 @@ QwtPlot* AirEcgMain::plotPointsPlot(QList<unsigned int> &p, QList<int> &y, float
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
 
-    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
-
-    QVector<unsigned int> pData = QVector<unsigned int>::fromList(p);
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
+    QVector<unsigned int> pData;
+    for (int i=0;i<p.size();i++)
+        pData.append(p.at(i)- yData.begin());
+    //QVector<unsigned int> pData = QVector<unsigned int>::fromList(p);
     QVector<double> pDataX = QVector<double>(pData.size());
     QVector<double> pDataY = QVector<double>(pData.size());
 
@@ -1159,7 +1161,7 @@ QwtPlot* AirEcgMain::plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, dou
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotTWAPlot(QVector<double> &yData, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq){
+QwtPlot* AirEcgMain::plotTWAPlot(const QVector<double> &yData, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq){
 
     QVector<double> yDataFin = QVector<double>();
     QVector<double> sampleNo = QVector<double>();
@@ -1903,7 +1905,8 @@ void AirEcgMain::drawAtrialFibr(EcgData *data)
 
 void AirEcgMain::drawRPeaks(EcgData *data)
 {
-    QwtPlot *plotVI = plotPointsPlot(*(data->r_peaks),*(data->GetCurrentSignal()),data->info->frequencyValue);
+
+    QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
 }

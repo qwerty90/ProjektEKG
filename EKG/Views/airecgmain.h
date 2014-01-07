@@ -52,7 +52,7 @@ public:
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
-    QwtPlot* plotPointsPlot(QList<unsigned int> &p, QList<int> &y, float freq);
+    QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
     //HRV1*****************
     QwtPlot* plotPointsPlotDoubleToDouble(QList<double> &x, QList<double> &y);
     QwtPlot* plotLogPlotF(QList<double> &x,QList<double> &y,int rodzaj);
@@ -61,7 +61,7 @@ public:
                         QList<double> interpolateX,  QList<double> interpolateY);
     //*********************
     QwtPlot* plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, double &sd1, double &sd2);
-    QwtPlot* plotTWAPlot(QVector<double> &VI_values, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq);
+    QwtPlot* plotTWAPlot(const QVector<double> &VI_values, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq);
     QwtPlot* plotTWAPlot2(QList<unsigned int> &TWA_positive, QList<double> &TWA_positive_value, QList<unsigned int> &TWA_negative, QList<double> &TWA_negative_value);
     QwtPlot* plotPlotdfa(QList<double> &y1, QList<double> &y2);
     QwtPlot* plotPointsPlotDFA(QList<double> &x, QList<double> &y, double &wsp_a, double &wsp_b);

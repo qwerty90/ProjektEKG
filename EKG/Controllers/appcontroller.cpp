@@ -200,7 +200,7 @@ void AppController::switchSignal(int index)
 }
 void AppController::runEcgBaseline()
 {
-    QLOG_INFO() <<"ecg started";
+    QLOG_INFO() <<"ecg started";    
 
     ecg_example obiekt;
     obiekt.get_data(this->entity->GetCurrentSignal());
@@ -230,11 +230,36 @@ void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
 void AppController::runAtrialFibr()
 {
     QLOG_INFO() << "Start AtrialFibr";
-    std::vector<double> signal(200);
-    std::vector<std::vector<double>::const_iterator> pWaveStarts = { signal.begin() + 10,
-                                                           signal.begin() + 70 };
 
-    this->entity->PWaveOccurenceRatio = Ecg::AtrialFibr::pWaveOccurenceRatio(pWaveStarts, signal.end());
+    //wrzucenie przykladowych danych
+    this->entity->Rpeaks     = new QVector<QVector<double>::const_iterator>
+                              ({this->entity->ecg_baselined->begin() + 20,
+                                this->entity->ecg_baselined->begin() + 80});
+
+    this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>
+                              ({this->entity->ecg_baselined->begin() + 10,
+                                this->entity->ecg_baselined->begin() + 70});
+    //this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>;
+
+    //const std::vector<double> signal((this->entity->ecg_baselined)->toStdVector());
+    //const std::vector<std::vector<double>::const_iterator> RPeaks((this->entity->Rpeaks)->toStdVector());
+    //const std::vector<std::vector<double>::const_iterator> pWaveStarts((this->entity->PWaveStart)->toStdVector());
+
+
+    /*this->entity->Rpeaks->append(this->entity->ecg_baselined->begin() + 20);
+    this->entity->Rpeaks->append(this->entity->ecg_baselined->begin() + 80);
+    this->entity->PWaveStart->append(this->entity->ecg_baselined->begin() + 10);
+    this->entity->PWaveStart->append(this->entity->ecg_baselined->begin() + 70);*/
+
+    AtrialFibrApi obiekt(*(this->entity->ecg_baselined),
+                         *(this->entity->Rpeaks) ,
+                         *(this->entity->PWaveStart) )   ;
+
+    this->entity->PWaveOccurenceRatio= obiekt.GetPWaveOccurenceRatio();
+    this->entity->RRIntDivergence    = obiekt.GetRRIntDivergence();
+    this->entity->RRIntEntropy       = obiekt.GetRRIntEntropy();
+    this->entity->AtrialFibr         = obiekt.isAtrialFibr();
+
     emit AtrialFibr_done(this->entity);
     QLOG_INFO() << "AtrialFibr done";
 

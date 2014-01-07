@@ -25,14 +25,17 @@ public:
     QList<int> *secondary;
 
     //przefiltrowany sygnal ekg - wyjscie modulu ECG_BASELINE
-    QVector<double> *ecg_baselined;
+    const QVector<double> *ecg_baselined;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
-    QList<unsigned int> *r_peaks;
+    const QVector<QVector<double>::const_iterator> *Rpeaks;
 
     //punkty charakterystyczne - wyjœcie modulu WAVES
     // EcgFrame zawiera punkty charakterystyczne: QRS_onset, QRS_end, T_end, P_onset, P_end
     QList<Waves::EcgFrame*> *waves;
+    //na razie wrzuce osobno PWaveStart, ale docelowo ladniej by bylo miec to w jednej klasie jak wyzej
+    const QVector<QVector<double>::const_iterator> *PWaveStart;
+
 
     //Wykryte klasy zespo³u QRS - wyjœcie modu³u QRS_CLASS
     QList<QRSClass> *classes;
@@ -91,6 +94,9 @@ public:
 
     //modul ATRIAL_FIBR
     double PWaveOccurenceRatio;
+    double RRIntEntropy;
+    double RRIntDivergence;
+    bool   AtrialFibr;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;

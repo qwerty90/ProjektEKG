@@ -1,9 +1,9 @@
 #include "AtrialFibrApi.h"
 
 AtrialFibrApi::AtrialFibrApi(
-    const std::vector<double> &signal,
-    const std::vector<std::vector<double>::const_iterator> &RPeaksIterators,
-    const std::vector<std::vector<double>::const_iterator> &pWaveStarts)
+        const QVector<double> &signal,
+        const QVector<QVector<double>::const_iterator> &RPeaksIterators,
+        const QVector<QVector<double>::const_iterator> &pWaveStarts)
     : pWaveStarts(pWaveStarts), endOfSignal(signal.end()), entropyResult(0.0),
       divergenceResult(0.0), pWaveOccurenceRatioResult(0.0) {
   rrmethod.RunRRMethod(RPeaksIterators);
