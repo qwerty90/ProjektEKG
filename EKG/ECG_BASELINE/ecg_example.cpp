@@ -57,6 +57,8 @@ void ecg_example::calculate_mean()
 
 void ecg_example::run()
 {
+    //this->~ecg_example();
+
     if (method=="mean")
     {
         this->calculate_mean();

@@ -13,17 +13,17 @@ namespace AtrialFibr {
 const static double longintervalpercentage = 1.15;
 const static double shortintervalpercentage = 0.85;
 
-vector<double>
-RRIntervalMethod::countRRInvervals(const vector<double> &RRtime) {
-  vector<double> RRIntervals;
+QVector<double>
+RRIntervalMethod::countRRInvervals(const QVector<double> &RRtime) {
+  QVector<double> RRIntervals;
   transform(begin(RRtime) + 1, end(RRtime), begin(RRtime),
             back_inserter(RRIntervals), minus<double>());
   return RRIntervals;
 }
 
-vector<classification>
-RRIntervalMethod::classifyIntervals(const vector<double> &RRIntervals) {
-  vector<classification> classifiedIntervals;
+QVector<classification>
+RRIntervalMethod::classifyIntervals(const QVector<double> &RRIntervals) {
+  QVector<classification> classifiedIntervals;
   for (const auto &interval : RRIntervals) {
     if (interval >= longintervalpercentage * averageInterval) {
       classifiedIntervals.push_back(Long);
@@ -36,12 +36,12 @@ RRIntervalMethod::classifyIntervals(const vector<double> &RRIntervals) {
   return classifiedIntervals;
 }
 
-void RRIntervalMethod::countAverageInterval(const vector<double> &RRIntervals) {
+void RRIntervalMethod::countAverageInterval(const QVector<double> &RRIntervals) {
   averageInterval = mean(RRIntervals);
 }
 
 void RRIntervalMethod::countTransitions(
-    const vector<classification> &classifiedIntervals) {
+    const QVector<classification> &classifiedIntervals) {
 
   markovTable.fill({ { 0.0, 0.0, 0.0 } });
   for (auto it = classifiedIntervals.begin();
@@ -69,13 +69,13 @@ void RRIntervalMethod::normalizeMarkovTable() {
     markovTable[i] = ans;
   }
 }
-void RRIntervalMethod::RunRRMethod(const std::vector<CIterators> &RPeaksIterators) {
-  std::vector<double> RPeaks;
-  for (std::vector<CIterators>::const_iterator iter = RPeaksIterators.begin();
+void RRIntervalMethod::RunRRMethod(const QVector<CIterators> &RPeaksIterators) {
+  QVector<double> RPeaks;
+  for (QVector<CIterators>::const_iterator iter = RPeaksIterators.begin();
        iter < RPeaksIterators.end(); ++iter) {
     RPeaks.push_back(**iter);
   }
-  std::vector<double> RRIntervals = countRRInvervals(RPeaks);
+  QVector<double> RRIntervals = countRRInvervals(RPeaks);
   countAverageInterval(RRIntervals);
   countTransitions(classifyIntervals(RRIntervals));
   normalizeMarkovTable();
