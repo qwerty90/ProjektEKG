@@ -1,0 +1,9 @@
+*.o
+*/moc_*.cpp
+*/ui_*.h
+*.pro.user*
+*.pro.user
+*~/build-EKG-Clang_Qt4-Debug/qrc_resources.cpp
+*/Makefile
+*build-*/
+
