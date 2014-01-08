@@ -36,6 +36,8 @@ Q_SLOTS:
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
 
+  void GetEntropyTest();
+  void GetDivergenceTest();
 
   void correlation_ObviousCases();
   void pWaveOccurence_AllFound();
