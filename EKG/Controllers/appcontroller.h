@@ -10,7 +10,6 @@
 #include "Common/ecgdata.h"
 #include "Common/ecginfo.h"
 
-#include "ECG_BASELINE/ecg_example.h"
 #include "ATRIAL_FIBR/src/AtrialFibrApi.h"
 
 class AppController : public QObject

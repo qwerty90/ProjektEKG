@@ -2,6 +2,8 @@
 #include "Common/ecgdata.h"
 #include "Common/ecgentry.h"
 //#include "Common/supervisorymodule.h"
+#include "ECG_BASELINE/src/butter.h"
+#include "ECG_BASELINE/src/kalman.h"
 
 #include <QThread>
 
@@ -200,18 +202,15 @@ void AppController::switchSignal(int index)
 }
 void AppController::runEcgBaseline()
 {
-    QLOG_INFO() <<"ecg started";    
+    QLOG_INFO() <<"ecg started";
 
-    ecg_example obiekt;
-    obiekt.get_data(this->entity->GetCurrentSignal());
-    obiekt.get_params(3,"mean",200);    //to 200 trzeba podmienic
-    obiekt.run();
+    QVector<double> test;
+    test << 0.5 << 0.5 << 0.5;
+    KalmanFilter kalman;
+    kalman.processKalman(test);
 
-    this->entity->ecg_baselined = obiekt.export_data();
-    //if wszystko ok
     QLOG_INFO() << "rysowanie ecg->emit";
     emit EcgBaseline_done(this->entity);
-
 }
 
 void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
