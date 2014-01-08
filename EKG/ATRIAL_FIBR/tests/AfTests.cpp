@@ -36,8 +36,6 @@ Q_SLOTS:
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
 
-  void GetEntropyTest();
-  void GetDivergenceTest();
 
   void correlation_ObviousCases();
   void pWaveOccurence_AllFound();
@@ -214,51 +212,6 @@ void RRSanityTest::JKDivergenceTest() {
   // Assert
   QVERIFY(JKdivergence(arr, pattern) > 0.49);
   QVERIFY(JKdivergence(arr, pattern) < 0.5);
-}
-
-void RRSanityTest::GetEntropyTest() {
-  // Arrange
-  QVector<double> signal;
-  for (int i = 0; i < 1000; i += rand() % 20) {
-    signal.push_back(i);
-  }
-  QVector<CIterators> RRPeaksIterators;
-  RRIntervalMethod a;
-  for (QVector<double>::const_iterator iters = signal.begin();
-       iters < signal.end(); iters++)
-    RRPeaksIterators.push_back(iters);
-
-  // Act
-  a.RunRRMethod(RRPeaksIterators);
-  AtrialFibrApi AtrFibrApi(signal, RRPeaksIterators, RRPeaksIterators);
-
-  // Assert
-  QVERIFY(AtrFibrApi.GetRRIntEntropy() == entropy(a.getMarkovTable()));
-}
-
-void RRSanityTest::GetDivergenceTest() {
-  // Arrange
-  QVector<double> signal;
-  for (int i = 0; i < 1000; i += rand() % 25) {
-    signal.push_back(i);
-  }
-  QVector<CIterators> RRPeaksIterators;
-  RRIntervalMethod a;
-  for (QVector<double>::const_iterator iters = signal.begin();
-       iters < signal.end(); iters++)
-    RRPeaksIterators.push_back(iters);
-
-  Matrix3_3 patternMatrix = { { { { 0.005, 0.023, 0.06 } },
-                                { { 0.007, 0.914, 0.013 } },
-                                { { 0.019, 0.006, 0.003 } } } };
-
-  // Act
-  a.RunRRMethod(RRPeaksIterators);
-  AtrialFibrApi AtrFibrApi(signal, RRPeaksIterators, RRPeaksIterators);
-
-  // Assert
-  QVERIFY(AtrFibrApi.GetRRIntDivergence() ==
-          JKdivergence(a.getMarkovTable(), patternMatrix));
 }
 
 void RRSanityTest::correlation_ObviousCases() {
