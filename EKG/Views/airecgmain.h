@@ -168,7 +168,7 @@ private slots:
 
     void on_butterworthRadioButton_clicked();
 
-    void on_runStIntervalButton_clicked();
+    void on_pushButton_clicked();
 
 private:
     Ui::AirEcgMain *ui;

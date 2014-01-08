@@ -2431,7 +2431,7 @@ void AirEcgMain::on_p_onset_toggled(bool checked)
 
  }
 
- void AirEcgMain::on_runStIntervalButton_clicked()
+ void AirEcgMain::on_pushButton_clicked()
  {
      emit this->runStInterval();
  }
