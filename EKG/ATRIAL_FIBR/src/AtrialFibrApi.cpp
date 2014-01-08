@@ -1,11 +1,12 @@
 #include "AtrialFibrApi.h"
 
 AtrialFibrApi::AtrialFibrApi(
-        const QVector<double> &signal,
-        const QVector<QVector<double>::const_iterator> &RPeaksIterators,
-        const QVector<QVector<double>::const_iterator> &pWaveStarts)
+    const QVector<double> &signal,
+    const QVector<QVector<double>::const_iterator> &RPeaksIterators,
+    const QVector<QVector<double>::const_iterator> &pWaveStarts)
     : pWaveStarts(pWaveStarts), endOfSignal(signal.end()), entropyResult(0.0),
-      divergenceResult(0.0), pWaveOccurenceRatioResult(0.0) {
+      divergenceResult(0.0),
+      pWaveOccurenceRatioResult(pWaveOccurenceRatio(pWaveStarts, endOfSignal)) {
   rrmethod.RunRRMethod(RPeaksIterators);
 }
 double AtrialFibrApi::GetRRIntEntropy() {
@@ -25,9 +26,6 @@ double AtrialFibrApi::GetRRIntDivergence() {
 }
 
 double AtrialFibrApi::GetPWaveOccurenceRatio() {
-  if (!pWaveOccurenceRatioResult) {
-    pWaveOccurenceRatioResult = pWaveOccurenceRatio(pWaveStarts, endOfSignal);
-  }
   return pWaveOccurenceRatioResult;
 }
 
@@ -37,7 +35,8 @@ static const double pWaveOccFactor = 1;
 static const double AtrialFibrThreshold = 2;
 
 bool AtrialFibrApi::isAtrialFibr() {
-  if (GetRRIntDivergence() * divergenceFactor + GetRRIntEntropy() * entropyFactor +
+  if (GetRRIntDivergence() * divergenceFactor +
+          GetRRIntEntropy() * entropyFactor +
           GetPWaveOccurenceRatio() * pWaveOccFactor >
       AtrialFibrThreshold)
     return true;
