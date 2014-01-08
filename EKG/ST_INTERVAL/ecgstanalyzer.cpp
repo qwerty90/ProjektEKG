@@ -17,8 +17,8 @@ const int DETECTION_SIZE        = 30;
 const double MORPHOLOGY_COEFF   = 6.0;
 const EcgStAlgorithm ALGORITHM  = ST_LINEAR;
 
-const double BASELINE_TOLERANCE = 0.15;
-const double SLOPE_TOLERANCE    = 35.0;
+const double LEVEL_THRESHOLD    = 0.15;
+const double SLOPE_THRESHOLD    = 35.0;
 }
 
 //------------------------------------------------------------
@@ -27,8 +27,8 @@ EcgStAnalyzer::EcgStAnalyzer() :
     smoothSize(EcgStDefaults::SMOOTH_SIZE),
     detectionSize(EcgStDefaults::DETECTION_SIZE),
     morphologyCoeff(EcgStDefaults::MORPHOLOGY_COEFF),
-    baselineTolerance(EcgStDefaults::BASELINE_TOLERANCE),
-    slopeTolerance(EcgStDefaults::SLOPE_TOLERANCE),
+    levelThreshold(EcgStDefaults::LEVEL_THRESHOLD),
+    slopeThreshold(EcgStDefaults::SLOPE_THRESHOLD),
     algorithm(EcgStDefaults::ALGORITHM)
 {
 }
@@ -94,30 +94,30 @@ void EcgStAnalyzer::setAlgorithm(EcgStAlgorithm value)
 
 //------------------------------------------------------------
 
-double EcgStAnalyzer::getBaselineTolerance() const
+double EcgStAnalyzer::getLevelThreshold() const
 {
-    return baselineTolerance;
+    return levelThreshold;
 }
 
 //------------------------------------------------------------
 
-void EcgStAnalyzer::setBaselineTolerance(double value)
+void EcgStAnalyzer::setLevelThreshold(double value)
 {
-    baselineTolerance = value;
+    levelThreshold = value;
 }
 
 //------------------------------------------------------------
 
-double EcgStAnalyzer::getSlopeTolerance() const
+double EcgStAnalyzer::getSlopeThreshold() const
 {
-    return slopeTolerance;
+    return slopeThreshold;
 }
 
 //------------------------------------------------------------
 
-void EcgStAnalyzer::setSlopeTolerance(double value)
+void EcgStAnalyzer::setSlopeThreshold(double value)
 {
-    slopeTolerance = value;
+    slopeThreshold = value;
 }
 
 //------------------------------------------------------------
@@ -252,9 +252,9 @@ QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
 
 EcgStPosition EcgStAnalyzer::classifyPosition(double offset)
 {
-    if (fabs(offset) <= baselineTolerance)
+    if (fabs(offset) <= levelThreshold)
         return ST_POS_NORMAL;
-    else if (offset > baselineTolerance)
+    else if (offset > levelThreshold)
         return ST_POS_ELEVATION;
     else
         return ST_POS_DEPRESSION;
@@ -264,20 +264,20 @@ EcgStPosition EcgStAnalyzer::classifyPosition(double offset)
 
 EcgStShape EcgStAnalyzer::classifyShape(double a1, double a2)
 {
-    if (fabs(a1) <= slopeTolerance || fabs(a2) <= slopeTolerance)
+    if (fabs(a1) <= slopeThreshold || fabs(a2) <= slopeThreshold)
     {
-        if (a1 > slopeTolerance || a2 > slopeTolerance)
+        if (a1 > slopeThreshold || a2 > slopeThreshold)
             return ST_SHAPE_UPSLOPING;
-        else if (a1 < -slopeTolerance || a2 < -slopeTolerance)
+        else if (a1 < -slopeThreshold || a2 < -slopeThreshold)
             return ST_SHAPE_DOWNSLOPING;
         else
             return ST_SHAPE_HORIZONTAL;
     }
-    else if (a1 > slopeTolerance && a2 > slopeTolerance)
+    else if (a1 > slopeThreshold && a2 > slopeThreshold)
         return ST_SHAPE_UPSLOPING;
-    else if (a1 < -slopeTolerance && a2 < -slopeTolerance)
+    else if (a1 < -slopeThreshold && a2 < -slopeThreshold)
         return ST_SHAPE_DOWNSLOPING;
-    else if (a1 < -slopeTolerance && a2 > slopeTolerance)
+    else if (a1 < -slopeThreshold && a2 > slopeThreshold)
         return ST_SHAPE_CONCAVE;
     else /*if (a1 > slopeTolerance && a2 < -slopeTolerance)*/
         return ST_SHAPE_CONVEX;

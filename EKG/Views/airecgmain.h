@@ -38,7 +38,6 @@ class AirEcgMain : public QMainWindow
     void drawTwa(EcgData* data);
     void drawWaves(EcgData* data);
     void drawQrsClass(EcgData* data);
-    void drawStInterval(EcgData* data);
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -81,6 +80,7 @@ signals:
     void runSingle(QString hash);
     void runEcgBaseline();//example
     void runAtrialFibr();
+    void runStInterval();
     void closeDialog();
 
     void qrsClassChanged(int index, int type);
@@ -101,6 +101,7 @@ public slots:
 
     void drawEcgBaseline(EcgData* data);//example
     void drawAtrialFibr(EcgData* data);  //to zostawiam Krzyskowi
+    void drawStInterval(EcgData* data);
 
 private slots:
     void on_actionO_programie_triggered();
@@ -166,6 +167,8 @@ private slots:
     void on_p_onset_toggled(bool checked);
 
     void on_butterworthRadioButton_clicked();
+
+    void on_runStIntervalButton_clicked();
 
 private:
     Ui::AirEcgMain *ui;

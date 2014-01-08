@@ -58,8 +58,8 @@ TestEcgStInterval::TestEcgStInterval()
     analyzer.setDetectionSize(30);
     analyzer.setMorphologyCoeff(6.0);
     analyzer.setAlgorithm(ST_LINEAR);
-    analyzer.setBaselineTolerance(0.15);
-    analyzer.setSlopeTolerance(35.0);
+    analyzer.setLevelThreshold(0.15);
+    analyzer.setSlopeThreshold(35.0);
 }
 
 //------------------------------------------------------------

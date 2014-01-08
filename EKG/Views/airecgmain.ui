@@ -505,8 +505,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -1206,8 +1206,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -1317,8 +1317,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -1372,8 +1372,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -1439,8 +1439,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>43</width>
-                        <height>16</height>
+                        <width>98</width>
+                        <height>28</height>
                        </rect>
                       </property>
                      </widget>
@@ -1487,8 +1487,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>43</width>
-                        <height>16</height>
+                        <width>98</width>
+                        <height>28</height>
                        </rect>
                       </property>
                      </widget>
@@ -1673,7 +1673,7 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>161</width>
+                        <width>98</width>
                         <height>141</height>
                        </rect>
                       </property>
@@ -1694,7 +1694,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>126</width>
+                            <width>98</width>
                             <height>89</height>
                            </rect>
                           </property>
@@ -1712,7 +1712,7 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>89</width>
+                                <width>98</width>
                                 <height>73</height>
                                </rect>
                               </property>
@@ -1720,7 +1720,16 @@
                                <property name="spacing">
                                 <number>0</number>
                                </property>
-                               <property name="margin">
+                               <property name="leftMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
                                 <number>0</number>
                                </property>
                                <item>
@@ -1737,8 +1746,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>100</width>
-                            <height>30</height>
+                            <width>98</width>
+                            <height>28</height>
                            </rect>
                           </property>
                           <attribute name="label">
@@ -1805,7 +1814,16 @@
                       <enum>QFrame::Raised</enum>
                      </property>
                      <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="1,1">
-                      <property name="margin">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
                        <number>0</number>
                       </property>
                       <item>
@@ -2336,8 +2354,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -2694,8 +2712,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3004,7 +3022,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="runStIntervalButton">
                 <property name="text">
                  <string> Run ST_INTERVAL </string>
                 </property>
