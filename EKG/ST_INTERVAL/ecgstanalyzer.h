@@ -3,7 +3,7 @@
 
 //------------------------------------------------------------
 
-#include "ecgdata.h"
+#include "ecgstdata.h"
 
 //------------------------------------------------------------
 
@@ -69,7 +69,7 @@ public:
     double getSlopeTolerance() const;
     void setSlopeTolerance(double value);
 
-    QVector<EcgStDescriptor> analyze(const EcgData &data, double sampleFreq);
+    QVector<EcgStDescriptor> analyze(const EcgStData &data, double sampleFreq);
 
     EcgStPosition classifyPosition(double offset);
     EcgStShape classifyShape(double a1, double a2);

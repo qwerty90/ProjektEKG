@@ -21,6 +21,6 @@ SOURCES += tst_testecgstinterval.cpp \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
-    ../ecgdata.h \
+    ../ecgstdata.h \
     ../ecgstanalyzer.h \
     ../ecgutils.h

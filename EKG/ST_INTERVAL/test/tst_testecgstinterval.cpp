@@ -31,7 +31,7 @@ private Q_SLOTS:
     void testDataB112();
 
 private:
-    EcgData data;
+    EcgStData data;
     EcgStAnalyzer analyzer;
 
     void runTest(const QString &fileName, int num, int stOn[], int stEnd[], EcgStPosition pos[], EcgStShape shape[]);
