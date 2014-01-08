@@ -1,7 +1,6 @@
 HEADERS += \
     ST_INTERVAL/ecgstanalyzer.h \
-    ST_INTERVAL/ecgutils.h \
-    ST_INTERVAL/ecgstdata.h
+    ST_INTERVAL/ecgutils.h
 
 SOURCES += \
     ST_INTERVAL/ecgstanalyzer.cpp \

@@ -3,7 +3,7 @@
 
 //------------------------------------------------------------
 
-#include "ecgstdata.h"
+#include <QVector>
 
 //------------------------------------------------------------
 
@@ -25,9 +25,9 @@ enum EcgStShape {
 
 struct EcgStDescriptor
 {
-    int STOn;
-    int STEnd;
-    int STMid;
+    QVector<double>::const_iterator STOn;
+    QVector<double>::const_iterator STEnd;
+    QVector<double>::const_iterator STMid;
 
     double offset;
     double slope1;
@@ -61,7 +61,7 @@ public:
     void setMorphologyCoeff(double value);
 
     EcgStAlgorithm getAlgorithm() const;
-    void setAlgorithm(const EcgStAlgorithm &value);
+    void setAlgorithm(EcgStAlgorithm value);
 
     double getBaselineTolerance() const;
     void setBaselineTolerance(double value);
@@ -69,7 +69,11 @@ public:
     double getSlopeTolerance() const;
     void setSlopeTolerance(double value);
 
-    QVector<EcgStDescriptor> analyze(const EcgStData &data, double sampleFreq);
+    QVector<EcgStDescriptor> analyze(const QVector<double> &ecgSamples,
+                                     const QVector<QVector<double>::const_iterator> &rData,
+                                     const QVector<QVector<double>::const_iterator> &jData,
+                                     const QVector<QVector<double>::const_iterator> &tEndData,
+                                     double sampleFreq);
 
     EcgStPosition classifyPosition(double offset);
     EcgStShape classifyShape(double a1, double a2);

@@ -2,13 +2,13 @@
 
 //------------------------------------------------------------
 
-double EcgUtils::sum(const QVector<double> &vector)
+double EcgUtils::sum(const QVector<double> &vector, QVector<double>::const_iterator start, int num)
 {
     double sum = 0.0;
 
-    QVectorIterator<double> i(vector);
-    while (i.hasNext())
-        sum += i.next();
+    int k = 0;
+    for (QVector<double>::const_iterator iter = start; iter != vector.end() && k < num; ++iter, ++k)
+        sum += *iter;
 
     return sum;
 }
@@ -82,7 +82,7 @@ QVector<double> EcgUtils::extract(const QVector<double> &src, int start, int end
 
 //------------------------------------------------------------
 
-QVector<int> EcgUtils::diff(const QVector<int> &vector)
+QVector<int> EcgUtils::diff(const QVector<QVector<double>::const_iterator> &vector)
 {
     if (vector.empty())
         return QVector<int>();
