@@ -350,7 +350,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>13</number>
         </property>
         <property name="elideMode">
          <enum>Qt::ElideMiddle</enum>
@@ -372,7 +372,7 @@
              <enum>QTabWidget::East</enum>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="tab_2">
              <attribute name="title">
@@ -418,7 +418,7 @@
               <item>
                <widget class="QScrollArea" name="scrollAreaVI">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -426,7 +426,7 @@
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>600</height>
+                  <height>16777215</height>
                  </size>
                 </property>
                 <property name="verticalScrollBarPolicy">
@@ -481,8 +481,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1012</width>
-                   <height>417</height>
+                   <width>63</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -692,7 +692,11 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_51">
                <item>
-                <widget class="QComboBox" name="ButterworthcomboBox"/>
+                <widget class="QComboBox" name="ButterworthcomboBox">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer_10">
@@ -782,6 +786,9 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_2">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>120</width>
@@ -855,7 +862,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="Hilbert_radiobutton_2">
+                <widget class="QRadioButton" name="Hilbert_radiobutton">
                  <property name="text">
                   <string>Hilbert transformation based algorithm</string>
                  </property>
@@ -865,14 +872,14 @@
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="PanTompkins_radiobutton_2">
+                <widget class="QRadioButton" name="PanTompkins_radiobutton">
                  <property name="text">
                   <string>Pan - Tompkins algorithm</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="Falkowa_radiobutton_2">
+                <widget class="QRadioButton" name="Falkowa_radiobutton">
                  <property name="text">
                   <string>Transformata falkowa</string>
                  </property>
@@ -1006,12 +1013,22 @@
              </spacer>
             </item>
             <item>
+             <widget class="QCheckBox" name="wave_all">
+              <property name="text">
+               <string>all</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QCheckBox" name="p_onset">
               <property name="text">
                <string>P_onset</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -1021,7 +1038,7 @@
                <string>P_end</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -1031,7 +1048,7 @@
                <string>QRS_onset</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -1041,17 +1058,7 @@
                <string>QRS_end</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="t_end">
-              <property name="text">
-               <string>T_end</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -1067,7 +1074,7 @@
           <item>
            <widget class="QTabWidget" name="tabHrv">
             <property name="currentIndex">
-             <number>1</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="hrv_statistical">
              <attribute name="title">
@@ -1206,8 +1213,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -1317,8 +1324,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>988</width>
+                       <height>447</height>
                       </rect>
                      </property>
                     </widget>
@@ -1372,8 +1379,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -1439,8 +1446,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>98</width>
-                        <height>28</height>
+                        <width>1010</width>
+                        <height>208</height>
                        </rect>
                       </property>
                      </widget>
@@ -1487,8 +1494,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>98</width>
-                        <height>28</height>
+                        <width>1010</width>
+                        <height>207</height>
                        </rect>
                       </property>
                      </widget>
@@ -1673,7 +1680,7 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>98</width>
+                        <width>161</width>
                         <height>141</height>
                        </rect>
                       </property>
@@ -1694,7 +1701,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
+                            <width>126</width>
                             <height>89</height>
                            </rect>
                           </property>
@@ -1712,7 +1719,7 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>98</width>
+                                <width>89</width>
                                 <height>73</height>
                                </rect>
                               </property>
@@ -1737,8 +1744,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
-                            <height>28</height>
+                            <width>100</width>
+                            <height>30</height>
                            </rect>
                           </property>
                           <attribute name="label">
@@ -2336,8 +2343,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>63</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -2660,83 +2667,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="st">
-         <attribute name="title">
-          <string>ST Segment</string>
-         </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
-          <item>
-           <widget class="QTabWidget" name="tabWidget_2">
-            <property name="tabPosition">
-             <enum>QTabWidget::East</enum>
-            </property>
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <widget class="QWidget" name="tab">
-             <attribute name="title">
-              <string>ST Segment Plot</string>
-             </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout_29">
-              <item>
-               <widget class="QScrollArea" name="stIntervalArea">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="baselinedAreaContent_2">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                </widget>
-               </widget>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="groupBox_3">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="title">
-                 <string>ST intervals data</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="tab_4">
-             <attribute name="title">
-              <string>Episodes</string>
-             </attribute>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </widget>
         <widget class="QWidget" name="st_interval">
          <attribute name="title">
           <string>ST Interval</string>
@@ -2747,7 +2677,7 @@
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_32">
               <item>
-               <widget class="QScrollArea" name="scrollArea">
+               <widget class="QScrollArea" name="stIntervalArea">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -2757,7 +2687,7 @@
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_8">
+                <widget class="QWidget" name="stIntervalAreaContents">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
@@ -3350,6 +3280,9 @@
                  <property name="text">
                   <string>R Peaks</string>
                  </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -3544,7 +3477,7 @@
               <item>
                <widget class="QGroupBox" name="groupBox_13">
                 <property name="title">
-                 <string> </string>
+                 <string/>
                 </property>
                 <layout class="QFormLayout" name="formLayout_4">
                  <item row="0" column="0">
@@ -3848,7 +3781,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_38">
           <item>
-           <widget class="QScrollArea" name="scrollArea_4">
+           <widget class="QScrollArea" name="sleepArea1">
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
@@ -3858,21 +3791,45 @@
                <x>0</x>
                <y>0</y>
                <width>1054</width>
-               <height>249</height>
+               <height>254</height>
               </rect>
              </property>
             </widget>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_26">
-            <property name="text">
-             <string>ilościowa ocena bezdechu w dziedzinie czasu = 0</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>ilościowa ocena bezdechu w dziedzinie czasu = </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="sleepcnt">
+              <property name="text">
+               <string>0</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_24">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_5">
+           <widget class="QScrollArea" name="sleepArea2">
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
@@ -3882,21 +3839,28 @@
                <x>0</x>
                <y>0</y>
                <width>1054</width>
-               <height>248</height>
+               <height>253</height>
               </rect>
              </property>
             </widget>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_27">
-            <property name="text">
-             <string>ilościowa ocena bezdechu w dziedzinie częstotliwości = 0</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_31">
+           <layout class="QHBoxLayout" name="horizontalLayout_41">
+            <item>
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>ilościowa ocena bezdechu w dziedzinie częstotliwości = </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="sleepcntfrequence">
+              <property name="text">
+               <string>0</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <spacer name="horizontalSpacer_17">
               <property name="orientation">

@@ -39,6 +39,7 @@ class AirEcgMain : public QMainWindow
     void drawWaves(EcgData* data);
     void drawQrsClass(EcgData* data);
     void drawStInterval(EcgData* data);
+    void drawSleep_Apnea(EcgData* data);
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -68,6 +69,10 @@ public:
 
     QwtPlot* plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame*> &ecgFrames, double samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
+//////////
+     QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
+     QwtPlot* plotSleep_Apneafrequence(const QVector<double> &yData, float freq);
+
 
 signals:
     void loadEntity(const QString &directory, const QString &name);
@@ -190,6 +195,10 @@ private slots:
     void on_Kalman2lineEdit_textEdited(const QString &arg1);
 
     void on_ButterworthcomboBox_currentIndexChanged(int index);
+
+    void on_Falkowa_radiobutton_clicked();
+
+    void on_checkBox_2_clicked(bool checked);
 
 private:
     Ui::AirEcgMain *ui;
