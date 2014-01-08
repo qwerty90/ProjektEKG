@@ -22,9 +22,12 @@ namespace alglib
     class real_1d_array;
 }
 
+QVector<double> processKalman(const QVector<double>& input, double samplingFrequency);
+
 class KalmanFilter {
 public:
     KalmanFilter();
+    KalmanFilter(double _samplingFrequency);
     QVector<double> processKalman(const QVector<double>& ecgData);
 
     // Synthetic ECG model for a single point (single phase value)
