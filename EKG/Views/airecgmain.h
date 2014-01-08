@@ -92,6 +92,14 @@ signals:
     void qrsGMaxKIterations(int maxIters);
     void qrsKClustersNumberChanged(int noClusters);
 
+    void ecgBase_CzasUsrednieniaChanged(const QString &arg1);
+    void ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1);
+    void ecgBase_Kalman1Changed(const QString &arg1);
+    void ecgBase_Kalman2Changed(const QString &arg1);
+
+
+
+
 public slots:
     void receivePatientData(EcgData *data);
     void receiveResults(EcgData *data);
@@ -166,6 +174,22 @@ private slots:
     void on_p_onset_toggled(bool checked);
 
     void on_butterworthRadioButton_clicked();
+
+    void on_movingAverageRadioButton_clicked();
+
+    void on_savitzkyGolayRadioButton_clicked();
+
+    void on_radioButton_5_clicked();
+
+    void on_CzasUsrednienialineEdit_textEdited(const QString &arg1);
+
+    void on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1);
+
+    void on_Kalman1lineEdit_textEdited(const QString &arg1);
+
+    void on_Kalman2lineEdit_textEdited(const QString &arg1);
+
+    void on_ButterworthcomboBox_currentIndexChanged(int index);
 
 private:
     Ui::AirEcgMain *ui;

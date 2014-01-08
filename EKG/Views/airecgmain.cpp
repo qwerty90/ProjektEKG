@@ -247,12 +247,12 @@ QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
     for (int i=0;i<yData.size();++i)
     {
         sampleNo[i]=(i)*tos;
-        yDataFin[i]=yData[i]/200.0;
+        yDataFin[i]=yData[i]/200.0-5.0;
         if (max<yData[i]) max=yData[i];
         if (min>yData[i]&&min>0) min=yData[i];
     }
-    max/=200;
-    min/=200;
+    max=max/200-5.0;
+    min=min/200-5.0;
 
     QwtPlot *plot = new QwtPlot();
 
@@ -1889,7 +1889,10 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
     QwtPlot *plotMLII = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->baselinedArea->setWidget(plotMLII);
     ui->baselinedArea->show();
+    QStringList list=(QStringList()<<"red"<<"yellow"<<"blue");
+    ui->ButterworthcomboBox->addItems(list);
     QLOG_INFO() << "Koniec pierwszego rysowania baseline";
+
     //dla sig edr
     QwtPlot *plotBaseEDR = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->Baseline_edr->setWidget(plotBaseEDR);
@@ -1900,7 +1903,37 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
 void AirEcgMain::drawAtrialFibr(EcgData *data)
 {
     QLOG_INFO() << "Start \"rysowania\" AtrialFibr";
-    //
+
+    //wykres
+    // QwtPlot *plotAtrialFibr;
+    //ui->AtrialFibrArea->setWidget(plotAtrialFibr);
+    //ui->AtrialFibrArea->show();
+    //macierz
+    ui->af_matrix11->setText("-");
+    ui->af_matrix12->setText("-");
+    ui->af_matrix13->setText("-");
+    ui->af_matrix21->setText("-");
+    ui->af_matrix22->setText("-");
+    ui->af_matrix23->setText("-");
+    ui->af_matrix31->setText("-");
+    ui->af_matrix32->setText("-");
+    ui->af_matrix33->setText("-");
+    //parametry
+    ui->Param1->setText(QString::number((data->PWaveOccurenceRatio), 'f', 2) + " ");
+    ui->Param2->setText(QString::number((data->RRIntEntropy), 'f', 2) + " ");
+    ui->Param3->setText(QString::number((data->RRIntDivergence), 'f', 2) + "");
+    ui->Param4->setText(QString::number((data->AtrialFibr), 'f', 2) + " ");
+    //migotanie
+    if(data->AtrialFibr)
+    {
+        ui->migotanie_frame->setStyleSheet("background-color: rgb(255, 0, 0);");
+
+    }
+    else
+    {
+        ui->migotanie_frame->setStyleSheet("background-color: rgb(0, 170, 0);");
+    }
+
 }
 
 void AirEcgMain::drawRPeaks(EcgData *data)
@@ -2429,5 +2462,64 @@ void AirEcgMain::on_p_onset_toggled(bool checked)
 }
  void  AirEcgMain::on_butterworthRadioButton_clicked()
  {
-
+    ui->ButterworthGroupBox->setEnabled(true);
+    ui->MovingAvarangeGroupBox->setEnabled(false);
+    ui->KalmanGroupBox->setEnabled(false);
  }
+
+void AirEcgMain::on_movingAverageRadioButton_clicked()
+{
+    ui->MovingAvarangeGroupBox->setEnabled(true);
+    ui->ButterworthGroupBox->setEnabled(false);
+    ui->KalmanGroupBox->setEnabled(false);
+}
+
+void AirEcgMain::on_savitzkyGolayRadioButton_clicked()
+{
+    ui->ButterworthGroupBox->setEnabled(false);
+    ui->MovingAvarangeGroupBox->setEnabled(false);
+    ui->KalmanGroupBox->setEnabled(false);
+}
+
+void AirEcgMain::on_radioButton_5_clicked()
+{
+    ui->KalmanGroupBox->setEnabled(true);
+    ui->ButterworthGroupBox->setEnabled(false);
+    ui->MovingAvarangeGroupBox->setEnabled(false);
+}
+
+void AirEcgMain::on_CzasUsrednienialineEdit_textEdited(const QString &arg1)
+{
+    emit ecgBase_CzasUsrednieniaChanged(arg1);
+}
+
+void AirEcgMain::on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1)
+{
+    emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
+}
+
+void AirEcgMain::on_Kalman1lineEdit_textEdited(const QString &arg1)
+{
+    emit ecgBase_Kalman1Changed(arg1);
+}
+void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
+{
+    emit ecgBase_Kalman2Changed(arg1);
+}
+
+
+void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
+{
+    if(index==0)
+    {
+
+    }
+    else if(index==1)
+    {
+
+    }
+    else if(index==2)
+    {
+
+    }
+}
