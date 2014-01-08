@@ -69,11 +69,11 @@ public:
     double getSlopeTolerance() const;
     void setSlopeTolerance(double value);
 
-    QVector<EcgStDescriptor> analyze(const QVector<double> &ecgSamples,
-                                     const QVector<QVector<double>::const_iterator> &rData,
-                                     const QVector<QVector<double>::const_iterator> &jData,
-                                     const QVector<QVector<double>::const_iterator> &tEndData,
-                                     double sampleFreq);
+    QList<EcgStDescriptor> analyze(const QVector<double> &ecgSamples,
+                                   const QVector<QVector<double>::const_iterator> &rData,
+                                   const QVector<QVector<double>::const_iterator> &jData,
+                                   const QVector<QVector<double>::const_iterator> &tEndData,
+                                   double sampleFreq);
 
     EcgStPosition classifyPosition(double offset);
     EcgStShape classifyShape(double a1, double a2);

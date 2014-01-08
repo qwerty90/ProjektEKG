@@ -166,11 +166,11 @@ void TestEcgStInterval::runTest(const QString &fileName, int num,
 {
     QVERIFY2(loadTestData(fileName), "Failed to load test data");
 
-    QVector<EcgStDescriptor> res = analyzer.analyze(data.ecgSamples,
-                                                    data.rData,
-                                                    data.jData,
-                                                    data.tEndData,
-                                                    360.0);
+    QList<EcgStDescriptor> res = analyzer.analyze(data.ecgSamples,
+                                                  data.rData,
+                                                  data.jData,
+                                                  data.tEndData,
+                                                  360.0);
     QCOMPARE(res.size(), num);
 
     for (int i = 0; i < num; i++)

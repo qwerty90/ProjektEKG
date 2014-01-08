@@ -122,13 +122,13 @@ void EcgStAnalyzer::setSlopeTolerance(double value)
 
 //------------------------------------------------------------
 
-QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
-                                                const QVector<QVector<double>::const_iterator> &rData,
-                                                const QVector<QVector<double>::const_iterator> &jData,
-                                                const QVector<QVector<double>::const_iterator> &tEndData,
-                                                double sampleFreq)
+QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
+                                              const QVector<QVector<double>::const_iterator> &rData,
+                                              const QVector<QVector<double>::const_iterator> &jData,
+                                              const QVector<QVector<double>::const_iterator> &tEndData,
+                                              double sampleFreq)
 {
-    QVector<EcgStDescriptor> result;
+    QList<EcgStDescriptor> result;
 
     int num = rData.size();
     int snum = ecgSamples.size();
