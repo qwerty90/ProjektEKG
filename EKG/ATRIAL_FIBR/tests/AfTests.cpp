@@ -196,6 +196,7 @@ void RRSanityTest::JKDivergenceEqualMatrix() {
       { { 0.11, 0.11, 0.11 } } }
   };
   std::array<std::array<double, 3>, 3> arr = pattern;
+
   // Assert
   QVERIFY(JKdivergence(arr, pattern) == 0);
 }
@@ -206,12 +207,12 @@ void RRSanityTest::JKDivergenceTest() {
       { { 0.11, 0.11, 0.11 } } }
   };
   std::array<std::array<double, 3>, 3> arr = {
-    { { { 0.001, 0.001, 0.001 } }, { { 0.001, 1.000, 0.001 } },
-      { { 0.001, 0.001, 0.001 } } }
+    { { { 0.0, 0.0, 0.0 } }, { { 0.0, 1.000, 0.0 } },
+      { { 0.0, 0.0, 0.0 } } }
   };
   // Assert
-  QVERIFY(JKdivergence(arr, pattern) > 0.49);
-  QVERIFY(JKdivergence(arr, pattern) < 0.5);
+  QVERIFY(JKdivergence(arr, pattern) > 0.51);
+  QVERIFY(JKdivergence(arr, pattern) < 0.52);
 }
 
 void RRSanityTest::correlation_ObviousCases() {
