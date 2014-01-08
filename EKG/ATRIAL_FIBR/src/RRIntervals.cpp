@@ -36,7 +36,8 @@ RRIntervalMethod::classifyIntervals(const QVector<double> &RRIntervals) {
   return classifiedIntervals;
 }
 
-void RRIntervalMethod::countAverageInterval(const QVector<double> &RRIntervals) {
+void
+RRIntervalMethod::countAverageInterval(const QVector<double> &RRIntervals) {
   averageInterval = mean(RRIntervals);
 }
 
@@ -90,10 +91,21 @@ std::array<double, 3> col(const Matrix3_3 &matrix, int n) {
   return ans;
 }
 
+Matrix3_3 addConstant(const Matrix3_3 &matrix, const double constant) {
+  Matrix3_3 ans(matrix);
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      ans[i][j] += constant;
+    }
+  }
+  return ans;
+}
+
 double entropy(const Matrix3_3 &matrix) {
+  Matrix3_3 nonZeroMatrix = addConstant(matrix, 0.0001);
   array<double, 3> H;
   for (int i = 0; i < 3; i++) {
-    const auto _row = row(matrix, i);
+    const auto _row = row(nonZeroMatrix, i);
     array<double, 3> multipliedByLog;
     transform(begin(_row), end(_row), begin(multipliedByLog),
               [](double x) { return x * log(x) / log(2); });
@@ -102,7 +114,7 @@ double entropy(const Matrix3_3 &matrix) {
 
   array<double, 3> P;
   for (int i = 0; i < 3; i++) {
-    const auto column = col(matrix, i);
+    const auto column = col(nonZeroMatrix, i);
     P[i] = accumulate(begin(column), end(column), 0.0);
   }
 
