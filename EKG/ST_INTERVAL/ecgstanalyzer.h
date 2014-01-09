@@ -3,39 +3,7 @@
 
 //------------------------------------------------------------
 
-#include "ecgstdata.h"
-
-//------------------------------------------------------------
-
-enum EcgStPosition {
-    ST_POS_NORMAL,
-    ST_POS_ELEVATION,
-    ST_POS_DEPRESSION
-};
-
-enum EcgStShape {
-    ST_SHAPE_HORIZONTAL,
-    ST_SHAPE_DOWNSLOPING,
-    ST_SHAPE_UPSLOPING,
-    ST_SHAPE_CONCAVE,
-    ST_SHAPE_CONVEX
-};
-
-//------------------------------------------------------------
-
-struct EcgStDescriptor
-{
-    int STOn;
-    int STEnd;
-    int STMid;
-
-    double offset;
-    double slope1;
-    double slope2;
-
-    EcgStPosition position;
-    EcgStShape shape;
-};
+#include "ecgstdescriptor.h"
 
 //------------------------------------------------------------
 
@@ -61,15 +29,19 @@ public:
     void setMorphologyCoeff(double value);
 
     EcgStAlgorithm getAlgorithm() const;
-    void setAlgorithm(const EcgStAlgorithm &value);
+    void setAlgorithm(EcgStAlgorithm value);
 
-    double getBaselineTolerance() const;
-    void setBaselineTolerance(double value);
+    double getLevelThreshold() const;
+    void setLevelThreshold(double value);
 
-    double getSlopeTolerance() const;
-    void setSlopeTolerance(double value);
+    double getSlopeThreshold() const;
+    void setSlopeThreshold(double value);
 
-    QVector<EcgStDescriptor> analyze(const EcgStData &data, double sampleFreq);
+    QList<EcgStDescriptor> analyze(const QVector<double> &ecgSamples,
+                                   const QVector<QVector<double>::const_iterator> &rData,
+                                   const QVector<QVector<double>::const_iterator> &jData,
+                                   const QVector<QVector<double>::const_iterator> &tEndData,
+                                   double sampleFreq);
 
     EcgStPosition classifyPosition(double offset);
     EcgStShape classifyShape(double a1, double a2);
@@ -81,8 +53,8 @@ private:
     unsigned int detectionSize;
     double morphologyCoeff;
 
-    double baselineTolerance;
-    double slopeTolerance;
+    double levelThreshold;
+    double slopeThreshold;
 
     EcgStAlgorithm algorithm;
 };

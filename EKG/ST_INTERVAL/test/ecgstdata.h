@@ -10,9 +10,9 @@
 struct EcgStData
 {
     QVector<double> ecgSamples;
-    QVector<int> rData;
-    QVector<int> jData;
-    QVector<int> tEndData;
+    QVector<QVector<double>::const_iterator> rData;
+    QVector<QVector<double>::const_iterator> jData;
+    QVector<QVector<double>::const_iterator> tEndData;
 };
 
 //------------------------------------------------------------
