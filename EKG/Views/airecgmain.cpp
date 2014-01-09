@@ -1966,11 +1966,10 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 void AirEcgMain::drawStInterval(EcgData *data)
 {
+//    QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
 
-    QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
-
-    ui->stIntervalArea->setWidget(plotX);
-    ui->stIntervalArea->show();
+//    ui->stIntervalArea->setWidget(plotX);
+//    ui->stIntervalArea->show();
 }
 
 void AirEcgMain::drawHrvDfa(EcgData *data)
@@ -2430,4 +2429,9 @@ void AirEcgMain::on_p_onset_toggled(bool checked)
  void  AirEcgMain::on_butterworthRadioButton_clicked()
  {
 
+ }
+
+ void AirEcgMain::on_pushButton_clicked()
+ {
+     emit this->runStInterval();
  }
