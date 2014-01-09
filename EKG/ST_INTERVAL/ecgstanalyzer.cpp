@@ -17,8 +17,8 @@ const int DETECTION_SIZE        = 30;
 const double MORPHOLOGY_COEFF   = 6.0;
 const EcgStAlgorithm ALGORITHM  = ST_LINEAR;
 
-const double BASELINE_TOLERANCE = 0.15;
-const double SLOPE_TOLERANCE    = 35.0;
+const double LEVEL_THRESHOLD    = 0.15;
+const double SLOPE_THRESHOLD    = 35.0;
 }
 
 //------------------------------------------------------------
@@ -27,8 +27,8 @@ EcgStAnalyzer::EcgStAnalyzer() :
     smoothSize(EcgStDefaults::SMOOTH_SIZE),
     detectionSize(EcgStDefaults::DETECTION_SIZE),
     morphologyCoeff(EcgStDefaults::MORPHOLOGY_COEFF),
-    baselineTolerance(EcgStDefaults::BASELINE_TOLERANCE),
-    slopeTolerance(EcgStDefaults::SLOPE_TOLERANCE),
+    levelThreshold(EcgStDefaults::LEVEL_THRESHOLD),
+    slopeThreshold(EcgStDefaults::SLOPE_THRESHOLD),
     algorithm(EcgStDefaults::ALGORITHM)
 {
 }
@@ -72,6 +72,9 @@ double EcgStAnalyzer::getMorphologyCoeff() const
 
 void EcgStAnalyzer::setMorphologyCoeff(double value)
 {
+    if (value < 0.0)
+        value = 0.0;
+
     morphologyCoeff = value;
 }
 
@@ -84,47 +87,51 @@ EcgStAlgorithm EcgStAnalyzer::getAlgorithm() const
 
 //------------------------------------------------------------
 
-void EcgStAnalyzer::setAlgorithm(const EcgStAlgorithm &value)
+void EcgStAnalyzer::setAlgorithm(EcgStAlgorithm value)
 {
     algorithm = value;
 }
 
 //------------------------------------------------------------
 
-double EcgStAnalyzer::getBaselineTolerance() const
+double EcgStAnalyzer::getLevelThreshold() const
 {
-    return baselineTolerance;
+    return levelThreshold;
 }
 
 //------------------------------------------------------------
 
-void EcgStAnalyzer::setBaselineTolerance(double value)
+void EcgStAnalyzer::setLevelThreshold(double value)
 {
-    baselineTolerance = value;
+    levelThreshold = value;
 }
 
 //------------------------------------------------------------
 
-double EcgStAnalyzer::getSlopeTolerance() const
+double EcgStAnalyzer::getSlopeThreshold() const
 {
-    return slopeTolerance;
+    return slopeThreshold;
 }
 
 //------------------------------------------------------------
 
-void EcgStAnalyzer::setSlopeTolerance(double value)
+void EcgStAnalyzer::setSlopeThreshold(double value)
 {
-    slopeTolerance = value;
+    slopeThreshold = value;
 }
 
 //------------------------------------------------------------
 
-QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sampleFreq)
+QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
+                                              const QVector<QVector<double>::const_iterator> &rData,
+                                              const QVector<QVector<double>::const_iterator> &jData,
+                                              const QVector<QVector<double>::const_iterator> &tEndData,
+                                              double sampleFreq)
 {
-    QVector<EcgStDescriptor> result;
+    QList<EcgStDescriptor> result;
 
-    int num = data.rData.size();
-    int snum = data.ecgSamples.size();
+    int num = rData.size();
+    int snum = ecgSamples.size();
 
     if (num < 2 || snum == 0)
         return result;
@@ -133,30 +140,31 @@ QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sa
     int w = detectionSize;
     double lamdba = morphologyCoeff;
 
-    QVector<int> stOn(num);
-    QVector<int> stEnd(num);
+    QVector<QVector<double>::const_iterator> stOn(num);
+    QVector<QVector<double>::const_iterator> stEnd(num);
 
     int i;
 
     // detect STend points
     for (i = 0; i < num; i++)
     {
-        double ka = data.jData[i];
-        double kb = data.tEndData[i];
+        QVector<double>::const_iterator ka = jData[i];
+        QVector<double>::const_iterator kb = tEndData[i];
 
         QVector<double> aVal(kb - ka + 1);
+        QVector<double>::iterator aIter = aVal.begin();
 
-        for (int k = ka; k <= kb; k++)
+        for (QVector<double>::const_iterator k = ka; k <= kb; ++k)
         {
-            int ke = std::max(1, std::min(k + p, snum));
+            QVector<double>::const_iterator ke = std::max(ecgSamples.constBegin(), std::min(k + p, ecgSamples.end() - 1));
             int nsr = ke - k + p + 1;
-            QVector<double> wnd = data.ecgSamples.mid(k - p - 1, nsr);
-            double sk = EcgUtils::sum(wnd) / nsr;
-            ke = std::max(1, std::min(k + w - 1, snum));
+//            QVector<double> wnd = data.ecgSamples.mid(k - p - 1, nsr);
+            double sk = EcgUtils::sum(ecgSamples, k - (p + 1), nsr) / nsr;
+            ke = std::max(ecgSamples.constBegin(), std::min(k + w - 1, ecgSamples.constEnd() - 1));
 
             QVector<double> sqr(ke - k);
             for (int j = 0; j < sqr.size(); j++) {
-                double smp = data.ecgSamples[k + j - 1] - sk;
+                double smp = *(k + (j - 1)) - sk;
 
                 if (algorithm == ST_QUADRATIC)
                     sqr[j] = smp * smp;
@@ -164,7 +172,8 @@ QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sa
                     sqr[j] = smp;
             }
 
-            aVal[k - ka] = EcgUtils::sum(sqr);
+            *aIter = EcgUtils::sum(sqr, sqr.begin(), sqr.size());
+            ++aIter;
         }
 
         int kp, kp1, kp2;
@@ -181,7 +190,7 @@ QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sa
     }
 
     // calculate heart rate
-    QVector<int> rr = EcgUtils::diff(data.rData);
+    QVector<int> rr = EcgUtils::diff(rData);
     QVector<double> hr(num);
     for (i = 0; i < num - 1; i++)
         hr[i] = 60.0 / ((double) rr[i] / sampleFreq);
@@ -189,7 +198,7 @@ QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sa
 
     for (i = 0; i < num; i++)
     {
-        double rt = stEnd[i] - data.rData[i];
+        double rt = stEnd[i] - rData[i];
 
         double x;
         double hrc = hr[i];
@@ -202,8 +211,8 @@ QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sa
         else
             x = 0.55;
 
-        int test = (int) round((double) data.rData[i] + x * rt);
-        stOn[i] = std::min(data.jData[i] + 1, test);
+        QVector<double>::const_iterator test = rData[i] + ((int) round(x * rt));
+        stOn[i] = std::min(jData[i] + 1, test);
     }
 
     // create and classify interval descriptors
@@ -215,19 +224,19 @@ QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sa
         desc.STEnd = stEnd[i];
         desc.STMid = desc.STOn + (int) round((desc.STEnd - desc.STOn) / 2.0);
 
-        desc.offset = data.ecgSamples[desc.STMid];
+        desc.offset = *desc.STMid;
 
-        int x1 = desc.STOn;
-        int x2 = desc.STMid;
-        double y1 = data.ecgSamples[x1];
-        double y2 = desc.offset;
+        QVector<double>::const_iterator x1 = desc.STOn;
+        QVector<double>::const_iterator x2 = desc.STMid;
+        double y1 = *x1;
+        double y2 = *x2;
         double d1 = (y1 - y2) / ((x1 - x2) / sampleFreq);
         desc.slope1 = RAD_TO_DEG(atan(d1));
 
         x1 = desc.STMid;
         x2 = desc.STEnd;
-        y1 = desc.offset;
-        y2 = data.ecgSamples[x2];
+        y1 = *x1;
+        y2 = *x2;
         double d2 = (y1 - y2) / ((x1 - x2) / sampleFreq);
         desc.slope2 = RAD_TO_DEG(atan(d2));
 
@@ -243,9 +252,9 @@ QVector<EcgStDescriptor> EcgStAnalyzer::analyze(const EcgStData &data, double sa
 
 EcgStPosition EcgStAnalyzer::classifyPosition(double offset)
 {
-    if (fabs(offset) <= baselineTolerance)
+    if (fabs(offset) <= levelThreshold)
         return ST_POS_NORMAL;
-    else if (offset > baselineTolerance)
+    else if (offset > levelThreshold)
         return ST_POS_ELEVATION;
     else
         return ST_POS_DEPRESSION;
@@ -255,20 +264,20 @@ EcgStPosition EcgStAnalyzer::classifyPosition(double offset)
 
 EcgStShape EcgStAnalyzer::classifyShape(double a1, double a2)
 {
-    if (fabs(a1) <= slopeTolerance || fabs(a2) <= slopeTolerance)
+    if (fabs(a1) <= slopeThreshold || fabs(a2) <= slopeThreshold)
     {
-        if (a1 > slopeTolerance || a2 > slopeTolerance)
+        if (a1 > slopeThreshold || a2 > slopeThreshold)
             return ST_SHAPE_UPSLOPING;
-        else if (a1 < -slopeTolerance || a2 < -slopeTolerance)
+        else if (a1 < -slopeThreshold || a2 < -slopeThreshold)
             return ST_SHAPE_DOWNSLOPING;
         else
             return ST_SHAPE_HORIZONTAL;
     }
-    else if (a1 > slopeTolerance && a2 > slopeTolerance)
+    else if (a1 > slopeThreshold && a2 > slopeThreshold)
         return ST_SHAPE_UPSLOPING;
-    else if (a1 < -slopeTolerance && a2 < -slopeTolerance)
+    else if (a1 < -slopeThreshold && a2 < -slopeThreshold)
         return ST_SHAPE_DOWNSLOPING;
-    else if (a1 < -slopeTolerance && a2 > slopeTolerance)
+    else if (a1 < -slopeThreshold && a2 > slopeThreshold)
         return ST_SHAPE_CONCAVE;
     else /*if (a1 > slopeTolerance && a2 < -slopeTolerance)*/
         return ST_SHAPE_CONVEX;

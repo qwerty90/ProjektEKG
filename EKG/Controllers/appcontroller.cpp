@@ -4,6 +4,7 @@
 //#include "Common/supervisorymodule.h"
 #include "ECG_BASELINE/src/butter.h"
 #include "ECG_BASELINE/src/kalman.h"
+#include "ST_INTERVAL/ecgstanalyzer.h"
 
 #include <QThread>
 
@@ -37,6 +38,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
     this->connect(view, SIGNAL(runAtrialFibr()),this, SLOT (runAtrialFibr()));
     this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view,  SLOT(drawAtrialFibr(EcgData*)));
+    this->connect(view, SIGNAL(runStInterval()), this, SLOT(runStInterval()));
+    this->connect(this, SIGNAL(StInterval_done(EcgData*)), view, SLOT(drawStInterval(EcgData*)));
 
     this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
@@ -262,4 +265,35 @@ void AppController::runAtrialFibr()
     emit AtrialFibr_done(this->entity);
     QLOG_INFO() << "AtrialFibr done";
 
+}
+
+void AppController::runStInterval()
+{
+    QLOG_INFO() << "Start StInterval";
+
+    EcgStAnalyzer analyzer;
+    analyzer.setAlgorithm(ST_LINEAR);
+    analyzer.setDetectionSize(30);
+    analyzer.setSmoothSize(4);
+    analyzer.setMorphologyCoeff(6.0);
+    analyzer.setLevelThreshold(0.15);
+    analyzer.setSlopeThreshold(35);
+
+//    QList<EcgStDescriptor> result;
+
+    // teraz nalezy wywolac analyzer.analyze z odpowiednimi parametrami
+    // result = analyzer.analyze(
+    //  *this->entity->ecg_baselined, /* sygnal po baseline */
+    //  *this->entity->Rpeaks, /* punkty Rpeak */
+    //  ..., /* punkty J lub QRSend */
+    //  ..., /* punkty Tend */
+    //  ...  /* czestotliwosc probkowania sygnalu w Hz */
+    // );
+    //
+    // operacja analizy zwraca liste deskryptorow interwalow ST,
+    // ktora mozna zapisac w EcgData:
+    // this->entity->STintervals = new QList<EcgDescriptor>(result);
+
+//    emit StInterval_done(this->entity);
+    QLOG_INFO() << "StInterval done";
 }

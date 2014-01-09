@@ -7,6 +7,7 @@
 //------------------------------------------------------------
 
 #include "../ecgstanalyzer.h"
+#include "ecgstdata.h"
 
 //------------------------------------------------------------
 
@@ -34,11 +35,19 @@ private:
     EcgStData data;
     EcgStAnalyzer analyzer;
 
-    void runTest(const QString &fileName, int num, int stOn[], int stEnd[], EcgStPosition pos[], EcgStShape shape[]);
+    void runTest(const QString &fileName, int num,
+                 int stOn[], int stEnd[],
+                 EcgStPosition pos[], EcgStShape shape[]);
 
     bool loadTestData(const QString &fileName);
-    void parseSamples(QVector<double> *dst, const QString &line, char separator, double scale = 1.0, int length = 10000);
-    void parseIdx(QVector<int> *dst, const QString &line, char separator, int length = 10000);
+
+    void parseSamples(QVector<double> *dst, const QString &line,
+                      char separator, double scale = 1.0,
+                      int length = 10000);
+
+    void parseIdx(QVector<QVector<double>::const_iterator> *dst,
+                  const QString &line, char separator,
+                  int length = 10000);
 };
 
 //------------------------------------------------------------
@@ -49,8 +58,8 @@ TestEcgStInterval::TestEcgStInterval()
     analyzer.setDetectionSize(30);
     analyzer.setMorphologyCoeff(6.0);
     analyzer.setAlgorithm(ST_LINEAR);
-    analyzer.setBaselineTolerance(0.15);
-    analyzer.setSlopeTolerance(35.0);
+    analyzer.setLevelThreshold(0.15);
+    analyzer.setSlopeThreshold(35.0);
 }
 
 //------------------------------------------------------------
@@ -151,19 +160,28 @@ void TestEcgStInterval::testDataB112()
 
 //------------------------------------------------------------
 
-void TestEcgStInterval::runTest(const QString &fileName, int num, int stOn[], int stEnd[], EcgStPosition pos[], EcgStShape shape[])
+void TestEcgStInterval::runTest(const QString &fileName, int num,
+                                int stOn[], int stEnd[],
+                                EcgStPosition pos[], EcgStShape shape[])
 {
     QVERIFY2(loadTestData(fileName), "Failed to load test data");
 
-    QVector<EcgStDescriptor> res = analyzer.analyze(data, 360.0);
+    QList<EcgStDescriptor> res = analyzer.analyze(data.ecgSamples,
+                                                  data.rData,
+                                                  data.jData,
+                                                  data.tEndData,
+                                                  360.0);
     QCOMPARE(res.size(), num);
 
     for (int i = 0; i < num; i++)
     {
+        QVector<double>::const_iterator stOnIter = data.ecgSamples.begin() + (stOn[i] - 1);
+        QVector<double>::const_iterator stEndIter = data.ecgSamples.begin() + (stEnd[i] - 1);
+
         QCOMPARE(res[i].position, pos[i]);
         QCOMPARE(res[i].shape, shape[i]);
-        QVERIFY(abs(stOn[i] - 1 - res[i].STOn) < TestConsts::INDEX_TOLERANCE);
-        QVERIFY(abs(stEnd[i] - 1 - res[i].STEnd) < TestConsts::INDEX_TOLERANCE);
+        QVERIFY(abs(stOnIter - res[i].STOn) < TestConsts::INDEX_TOLERANCE);
+        QVERIFY(abs(stEndIter - res[i].STEnd) < TestConsts::INDEX_TOLERANCE);
     }
 }
 
@@ -194,7 +212,9 @@ bool TestEcgStInterval::loadTestData(const QString &fileName)
 
 //------------------------------------------------------------
 
-void TestEcgStInterval::parseSamples(QVector<double> *dst, const QString &line, char separator, double scale, int length)
+void TestEcgStInterval::parseSamples(QVector<double> *dst,
+                                     const QString &line, char separator,
+                                     double scale, int length)
 {
     QString str = line;
     int pos = str.indexOf('[');
@@ -215,7 +235,9 @@ void TestEcgStInterval::parseSamples(QVector<double> *dst, const QString &line, 
 
 //------------------------------------------------------------
 
-void TestEcgStInterval::parseIdx(QVector<int> *dst, const QString &line, char separator, int length)
+void TestEcgStInterval::parseIdx(QVector<QVector<double>::const_iterator> *dst,
+                                 const QString &line, char separator,
+                                 int length)
 {
     QString str = line;
     int pos = str.indexOf('[');
@@ -226,7 +248,9 @@ void TestEcgStInterval::parseIdx(QVector<int> *dst, const QString &line, char se
     int i = 0;
     foreach (QString item, strList)
     {
-        dst->push_back(item.toInt() - 1);
+//        dst->push_back(item.toInt() - 1);
+        int idx = item.toInt() - 1;
+        dst->push_back(data.ecgSamples.begin() + idx);
 
         i++;
         if (i >= length)
