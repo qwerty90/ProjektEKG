@@ -38,8 +38,11 @@ class AirEcgMain : public QMainWindow
     void drawTwa(EcgData* data);
     void drawWaves(EcgData* data);
     void drawQrsClass(EcgData* data);
+<<<<<<< HEAD
     void drawStInterval(EcgData* data);
     void drawSleep_Apnea(EcgData* data);
+=======
+>>>>>>> e3664eedb036b84225a8e2e8a2468ddf995b3130
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -86,6 +89,7 @@ signals:
     void runSingle(QString hash);
     void runEcgBaseline();//example
     void runAtrialFibr();
+    void runStInterval();
     void closeDialog();
 
     void qrsClassChanged(int index, int type);
@@ -114,6 +118,7 @@ public slots:
 
     void drawEcgBaseline(EcgData* data);//example
     void drawAtrialFibr(EcgData* data);  //to zostawiam Krzyskowi
+    void drawStInterval(EcgData* data);
 
 private slots:
     void on_actionO_programie_triggered();
@@ -180,6 +185,7 @@ private slots:
 
     void on_butterworthRadioButton_clicked();
 
+<<<<<<< HEAD
     void on_movingAverageRadioButton_clicked();
 
     void on_savitzkyGolayRadioButton_clicked();
@@ -199,6 +205,9 @@ private slots:
     void on_Falkowa_radiobutton_clicked();
 
     void on_checkBox_2_clicked(bool checked);
+=======
+    void on_pushButton_clicked();
+>>>>>>> e3664eedb036b84225a8e2e8a2468ddf995b3130
 
 private:
     Ui::AirEcgMain *ui;
