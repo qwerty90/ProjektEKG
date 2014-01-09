@@ -239,17 +239,6 @@ void AppController::runAtrialFibr()
     this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>
                               ({this->entity->ecg_baselined->begin() + 10,
                                 this->entity->ecg_baselined->begin() + 70});
-    //this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>;
-
-    //const std::vector<double> signal((this->entity->ecg_baselined)->toStdVector());
-    //const std::vector<std::vector<double>::const_iterator> RPeaks((this->entity->Rpeaks)->toStdVector());
-    //const std::vector<std::vector<double>::const_iterator> pWaveStarts((this->entity->PWaveStart)->toStdVector());
-
-
-    /*this->entity->Rpeaks->append(this->entity->ecg_baselined->begin() + 20);
-    this->entity->Rpeaks->append(this->entity->ecg_baselined->begin() + 80);
-    this->entity->PWaveStart->append(this->entity->ecg_baselined->begin() + 10);
-    this->entity->PWaveStart->append(this->entity->ecg_baselined->begin() + 70);*/
 
     AtrialFibrApi obiekt(*(this->entity->ecg_baselined),
                          *(this->entity->Rpeaks) ,
@@ -260,7 +249,8 @@ void AppController::runAtrialFibr()
     this->entity->RRIntEntropy       = obiekt.GetRRIntEntropy();
     this->entity->AtrialFibr         = obiekt.isAtrialFibr();
 
-    emit AtrialFibr_done(this->entity);
     QLOG_INFO() << "AtrialFibr done";
+    emit AtrialFibr_done(this->entity);//linia 37
+
 
 }

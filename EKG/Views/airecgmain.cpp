@@ -2286,7 +2286,7 @@ void AirEcgMain::on_pushButton_3_clicked()
 {
     //this->hash = "R_PEAKS";
     //emit this->runSingle(this->hash);
-    emit this->runAtrialFibr();
+    emit this->runAtrialFibr();//linia 36
 }
 
 void AirEcgMain::on_pushButton_5_clicked()
