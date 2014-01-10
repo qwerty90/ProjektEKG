@@ -15,8 +15,8 @@ public:
   AtrialFibrApi(const QVector<double> &signal,
                 const QVector<QVector<double>::const_iterator> &RPeaksIterators,
                 const QVector<QVector<double>::const_iterator> &pWaveStarts);
-  double GetRRIntEntropy();
-  double GetRRIntDivergence();
-  double GetPWaveOccurenceRatio();
-  bool isAtrialFibr();
+  double GetRRIntEntropy() const;
+  double GetRRIntDivergence() const;
+  double GetPWaveOccurenceRatio() const;
+  bool isAtrialFibr() const;
 };
