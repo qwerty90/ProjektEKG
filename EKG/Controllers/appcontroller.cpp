@@ -4,6 +4,7 @@
 #include "ECG_BASELINE/src/butter.h"
 #include "ECG_BASELINE/src/kalman.h"
 #include "ECG_BASELINE/src/movAvg.h"
+#include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
 
 #include <QThread>
@@ -199,32 +200,37 @@ void AppController::switchSignal(int index)
 {
 
     this->entity->settings->signalIndex = index;
-    /*
-    this->supervisor->ResetModules();
-    */
+    this->ResetModules();
 }
 void AppController::runEcgBaseline()
 {
-    QLOG_INFO() <<"ecg started";
+    QLOG_INFO() <<"Ecg baseline started.";
 
     //QVector<double> test;
     //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
-    switch (this->entity->baseline_method)
+    switch (this->entity->settings->EcgBaselineMode)
     {
-    case KALMAN:
-            this->entity->ecg_baselined = new QVector<double>(kalman.processKalman(*(this->entity->primary)));
-            break;
-    case AVG:
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->primary),3));
-            break;
+    case 0: //butterworth
+    case 1:
+        QLOG_INFO() << "BASELINE/ Using moving average filter.";
+        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+        break;
+    case 2: //savitzky-golay
+        QLOG_INFO() << "BASELINE/ Using Savitzky-Golay filter.";
+        this->entity->ecg_baselined = new QVector<double>(processSGolay(*(this->entity->GetCurrentSignal())));
+        break;
+    case 3:  //kalman
+        QLOG_INFO() << "BASELINE/ Using kalman filter.";
+        this->entity->ecg_baselined = new QVector<double>(kalman.processKalman(*(this->entity->GetCurrentSignal())));
+        break;
     default:
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->primary),3));
-            break;
-    }
+        QLOG_INFO() << "BASELINE/ Using default filter.";
+        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+        break;
+    }            
 
-
-    QLOG_INFO() << "rysowanie ecg->emit";
+    QLOG_INFO() << "Ecg baseline done.";
     emit EcgBaseline_done(this->entity);
 }
 
@@ -239,6 +245,14 @@ void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
         iter_src++;
     }
 
+}
+
+void AppController::ResetModules()
+{
+    if (this->entity->PWaveStart)
+        this->entity->PWaveStart->clear();
+    if (this->entity->Rpeaks)
+        this->entity->Rpeaks->clear();
 }
 
 void AppController::runAtrialFibr()

@@ -39,9 +39,11 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     connect(ui->butterworthRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->movingAverageRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->savitzkyGolayRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
+    connect(ui->kalmanRadioButton      , SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     baselineSignalMapper->setMapping(ui->butterworthRadioButton, 0);
     baselineSignalMapper->setMapping(ui->movingAverageRadioButton, 1);
     baselineSignalMapper->setMapping(ui->savitzkyGolayRadioButton, 2);
+    baselineSignalMapper->setMapping(ui->kalmanRadioButton       , 3);
     connect(baselineSignalMapper, SIGNAL(mapped(int)), SIGNAL(switchEcgBaseline(int)));
 
     ui->stackedWidget->setCurrentIndex(1);
@@ -2427,12 +2429,18 @@ void AirEcgMain::on_p_onset_toggled(bool checked)
 {
     emit this->switchWaves_p_onset(checked);
 }
- void  AirEcgMain::on_butterworthRadioButton_clicked()
- {
-
- }
 
  void AirEcgMain::on_pushButton_clicked()
  {
      emit this->runStInterval();
  }
+
+void AirEcgMain::on_butterworthRadioButton_clicked()
+{
+
+}
+
+void AirEcgMain::on_kalmanRadioButton_clicked()
+{
+
+}

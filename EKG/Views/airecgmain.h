@@ -170,6 +170,10 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_radioButton_5_clicked();
+
+    void on_kalmanRadioButton_clicked();
+
 private:
     Ui::AirEcgMain *ui;
 };

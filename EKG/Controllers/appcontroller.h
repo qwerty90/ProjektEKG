@@ -20,6 +20,7 @@ private:
     EcgData *entity;
     //results AllData;
     void deep_copy_list(QList<int> *dest, QList<int> *src);
+    void ResetModules();
 
 public:
     explicit AppController(QObject *parent = 0);
