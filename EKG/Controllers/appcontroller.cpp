@@ -1,9 +1,9 @@
 #include "appcontroller.h"
 #include "Common/ecgdata.h"
 #include "Common/ecgentry.h"
-//#include "Common/supervisorymodule.h"
 #include "ECG_BASELINE/src/butter.h"
 #include "ECG_BASELINE/src/kalman.h"
+#include "ECG_BASELINE/src/movAvg.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
 
 #include <QThread>
@@ -207,10 +207,22 @@ void AppController::runEcgBaseline()
 {
     QLOG_INFO() <<"ecg started";
 
-    QVector<double> test;
-    test << 0.5 << 0.5 << 0.5;
+    //QVector<double> test;
+    //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
-    kalman.processKalman(test);
+    switch (this->entity->baseline_method)
+    {
+    case KALMAN:
+            this->entity->ecg_baselined = new QVector<double>(kalman.processKalman(*(this->entity->primary)));
+            break;
+    case AVG:
+            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->primary),3));
+            break;
+    default:
+            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->primary),3));
+            break;
+    }
+
 
     QLOG_INFO() << "rysowanie ecg->emit";
     emit EcgBaseline_done(this->entity);

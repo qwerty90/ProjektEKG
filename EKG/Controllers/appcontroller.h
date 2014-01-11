@@ -5,7 +5,6 @@
 #include <QList>
 #include <QString>
 #include <vector>
-//#include "Common/supervisorymodule.h"
 #include "Views/airecgmain.h"
 #include "Common/ecgdata.h"
 #include "Common/ecginfo.h"

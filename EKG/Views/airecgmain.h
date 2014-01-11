@@ -65,7 +65,7 @@ public:
     QwtPlot* plotPlotdfa(QList<double> &y1, QList<double> &y2);
     QwtPlot* plotPointsPlotDFA(QList<double> &x, QList<double> &y, double &wsp_a, double &wsp_b);
 
-    QwtPlot* plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame*> &ecgFrames, double samplingFrequency);
+    QwtPlot* plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgFrame*> &ecgFrames, double samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
 
 signals:

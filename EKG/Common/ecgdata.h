@@ -13,9 +13,16 @@
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
+enum baseline_alg {
+    BTW,
+    SGF,
+    AVG,
+    KALMAN
+};
+
 class EcgData : public QObject
 {
-    Q_OBJECT
+    Q_OBJECT        
 public:
     QString RecordId;
 
@@ -23,11 +30,12 @@ public:
     QList<QString> *time;
 
     //wartosci liczbowe z dwoch elektrod
-    QList<int> *primary;
-    QList<int> *secondary;
+    QVector<double> *primary;
+    QVector<double> *secondary;
 
     //przefiltrowany sygnal ekg - wyjscie modulu ECG_BASELINE
     const QVector<double> *ecg_baselined;
+    baseline_alg baseline_method ;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
     const QVector<QVector<double>::const_iterator> *Rpeaks;
@@ -102,7 +110,7 @@ public:
 
     explicit EcgData(QObject *parent = 0);
 
-    QList<int>* GetCurrentSignal();
+    QVector<double> *GetCurrentSignal();
     
 signals:
     

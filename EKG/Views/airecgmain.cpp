@@ -24,8 +24,6 @@
 #include <qwt_color_map.h>
 #include <qwt_plot_marker.h>
 
-
-
 AirEcgMain::AirEcgMain(QWidget *parent) :
     QMainWindow(parent),
     baselineSignalMapper(new QSignalMapper(this)),
@@ -234,6 +232,8 @@ void AirEcgMain::qrcclasslabel_changed(QString value)
 
 QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
 
+    QLOG_ERROR()<< "Executing wrong plot";
+
     QVector<int> yData = QVector<int>::fromList(y);
     QVector<double> yDataFin = QVector<double>(yData.size());
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -362,8 +362,8 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     for (int i = 0; i < yData.size(); ++i)
     {
         sampleNo[i] = i*tos;
-        max = qMax(max, yData[i]);
-        min = qMin(min, yData[i]);
+        max = qMax(max, yData.at(i));
+        min = qMin(min, yData.at(i));
     }
 
     QwtPlot* plot = new QwtPlot();
@@ -1588,22 +1588,23 @@ QwtPlot* AirEcgMain::plotPointsPlotDFA(QList<double> &x, QList<double> &y , doub
     return plot;
 }
 
-QwtPlot *AirEcgMain::plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame *> &ecgFrames, double samplingFrequency)
+QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgFrame *> &ecgFrames, double samplingFrequency)
 {
-    QVector<int> yData = QVector<int>::fromList(ecgSignal);
-    QVector<double> yDataFin = QVector<double>(yData.size());
-    QVector<double> sampleNo = QVector<double>(yData.size());
+   // QVector<int> yData = (QVector<int>)(ecgSignal);
+    QVector<double> yDataFin = QVector<double>(ecgSignal.size());
+    QVector<double> sampleNo = QVector<double>(ecgSignal.size());
 
-    int max=yData.first();
-    int min=yData.first();
+    double max=ecgSignal.first();
+    double min=ecgSignal.first();
 
     double dt = 1.0/samplingFrequency;
-    for (int i=0;i<yData.size();++i)
+    for (int i=0;i<ecgSignal.size();++i)
     {
         sampleNo[i]=(i)*dt;
-        yDataFin[i]=yData[i];
-        if (max<yData[i]) max=yData[i];
-        if (min>yData[i]) min=yData[i];
+        //yDataFin[i]=yData[i];
+        yDataFin[i]=ecgSignal[i];
+        if (max<ecgSignal[i]) max=ecgSignal[i];
+        if (min>ecgSignal[i]) min=ecgSignal[i];
     }
 
     QwtPlot *plot = new QwtPlot();
@@ -1633,7 +1634,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame 
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,yData.size()*dt,0);
+    plot->canvas()->setGeometry(0,0,ecgSignal.size()*dt,0);
     zoom->setZoomBase(plot->canvas()->rect());
 
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
@@ -1671,19 +1672,19 @@ QwtPlot *AirEcgMain::plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame 
     for (int i=0; i < ecgFrames.size();++i)
     {
         P_onsetDataX[i]=P_onsetData[i]*dt;
-        P_onsetDataY[i]=yData[P_onsetData[i]];
+        P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
 
         P_endDataX[i]=P_endData[i]*dt;
-        P_endDataY[i]=yData[P_endData[i]];
+        P_endDataY[i]=ecgSignal[P_endData[i]];
 
         Qrs_onsetDataX[i]=Qrs_onsetData[i]*dt;
-        Qrs_onsetDataY[i]=yData[Qrs_onsetData[i]];
+        Qrs_onsetDataY[i]=ecgSignal[Qrs_onsetData[i]];
 
         Qrs_endDataX[i]=Qrs_endData[i]*dt;
-        Qrs_endDataY[i]=yData[Qrs_endData[i]];
+        Qrs_endDataY[i]=ecgSignal[Qrs_endData[i]];
 
         T_endDataX[i]=T_endData[i]*dt;
-        T_endDataY[i]=yData[T_endData[i]];
+        T_endDataY[i]=ecgSignal[T_endData[i]];
     }
 
     QwtPlotCurve *P_onsetPoints = new QwtPlotCurve();
