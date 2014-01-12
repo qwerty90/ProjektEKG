@@ -140,10 +140,10 @@ bool EcgEntry::Open(QString directory, QString record, QString &response)
     this->entity = new EcgData(record);
     QString *notValid;
 
-    this->LoadSamples(directory + "\\" + record + ".dat");
+    this->LoadSamples(directory + QDir::separator() + record + ".dat");
 
     QFile *file;
-    file = new QFile(directory + "\\" + record + "c.txt");
+    file = new QFile(directory + QDir::separator() + record + "c.txt");
     notValid = this->Validate(file);
     if(notValid)
     {
@@ -154,7 +154,7 @@ bool EcgEntry::Open(QString directory, QString record, QString &response)
 
     this->LoadAnnotations(file);
 
-    file = new QFile(directory + "\\" + record + "d.txt");
+    file = new QFile(directory + QDir::separator() + record + "d.txt");
     notValid = this->Validate(file);
     if(notValid)
     {
