@@ -298,6 +298,8 @@ void AppController::runAtrialFibr()
     //wrzucenie przykladowych danych
     this->entity->Rpeaks     = new QVector<QVector<double>::const_iterator>
                               ({this->entity->ecg_baselined->begin() + 20,
+                                this->entity->ecg_baselined->begin() + 40,
+                                this->entity->ecg_baselined->begin() + 60,
                                 this->entity->ecg_baselined->begin() + 80});
 
     this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>
