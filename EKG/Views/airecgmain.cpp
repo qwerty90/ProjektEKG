@@ -1916,6 +1916,7 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 
 void AirEcgMain::drawHrv1(EcgData *data)
 {
+    QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
     ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
     ui->RMSSD->setText("RMSSD = " %QString::number((data->RMSSD), 'f', 2) + " ms");
@@ -1925,6 +1926,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
     ui->SDSD->setText("SDSD = " %QString::number((data->SDSD), 'f', 2) + " ms");
 
+    /*
     //Frequency Parameters
     QwtPlot *plotRR = plotPoints(*(data->RR_x), *(data->RR_y), data->fftSamplesX,
                                  data->fftSamplesY, data->interpolantX, data->interpolantY);
@@ -1943,6 +1945,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2));
     ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2));
     ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + "%");
+    */
 }
 
 void AirEcgMain::drawHrv2(EcgData *data)
@@ -2299,8 +2302,9 @@ void AirEcgMain::on_pushButton_5_clicked()
 
 void AirEcgMain::on_pushButton_6_clicked()
 {
-    this->hash = "HRV1";
-    emit this->runSingle(this->hash);
+    //this->hash = "HRV1";
+    //emit this->runSingle(this->hash);
+    emit this->runHRV1();
 }
 
 void AirEcgMain::on_pushButton_7_clicked()

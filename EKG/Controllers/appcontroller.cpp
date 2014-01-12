@@ -6,6 +6,8 @@
 #include "ECG_BASELINE/src/movAvg.h"
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
+#include "HRV1/HRV1MainModule.h"
+//#include "HRV1/HRV1Bundle.h"
 
 #include <QThread>
 
@@ -36,11 +38,15 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runSingle(QString)), this, SLOT(runSingle(QString)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
+    this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
+    this->connect(view, SIGNAL(runStInterval()) ,this, SLOT(runStInterval()));
+    this->connect(view, SIGNAL(runHRV1())       ,this, SLOT (runHRV1()));
+
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
-    this->connect(view, SIGNAL(runAtrialFibr()),this, SLOT (runAtrialFibr()));
-    this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view,  SLOT(drawAtrialFibr(EcgData*)));
-    this->connect(view, SIGNAL(runStInterval()), this, SLOT(runStInterval()));
-    this->connect(this, SIGNAL(StInterval_done(EcgData*)), view, SLOT(drawStInterval(EcgData*)));
+    this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
+    this->connect(this, SIGNAL(StInterval_done(EcgData*)) ,view, SLOT(drawStInterval(EcgData*)));
+    this->connect(this, SIGNAL(HRV1_done(EcgData*))       ,view, SLOT(drawHrv1(EcgData*)))      ;
+
 
     this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
@@ -232,6 +238,32 @@ void AppController::runEcgBaseline()
 
     QLOG_INFO() << "Ecg baseline done.";
     emit EcgBaseline_done(this->entity);
+}
+
+void AppController::runHRV1()
+{
+    QLOG_INFO() << "HRV1 started.";
+    QVector<int> *wektor = new QVector<int>;
+    int i=0;
+    while (i<this->entity->Rpeaks->size())
+    {
+        wektor->append(this->entity->Rpeaks->at(i) - this->entity->Rpeaks->first());
+        i++;
+    }
+    HRV1MainModule obiekt;
+    obiekt.prepare(wektor,(int)this->entity->info->frequencyValue);
+    HRV1BundleStatistical results = obiekt.evaluateStatistical();
+    this->entity->Mean = results.RRMean;
+    this->entity->SDNN = results.SDNN;
+    this->entity->RMSSD= results.RMSSD;
+    this->entity->RR50 = results.NN50;    //czy to jest to??
+    this->entity->RR50Ratio=results.pNN50;//czy to jest to??
+    this->entity->SDANN= results.SDANN;
+    this->entity->SDANNindex=results.SDANNindex;
+    this->entity->SDSD = results.SDSD;
+    QLOG_INFO() << "HRV1 statistical done.";
+
+    emit this->HRV1_done(this->entity);
 }
 
 void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)

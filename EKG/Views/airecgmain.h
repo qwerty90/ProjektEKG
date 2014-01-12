@@ -30,9 +30,9 @@ class AirEcgMain : public QMainWindow
     QSignalMapper* baselineSignalMapper;
     QString hash;
 
-//    void drawEcgBaseline(EcgData* data);
+    //void drawEcgBaseline(EcgData* data);
     void drawRPeaks(EcgData* data);
-    void drawHrv1(EcgData* data);
+    //void drawHrv1(EcgData* data);
     void drawHrv2(EcgData* data);
     void drawHrvDfa(EcgData* data);
     void drawTwa(EcgData* data);
@@ -78,9 +78,13 @@ signals:
     void run();
     void test(int index, int type);
     void runSingle(QString hash);
+
+    //modules invoke
     void runEcgBaseline();//example
     void runAtrialFibr();
     void runStInterval();
+    void runHRV1();
+
     void closeDialog();
 
     void qrsClassChanged(int index, int type);
@@ -102,6 +106,7 @@ public slots:
     void drawEcgBaseline(EcgData* data);//example
     void drawAtrialFibr(EcgData* data);  //to zostawiam Krzyskowi
     void drawStInterval(EcgData* data);
+    void drawHrv1(EcgData *data);
 
 private slots:
     void on_actionO_programie_triggered();
