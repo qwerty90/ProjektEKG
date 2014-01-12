@@ -1,5 +1,6 @@
 #pragma once
-#include <vector>
+//#include <vector>
+#include <QVector>
 #include "HRV1Bundle.h"
 #include <math.h>
 #include "alglib/interpolation.h"
@@ -14,36 +15,38 @@ class HRV1MainModule
 public:
 
 	//INPUT:
-	static void prepare(std::vector<int>* RRPeaks, int samplingFrequency = 1000); //use this function to prepare whole module (default sampling frequency - 1000 Hz)
+    static void prepare(QVector<int>* RRPeaks, int samplingFrequency = 1000); //use this function to prepare whole module (default sampling frequency - 1000 Hz)
 
 	//OUTPUT:
 	static HRV1BundleStatistical evaluateStatistical(); //evaluates and returns arguments of Statistical analysys
 	static HRV1BundleFrequency evaluateFrequency(); //evaluates and returns frequency analysys
+
+    ~HRV1MainModule(void);
 private:
 	static HRV1MainModule* instance;
 	static void createInstance();
 
-	std::vector<std::vector<int>*> dividedPeaks;
-	std::vector<int> peaks;
-	std::vector<double> RRDifferences;
+    QVector<QVector<int>*> dividedPeaks;
+    QVector<int> peaks;
+    QVector<double> RRDifferences;
 
 	int samplingFrequency;
 	
-	~HRV1MainModule(void);
 
-	void cutPeaksVector(std::vector<int>* peaks);
+
+    void cutPeaksVector(QVector<int>* peaks);
 	void evaluateRRDifferences();
 
 	//Statistical analysys
 	HRV1BundleStatistical toReturnStatistical;
 
-	double evaluateRRMean(std::vector<int>* peaks);
-	double evaluateSDNN(std::vector<int>* peaks, double mean);
+    double evaluateRRMean(QVector<int>* peaks);
+    double evaluateSDNN(QVector<int>* peaks, double mean);
 
-	double evaluateSimpleMean(std::vector<double>* vector);
-	double evaluateSimpleMean(std::vector<int>* vector);
-	double evaluateStandardDeviation(std::vector<double>* vector, double mean);
-	double evaluateStandardDeviation(std::vector<int>* vector, double mean);
+    double evaluateSimpleMean(QVector<double>* vector);
+    double evaluateSimpleMean(QVector<int>* vector);
+    double evaluateStandardDeviation(QVector<double>* vector, double mean);
+    double evaluateStandardDeviation(QVector<int>* vector, double mean);
 
 	void evaluateRRMeanEntirety();
 	void evaluateSDNNEntirety();

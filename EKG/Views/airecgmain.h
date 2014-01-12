@@ -30,14 +30,16 @@ class AirEcgMain : public QMainWindow
     QSignalMapper* baselineSignalMapper;
     QString hash;
 
-//    void drawEcgBaseline(EcgData* data);
+    //void drawEcgBaseline(EcgData* data);
     void drawRPeaks(EcgData* data);
-    void drawHrv1(EcgData* data);
+    //void drawHrv1(EcgData* data);
     void drawHrv2(EcgData* data);
     void drawHrvDfa(EcgData* data);
     void drawTwa(EcgData* data);
     void drawWaves(EcgData* data);
     void drawQrsClass(EcgData* data);
+
+    void drawSleep_Apnea(EcgData* data);
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -65,8 +67,12 @@ public:
     QwtPlot* plotPlotdfa(QList<double> &y1, QList<double> &y2);
     QwtPlot* plotPointsPlotDFA(QList<double> &x, QList<double> &y, double &wsp_a, double &wsp_b);
 
-    QwtPlot* plotWavesPlot(QList<int> &ecgSignal, QList<Waves::EcgFrame*> &ecgFrames, double samplingFrequency);
+    QwtPlot* plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgFrame*> &ecgFrames, double samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
+//////////
+     QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
+     QwtPlot* plotSleep_Apneafrequence(const QVector<double> &yData, float freq);
+
 
 signals:
     void loadEntity(const QString &directory, const QString &name);
@@ -78,9 +84,13 @@ signals:
     void run();
     void test(int index, int type);
     void runSingle(QString hash);
+
+    //modules invoke
     void runEcgBaseline();//example
     void runAtrialFibr();
     void runStInterval();
+    void runHRV1();
+
     void closeDialog();
 
     void qrsClassChanged(int index, int type);
@@ -92,6 +102,14 @@ signals:
     void qrsGMaxKIterations(int maxIters);
     void qrsKClustersNumberChanged(int noClusters);
 
+    void ecgBase_CzasUsrednieniaChanged(const QString &arg1);
+    void ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1);
+    void ecgBase_Kalman1Changed(const QString &arg1);
+    void ecgBase_Kalman2Changed(const QString &arg1);
+
+
+
+
 public slots:
     void receivePatientData(EcgData *data);
     void receiveResults(EcgData *data);
@@ -102,6 +120,7 @@ public slots:
     void drawEcgBaseline(EcgData* data);//example
     void drawAtrialFibr(EcgData* data);  //to zostawiam Krzyskowi
     void drawStInterval(EcgData* data);
+    void drawHrv1(EcgData *data);
 
 private slots:
     void on_actionO_programie_triggered();
@@ -168,7 +187,31 @@ private slots:
 
     void on_butterworthRadioButton_clicked();
 
+    void on_movingAverageRadioButton_clicked();
+
+    void on_savitzkyGolayRadioButton_clicked();
+
+    //void on_radioButton_5_clicked();
+
+    void on_CzasUsrednienialineEdit_textEdited(const QString &arg1);
+
+    void on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1);
+
+    void on_Kalman1lineEdit_textEdited(const QString &arg1);
+
+    void on_Kalman2lineEdit_textEdited(const QString &arg1);
+
+    void on_ButterworthcomboBox_currentIndexChanged(int index);
+
+    void on_Falkowa_radiobutton_clicked();
+
+    void on_checkBox_2_clicked(bool checked);
+
     void on_pushButton_clicked();
+
+    //void on_radioButton_5_clicked();
+
+    void on_kalmanRadioButton_clicked();
 
 private:
     Ui::AirEcgMain *ui;
