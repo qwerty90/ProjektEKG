@@ -22,7 +22,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = EKG
 TEMPLATE = app
 
-
 LIBS += -L$$PWD/R_PEAKS/fourier -llibfftw3-3
 
 SOURCES += main.cpp
