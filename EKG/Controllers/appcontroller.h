@@ -27,7 +27,6 @@ public:
     //void InitializeDependencies();
     //void RunMock();
     void BindView(AirEcgMain *view);
-
 signals:
     void patientData(EcgData *info);
     void sendQRSData(QRSClass qrsSegment, int type);

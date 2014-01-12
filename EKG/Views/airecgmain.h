@@ -38,6 +38,8 @@ class AirEcgMain : public QMainWindow
     void drawTwa(EcgData* data);
     void drawWaves(EcgData* data);
     void drawQrsClass(EcgData* data);
+
+    void drawSleep_Apnea(EcgData* data);
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -67,6 +69,10 @@ public:
 
     QwtPlot* plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgFrame*> &ecgFrames, double samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
+//////////
+     QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
+     QwtPlot* plotSleep_Apneafrequence(const QVector<double> &yData, float freq);
+
 
 signals:
     void loadEntity(const QString &directory, const QString &name);
@@ -95,6 +101,14 @@ signals:
     void qrsGMaxClustersChanged(int maxClusters);
     void qrsGMaxKIterations(int maxIters);
     void qrsKClustersNumberChanged(int noClusters);
+
+    void ecgBase_CzasUsrednieniaChanged(const QString &arg1);
+    void ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1);
+    void ecgBase_Kalman1Changed(const QString &arg1);
+    void ecgBase_Kalman2Changed(const QString &arg1);
+
+
+
 
 public slots:
     void receivePatientData(EcgData *data);
@@ -172,6 +186,26 @@ private slots:
     void on_p_onset_toggled(bool checked);
 
     void on_butterworthRadioButton_clicked();
+
+    void on_movingAverageRadioButton_clicked();
+
+    void on_savitzkyGolayRadioButton_clicked();
+
+    void on_radioButton_5_clicked();
+
+    void on_CzasUsrednienialineEdit_textEdited(const QString &arg1);
+
+    void on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1);
+
+    void on_Kalman1lineEdit_textEdited(const QString &arg1);
+
+    void on_Kalman2lineEdit_textEdited(const QString &arg1);
+
+    void on_ButterworthcomboBox_currentIndexChanged(int index);
+
+    void on_Falkowa_radiobutton_clicked();
+
+    void on_checkBox_2_clicked(bool checked);
 
     void on_pushButton_clicked();
 
