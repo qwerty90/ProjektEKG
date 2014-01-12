@@ -2122,16 +2122,13 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 void AirEcgMain::drawStInterval(EcgData *data)
 {
-<<<<<<< HEAD
     QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
     ui->stIntervalArea->setWidget(plotX);
     ui->stIntervalArea->show();
-=======
 //    QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
-
 //    ui->stIntervalArea->setWidget(plotX);
 //    ui->stIntervalArea->show();
->>>>>>> e3664eedb036b84225a8e2e8a2468ddf995b3130
+
 }
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
@@ -2606,7 +2603,6 @@ void AirEcgMain::on_p_onset_toggled(bool checked)
     ui->KalmanGroupBox->setEnabled(false);
  }
 
-<<<<<<< HEAD
 void AirEcgMain::on_movingAverageRadioButton_clicked()
 {
     ui->MovingAvarangeGroupBox->setEnabled(true);
@@ -2667,9 +2663,7 @@ void AirEcgMain::on_checkBox_2_clicked(bool checked)
 {
     ui->groupBox_11->setEnabled(checked);
 }
-=======
  void AirEcgMain::on_pushButton_clicked()
  {
      emit this->runStInterval();
  }
->>>>>>> e3664eedb036b84225a8e2e8a2468ddf995b3130

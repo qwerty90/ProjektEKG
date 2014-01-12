@@ -38,11 +38,8 @@ class AirEcgMain : public QMainWindow
     void drawTwa(EcgData* data);
     void drawWaves(EcgData* data);
     void drawQrsClass(EcgData* data);
-<<<<<<< HEAD
     void drawStInterval(EcgData* data);
     void drawSleep_Apnea(EcgData* data);
-=======
->>>>>>> e3664eedb036b84225a8e2e8a2468ddf995b3130
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -185,7 +182,6 @@ private slots:
 
     void on_butterworthRadioButton_clicked();
 
-<<<<<<< HEAD
     void on_movingAverageRadioButton_clicked();
 
     void on_savitzkyGolayRadioButton_clicked();
