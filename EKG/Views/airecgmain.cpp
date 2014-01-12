@@ -343,8 +343,6 @@ QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
 
-    plot->resize( 1150, 500 );
-
     plot->canvas()->setFrameStyle( QFrame::Box | QFrame::Plain );
     plot->canvas()->setLineWidth( 1 );
     plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
@@ -2122,12 +2120,10 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 void AirEcgMain::drawStInterval(EcgData *data)
 {
-    QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
-    ui->stIntervalArea->setWidget(plotX);
-    ui->stIntervalArea->show();
-//    QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
-//    ui->stIntervalArea->setWidget(plotX);
-//    ui->stIntervalArea->show();
+  //  QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
+ //   ui->stIntervalArea->setWidget(plotX);
+  //  ui->stIntervalArea->show();
+
 
 }
 void AirEcgMain::drawSleep_Apnea(EcgData* data)

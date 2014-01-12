@@ -38,7 +38,7 @@ class AirEcgMain : public QMainWindow
     void drawTwa(EcgData* data);
     void drawWaves(EcgData* data);
     void drawQrsClass(EcgData* data);
-    void drawStInterval(EcgData* data);
+
     void drawSleep_Apnea(EcgData* data);
     void drawHrt(EcgData *data);
 
@@ -201,9 +201,9 @@ private slots:
     void on_Falkowa_radiobutton_clicked();
 
     void on_checkBox_2_clicked(bool checked);
-=======
+
     void on_pushButton_clicked();
->>>>>>> e3664eedb036b84225a8e2e8a2468ddf995b3130
+
 
 private:
     Ui::AirEcgMain *ui;
