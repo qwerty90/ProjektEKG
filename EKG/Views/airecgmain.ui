@@ -341,7 +341,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -351,7 +351,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -399,8 +399,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>970</width>
-                       <height>526</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -441,8 +441,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>970</width>
-                       <height>526</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -482,8 +482,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -506,8 +506,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>970</width>
-                       <height>393</height>
+                       <width>988</width>
+                       <height>373</height>
                       </rect>
                      </property>
                     </widget>
@@ -621,7 +621,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QRadioButton" name="radioButton_5">
+                        <widget class="QRadioButton" name="kalmanRadioButton">
                          <property name="text">
                           <string>Kalman filter </string>
                          </property>
@@ -812,8 +812,6 @@
                </widget>
               </item>
              </layout>
-             <zorder>tabModules</zorder>
-             <zorder>tabWidget_4</zorder>
             </widget>
             <widget class="QWidget" name="eR">
              <attribute name="title">
@@ -830,8 +828,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1012</width>
-                   <height>427</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -971,11 +969,10 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1012</width>
-                   <height>519</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
-                 <zorder>tabModules</zorder>
                 </widget>
                </widget>
               </item>
@@ -1217,8 +1214,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1241,8 +1238,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>988</width>
-                           <height>134</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1328,8 +1325,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1383,8 +1380,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1450,8 +1447,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>1010</width>
-                            <height>48</height>
+                            <width>98</width>
+                            <height>28</height>
                            </rect>
                           </property>
                          </widget>
@@ -1498,8 +1495,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>1010</width>
-                            <height>48</height>
+                            <width>98</width>
+                            <height>28</height>
                            </rect>
                           </property>
                          </widget>
@@ -1698,7 +1695,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>161</width>
+                            <width>98</width>
                             <height>141</height>
                            </rect>
                           </property>
@@ -1719,7 +1716,7 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>126</width>
+                                <width>98</width>
                                 <height>89</height>
                                </rect>
                               </property>
@@ -1737,7 +1734,7 @@
                                    <rect>
                                     <x>0</x>
                                     <y>0</y>
-                                    <width>89</width>
+                                    <width>98</width>
                                     <height>73</height>
                                    </rect>
                                   </property>
@@ -1762,8 +1759,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>100</width>
-                                <height>30</height>
+                                <width>98</width>
+                                <height>28</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -2337,8 +2334,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>369</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2547,8 +2544,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2575,8 +2572,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>451</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -2688,8 +2685,6 @@
            </widget>
           </item>
          </layout>
-         <zorder>stackedWidget</zorder>
-         <zorder>tabWidget_7</zorder>
         </widget>
         <widget class="QWidget" name="tab_14">
          <attribute name="title">
@@ -2726,11 +2721,10 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1008</width>
+                       <width>98</width>
                        <height>348</height>
                       </rect>
                      </property>
-                     <zorder>tabModules</zorder>
                     </widget>
                    </widget>
                   </item>
@@ -3000,8 +2994,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3017,8 +3011,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3038,8 +3032,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3055,8 +3049,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3239,8 +3233,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>199</height>
+                   <width>98</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -3275,11 +3269,10 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
+                   <width>98</width>
                    <height>198</height>
                   </rect>
                  </property>
-                 <zorder>label_25</zorder>
                 </widget>
                </widget>
               </item>
@@ -3418,8 +3411,6 @@
            </widget>
           </item>
          </layout>
-         <zorder>stIntervalArea</zorder>
-         <zorder>tabWidget_8</zorder>
         </widget>
         <widget class="QWidget" name="tab_15">
          <attribute name="title">
@@ -3624,8 +3615,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>846</width>
-                     <height>517</height>
+                     <width>98</width>
+                     <height>28</height>
                     </rect>
                    </property>
                   </widget>
@@ -3674,8 +3665,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>372</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3825,7 +3816,6 @@
                </layout>
               </item>
              </layout>
-             <zorder>tabModules</zorder>
              <zorder>scrollArea_9</zorder>
              <zorder></zorder>
             </widget>
@@ -3844,11 +3834,10 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>232</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
-                 <zorder>tabModules</zorder>
                 </widget>
                </widget>
               </item>
@@ -3893,8 +3882,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>231</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3939,7 +3928,6 @@
                </layout>
               </item>
              </layout>
-             <zorder>tabModules</zorder>
              <zorder>sleepArea1</zorder>
              <zorder></zorder>
              <zorder>sleepArea2</zorder>

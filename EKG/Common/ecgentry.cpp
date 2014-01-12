@@ -8,6 +8,7 @@
 #include "ecginfo.h"
 #include <QVector>
 #include <QDataStream>
+#include <QsLog/QsLog.h>
 
 EcgEntry::EcgEntry(QObject *parent) :
     QObject(parent)
@@ -29,24 +30,42 @@ QString* EcgEntry::Validate(QFile *file)
 
 void EcgEntry::LoadSamples(QString name)
 {
-    QList<int> *ml2 = new QList<int>();
-    QList<int> *v1 = new QList<int>();
+    QVector<double> *ml2 = new QVector<double>();
+    QVector<double> *v1  = new QVector<double>();
+    ml2->resize(650000);
+    v1 ->resize(650000);
 
     QVector<int> data;
+    //QVector<int>::iterator data_iterator = data.begin();
+    int i=0;
+    int j=0;
+
     QFile f(name);
     f.open(QIODevice::ReadOnly);
     QDataStream in(&f);
     in >> data;
-
     f.close();
-    for(int i = 0; i < data.count(); i+=2)
+    QLOG_INFO() << QString::number(data.size()/2) << " Samples loaded";
+    while(j<data.size())
+    {        
+        (*ml2)[i]=((double)data.at(j)*0.005)-5.0;//*gain-offset
+        //data_iterator++;
+        j++;
+        (*v1)[i] =((double)(data.at(j))*0.005)-5.0;//*gain-offset
+        j++;
+        //data_iterator++;
+        i++;
+    }
+    QLOG_INFO() << "Data scaled";
+
+    /*for(int i = 0; i < data.count(); i+=2)
     {
         ml2->append(data.at(i));
         v1->append(data.at(i + 1));
-    }
+    }*/
 
-    this->entity->primary = ml2;
-    this->entity->secondary = v1;
+    this->entity->primary = new QVector<double>(*ml2);
+    this->entity->secondary = new QVector<double>(*v1);
     this->entity->settings->signalIndex = 1;
 }
 

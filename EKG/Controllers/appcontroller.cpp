@@ -1,10 +1,13 @@
 #include "appcontroller.h"
 #include "Common/ecgdata.h"
 #include "Common/ecgentry.h"
-//#include "Common/supervisorymodule.h"
 #include "ECG_BASELINE/src/butter.h"
 #include "ECG_BASELINE/src/kalman.h"
+#include "ECG_BASELINE/src/movAvg.h"
+#include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
+#include "HRV1/HRV1MainModule.h"
+//#include "HRV1/HRV1Bundle.h"
 
 #include <QThread>
 
@@ -35,11 +38,15 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runSingle(QString)), this, SLOT(runSingle(QString)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
+    this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
+    this->connect(view, SIGNAL(runStInterval()) ,this, SLOT(runStInterval()));
+    this->connect(view, SIGNAL(runHRV1())       ,this, SLOT (runHRV1()));
+
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
-    this->connect(view, SIGNAL(runAtrialFibr()),this, SLOT (runAtrialFibr()));
-    this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view,  SLOT(drawAtrialFibr(EcgData*)));
-    this->connect(view, SIGNAL(runStInterval()), this, SLOT(runStInterval()));
-    this->connect(this, SIGNAL(StInterval_done(EcgData*)), view, SLOT(drawStInterval(EcgData*)));
+    this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
+    this->connect(this, SIGNAL(StInterval_done(EcgData*)) ,view, SLOT(drawStInterval(EcgData*)));
+    this->connect(this, SIGNAL(HRV1_done(EcgData*))       ,view, SLOT(drawHrv1(EcgData*)))      ;
+
 
     this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
@@ -199,21 +206,64 @@ void AppController::switchSignal(int index)
 {
 
     this->entity->settings->signalIndex = index;
-    /*
-    this->supervisor->ResetModules();
-    */
+    this->ResetModules();
 }
 void AppController::runEcgBaseline()
 {
-    QLOG_INFO() <<"ecg started";
+    QLOG_INFO() <<"Ecg baseline started.";
 
-    QVector<double> test;
-    test << 0.5 << 0.5 << 0.5;
+    //QVector<double> test;
+    //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
-    kalman.processKalman(test);
+    switch (this->entity->settings->EcgBaselineMode)
+    {
+    case 0: //butterworth
+    case 1:
+        QLOG_INFO() << "BASELINE/ Using moving average filter.";
+        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+        break;
+    case 2: //savitzky-golay
+        QLOG_INFO() << "BASELINE/ Using Savitzky-Golay filter.";
+        this->entity->ecg_baselined = new QVector<double>(processSGolay(*(this->entity->GetCurrentSignal())));
+        break;
+    case 3:  //kalman
+        QLOG_INFO() << "BASELINE/ Using kalman filter.";
+        this->entity->ecg_baselined = new QVector<double>(kalman.processKalman(*(this->entity->GetCurrentSignal())));
+        break;
+    default:
+        QLOG_INFO() << "BASELINE/ Using default filter.";
+        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+        break;
+    }            
 
-    QLOG_INFO() << "rysowanie ecg->emit";
+    QLOG_INFO() << "Ecg baseline done.";
     emit EcgBaseline_done(this->entity);
+}
+
+void AppController::runHRV1()
+{
+    QLOG_INFO() << "HRV1 started.";
+    QVector<int> *wektor = new QVector<int>;
+    int i=0;
+    while (i<this->entity->Rpeaks->size())
+    {
+        wektor->append(this->entity->Rpeaks->at(i) - this->entity->Rpeaks->first());
+        i++;
+    }
+    HRV1MainModule obiekt;
+    obiekt.prepare(wektor,(int)this->entity->info->frequencyValue);
+    HRV1BundleStatistical results = obiekt.evaluateStatistical();
+    this->entity->Mean = results.RRMean;
+    this->entity->SDNN = results.SDNN;
+    this->entity->RMSSD= results.RMSSD;
+    this->entity->RR50 = results.NN50;    //czy to jest to??
+    this->entity->RR50Ratio=results.pNN50;//czy to jest to??
+    this->entity->SDANN= results.SDANN;
+    this->entity->SDANNindex=results.SDANNindex;
+    this->entity->SDSD = results.SDSD;
+    QLOG_INFO() << "HRV1 statistical done.";
+
+    emit this->HRV1_done(this->entity);
 }
 
 void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
@@ -229,6 +279,14 @@ void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
 
 }
 
+void AppController::ResetModules()
+{
+    if (this->entity->PWaveStart)
+        this->entity->PWaveStart->clear();
+    if (this->entity->Rpeaks)
+        this->entity->Rpeaks->clear();
+}
+
 void AppController::runAtrialFibr()
 {
     QLOG_INFO() << "Start AtrialFibr";
@@ -241,17 +299,6 @@ void AppController::runAtrialFibr()
     this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>
                               ({this->entity->ecg_baselined->begin() + 10,
                                 this->entity->ecg_baselined->begin() + 70});
-    //this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>;
-
-    //const std::vector<double> signal((this->entity->ecg_baselined)->toStdVector());
-    //const std::vector<std::vector<double>::const_iterator> RPeaks((this->entity->Rpeaks)->toStdVector());
-    //const std::vector<std::vector<double>::const_iterator> pWaveStarts((this->entity->PWaveStart)->toStdVector());
-
-
-    /*this->entity->Rpeaks->append(this->entity->ecg_baselined->begin() + 20);
-    this->entity->Rpeaks->append(this->entity->ecg_baselined->begin() + 80);
-    this->entity->PWaveStart->append(this->entity->ecg_baselined->begin() + 10);
-    this->entity->PWaveStart->append(this->entity->ecg_baselined->begin() + 70);*/
 
     AtrialFibrApi obiekt(*(this->entity->ecg_baselined),
                          *(this->entity->Rpeaks) ,
@@ -262,8 +309,9 @@ void AppController::runAtrialFibr()
     this->entity->RRIntEntropy       = obiekt.GetRRIntEntropy();
     this->entity->AtrialFibr         = obiekt.isAtrialFibr();
 
-    emit AtrialFibr_done(this->entity);
     QLOG_INFO() << "AtrialFibr done";
+    emit AtrialFibr_done(this->entity);//linia 37
+
 
 }
 
