@@ -7,7 +7,6 @@
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
 #include "HRV1/HRV1MainModule.h"
-//#include "HRV1/HRV1Bundle.h"
 
 #include <QThread>
 
@@ -215,6 +214,9 @@ void AppController::runEcgBaseline()
     //QVector<double> test;
     //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
+    if (this->entity->ecg_baselined)
+        this->entity->ecg_baselined->~QVector<double>();
+
     switch (this->entity->settings->EcgBaselineMode)
     {
     case 0: //butterworth
@@ -281,10 +283,12 @@ void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
 
 void AppController::ResetModules()
 {
+    if (this->entity->ecg_baselined)
+        this->entity->ecg_baselined->~QVector<double>();
     if (this->entity->PWaveStart)
-        this->entity->PWaveStart->clear();
+        this->entity->PWaveStart->~QVector<QVector<double>::const_iterator>();
     if (this->entity->Rpeaks)
-        this->entity->Rpeaks->clear();
+        this->entity->Rpeaks->~QVector<QVector<double>::const_iterator>();
 }
 
 void AppController::runAtrialFibr()
@@ -294,6 +298,8 @@ void AppController::runAtrialFibr()
     //wrzucenie przykladowych danych
     this->entity->Rpeaks     = new QVector<QVector<double>::const_iterator>
                               ({this->entity->ecg_baselined->begin() + 20,
+                                this->entity->ecg_baselined->begin() + 40,
+                                this->entity->ecg_baselined->begin() + 60,
                                 this->entity->ecg_baselined->begin() + 80});
 
     this->entity->PWaveStart = new QVector<QVector<double>::const_iterator>
@@ -308,6 +314,10 @@ void AppController::runAtrialFibr()
     this->entity->RRIntDivergence    = obiekt.GetRRIntDivergence();
     this->entity->RRIntEntropy       = obiekt.GetRRIntEntropy();
     this->entity->AtrialFibr         = obiekt.isAtrialFibr();
+
+    QLOG_INFO() << "Atrial_FIBR/ calculated parameters: \n"
+                << "PWaveOccurenceRatio:" << QString::number(this->entity->PWaveOccurenceRatio) <<"\n";
+
 
     QLOG_INFO() << "AtrialFibr done";
     emit AtrialFibr_done(this->entity);//linia 37
