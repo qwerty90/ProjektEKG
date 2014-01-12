@@ -191,7 +191,7 @@ private slots:
 
     void on_savitzkyGolayRadioButton_clicked();
 
-    void on_radioButton_5_clicked();
+    //void on_radioButton_5_clicked();
 
     void on_CzasUsrednienialineEdit_textEdited(const QString &arg1);
 
@@ -209,7 +209,7 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void on_radioButton_5_clicked();
+    //void on_radioButton_5_clicked();
 
     void on_kalmanRadioButton_clicked();
 

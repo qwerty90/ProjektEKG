@@ -1772,8 +1772,8 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgF
         Qrs_endDataX[i]=Qrs_endData[i]*dt;
         Qrs_endDataY[i]=ecgSignal[Qrs_endData[i]];
 
-        T_endDataX[i]=T_endData[i]*dt;
-        T_endDataY[i]=ecgSignal[T_endData[i]];
+      //  T_endDataX[i]=T_endData[i]*dt;
+      //  T_endDataY[i]=ecgSignal[T_endData[i]];
     }
 
     if(ui->p_onset->isChecked() || ui->wave_all->isChecked())
@@ -2597,9 +2597,6 @@ void AirEcgMain::on_p_onset_toggled(bool checked)
 {
     emit this->switchWaves_p_onset(checked);
 }
-    ui->ButterworthcomboBox->setEnabled(true);
-    ui->MovingAvarangeGroupBox->setEnabled(false);
-    ui->KalmanGroupBox->setEnabled(false);
 void AirEcgMain::on_movingAverageRadioButton_clicked()
 {
     ui->MovingAvarangeGroupBox->setEnabled(true);
@@ -2614,7 +2611,7 @@ void AirEcgMain::on_savitzkyGolayRadioButton_clicked()
     ui->KalmanGroupBox->setEnabled(false);
 }
 
-void AirEcgMain::on_radioButton_5_clicked()
+void AirEcgMain::on_kalmanRadioButton_clicked()
 {
     ui->KalmanGroupBox->setEnabled(true);
     ui->ButterworthcomboBox->setEnabled(false);
@@ -2666,11 +2663,6 @@ void AirEcgMain::on_checkBox_2_clicked(bool checked)
  }
 
 void AirEcgMain::on_butterworthRadioButton_clicked()
-{
-
-}
-
-void AirEcgMain::on_kalmanRadioButton_clicked()
 {
 
 }
