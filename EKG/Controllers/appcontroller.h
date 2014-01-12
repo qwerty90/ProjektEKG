@@ -21,13 +21,11 @@ private:
     EcgData *entity;
     //results AllData;
     void deep_copy_list(QList<int> *dest, QList<int> *src);
-
 public:
     explicit AppController(QObject *parent = 0);
     //void InitializeDependencies();
     //void RunMock();
     void BindView(AirEcgMain *view);
-
 signals:
     void patientData(EcgData *info);
     void sendQRSData(QRSClass qrsSegment, int type);
@@ -37,7 +35,6 @@ signals:
     void EcgBaseline_done(EcgData *data);
     void AtrialFibr_done (EcgData *data);
     void StInterval_done(EcgData *data);
-
 public slots:
     void loadData(const QString &directory, const QString &name);
     void switchSignal(int index);
