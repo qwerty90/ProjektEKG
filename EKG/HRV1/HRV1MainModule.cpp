@@ -10,21 +10,21 @@ void HRV1MainModule::createInstance(){
 
 HRV1MainModule::~HRV1MainModule(void)
 {
-	peaks.~vector();
+    peaks.~QVector();
 	for(int i = 0; i < dividedPeaks.size(); i++){
-		dividedPeaks[i]->~vector();
+        dividedPeaks[i]->~QVector();
 	}
 
-	dividedPeaks.~vector();
-	RRDifferences.~vector();
-	toReturnFrequency.xData->~vector();
-	toReturnFrequency.yData->~vector();
+    dividedPeaks.~QVector();
+    RRDifferences.~QVector();
+    toReturnFrequency.xData->~QVector();
+    toReturnFrequency.yData->~QVector();
 }
 
-void HRV1MainModule::cutPeaksVector(std::vector<int>* peaks){
+void HRV1MainModule::cutPeaksVector(QVector<int>* peaks){
 	int intervalNumber = 1;
-	std::vector<int>* vector;
-	std::vector<int>::const_iterator inputIterator = peaks->begin();
+    QVector<int>* vector;
+    QVector<int>::const_iterator inputIterator = peaks->begin();
 
 	if(peaks->size() == 0){
 		return;
@@ -32,7 +32,7 @@ void HRV1MainModule::cutPeaksVector(std::vector<int>* peaks){
 
 
 	for(int i = 0;; i++){
-		vector = new std::vector<int>;
+        vector = new QVector<int>;
 		instance->dividedPeaks.push_back(vector);
 		while(*inputIterator <= intervalNumber*instance->samplingFrequency*INTERVAL_LENGTH){
 			instance->dividedPeaks.at(i)->push_back(*inputIterator);
@@ -50,7 +50,7 @@ void HRV1MainModule::cutPeaksVector(std::vector<int>* peaks){
 
 
 //static function
-void HRV1MainModule::prepare(std::vector<int>* peaks, int samplingFrequency){
+void HRV1MainModule::prepare(QVector<int>* peaks, int samplingFrequency){
 	if(peaks->size() == 0){
 		throw "Empty peaks vector. Aborting.";
 	}
@@ -96,7 +96,7 @@ HRV1BundleStatistical HRV1MainModule::evaluateStatistical(){
 	return instance->toReturnStatistical;
 }
 
-double HRV1MainModule::evaluateRRMean(std::vector<int>* peaks){
+double HRV1MainModule::evaluateRRMean(QVector<int>* peaks){
 	double sum=0;
 	for(int i=0;i<peaks->size()-1;i++){
 		 sum =sum + abs(peaks->at(i)-peaks->at(i+1));
@@ -112,7 +112,7 @@ void HRV1MainModule::evaluateSDNNEntirety(){
 	toReturnStatistical.SDNN = evaluateSDNN(&peaks, toReturnStatistical.RRMean);
 }
 
-double HRV1MainModule::evaluateSDNN(std::vector<int>* peaks, double mean){
+double HRV1MainModule::evaluateSDNN(QVector<int>* peaks, double mean){
 	double sum = 0;
 	double difference = 0;
 
@@ -159,7 +159,7 @@ void HRV1MainModule::evaluatepNN50(){
 }
 
 void HRV1MainModule::evaluateSDANN(){
-	std::vector<double> RRMeans;
+    QVector<double> RRMeans;
 	double mean;
 	for(int i = 0; i < dividedPeaks.size(); i++){
 		RRMeans.push_back(evaluateRRMean(dividedPeaks[i]));
@@ -170,8 +170,8 @@ void HRV1MainModule::evaluateSDANN(){
 }
 
 void HRV1MainModule::evaluateSDANNindex(){
-	std::vector<double> SDNNs;
-	std::vector<double> RRMeans;
+    QVector<double> SDNNs;
+    QVector<double> RRMeans;
 	for(int i = 0; i < dividedPeaks.size(); i++){
 		RRMeans.push_back(evaluateRRMean(dividedPeaks[i]));
 		SDNNs.push_back(evaluateSDNN(dividedPeaks[i], RRMeans[i]));
@@ -184,7 +184,7 @@ void HRV1MainModule::evaluateSDSD(){
 	toReturnStatistical.SDSD = evaluateStandardDeviation(&RRDifferences, evaluateSimpleMean(&RRDifferences));
 }
 
-double HRV1MainModule::evaluateSimpleMean(std::vector<double>* vector){
+double HRV1MainModule::evaluateSimpleMean(QVector<double>* vector){
 	double sum = 0;
 	for(int i = 0; i < vector->size(); i++){
 		sum += vector->at(i);
@@ -192,7 +192,7 @@ double HRV1MainModule::evaluateSimpleMean(std::vector<double>* vector){
 	return sum/vector->size();
 }
 
-double HRV1MainModule::evaluateSimpleMean(std::vector<int>* vector){
+double HRV1MainModule::evaluateSimpleMean(QVector<int>* vector){
 	double sum = 0;
 	for(int i = 0; i < vector->size(); i++){
 		sum += vector->at(i);
@@ -200,7 +200,7 @@ double HRV1MainModule::evaluateSimpleMean(std::vector<int>* vector){
 	return sum/vector->size();
 }
 
-double HRV1MainModule::evaluateStandardDeviation(std::vector<double>* vector, double mean){
+double HRV1MainModule::evaluateStandardDeviation(QVector<double>* vector, double mean){
 	double sum = 0;
 	for(int i = 0; i < vector->size(); i++){
 		sum += pow(mean - vector->at(i), 2.0);
@@ -208,7 +208,7 @@ double HRV1MainModule::evaluateStandardDeviation(std::vector<double>* vector, do
 	return sqrt(sum/vector->size());
 }
 
-double HRV1MainModule::evaluateStandardDeviation(std::vector<int>* vector, double mean){
+double HRV1MainModule::evaluateStandardDeviation(QVector<int>* vector, double mean){
 	double sum = 0;
 	for(int i = 0; i < vector->size(); i++){
 		sum += pow(mean - vector->at(i), 2.0);
@@ -225,8 +225,8 @@ HRV1BundleFrequency HRV1MainModule::evaluateFrequency(){
 		throw "Module not prepared. Aborting.";
 	}
 
-	instance->toReturnFrequency.xData = new std::vector<double>;
-	instance->toReturnFrequency.yData = new std::vector<double>;
+    instance->toReturnFrequency.xData = new QVector<double>;
+    instance->toReturnFrequency.yData = new QVector<double>;
 
 	instance->evaluateSplainInterpolation();
 	instance->evaluateFFT();
@@ -249,7 +249,7 @@ void HRV1MainModule::evaluateSplainInterpolation(){
 }
 
 void HRV1MainModule::evaluateFFT(){
-	std::vector<double> tmp;
+    QVector<double> tmp;
 	alglib::real_1d_array fftTmp;
 
 	for(int i = 1; i < peaks.at(peaks.size() - 1); i = i + (int)(PRECISION*1000))

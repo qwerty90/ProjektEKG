@@ -17,8 +17,8 @@ struct HRV1BundleStatistical
 struct HRV1BundleFrequency
 {
 	//fourrier graph	
-	std::vector<double>* xData;
-	std::vector<double>* yData;
+    QVector<double>* xData;
+    QVector<double>* yData;
 
 	//frequency analysys parameters 
 	//NOT YET WORKING

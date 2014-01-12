@@ -11,7 +11,7 @@ EcgData::EcgData(QString id)
     this->settings = new EcgSettings();
 }
 
-QList<int>* EcgData::GetCurrentSignal()
+QVector<double>* EcgData::GetCurrentSignal()
 {
     if(this->settings->signalIndex == 0)
     {
