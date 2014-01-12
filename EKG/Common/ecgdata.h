@@ -31,13 +31,13 @@ public:
     const QVector<double> *ecg_baselined;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
-    QVector<QVector<double>::const_iterator> *Rpeaks;
+    const QVector<QVector<double>::const_iterator> *Rpeaks;
 
     //punkty charakterystyczne - wyjscie modulu WAVES
     // EcgFrame zawiera punkty charakterystyczne: QRS_onset, QRS_end, T_end, P_onset, P_end
     QList<Waves::EcgFrame*> *waves;
     //na razie wrzuce osobno PWaveStart, ale docelowo ladniej by bylo miec to w jednej klasie jak wyzej
-    QVector<QVector<double>::const_iterator> *PWaveStart;
+    const QVector<QVector<double>::const_iterator> *PWaveStart;
 
 
     //Wykryte klasy zespolu QRS - wyjscie modulu QRS_CLASS
