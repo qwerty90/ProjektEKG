@@ -51,18 +51,27 @@ class R_peaksModule {
         void findGreaterEqualThan(const QVector<double> & x, double coeff, QVector<unsigned int> & result);
 
 public:
-        R_peaksModule();
+        // konstruktor parametryczny, obiekt incjowany przy pomocy sygnalu z ecg_baseline i czestotliwosci tego sygnalu
         R_peaksModule(const QVector<double> & filteredSignal, double freq);
 
+        // funkcja ustawiajaca na nowo sygnal i czestotliwosc, czyszczone sa wektory z indeksami i iteratorami
         void R_peaksSetModule(const QVector<double> & filteredSignal, double freq);
 
+        // funkcja znajdujaca piki metoda transformacji Hilberta
         void hilbert(void);
-        void panTomkins(void);
+        // funkcja znajdujaca piki metoda Pan Tomkins
+        void panTompkins(void);
+
+        // funkcja znajdujaca piki metoda transformacji falkowej
         void wavelet(void);
 
+        // funkcja zwracaja wektor iteratorow wskazujacych na probki z pikami R
         const R_peaksIterVector & getPeaksIter(void);
+
+        // funckja zwracajaca wektor indeksow probek z pikami R
         const QVector<unsigned int> & getPeaksIndex(void);
 };
+
 
 class DiffSorter {
     public:

@@ -16,9 +16,6 @@ const unsigned int R_peaksModule::PT_LP_M = 9;
 const unsigned int R_peaksModule::PT_HP_M = 56;
 const unsigned int R_peaksModule::PT_MW_N = 58;
 
-R_peaksModule::R_peaksModule(void) {
-}
-
 R_peaksModule::R_peaksModule(const QVector<double> & filteredSignal, double freq) {
     this->filteredSignal = filteredSignal;
     this->frequency = freq;
@@ -27,6 +24,8 @@ R_peaksModule::R_peaksModule(const QVector<double> & filteredSignal, double freq
 void R_peaksModule::R_peaksSetModule(const QVector<double> & filteredSignal, double freq) {
     this->filteredSignal = filteredSignal;
     this->frequency = freq;
+    this->itVect.clear();
+    this->indexVector.clear();
 }
 
 
@@ -271,7 +270,7 @@ void R_peaksModule::hilbert(void) {
 }
 
 
-//======================= PanTomkins =================================
+//======================= PanTompkins =================================
 
 
 double R_peaksModule::PTLowPassFilter(double data, bool reset = false)
@@ -636,7 +635,7 @@ void R_peaksModule::PanTompkinsSetPeaks(VectorPairDoubleUnsignedInt & filter, Ve
     }
 }
 
-void R_peaksModule::panTomkins(void) {
+void R_peaksModule::panTompkins(void) {
     this->indexVector.clear();
     this->itVect.clear();
     int N = this->filteredSignal.size();
