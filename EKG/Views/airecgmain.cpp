@@ -2069,15 +2069,15 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 void AirEcgMain::drawHrv1(EcgData *data)
 {
     QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
-    ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
+    /*ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
     ui->RMSSD->setText("RMSSD = " %QString::number((data->RMSSD), 'f', 2) + " ms");
     ui->RR50->setText("RR50 = " %QString::number((data->RR50), 'd', 2));
     ui->RR50Ratio->setText("RR50 Ratio = " %QString::number((data-> RR50Ratio), 'c', 2) + " %");
     ui->SDANN->setText("SDANN = " %QString::number((data->SDANN), 'f', 2) + " ms");
-    ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
-    ui->SDSD->setText("SDSD = " %QString::number((data->SDSD), 'f', 2) + " ms");
-
+    ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");*/
+    ui->SDSD->setText("SDSD");
+QLOG_INFO() << "GUI/ drawing hrv1222..."<<QString::number(data->Mean);
     /*
     //Frequency Parameters
     QwtPlot *plotRR = plotPoints(*(data->RR_x), *(data->RR_y), data->fftSamplesX,

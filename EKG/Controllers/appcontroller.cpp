@@ -212,8 +212,8 @@ void AppController::runEcgBaseline()
     //QVector<double> test;
     //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
-    if (this->entity->ecg_baselined)
-        this->entity->ecg_baselined->~QVector<double>();
+    //if (this->entity->ecg_baselined)
+    //    this->entity->ecg_baselined->~QVector<double>();
 
     switch (this->entity->settings->EcgBaselineMode)
     {
@@ -264,6 +264,7 @@ void AppController::runHRV1()
     QLOG_INFO() << "HRV1 statistical done.";
 
     emit this->HRV1_done(this->entity);
+    QLOG_INFO() << "HRV1 statistical drawn.";
 }
 
 void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
