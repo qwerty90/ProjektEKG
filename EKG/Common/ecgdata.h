@@ -10,6 +10,7 @@
 #include "ecgsettings.h"
 #include "waves.h"
 #include "qrsclass.h"
+#include "QsLog/QsLog.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 

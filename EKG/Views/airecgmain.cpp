@@ -2447,7 +2447,7 @@ void AirEcgMain::receiveSingleProcessingResult(bool succeeded, EcgData *data)
 
 
 void AirEcgMain::on_pushButton_2_clicked()
-{        
+{
     emit this->runEcgBaseline();
 }
 

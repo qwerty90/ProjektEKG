@@ -38,7 +38,7 @@ void AppController::BindView(AirEcgMain *view)
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
-    this->connect(view, SIGNAL(runStInterval()) ,this, SLOT(runStInterval()));
+    this->connect(view, SIGNAL(runStInterval()) ,this, SLOT (runStInterval()));
     this->connect(view, SIGNAL(runHRV1())       ,this, SLOT (runHRV1()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
@@ -190,8 +190,6 @@ void AppController::onThreadFinished()
 void AppController::runSingle(QString hash)
 {
 
-
-
     /*
     if(this->entity)
     {
@@ -205,7 +203,7 @@ void AppController::switchSignal(int index)
 {
 
     this->entity->settings->signalIndex = index;
-    this->ResetModules();
+    //this->ResetModules();
 }
 void AppController::runEcgBaseline()
 {
@@ -219,7 +217,7 @@ void AppController::runEcgBaseline()
 
     switch (this->entity->settings->EcgBaselineMode)
     {
-    case 0: //butterworth
+    //case 0: //butterworth
     case 1:
         QLOG_INFO() << "BASELINE/ Using moving average filter.";
         this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
@@ -283,12 +281,31 @@ void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
 
 void AppController::ResetModules()
 {
+    QLOG_INFO() << "Reset procedure started:";
     if (this->entity->ecg_baselined)
+    {
         this->entity->ecg_baselined->~QVector<double>();
+        QLOG_INFO() << "Baselined signal removed.";
+    }
+    else
+        QLOG_INFO() << "Baselined signal did not exist.";
     if (this->entity->PWaveStart)
+    {
         this->entity->PWaveStart->~QVector<QVector<double>::const_iterator>();
+        QLOG_INFO() << "PWaveStart removed.";
+    }
+    else
+        QLOG_INFO() << "PWaveStart did not exist.";
+
     if (this->entity->Rpeaks)
+    {
+
         this->entity->Rpeaks->~QVector<QVector<double>::const_iterator>();
+        QLOG_INFO() << "Rpeaks removed.";
+    }
+    else
+        QLOG_INFO() << "RPeaks did not exist.";
+    QLOG_INFO() << "All removed.";
 }
 
 void AppController::runAtrialFibr()
@@ -314,8 +331,9 @@ void AppController::runAtrialFibr()
     this->entity->AtrialFibr         = obiekt.isAtrialFibr();
 
     QLOG_INFO() << "Atrial_FIBR/ calculated parameters: \n"
-                << "PWaveOccurenceRatio:" << QString::number(this->entity->PWaveOccurenceRatio) <<"\n";
-
+                << "Atrial_FIBR/ PWaveOccurenceRatio: " << QString::number(this->entity->PWaveOccurenceRatio) <<"\n"
+                << "Atrial_FIBR/ RRIntDivergence: "     << QString::number(this->entity->RRIntDivergence) <<"\n"
+                << "Atrial_FIBR/ RRIntEntropy: "        << QString::number(this->entity->RRIntEntropy);
 
     QLOG_INFO() << "AtrialFibr done";
     emit AtrialFibr_done(this->entity);//linia 37
