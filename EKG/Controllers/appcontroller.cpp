@@ -35,6 +35,10 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
     this->connect(view, SIGNAL(runSingle(QString)), this, SLOT(runSingle(QString)));
+    this->connect(view, SIGNAL(ecgBase_CzasUsrednieniaChanged(QString)),this,SLOT(CzasUsrednieniaEdit(QString)));
+    this->connect(view, SIGNAL(ecgBase_Kalman1Changed(QString)),this,SLOT(ecgBase_Kalman1Changed(QString)));
+    this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
+    this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
@@ -67,7 +71,7 @@ void AppController::loadData(const QString &directory, const QString &name)
         return;
     }
     //if(this->entity)
-        //this->supervisor->ResetModules();
+        //this->ResetModules();
     this->entity = entry->entity;
 
     emit patientData(this->entity);
@@ -203,7 +207,7 @@ void AppController::switchSignal(int index)
 {
 
     this->entity->settings->signalIndex = index;
-    //this->ResetModules();
+    this->ResetModules();
 }
 void AppController::runEcgBaseline()
 {
@@ -212,15 +216,42 @@ void AppController::runEcgBaseline()
     //QVector<double> test;
     //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
-    //if (this->entity->ecg_baselined)
-    //    this->entity->ecg_baselined->~QVector<double>();
+    const QVector<ButterCoefficients> coeff = predefinedButterCoefficientSets();
+
+    if (this->entity->ecg_baselined)
+        this->entity->ecg_baselined->clear();
 
     switch (this->entity->settings->EcgBaselineMode)
     {
-    //case 0: //butterworth
+    case 0: //butterworth
+        QLOG_INFO() << "BASELINE/ Using butterworth filter.";
+        this->entity->ecg_baselined = new QVector<double>(processButter(*(this->entity->GetCurrentSignal()),coeff[0]));
+        break;
     case 1:
         QLOG_INFO() << "BASELINE/ Using moving average filter.";
-        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+        if(this->entity->settings->averaging_time!=0)
+        {
+            QLOG_INFO() << "BASELINE/ Using moving average filter with averaging time = "
+                        << QString::number(this->entity->settings->averaging_time) << " .";
+            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                                                            (int)(this->entity->info->frequencyValue),
+                                                                            this->entity->settings->averaging_time));
+            this->entity->characteristics = new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
+                                                                               this->entity->settings->averaging_time));
+        }
+        else if (this->entity->settings->avgWindowSize!=0)
+        {
+            QLOG_INFO() << "BASELINE/ Using moving average filter with window width = "
+                        << QString::number(this->entity->settings->avgWindowSize) << " .";
+            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                                                            this->entity->settings->avgWindowSize));
+        }
+        else
+        {
+            QLOG_INFO() << "BASELINE/ Using moving average filter with default window width = 3." ;
+            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+        }
+
         break;
     case 2: //savitzky-golay
         QLOG_INFO() << "BASELINE/ Using Savitzky-Golay filter.";
@@ -285,14 +316,14 @@ void AppController::ResetModules()
     QLOG_INFO() << "Reset procedure started:";
     if (this->entity->ecg_baselined)
     {
-        this->entity->ecg_baselined->~QVector<double>();
+        this->entity->ecg_baselined->clear();
         QLOG_INFO() << "Baselined signal removed.";
     }
     else
         QLOG_INFO() << "Baselined signal did not exist.";
     if (this->entity->PWaveStart)
     {
-        this->entity->PWaveStart->~QVector<QVector<double>::const_iterator>();
+        this->entity->PWaveStart->clear();
         QLOG_INFO() << "PWaveStart removed.";
     }
     else
@@ -301,7 +332,7 @@ void AppController::ResetModules()
     if (this->entity->Rpeaks)
     {
 
-        this->entity->Rpeaks->~QVector<QVector<double>::const_iterator>();
+        this->entity->Rpeaks->clear();
         QLOG_INFO() << "Rpeaks removed.";
     }
     else
@@ -373,4 +404,21 @@ void AppController::runStInterval()
 
 //    emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
+}
+
+void AppController::ecgBase_Kalman1Changed(const QString arg1)
+{
+    this->entity->settings->kalman_arg1 = arg1;
+}
+void AppController::ecgBase_Kalman2Changed(const QString arg2)
+{
+    this->entity->settings->kalman_arg2 = arg2;
+}
+void AppController::CzasUsrednieniaEdit(const QString arg1)
+{
+    this->entity->settings->averaging_time = arg1.toDouble();
+}
+void AppController::ecgBase_WindowSizeEdit(const QString arg1)
+{
+    this->entity->settings->avgWindowSize = arg1.toInt();
 }

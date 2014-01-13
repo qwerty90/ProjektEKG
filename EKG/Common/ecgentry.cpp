@@ -13,7 +13,7 @@
 EcgEntry::EcgEntry(QObject *parent) :
     QObject(parent)
 {
-    this->entity = new EcgData();
+    this->entity = NULL;//new EcgData();
 }
 
 QString* EcgEntry::Validate(QFile *file)
@@ -58,6 +58,9 @@ void EcgEntry::LoadSamples(QString name)
     this->entity->primary = new QVector<double>(*ml2);
     this->entity->secondary = new QVector<double>(*v1);
     this->entity->settings->signalIndex = 1;    
+
+    ml2->clear();
+    v1->clear();
 }
 
 void EcgEntry::LoadAnnotations(QFile *file)
@@ -148,7 +151,9 @@ bool EcgEntry::Open(QString directory, QString record, QString &response)
 {
 
     if (this->entity!=NULL)
+    {
         delete this->entity;
+    }
 
     this->entity = new EcgData(record);
     QString *notValid;

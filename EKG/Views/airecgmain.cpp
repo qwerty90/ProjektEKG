@@ -2004,7 +2004,6 @@ QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &s
 
 void AirEcgMain::drawEcgBaseline(EcgData *data)
 {
-    QLOG_INFO() << "Start rysowania baseline";
     //dla pierwszego taba
     QwtPlot *plotMLII = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->baselinedArea->setWidget(plotMLII);
@@ -2013,13 +2012,10 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
     QStringList list=(QStringList()<<"red"<<"yellow"<<"blue");
     ui->ButterworthcomboBox->addItems(list);
 
-    QLOG_INFO() << "Koniec pierwszego rysowania baseline";
-
     //dla sig edr
     QwtPlot *plotBaseEDR = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->Baseline_edr->setWidget(plotBaseEDR);
     ui->Baseline_edr->show();
-    QLOG_INFO() << "Koniec drugiego rysowania baseline";
 }
 
 void AirEcgMain::drawAtrialFibr(EcgData *data)

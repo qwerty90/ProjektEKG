@@ -6,6 +6,9 @@ EcgSettings::EcgSettings(QObject *parent) :
     this->EcgBaselineMode = 0;
     this->RPeaksMode = 1;
 
+    this->averaging_time=0;
+    this->avgWindowSize =0;
+
     this->qrsClassSettings.clusterer = GMeansClusterer;
     this->qrsClassSettings.insideIterations = 1000;
     this->qrsClassSettings.maxClusterNo = 10;

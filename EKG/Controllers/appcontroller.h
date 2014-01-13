@@ -47,6 +47,12 @@ public slots:
     void switchTWA(unsigned char type);
     void switchWaves_p_onset(bool check);
 
+    void ecgBase_Kalman1Changed(const QString arg1);
+    void ecgBase_Kalman2Changed(const QString arg2);
+    void CzasUsrednieniaEdit   (const QString arg1);
+    void ecgBase_WindowSizeEdit(const QString arg1);
+
+
     void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
     void qrsParallelExecutionChanged(bool flag);
