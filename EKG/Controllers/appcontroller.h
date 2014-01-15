@@ -37,6 +37,7 @@ signals:
     void AtrialFibr_done (EcgData *data);
     void StInterval_done(EcgData *data);
     void HRV1_done(EcgData *data);
+    void RPeaks_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
@@ -46,6 +47,12 @@ public slots:
     void sendQRSData(int index, int type);
     void switchTWA(unsigned char type);
     void switchWaves_p_onset(bool check);
+
+    void ecgBase_Kalman1Changed(const QString arg1);
+    void ecgBase_Kalman2Changed(const QString arg2);
+    void CzasUsrednieniaEdit   (const QString arg1);
+    void ecgBase_WindowSizeEdit(const QString arg1);
+
 
     void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
@@ -61,6 +68,8 @@ public slots:
     void runAtrialFibr();
     void runStInterval();
     void runHRV1();
+    void runRPeaks();
+
     void onThreadFinished();
 };
 
