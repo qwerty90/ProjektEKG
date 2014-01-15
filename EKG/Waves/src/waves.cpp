@@ -185,15 +185,15 @@ const vector_it & waves::get_qrs_end(vector_it& r_peaks)
     return qrs_end_it;
 }
 
-const vector_it & waves::get_p_onset(vector_it& r_pekas)
+const vector_it & waves::get_p_onset()
 {
     vector_it p_onset_it; //->wyznacz mnie
 
-    return p_onset_it
+    return p_onset_it;
 }
-const vector_it & waves::get_p_end(vector_it& r_peaks)
+const vector_it & waves::get_p_end()
 {
     vector_it p_end_it; //-> wyznacz mnie
 
-    return p_end_it
+    return p_end_it;
 }

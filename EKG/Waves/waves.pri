@@ -1,3 +1,6 @@
+INCLUDES += \
+    Waves \
+
 HEADERS += \
     Waves/src/waves.h \
     Waves/3rdparty/kiss_fft130/kiss_fft.h \

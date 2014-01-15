@@ -7,6 +7,7 @@
 
 //#define LMAX 200000
 #define LFILT 128
+#define pi 3.14159265358979323846
 
 using namespace std;
 
@@ -14,9 +15,8 @@ void hilbert_transform(QVector<double>::iterator signal_start, QVector<double>::
 {
     int i, npt, lfilt;
     double *xh=new double[signal_end-signal_start];
-    double hilb[LFILT+1], pi, pi2,yt;
+    double hilb[LFILT+1], pi2,yt;
 
-    pi = M_PI;
     pi2 = 2*pi;
     lfilt = LFILT;
 

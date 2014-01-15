@@ -22,8 +22,8 @@ public:
 
     const vector_it & get_qrs_onset(vector_it&);
     const vector_it & get_qrs_end(vector_it&);
-    const vector_it & get_p_onset(vector_it&);
-    const vector_it & get_p_end(vector_it&);
+    const vector_it & get_p_onset();
+    const vector_it & get_p_end();
 
 private:
     QVector<double> & ecg;

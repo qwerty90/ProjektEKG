@@ -3,8 +3,8 @@
 #include <QVector>
 #include <fstream>
 #include <cmath>
-#include "kiss_fft.h"
-#include "kiss_fftr.h"
+#include "Waves/3rdparty/kiss_fft130/kiss_fft.h"
+#include "Waves/3rdparty/kiss_fft130/tools/kiss_fftr.h"
 
 
 using namespace std;
