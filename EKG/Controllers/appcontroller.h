@@ -37,6 +37,7 @@ signals:
     void AtrialFibr_done (EcgData *data);
     void StInterval_done(EcgData *data);
     void HRV1_done(EcgData *data);
+    void RPeaks_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
@@ -67,6 +68,8 @@ public slots:
     void runAtrialFibr();
     void runStInterval();
     void runHRV1();
+    void runRPeaks();
+
     void onThreadFinished();
 };
 

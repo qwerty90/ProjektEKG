@@ -1060,7 +1060,8 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     for (int i=0;i<pData.size();++i)
     {
         pDataX[i]=pData[i];
-        pDataY[i]=yData[pDataX[i]];
+        //pDataY[i]=yData[pDataX[i]];  /tak bylo
+        pDataY[i]=yData[i];     //@Krzysiek, czy tak ma byc?
         pDataX[i]=pDataX[i]*tos;
     }
 
@@ -2057,6 +2058,7 @@ void AirEcgMain::drawAtrialFibr(EcgData *data)
 void AirEcgMain::drawRPeaks(EcgData *data)
 {
 
+    QLOG_TRACE() << "drawRPeaks";
     QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
@@ -2661,4 +2663,9 @@ void AirEcgMain::on_checkBox_2_clicked(bool checked)
 void AirEcgMain::on_butterworthRadioButton_clicked()
 {
 
+}
+
+void AirEcgMain::on_pushButton_17_clicked()
+{
+    emit this->runRPeaks();
 }

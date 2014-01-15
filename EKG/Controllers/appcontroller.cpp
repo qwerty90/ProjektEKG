@@ -7,6 +7,7 @@
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
 #include "HRV1/HRV1MainModule.h"
+#include "R_PEAKS/src/r_peaksmodule.h"
 
 #include <QThread>
 
@@ -44,11 +45,13 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
     this->connect(view, SIGNAL(runStInterval()) ,this, SLOT (runStInterval()));
     this->connect(view, SIGNAL(runHRV1())       ,this, SLOT (runHRV1()));
+    this->connect(view, SIGNAL(runRPeaks())     ,this, SLOT (runRPeaks()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
     this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
     this->connect(this, SIGNAL(StInterval_done(EcgData*)) ,view, SLOT(drawStInterval(EcgData*)));
     this->connect(this, SIGNAL(HRV1_done(EcgData*))       ,view, SLOT(drawHrv1(EcgData*)))      ;
+    this->connect(this, SIGNAL(RPeaks_done(EcgData*))     ,view, SLOT(drawRPeaks(EcgData*)))    ;
 
 
     this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
@@ -209,6 +212,49 @@ void AppController::switchSignal(int index)
     this->entity->settings->signalIndex = index;
     this->ResetModules();
 }
+
+void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
+{
+    //QList<int>::Iterator iter_dest = dest;
+    QList<int>::Iterator iter_src  = src->begin();
+
+    while (iter_src != src->end())
+    {
+        dest->append(*iter_src);
+        iter_src++;
+    }
+
+}
+
+void AppController::ResetModules()
+{
+    QLOG_INFO() << "Reset procedure started:";
+    if (this->entity->ecg_baselined)
+    {
+        this->entity->ecg_baselined->clear();
+        QLOG_INFO() << "Baselined signal removed.";
+    }
+    else
+        QLOG_INFO() << "Baselined signal did not exist.";
+    if (this->entity->PWaveStart)
+    {
+        this->entity->PWaveStart->clear();
+        QLOG_INFO() << "PWaveStart removed.";
+    }
+    else
+        QLOG_INFO() << "PWaveStart did not exist.";
+
+    if (this->entity->Rpeaks)
+    {
+
+        this->entity->Rpeaks->clear();
+        QLOG_INFO() << "Rpeaks removed.";
+    }
+    else
+        QLOG_INFO() << "RPeaks did not exist.";
+    QLOG_INFO() << "All removed.";
+}
+
 void AppController::runEcgBaseline()
 {
     QLOG_INFO() <<"Ecg baseline started.";
@@ -298,47 +344,7 @@ void AppController::runHRV1()
     QLOG_INFO() << "HRV1 statistical drawn.";
 }
 
-void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
-{
-    //QList<int>::Iterator iter_dest = dest;
-    QList<int>::Iterator iter_src  = src->begin();
 
-    while (iter_src != src->end())
-    {
-        dest->append(*iter_src);
-        iter_src++;
-    }
-
-}
-
-void AppController::ResetModules()
-{
-    QLOG_INFO() << "Reset procedure started:";
-    if (this->entity->ecg_baselined)
-    {
-        this->entity->ecg_baselined->clear();
-        QLOG_INFO() << "Baselined signal removed.";
-    }
-    else
-        QLOG_INFO() << "Baselined signal did not exist.";
-    if (this->entity->PWaveStart)
-    {
-        this->entity->PWaveStart->clear();
-        QLOG_INFO() << "PWaveStart removed.";
-    }
-    else
-        QLOG_INFO() << "PWaveStart did not exist.";
-
-    if (this->entity->Rpeaks)
-    {
-
-        this->entity->Rpeaks->clear();
-        QLOG_INFO() << "Rpeaks removed.";
-    }
-    else
-        QLOG_INFO() << "RPeaks did not exist.";
-    QLOG_INFO() << "All removed.";
-}
 
 void AppController::runAtrialFibr()
 {
@@ -373,6 +379,19 @@ void AppController::runAtrialFibr()
     emit AtrialFibr_done(this->entity);//linia 37
 
 
+}
+void AppController::runRPeaks()
+{
+    typedef QVector<double>::iterator R_peaksIter;
+    typedef QVector<R_peaksIter> R_peaksIterVector;
+
+    QLOG_INFO() << "Run RPeaks (PanTompikns only)" ;
+    R_peaksModule obiekt(*(this->entity->GetCurrentSignal()), (float)this->entity->info->frequencyValue);
+    obiekt.panTompkins();
+    this->entity->Rpeaks = new QVector<QVector<double>::const_iterator> (obiekt.getPeaksIter());
+
+    emit this->RPeaks_done(this->entity);
+    QLOG_INFO() << "RPeaks done (PanTompikns only)" ;
 }
 
 void AppController::runStInterval()

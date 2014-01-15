@@ -31,7 +31,7 @@ class AirEcgMain : public QMainWindow
     QString hash;
 
     //void drawEcgBaseline(EcgData* data);
-    void drawRPeaks(EcgData* data);
+    //void drawRPeaks(EcgData* data);
     //void drawHrv1(EcgData* data);
     void drawHrv2(EcgData* data);
     void drawHrvDfa(EcgData* data);
@@ -89,6 +89,7 @@ signals:
     void runEcgBaseline();//example
     void runAtrialFibr();
     void runStInterval();
+    void runRPeaks();
     void runHRV1();
 
     void closeDialog();
@@ -117,10 +118,12 @@ public slots:
     void fbLoadData(const QString &directory, const QString &name);
     void receiveSingleProcessingResult(bool succeeded, EcgData *data);
 
+    //modules recieve
     void drawEcgBaseline(EcgData* data);//example
     void drawAtrialFibr(EcgData* data);  //to zostawiam Krzyskowi
     void drawStInterval(EcgData* data);
     void drawHrv1(EcgData *data);
+    void drawRPeaks(EcgData *data);
 
 private slots:
     void on_actionO_programie_triggered();
@@ -212,6 +215,8 @@ private slots:
     //void on_radioButton_5_clicked();
 
     void on_kalmanRadioButton_clicked();
+
+    void on_pushButton_17_clicked();
 
 private:
     Ui::AirEcgMain *ui;
