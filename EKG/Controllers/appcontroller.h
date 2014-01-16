@@ -55,6 +55,11 @@ public slots:
     void qrsGMaxKIterations(int maxIters);
     void qrsKClustersNumberChanged(int noClusters);
 
+    void ecgBase_CzasUsrednieniaChanged(const QString & arg1);
+    void ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1);
+    void ecgBase_Kalman1Changed(const QString &arg1);
+    void ecgBase_Kalman2Changed(const QString &arg1);
+
     void run();
     void runSingle(QString hash);
     void runEcgBaseline();//example

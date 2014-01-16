@@ -1,3 +1,4 @@
+
 #include "appcontroller.h"
 #include "Common/ecgdata.h"
 #include "Common/ecgentry.h"
@@ -55,6 +56,11 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsKClustersNumberChanged(int)),this,SLOT(qrsKClustersNumberChanged(int)));
     this->connect(view, SIGNAL(qrsMaxIterationsChanged(int)),this,SLOT(qrsMaxIterationsChanged(int)));
     this->connect(view, SIGNAL(qrsParallelExecutionChanged(bool)),this,SLOT(qrsParallelExecutionChanged(bool)));
+
+    this->connect(view, SIGNAL(ecgBase_CzasUsrednieniaChanged(const QString)),this,SLOT(ecgBase_CzasUsrednieniaChanged(const QString)));
+    this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1)),this,SLOT(ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1)));
+    this->connect(view, SIGNAL(ecgBase_Kalman1Changed(const QString &arg1)),this,SLOT(ecgBase_Kalman1Changed(const QString &arg1)));
+    this->connect(view, SIGNAL(ecgBase_Kalman2Changed(const QString &arg1)),this,SLOT(ecgBase_Kalman2Changed(const QString &arg1)));
 
 }
 
@@ -171,6 +177,36 @@ void AppController::qrsKClustersNumberChanged(int noClusters)
     }
 }
 
+void AppController::ecgBase_CzasUsrednieniaChanged(const QString & arg1)
+{
+    if(this->entity)
+    {
+        int CzasUsrednienia = arg1.toInt();
+    }
+}
+void AppController::ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1)
+{
+    if(this->entity)
+    {
+        int CzestotliwoscProbkowania = arg1.toInt();
+    }
+}
+void AppController:: ecgBase_Kalman1Changed(const QString &arg1)
+{
+    if(this->entity)
+    {
+        int Kalman1 = arg1.toInt();
+    }
+}
+void AppController::ecgBase_Kalman2Changed(const QString & arg1)
+{
+    if(this->entity)
+    {
+        int Kalman2 = arg1.toInt();
+    }
+}
+
+
 void AppController::run()
 {
     /*
@@ -214,8 +250,8 @@ void AppController::runEcgBaseline()
     //QVector<double> test;
     //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
-    if (this->entity->ecg_baselined)
-        this->entity->ecg_baselined->~QVector<double>();
+   // if (this->entity->ecg_baselined)
+     //   this->entity->ecg_baselined->~QVector<double>();
 
     switch (this->entity->settings->EcgBaselineMode)
     {

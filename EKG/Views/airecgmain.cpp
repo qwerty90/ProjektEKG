@@ -97,6 +97,7 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->pushButton_12->setEnabled(true);
    ui->rpeaksGroupBox_2->setEnabled(true);
     ui->baselineGroupBox->setEnabled(true);
+    ui->ButterworthcomboBox->setEnabled(true);
 
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
@@ -2615,6 +2616,12 @@ void AirEcgMain::on_kalmanRadioButton_clicked()
 {
     ui->KalmanGroupBox->setEnabled(true);
     ui->ButterworthcomboBox->setEnabled(false);
+    ui->MovingAvarangeGroupBox->setEnabled(false);
+}
+void AirEcgMain::on_butterworthRadioButton_clicked()
+{
+    ui->KalmanGroupBox->setEnabled(false);
+    ui->ButterworthcomboBox->setEnabled(true);
     ui->MovingAvarangeGroupBox->setEnabled(false);
 }
 
