@@ -13,7 +13,7 @@
 EcgEntry::EcgEntry(QObject *parent) :
     QObject(parent)
 {
-    this->entity = new EcgData();
+    this->entity = NULL;//new EcgData();
 }
 
 QString* EcgEntry::Validate(QFile *file)
@@ -30,13 +30,13 @@ QString* EcgEntry::Validate(QFile *file)
 
 void EcgEntry::LoadSamples(QString name)
 {
+
     QVector<double> *ml2 = new QVector<double>();
     QVector<double> *v1  = new QVector<double>();
     ml2->resize(650000);
     v1 ->resize(650000);
 
     QVector<int> data;
-    //QVector<int>::iterator data_iterator = data.begin();
     int i=0;
     int j=0;
 
@@ -49,24 +49,18 @@ void EcgEntry::LoadSamples(QString name)
     while(j<data.size())
     {        
         (*ml2)[i]=((double)data.at(j)*0.005)-5.0;//*gain-offset
-        //data_iterator++;
         j++;
         (*v1)[i] =((double)(data.at(j))*0.005)-5.0;//*gain-offset
         j++;
-        //data_iterator++;
         i++;
-    }
-    QLOG_INFO() << "Data scaled";
-
-    /*for(int i = 0; i < data.count(); i+=2)
-    {
-        ml2->append(data.at(i));
-        v1->append(data.at(i + 1));
-    }*/
+    }    
 
     this->entity->primary = new QVector<double>(*ml2);
     this->entity->secondary = new QVector<double>(*v1);
-    this->entity->settings->signalIndex = 1;
+    this->entity->settings->signalIndex = 1;    
+
+    ml2->clear();
+    v1->clear();
 }
 
 void EcgEntry::LoadAnnotations(QFile *file)
@@ -155,6 +149,11 @@ void EcgEntry::LoadNotes(QFile *file)
 
 bool EcgEntry::Open(QString directory, QString record, QString &response)
 {
+
+    if (this->entity!=NULL)
+    {
+        delete this->entity;
+    }
 
     this->entity = new EcgData(record);
     QString *notValid;

@@ -1060,7 +1060,8 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     for (int i=0;i<pData.size();++i)
     {
         pDataX[i]=pData[i];
-        pDataY[i]=yData[pDataX[i]];
+        //pDataY[i]=yData[pDataX[i]];  /tak bylo
+        pDataY[i]=yData[i];     //@Krzysiek, czy tak ma byc?
         pDataX[i]=pDataX[i]*tos;
     }
 
@@ -2004,7 +2005,6 @@ QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &s
 
 void AirEcgMain::drawEcgBaseline(EcgData *data)
 {
-    QLOG_INFO() << "Start rysowania baseline";
     //dla pierwszego taba
     QwtPlot *plotMLII = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->baselinedArea->setWidget(plotMLII);
@@ -2013,13 +2013,10 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
     QStringList list=(QStringList()<<"red"<<"yellow"<<"blue");
     ui->ButterworthcomboBox->addItems(list);
 
-    QLOG_INFO() << "Koniec pierwszego rysowania baseline";
-
     //dla sig edr
     QwtPlot *plotBaseEDR = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->Baseline_edr->setWidget(plotBaseEDR);
     ui->Baseline_edr->show();
-    QLOG_INFO() << "Koniec drugiego rysowania baseline";
 }
 
 void AirEcgMain::drawAtrialFibr(EcgData *data)
@@ -2061,6 +2058,7 @@ void AirEcgMain::drawAtrialFibr(EcgData *data)
 void AirEcgMain::drawRPeaks(EcgData *data)
 {
 
+    QLOG_TRACE() << "drawRPeaks";
     QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
@@ -2069,15 +2067,15 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 void AirEcgMain::drawHrv1(EcgData *data)
 {
     QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
-    ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
+    /*ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
     ui->RMSSD->setText("RMSSD = " %QString::number((data->RMSSD), 'f', 2) + " ms");
     ui->RR50->setText("RR50 = " %QString::number((data->RR50), 'd', 2));
     ui->RR50Ratio->setText("RR50 Ratio = " %QString::number((data-> RR50Ratio), 'c', 2) + " %");
     ui->SDANN->setText("SDANN = " %QString::number((data->SDANN), 'f', 2) + " ms");
-    ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
-    ui->SDSD->setText("SDSD = " %QString::number((data->SDSD), 'f', 2) + " ms");
-
+    ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");*/
+    ui->SDSD->setText("SDSD");
+QLOG_INFO() << "GUI/ drawing hrv1222..."<<QString::number(data->Mean);
     /*
     //Frequency Parameters
     QwtPlot *plotRR = plotPoints(*(data->RR_x), *(data->RR_y), data->fftSamplesX,
@@ -2447,7 +2445,7 @@ void AirEcgMain::receiveSingleProcessingResult(bool succeeded, EcgData *data)
 
 
 void AirEcgMain::on_pushButton_2_clicked()
-{        
+{
     emit this->runEcgBaseline();
 }
 
@@ -2665,4 +2663,9 @@ void AirEcgMain::on_checkBox_2_clicked(bool checked)
 void AirEcgMain::on_butterworthRadioButton_clicked()
 {
 
+}
+
+void AirEcgMain::on_pushButton_17_clicked()
+{
+    emit this->runRPeaks();
 }

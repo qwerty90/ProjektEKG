@@ -4,12 +4,14 @@
 #include <QObject>
 #include <QList>
 #include <QVector>
+#include <QPointF>
 #include <QMap>
 #include "ecgannotation.h"
 #include "ecginfo.h"
 #include "ecgsettings.h"
 #include "waves.h"
 #include "qrsclass.h"
+#include "QsLog/QsLog.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
@@ -18,26 +20,25 @@ class EcgData : public QObject
 {
     Q_OBJECT        
 public:
-    QString RecordId;
 
-    //wartosci czasu dla kolejnych pomiarow
-    QList<QString> *time;
+    QString RecordId;
 
     //wartosci liczbowe z dwoch elektrod
     QVector<double> *primary;
     QVector<double> *secondary;
 
     //przefiltrowany sygnal ekg - wyjscie modulu ECG_BASELINE
-    const QVector<double> *ecg_baselined;
+    QVector<double> *ecg_baselined;
+    QVector<QPointF> *characteristics;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
-    const QVector<QVector<double>::const_iterator> *Rpeaks;
+    QVector<QVector<double>::const_iterator> *Rpeaks;
 
     //punkty charakterystyczne - wyjscie modulu WAVES
     // EcgFrame zawiera punkty charakterystyczne: QRS_onset, QRS_end, T_end, P_onset, P_end
     QList<Waves::EcgFrame*> *waves;
     //na razie wrzuce osobno PWaveStart, ale docelowo ladniej by bylo miec to w jednej klasie jak wyzej
-    const QVector<QVector<double>::const_iterator> *PWaveStart;
+    QVector<QVector<double>::const_iterator> *PWaveStart;
 
 
     //Wykryte klasy zespolu QRS - wyjscie modulu QRS_CLASS
@@ -45,8 +46,6 @@ public:
 
     // modul ST_INTERVAL
     QList<EcgStDescriptor> *STintervals;
-
-    QList<double> *ecg_baselined_mv;
 
     // HRV1
     //dane statystyczne

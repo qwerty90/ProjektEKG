@@ -6,7 +6,7 @@
 #include <cmath>
 #include <QVector>
 
-typedef QVector<double>::iterator R_peaksIter;
+typedef QVector<double>::const_iterator R_peaksIter;
 typedef QVector<R_peaksIter> R_peaksIterVector;
 typedef std::complex<double> ComplexDouble;
 typedef QVector<ComplexDouble> VectorComplexDouble;

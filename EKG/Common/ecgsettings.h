@@ -13,6 +13,10 @@ public:
     explicit EcgSettings(QObject *parent = 0);
 
     int EcgBaselineMode;
+    QString kalman_arg1;
+    QString kalman_arg2;
+    double  averaging_time;
+    int     avgWindowSize;
     unsigned char RPeaksMode;
     int signalIndex;
     
