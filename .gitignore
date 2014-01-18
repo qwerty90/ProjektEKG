@@ -7,3 +7,5 @@
 */Makefile
 *build-*/
 
+/EKG/EKG
+/EKG/qrc_resources.cpp
