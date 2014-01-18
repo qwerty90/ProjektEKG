@@ -1,6 +1,6 @@
 \section{Moduł ATRIAL\_FIBR}
 \subsection{Badania literaturowe}
-Celem jest wykrycie u osoby badanej migotania przedsionków. 
+Celem jest wykrycie u osoby badanej migotania przedsionków (ang. \textit{Atrial Fibrillation}). 
 Jest to zaburzenie polegające na nieskoordynowanym pobudzeniu przedsionków serca. 
 Sygnał EKG u chorego charaktreryzuje się następującymi własnościami:
 \begin{itemize}
@@ -40,7 +40,7 @@ Autorzy drugiego źródła [2], prócz wspomnianej rozszerzyli sposób rozwiąza
 Początkowo zasugerowani artykułem z MIT postanowiliśmy wypróbować metodę tam przedstawioną 
 i ograniczyć się do analizy interwałów R-R. 
 Jednak po niepowodzeniu zmuszeni byliśmy wybrać inną metodę. 
-Ze względu na istotę- zdecydowaliśmy się również wykorzystać metodę wykrywania absencji P.
+Ze względu na istotę problemu -- zdecydowaliśmy się również wykorzystać metodę wykrywania absencji P.
 \paragraph{Analiza sygnału będzie więc polegała na zbadaniu występowania 2 parametrów:}
 \begin{enumerate}
     \item Odległości pomiędzy załamkami R
@@ -48,16 +48,84 @@ Ze względu na istotę- zdecydowaliśmy się również wykorzystać metodę wykr
 \end{enumerate}
 Gdy oba warunki zostaną spełnione, uznamy, że występuje migotanie przedsionków w danym sygnale.
 
-\paragraph{Parametry związanych z rytmem serca}
+\paragraph{Parametry związane z rytmem serca}
 Informację na temat położenia w czasie peaków R otrzymamy z modułu QRS Complex. 
 Na jej podstawie zakwalifikujemy każdy przedział RR jako krótki (poniżej 85\% średniej), 
 średni, oraz długi (powyżej 115\% średniej). 
 Następnie wyliczymy prawdopodobieństwo przejść między poszczególnymi stanami. 
 Finalnie otrzymamy z tego dwa parametry - 
-entropię sygnału oraz odchylenie sygnału od średniej macierzy zdrowego człowieka metodą Kullbacka - Leibera.
-\begin{figure}
+entropię sygnału oraz odchylenie sygnału od średniej macierzy zdrowego człowieka metodą Jensena-Shannona.
+\begin{figure}[ht]
 \centering
 \includegraphics[width=12cm]{ATRIAL_FIBR/img/RRMethodFlow.jpg}
+\end{figure}
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|r|ccc|}
+    \hline 
+    & S & M & L \\
+    \hline
+    S & 0.005 & 0.023 & 0.006 \\
+    M & 0.007 & 0.914 & 0.013 \\
+    L & 0.019 & 0.006 & 0.003 \\
+    \hline
+  \end{tabular}
+  \caption[Macierz Markowa - zdrowy człowiek]
+          {Prawdopodobieństwo zmiany długości dystansu RR w przypadku zdrowego człowieka. 
+            S - dystans krótki (mniej niż 75\% średniego), 
+            M - średni, L - długi (ponad 115\% średniego)}
+\end{table}
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|r|ccc|}
+    \hline 
+    & S & M & L \\
+    \hline
+    S & 0.056 & 0.114 & 0.062 \\
+    M & 0.101 & 0.350 & 0.096 \\
+    L & 0.060 & 0.114 & 0.035 \\
+    \hline
+  \end{tabular}
+  \caption[Macierz Markowa - chory człowiek]{Uśredniona macierz Markowa dla ludzi chorych na migotanie przedsionków}
+\end{table}
+
+Prawdopodobieństwo przejścia ze stanu R (regular) do kolejnego R wynosi:
+\begin{equation}
+P(R|R) = \frac{P(R,R)}{P(R)}
+\end{equation}
+
+Jako miary opisującej odległość między macierzami początkowo, zgodnie z zaleceniami pozycji \cite{Pedrycz}, 
+chcieliśmy użyć dywergencji Kullbacka-Leinera:
+\begin{equation}
+F_{KL}(P(E_i,E_j),\overline{P_{AF}(E_i,E_j)}) = \sum_{i=1}^3\sum_{j=1}^3P(E_j, E_j) \log\left(\frac{P(E_i, E_j)}{P_{AF}(E_i,E_j)} \right)
+\end{equation}
+natomiast ze względu na to, że jest asymetryczna, czyli de facto nie jest metryką, postanowiliśmy skorzystać z dywergencji Jensena-Shannona:
+\begin{equation}
+2+2 = 5
+\end{equation}
+
+W przypadku entropii skorzystaliśmy ze standardowej definicji:
+\begin{equation}
+H = \sum_{i=1}^3 P(E_j|E_i) 
+\end{equation}
+
+\begin{equation}
+H(E_j) = - \sum{j=1}^3P(E_j|E_i)\log_2P(E_j|E_i)
+\end{equation}
+Metoda została przez nas wstępnie przetestowana przy użyciu aplikacji napisanej w języku programowania Julia. 
+Pozwoliło to nam wysnuć pierwsze wnioski z wykresu~\ref{fig:RRResults}.
+Zielone kropki przedstawiają parametry dla sygnałów z bazy Physiobank zebranych od zdrowych ludzi,
+czerwone natomiast pochodzą od chorych na migotanie przedsionków. 
+Niestety nie jest możliwe oddzielenie puli kropek zielonych od czerwonych jedną linią, 
+dlatego potrzebujemy dodatkowego parametru.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=12cm]{ATRIAL_FIBR/img/RRResults.jpg}
+\caption{Entropia i dywergencja dla danych Physiobank}
+\label{fig:RRResults}
 \end{figure}
 
 \paragraph{Detekcja absencji P}
@@ -65,10 +133,52 @@ Z modułu WAVES otrzymamy informację na temat położenia początkowego i końc
 Na tej podstawie wyliczymy średni przebieg tej fali u zdrowego człowieka. 
 Następnie przy użyciu oszacowanego progu wyliczymy procentową absencję fali P w zadanym sygnale, 
 która będzie stanowiła kolejny współczynnik.
+\begin{figure}
+  \centering
+  \includegraphics[width=12cm]{ATRIAL_FIBR/img/PWaveFlow.jpg}
+  \caption{Algorytm wyliczenia współczynnika występowania fali P.}
+\end{figure}
+
+Wyliczenie współczynnika korelacji:
+\begin{equation}
+cc(i) = |\mathrm{corr\:coef}(P_\mathrm{wave}(i),\: \overline{P_\mathrm{wave}(i)})|, \quad i = 1,\ldots,n\; \mathrm{beats}
+\end{equation}
+\begin{equation}
+  |\mathrm{corr\:coef}(x,y)| = 
+  \frac
+      {\sum_{i=1}^{n}(x(i) - \overline{x})(y(i) - \overline{y})}
+      {
+        \sqrt{\sum_{i=1}^{n}(x(i) - \overline{x})}
+        \sqrt{\sum_{i=1}^{n}(y(i) - \overline{y})}
+      }
+\end{equation}
+Za wykrytą falę P uznajemy tę, dla której współczynnik korelacji wynosi co najmniej $0.2$.
+Stosunek liczby wykrytych fal P do liczby wszystkich okresów PQRST jest poszukiwanym współczynnikiem.
 
 \subsection{Rezultaty i wnioski}
-\begin{figure}
-\centering
-\includegraphics[width=12cm]{ATRIAL_FIBR/img/RRResults.jpg}
-\end{figure}
+Zaproponowane przez nas metody zostały poprawnie zaimplementowane w języku C++ oraz zintegrowane z główną linią projektu.
+Integralną częścią dostarczonego przez zespół kodu był zestaw testów jednostkowych napisanych 
+z wykorzystaniem frameworka QtTest.
+
+Zgodnie z koncepcją proponowanego rozwiązania, ocena prawdopodobieństwa zachorowania pacjenta na migotanie przedsionków
+jest średnią ważoną z następujących parametrów:
+\begin{itemize}
+ \item \textbf{Dywergencja Jensena-Shannona} między wzorcową macierzą Markowa opisującą prawdopodobieństwo przejść między stanami,
+ a macierzą wyliczoną dla danego pacjenta. 
+ Dywergencja $0$ oznacza, że macierz jest identyczna z wzorcową. 
+ 
+ \item \textbf{Entropia macierzy Markowa}.
+ Wartość $0$ oznacza, że wszystkie wartości dystansów między falami R mieszczą się w przedziale $[85\%,115\%]$ wartości średniej.
+ Z drugiej strony, wartość $1$ mówi o dużej nieregularności występowania fali R, 
+ co jest symptomatyczne dla osób cierpiących na migotanie przedsionków.
+ 
+ \item \textbf{Współczynnik zaniku fali P}. 
+ Stosunek liczby okresów PQRST w których fala P występuje, do całkowitej liczby tych okresów.
+ Za występowanie fali P uznajemy sytuację, w której korelacja między sygnałem w przedziale otrzymanym z modułu WAVES,
+ a sygnałem wzorcowym jest większa od $0.2$.
+\end{itemize}
+Po zaaplikowaniu wyżej wspomnianych metod dla wzorcowych sygnałów z bazy Physiobank, 
+można stwierdzić, że program dokonuje detekcji poprawnie. 
+Właściwie dla wiekszości przypadków wystarczająca jest sama analiza rytmu bicia serca (dystansów R-R).
+Zastosowanie drugiej metody związanej z absencją fali P dodatkowo zwiększyło skuteczność wykrywania choroby.
 
