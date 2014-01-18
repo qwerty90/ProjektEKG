@@ -9,8 +9,13 @@ EcgData::EcgData(QObject *parent) :
     this->ecg_baselined = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
-    this->PWaveStart = NULL;//do wywalenia
-    this->classes = NULL;
+    //this->PWaveStart = NULL;//do wywalenia
+    this->Waves = new Waves_struct;
+    this->Waves->PWaveEnd = NULL;
+    this->Waves->QRS_end  = NULL;
+    this->Waves->QRS_onset= NULL;
+    this->Waves->T_end    = NULL;
+    this->Waves->Count    = 0;
     this->STintervals = NULL;
     this->RR_x = NULL;
     this->RR_y = NULL;

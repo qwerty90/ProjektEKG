@@ -26,6 +26,13 @@ public:
     const vector_it & get_p_end();
 
 private:
+
+     vector_it qrs_onset_it;
+     vector_it qrs_end_it;
+    const vector_it p_onset_it;
+    const vector_it p_end_it;
+
+
     QVector<double> & ecg;
     float fs;
 

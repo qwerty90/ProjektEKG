@@ -1677,7 +1677,7 @@ QwtPlot* AirEcgMain::plotPointsPlotDFA(QList<double> &x, QList<double> &y , doub
     return plot;
 }
 
-QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgFrame *> &ecgFrames, double samplingFrequency)
+QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecgFrames, double samplingFrequency)
 {
    // QVector<int> yData = (QVector<int>)(ecgSignal);
     QVector<double> yDataFin = QVector<double>(ecgSignal.size());
@@ -1733,33 +1733,33 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgF
     QVector<unsigned int> Qrs_onsetData;
     QVector<unsigned int> Qrs_endData;
    // QVector<unsigned int> T_endData;
-    for(unsigned int i = 0; i < ecgFrames.size(); i++)
+    for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
-        P_onsetData.append(ecgFrames[i]->P_onset);
-        P_endData.append(ecgFrames[i]->P_end);
-        Qrs_onsetData.append(ecgFrames[i]->QRS_onset);
-        Qrs_endData.append(ecgFrames[i]->QRS_end);
-       // T_endData.append(ecgFrames[i]->T_end);
+        /*P_onsetData.append(ecgFrames.PWaveEnd[i]);
+        P_endData.append(ecgFrames.PWaveStart[i]);
+        Qrs_onsetData.append(ecgFrames.QRS_onset[i]);
+        Qrs_endData.append(ecgFrames.QRS_end[i]);
+        T_endData.append(ecgFrames[i]->T_end);*/
     }
 
 
-    QVector<double> P_onsetDataX = QVector<double>(ecgFrames.size());
-    QVector<double> P_onsetDataY = QVector<double>(ecgFrames.size());
+    QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
+    QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
 
-    QVector<double> P_endDataX = QVector<double>(ecgFrames.size());
-    QVector<double> P_endDataY = QVector<double>(ecgFrames.size());
+    QVector<double> P_endDataX = QVector<double>(ecgFrames.Count);
+    QVector<double> P_endDataY = QVector<double>(ecgFrames.Count);
 
-    QVector<double> Qrs_onsetDataX = QVector<double>(ecgFrames.size());
-    QVector<double> Qrs_onsetDataY = QVector<double>(ecgFrames.size());
+    QVector<double> Qrs_onsetDataX = QVector<double>(ecgFrames.Count);
+    QVector<double> Qrs_onsetDataY = QVector<double>(ecgFrames.Count);
 
-    QVector<double> Qrs_endDataX = QVector<double>(ecgFrames.size());
-    QVector<double> Qrs_endDataY = QVector<double>(ecgFrames.size());
+    QVector<double> Qrs_endDataX = QVector<double>(ecgFrames.Count);
+    QVector<double> Qrs_endDataY = QVector<double>(ecgFrames.Count);
 
-   // QVector<double> T_endDataX = QVector<double>(ecgFrames.size());
-   // QVector<double> T_endDataY = QVector<double>(ecgFrames.size());
+   // QVector<double> T_endDataX = QVector<double>(ecgFrames.Count);
+   // QVector<double> T_endDataY = QVector<double>(ecgFrames.Count);
 
 
-    for (int i=0; i < ecgFrames.size();++i)
+    for (int i=0; i < ecgFrames.Count;++i)
     {
         P_onsetDataX[i]=P_onsetData[i]*dt;
         P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
@@ -2067,15 +2067,14 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 void AirEcgMain::drawHrv1(EcgData *data)
 {
     QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
-    /*ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
+    ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
     ui->RMSSD->setText("RMSSD = " %QString::number((data->RMSSD), 'f', 2) + " ms");
     ui->RR50->setText("RR50 = " %QString::number((data->RR50), 'd', 2));
     ui->RR50Ratio->setText("RR50 Ratio = " %QString::number((data-> RR50Ratio), 'c', 2) + " %");
     ui->SDANN->setText("SDANN = " %QString::number((data->SDANN), 'f', 2) + " ms");
-    ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");*/
+    ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
     ui->SDSD->setText("SDSD");
-QLOG_INFO() << "GUI/ drawing hrv1222..."<<QString::number(data->Mean);
     /*
     //Frequency Parameters
     QwtPlot *plotRR = plotPoints(*(data->RR_x), *(data->RR_y), data->fftSamplesX,
@@ -2122,6 +2121,7 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 void AirEcgMain::drawStInterval(EcgData *data)
 {
+    QLOG_TRACE() << "Drawing StInterval not ready yet.";
   //  QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
  //   ui->stIntervalArea->setWidget(plotX);
   //  ui->stIntervalArea->show();
@@ -2181,14 +2181,17 @@ void AirEcgMain::drawTwa(EcgData *data)
 
 void AirEcgMain::drawWaves(EcgData *data)
 {
-    QwtPlot *wavesPlot = plotWavesPlot(*(data->GetCurrentSignal()), *(data->waves), 360.0);
+    QLOG_FATAL() << "GUI/ drawWaves not done yet.";
+    /*
+    QwtPlot *wavesPlot = plotWavesPlot(*(data->GetCurrentSignal()), *(data->Waves), 360.0);
     ui->scrollAreaWaves->setWidget(wavesPlot);
     ui->scrollAreaWaves->show();
+    */
 }
 
 void AirEcgMain::drawQrsClass(EcgData *data)
 {
-    this->resetQrsToolbox(data);
+    //this->resetQrsToolbox(data);
 }
 
 void AirEcgMain::drawHrt(EcgData *data)
@@ -2217,7 +2220,7 @@ void AirEcgMain::receiveResults(EcgData *data)
     return;
 }
 
-void AirEcgMain::resetQrsToolbox(EcgData *data)
+/*void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
     ui->stackedWidget->setCurrentIndex(0);
@@ -2247,9 +2250,9 @@ void AirEcgMain::resetQrsToolbox(EcgData *data)
         listView->setMinimumHeight(100);
         ui->QRSClassesToolBox->addItem(listView,labelText);
     }
-}
+}*/
 
-void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
+/*void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
 {
     QVector<double> xAxis;
     QVector<double> qrsSegment = *(currClass.representative);
@@ -2355,9 +2358,9 @@ void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
     this->qrsClassPlot->setAxisScale( QwtPlot::xBottom , xMin*this->tScale, xMax*this->tScale);
 
     this->populareQRSClassBox(currClass, type);
-}
+}*/
 
-void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
+/*void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
 {
     QGridLayout* layout;
 
@@ -2395,7 +2398,7 @@ void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
         layout->addWidget(label,3 + i,0,1,1);
         layout->addWidget(label2,3 + i,1,1,1);
     }
-}
+}*/
 
 void AirEcgMain::receiveSingleProcessingResult(bool succeeded, EcgData *data)
 {
@@ -2458,8 +2461,9 @@ void AirEcgMain::on_pushButton_3_clicked()
 
 void AirEcgMain::on_pushButton_5_clicked()
 {
-    this->hash = "WAVES";
-    emit this->runSingle(this->hash);
+    //this->hash = "WAVES";
+    //emit this->runSingle(this->hash);
+    emit this->runWaves();
 }
 
 void AirEcgMain::on_pushButton_6_clicked()
@@ -2523,19 +2527,21 @@ void AirEcgMain::on_comboBox_currentIndexChanged(int index)
 
     if(index == 0)
     {
-        emit qrsClustererChanged(KMeansClusterer);
+        /*emit qrsClustererChanged(KMeansClusterer);
         emit qrsMaxIterationsChanged(ui->qrsSetKMaxIterSpinBox->value());
         emit qrsParallelExecutionChanged(ui->qrsSetKMeansParallelCheckBox->isEnabled());
         emit qrsKClustersNumberChanged(ui->qrsSetKClusterNumSpinBox->value());
+        */
     }
     else
     {
-        emit qrsClustererChanged(GMeansClusterer);
+        /*emit qrsClustererChanged(GMeansClusterer);
         emit qrsMaxIterationsChanged(ui->qrsSetGMaxItersSpinBox->value());
         emit qrsGMaxKIterations(ui->qrsSetGinKMaxIterations->value());
         emit qrsGMinClustersChanged(ui->qrsSetGMinClusterSpinBox->value());
         emit qrsGMaxClustersChanged(ui->qrsSetGMaxClusterSpinBox->value());
         emit qrsParallelExecutionChanged(ui->qrsSettingsGMeansParallelCheckBox->isEnabled());
+        */
     }
 }
 

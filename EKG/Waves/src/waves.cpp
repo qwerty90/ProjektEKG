@@ -1,4 +1,5 @@
 #include "waves.h"
+#include "QsLog/QsLog.h"
 
 using namespace std;
 
@@ -13,7 +14,7 @@ const vector_it & waves::get_qrs_onset(vector_it& r_peaks)
     QVector<double> envelope_win;
     it tp, envelope_end, envelope_start;
     QVector<double> signal(ecg.end()-ecg.begin()),hilbert(ecg.end()-ecg.begin());
-    vector_it qrs_onset_it;
+   // vector_it qrs_onset_it;
 
     fft_filter(ecg.begin(), ecg.end(), signal.begin(), signal.end(),fs,low_freq_lim,hi_freq_lim);
     hilbert_transform(signal.begin(), signal.end(), hilbert.begin(), hilbert.end());
@@ -84,11 +85,12 @@ const vector_it & waves::get_qrs_onset(vector_it& r_peaks)
 
                     }
                     if (temp_j!=0){
-                    qrs_onset_it.push_back(ecg.begin()+temp_j);
+                    this->qrs_onset_it.push_back(ecg.begin()+temp_j);
                     }
                  }
     }
-    return qrs_onset_it;
+    QLOG_TRACE() << "QRS_calculated.";
+    return this->qrs_onset_it;
 }
 
 const vector_it & waves::get_qrs_end(vector_it& r_peaks)
@@ -102,7 +104,7 @@ const vector_it & waves::get_qrs_end(vector_it& r_peaks)
     QVector<double> envelope_win;
     it tp, envelope_end, envelope_start;
     QVector<double> signal(ecg.end()-ecg.begin()),hilbert(ecg.end()-ecg.begin());
-    vector_it qrs_end_it;
+   // vector_it qrs_end_it;
 
     fft_filter(ecg.begin(), ecg.end(), signal.begin(), signal.end(),fs,low_freq_lim,hi_freq_lim);
     hilbert_transform(signal.begin(), signal.end(), hilbert.begin(), hilbert.end());
@@ -178,22 +180,22 @@ const vector_it & waves::get_qrs_end(vector_it& r_peaks)
                         }
                     }
                     if (temp_j!=-1){
-                    qrs_end_it.push_back(ecg.begin()+temp_j);
+                    this->qrs_end_it.push_back(ecg.begin()+temp_j);
                     }
                  }
     }
-    return qrs_end_it;
+    return this->qrs_end_it;
 }
 
 const vector_it & waves::get_p_onset()
 {
-    vector_it p_onset_it; //->wyznacz mnie
+   // vector_it p_onset_it; //->wyznacz mnie
 
-    return p_onset_it;
+    return this->p_onset_it;
 }
 const vector_it & waves::get_p_end()
 {
-    vector_it p_end_it; //-> wyznacz mnie
+   // vector_it p_end_it; //-> wyznacz mnie
 
-    return p_end_it;
+    return this->p_end_it;
 }

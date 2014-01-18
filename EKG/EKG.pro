@@ -30,4 +30,4 @@ INCLUDEPATH += Include
 
 QMAKE_CXXFLAGS += -std=c++0x
 
-LIBS += -L$$PWD/R_PEAKS/fourier/ -llibfftw3-3
+LIBS += -L$$PWD/R_PEAKS/fourier/ -lfftw3-3
