@@ -15,6 +15,7 @@ EcgData::EcgData(QObject *parent) :
     this->Waves->QRS_end  = NULL;
     this->Waves->QRS_onset= NULL;
     this->Waves->T_end    = NULL;
+    this->Waves->PWaveStart=NULL;
     this->Waves->Count    = 0;
     this->STintervals = NULL;
     this->RR_x = NULL;
@@ -31,6 +32,26 @@ EcgData::EcgData(QObject *parent) :
 
 EcgData::EcgData(QString id)
 {
+    QLOG_INFO() << "Stworzono obiekt typu ecgdata dla "<<id<<"." ;
+    this->primary = NULL;
+    this->secondary = NULL;
+    this->ecg_baselined = NULL;
+    this->characteristics=NULL;
+    this->Rpeaks = NULL;
+    //this->PWaveStart = NULL;//do wywalenia
+    this->Waves = new Waves_struct;
+    this->Waves->PWaveEnd = NULL;
+    this->Waves->QRS_end  = NULL;
+    this->Waves->QRS_onset= NULL;
+    this->Waves->T_end    = NULL;
+    this->Waves->PWaveStart=NULL;
+    this->Waves->Count    = 0;
+    this->STintervals = NULL;
+    this->RR_x = NULL;
+    this->RR_y = NULL;
+    this->fft_x = NULL;
+    this->fft_y = NULL;
+
     this->RecordId = id;
     this->settings = new EcgSettings();
 }

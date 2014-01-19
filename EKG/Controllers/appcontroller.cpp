@@ -14,6 +14,7 @@
 
 AppController::AppController(QObject *parent) : QObject(parent)
 {
+    this->entity = new EcgData;
     //this->InitializeDependencies();
 }
 /*
@@ -70,7 +71,7 @@ void AppController::BindView(AirEcgMain *view)
 
 void AppController::loadData(const QString &directory, const QString &name)
 {
-    EcgEntry *entry = new EcgEntry();
+    EcgEntry *entry = new EcgEntry;
     QString *response = new QString("");
     if(!entry->Open(directory, name, *response))
     {
@@ -170,9 +171,9 @@ void AppController::ResetModules()
     }
     else
         QLOG_INFO() << "Baselined signal did not exist.";
-    if (this->entity->PWaveStart)
+    if (this->entity->Waves->PWaveStart)
     {
-        this->entity->PWaveStart->clear();
+        this->entity->Waves->PWaveStart->clear();
         QLOG_INFO() << "PWaveStart removed.";
     }
     else
@@ -198,8 +199,10 @@ void AppController::runEcgBaseline()
     KalmanFilter kalman;
     const QVector<ButterCoefficients> coeff = predefinedButterCoefficientSets();
 
-    if (this->entity->ecg_baselined)
+    if (this->entity->ecg_baselined!=NULL)
+    {
         this->entity->ecg_baselined->clear();
+    }
 
     switch (this->entity->settings->EcgBaselineMode)
     {

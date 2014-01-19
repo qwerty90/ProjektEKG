@@ -47,7 +47,7 @@ public:
     // EcgFrame zawiera punkty charakterystyczne: QRS_onset, QRS_end, T_end, P_onset, P_end
         //na razie wrzuce osobno PWaveStart, ale docelowo ladniej by bylo miec to w jednej klasie jak wyzej
     Waves_struct *Waves;
-    QVector<QVector<double>::const_iterator> *PWaveStart;
+    //QVector<QVector<double>::const_iterator> *PWaveStart;
 
 
     //Wykryte klasy zespolu QRS - wyjscie modulu QRS_CLASS
