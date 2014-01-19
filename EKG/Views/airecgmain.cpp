@@ -1106,6 +1106,112 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     return plot;
 }
 
+QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq){
+    //QVector<int> yData = QVector<int>::fromList(y);
+    QVector<double> yDataFin = QVector<double>(yData.size());
+    QVector<double> sampleNo = QVector<double>(yData.size());
+
+    int max=yData.first();
+    int min=yData.first();
+
+    double tos=1/freq;
+
+    for (int i=0;i<yData.size();++i)
+    {
+        sampleNo[i]=(i)*tos;
+        yDataFin[i]=yData[i];
+        if (max<yData[i]) max=yData[i];
+        if (min>yData[i]) min=yData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+
+    QwtText xaxis("Time [s]");
+    QwtText yaxis("Voltage [mV]");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve->setSamples(sampleNo,yDataFin);
+    curve->attach( plot );
+
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+    QVector<unsigned int> pData = QVector<unsigned int>(p.size());
+    for (int i=0;i<p.size();i++)
+    {
+        pData[i]=((unsigned int)p.at(i));
+        QLOG_TRACE() << QString::number( p.at(i));//- p.first());
+
+    }
+
+   // indeksy.append(this->entity->Rpeaks->first() - this->entity->Rpeaks->at(i));
+        //QVector<unsigned int> pData = QVector<unsigned int>::fromList(p);
+    QVector<double> pDataX = QVector<double>(pData.size());
+    QVector<double> pDataY = QVector<double>(pData.size());
+
+    for (int i=0;i<pData.size();++i)
+    {
+        pDataX[i]=pData[i]*tos;
+       // QLOG_TRACE() << QString::number( pDataX[i]);
+
+        pDataY[i]=yData[pData[i]];  //tak bylo
+       // QLOG_TRACE() << QString::number( yData[i]);
+        //pDataY[i]=yData[i];     //@Krzysiek, czy tak ma byc?
+        //pDataX[i]=pDataX[i]*tos;
+    }
+
+    QwtPlotCurve *points = new QwtPlotCurve();
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
+    points->setSymbol(marker);
+    points->setPen( QColor( Qt::red ) );
+    points->setStyle( QwtPlotCurve::NoCurve );
+    points->setSamples(pDataX,pDataY);
+    points->attach( plot );
+
+    //
+/*
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+*/
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    return plot;
+}
 QwtPlot* AirEcgMain::plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, double &sd1, double &sd2){
     QVector<int> yData = QVector<int>::fromList(y);
     QVector<unsigned int> xData = QVector<unsigned int>::fromList(x);
@@ -2068,7 +2174,8 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 {
 
     QLOG_TRACE() << "drawRPeaks";
-    QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
+    //QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
+    QwtPlot *plotVI = plotPointsPlot_uint((data->Rpeaks_uint),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
 }

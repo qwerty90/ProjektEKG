@@ -42,6 +42,7 @@ public:
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
     QVector<QVector<double>::const_iterator> *Rpeaks;
+    QVector<unsigned int> Rpeaks_uint;
 
     //punkty charakterystyczne - wyjscie modulu WAVES
     // EcgFrame zawiera punkty charakterystyczne: QRS_onset, QRS_end, T_end, P_onset, P_end

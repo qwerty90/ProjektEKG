@@ -54,6 +54,8 @@ public:
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
     QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
+    QwtPlot* plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq);
+
     //HRV1*****************
     QwtPlot* plotPointsPlotDoubleToDouble(QList<double> &x, QList<double> &y);
     QwtPlot* plotLogPlotF(QList<double> &x,QList<double> &y,int rodzaj);
