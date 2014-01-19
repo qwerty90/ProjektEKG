@@ -2,6 +2,12 @@
 \subsection{Badania literaturowe}
 Celem jest wykrycie u osoby badanej migotania przedsionków (ang. \textit{Atrial Fibrillation}). 
 Jest to zaburzenie polegające na nieskoordynowanym pobudzeniu przedsionków serca. 
+Ryzyko zgonu u osoby chorej wzrasta dwukrotnie, a problem dotyczy $1-2\%$ ogółu populacji.
+Migotanie przedsionków zazwyczaj jest bezobjawowe, zaburzenie jest wykrywane przypadkowo,
+lub po udarze niedokrwiennym mózgu.
+Zwykle występuje u pacjentów z organiczną chorobą serca, ale również może wystąpić u osób zdrowych.
+Możliwe do zaobserwowania objawy to duszności, kołatanie serca, ból w klatce piersiowej czy zawroty głowy.
+
 Sygnał EKG u chorego charaktreryzuje się następującymi własnościami:
 \begin{itemize}
   \item brak załamków P
@@ -9,6 +15,16 @@ Sygnał EKG u chorego charaktreryzuje się następującymi własnościami:
   \item obecna fala migotania
   \item zespoły QRS zwykle wąskie
 \end{itemize}
+\begin{figure}[ht]
+\centering
+\includegraphics{ATRIAL_FIBR/img/AF_ecg.jpg}
+\label{fig:AF_ecg}
+\caption{Sygnał EKG dla osoby chorej i prawidłowy rytm zatokowy}
+\end{figure}
+
+Rysunek~\ref{fig:AF_ecg} na górym zapisie przedstawia sygnał EKG dla osoby chorej na migotanie przedsionków,
+natomiast dolny zapis prezentuje prawidłowy rytm zatokowy.
+Wykres osoby chorej wyraźnie przedstawia wszystkie podane symptomy.
 
 Literatura podawała kilka czynników mogących wskazywać na występowanie u pacjenta migotania przedsionków. 
 Jeden artykuł [1] przedstawiał metodę opartą jedynie na detekcji peaków R. 
@@ -23,12 +39,12 @@ iaf4\_ivc - wykazuje własności bardzo zbliżone do zdrowego człowieka.
 
 Autorzy drugiego źródła [2], prócz wspomnianej rozszerzyli sposób rozwiązania problemu dodając następujące metody:
 \begin{enumerate}
- \item Wykrycie absencji załamka P
+ \item \textbf{Wykrycie absencji załamka P}
  
     Po ustaleniu pewnego wzorca  P (na podstawie dużej liczby próbek), 
     zostaje porównany do sygnału osoby badanej. 
     Ilość wystąpień załamka zostaje wyznaczona na podstawie wyznaczonego progu.
- \item Analiza aktywności przedsionków
+ \item \textbf{Analiza aktywności przedsionków}
  
     Po usunięciu QRS-T, sygnał u osoby chorej charakteryzuje się występowaniem fali o częstotliwości 4-10 Hz. 
     Należy wykonać analizę widma -- po zastosowaniu FFT (Fast Fourier Transform) 
