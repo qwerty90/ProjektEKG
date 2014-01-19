@@ -1,11 +1,76 @@
-\documentclass{book}
-\usepackage{polski}
+\documentclass[openright]{book}
+\usepackage{tocloft}
+\usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{subfig}
 \usepackage{graphicx}
-\usepackage{fullpage}
-\usepackage{multicol}
-\DeclareGraphicsExtensions{.jpg}
+\usepackage{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{epstopdf}
+\usepackage{amsmath, mathtools}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\usepackage[
+        unicode=true,
+        bookmarks=true,
+        bookmarksnumbered=false,
+        bookmarksopen=false,
+        breaklinks=false,
+        pdfborder={0 0 1},
+        backref=false,
+        colorlinks=false]{hyperref}
+		
+\hypersetup{
+        pdftitle={Elektroniczne systemy diagnostyki medycznej i terapii},
+        pdfauthor={Neurocybernetyka}}
+
+\linespread{1.15}
+\lstloadlanguages{TeX}
+
+\usepackage{titlesec}
+\usepackage{titletoc}
+\newcommand{\code}[1]{\texttt{#1}}
+
 \begin{document}
+
+\author{Neurocybernetyka}
+\title{\Huge{Elektroniczne systemy diagnostyki medycznej i terapii}}
+
+\maketitle
+\tableofcontents{}
+\newpage{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{Lista modułów}
+\include{GUI/gui}
+\include{MVC/mvc}
+\include{ECG_BASELINE/ecg_baseline}
+\include{R_PEAKS/r_peaks}
+\include{VCG_T_LOOP/vcg_t_loop}
+\include{SID_EDIR/sid_edr}
+\include{WAVES/waves}
+\include{HRV1/hrv1}
+\include{QRS_CLASS/qrs_class}
+\include{ST_INTERVAL/st_interval}
+\include{SLEEP_APNEA/sleep_apnea}
 \include{ATRIAL_FIBR/atrial_fibr}
+\include{QT_DISP/qt_disp}
+\include{HRT/hrt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage{}
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{bibliografia}
+
 \end{document}
