@@ -73,7 +73,7 @@ entropię sygnału oraz odchylenie sygnału od średniej macierzy zdrowego czło
   \end{tabular}
   \caption[Macierz Markowa - zdrowy człowiek]
           {Prawdopodobieństwo zmiany długości dystansu RR w przypadku zdrowego człowieka. 
-            S - dystans krótki (mniej niż 75\% średniego), 
+            S - dystans krótki (mniej niż 85\% średniego), 
             M - średni, L - długi (ponad 115\% średniego)}
 \end{table}
 
@@ -97,14 +97,18 @@ P(R|R) = \frac{P(R,R)}{P(R)}
 \end{equation}
 
 Jako miary opisującej odległość między macierzami początkowo, zgodnie z zaleceniami pozycji \cite{Pedrycz}, 
-chcieliśmy użyć dywergencji Kullbacka-Leinera:
+chcieliśmy użyć dywergencji Kullbacka-Leiblera:
 \begin{equation}
 F_{KL}(P(E_i,E_j),\overline{P_{AF}(E_i,E_j)}) = \sum_{i=1}^3\sum_{j=1}^3P(E_j, E_j) \log\left(\frac{P(E_i, E_j)}{P_{AF}(E_i,E_j)} \right)
 \end{equation}
-natomiast ze względu na to, że jest asymetryczna, czyli de facto nie jest metryką, postanowiliśmy skorzystać z dywergencji Jensena-Shannona:
+natomiast ze względu na to, że jest asymetryczna, czyli de facto nie jest metryką, postanowiliśmy skorzystać z dywergencji \textbf{Jensena-Shannona}. 
+Bazuje na powyższej dywergencji, z pewnymi znaczącymi różnicami.
+Jest symetryczna i zawsze ma skończoną wartość.
+Pierwiastek kwadratowy dywergencji Jensena-Shannona jest metryką zwaną dystansem Jensena-Shannona.
 \begin{equation}
-2+2 = 5
+F_{JS} = \frac{1}{2}F_{KL}(P(E_i,E_j),M)+\frac{1}{2}F_{KL}(\overline{P_{AF}(E_i,E_j)},M)
 \end{equation}
+gdzie $$M = \frac{1}{2}(P(E_i,E_j)+\overline{P_{AF}(E_i,E_j)})$$
 
 W przypadku entropii skorzystaliśmy ze standardowej definicji:
 \begin{equation}
