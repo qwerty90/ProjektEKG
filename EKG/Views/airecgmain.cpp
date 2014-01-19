@@ -1055,7 +1055,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     {
         pData.append((unsigned int)(p.at(i)-p.first()));
         QLOG_TRACE() << QString::number( p.at(i)- p.first());
-        //pData[=p.at(i);
+
     }
 
    // indeksy.append(this->entity->Rpeaks->first() - this->entity->Rpeaks->at(i));
