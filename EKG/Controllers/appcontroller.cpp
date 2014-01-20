@@ -391,13 +391,13 @@ void AppController::runQrsClass()
 {
     QLOG_INFO() << "Start QrsClass";
 
-    if (!this->entity || !this->entity->waves || !this->entity->ecg_baselined)
+    if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
         return;
 
     QRSClassModule QrsClassifier;
-    QrsClassifier.setSettings(this->entity->settings->qrsClassSettings);
+    //QrsClassifier.setSettings(this->entity->settings->qrsClassSettings);
 
-    QrsClassifier.setWaves(this->entity->waves);
+    QrsClassifier.setWaves(this->entity->Waves->QRS_onset, this->entity->Waves->QRS_end);
     QrsClassifier.setEGCBaseline(this->entity->ecg_baselined);
 
     if (!QrsClassifier.process())
@@ -407,7 +407,7 @@ void AppController::runQrsClass()
     else
     {
         QList<QRSClass>* classes = QrsClassifier.getClasses();
-        this->entity->classes = classes;
+//        this->entity->classes = classes;
     }
 
 //    emit QrsClass_done(this->entity);
