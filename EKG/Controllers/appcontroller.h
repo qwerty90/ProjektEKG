@@ -11,6 +11,8 @@
 
 #include "ATRIAL_FIBR/src/AtrialFibrApi.h"
 
+typedef QVector<QVector<double>::const_iterator> iters;
+
 class AppController : public QObject
 {
     Q_OBJECT
@@ -29,7 +31,7 @@ public:
     void BindView(AirEcgMain *view);
 signals:
     void patientData(EcgData *info);
-    void sendQRSData(QRSClass qrsSegment, int type);
+    //void sendQRSData(QRSClass qrsSegment, int type);
     void singleProcessingResult(bool succeeded, EcgData *data);
     void processingResults(EcgData *data);
 
@@ -38,13 +40,14 @@ signals:
     void StInterval_done(EcgData *data);
     void HRV1_done(EcgData *data);
     void RPeaks_done(EcgData *data);
+    void Waves_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
     void switchSignal(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
-    void sendQRSData(int index, int type);
+    //void sendQRSData(int index, int type);
     void switchTWA(unsigned char type);
     void switchWaves_p_onset(bool check);
 
@@ -54,22 +57,23 @@ public slots:
     void ecgBase_WindowSizeEdit(const QString arg1);
 
 
-    void qrsClustererChanged(ClustererType type);
+    /*void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
     void qrsParallelExecutionChanged(bool flag);
     void qrsGMinClustersChanged(int minClusters);
     void qrsGMaxClustersChanged(int maxClusters);
     void qrsGMaxKIterations(int maxIters);
-    void qrsKClustersNumberChanged(int noClusters);
+    void qrsKClustersNumberChanged(int noClusters);*/
 
     void run();
     void runSingle(QString hash);
-    void runEcgBaseline();//example
+    void runEcgBaseline();
     void runAtrialFibr();
     void runStInterval();
     void runHRV1();
     void runRPeaks();
     void runQrsClass();
+    void runWaves();
 
     void onThreadFinished();
 };

@@ -351,7 +351,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>2</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -465,7 +465,7 @@
                  <enum>QTabWidget::East</enum>
                 </property>
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="tab_5">
                  <attribute name="title">
@@ -482,8 +482,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>373</height>
                       </rect>
                      </property>
                     </widget>
@@ -506,310 +506,310 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>373</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
                    </widget>
                   </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_24">
-                    <item>
-                     <widget class="QGroupBox" name="groupBox_2">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>200</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="title">
-                       <string>Signals</string>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_28">
-                       <item>
-                        <widget class="QRadioButton" name="radioButton">
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QRadioButton" name="radioButton_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="verticalSpacer_8">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Minimum</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QGroupBox" name="baselineGroupBox">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="title">
-                       <string>Baseline wander removal method</string>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_17">
-                       <item>
-                        <widget class="QRadioButton" name="butterworthRadioButton">
-                         <property name="text">
-                          <string>Butterworth filter</string>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QRadioButton" name="movingAverageRadioButton">
-                         <property name="text">
-                          <string>Moving average</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QRadioButton" name="savitzkyGolayRadioButton">
-                         <property name="text">
-                          <string>Savitzky-Golay filter</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QRadioButton" name="kalmanRadioButton">
-                         <property name="text">
-                          <string>Kalman filter </string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QGroupBox" name="MovingAvarangeGroupBox">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="title">
-                       <string>Moving average</string>
-                      </property>
-                      <layout class="QFormLayout" name="formLayout_3">
-                       <property name="fieldGrowthPolicy">
-                        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-                       </property>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="label_47">
-                         <property name="text">
-                          <string>Czas uśredniania</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QLineEdit" name="CzasUsrednienialineEdit">
-                         <property name="maximumSize">
-                          <size>
-                           <width>25</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="label_51">
-                         <property name="text">
-                          <string>Częstotliwość próbkowania</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QLineEdit" name="CzestotliwoscProbkowanialineEdit">
-                         <property name="maximumSize">
-                          <size>
-                           <width>25</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QGroupBox" name="ButterworthGroupBox">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="title">
-                       <string>Butterworth filter</string>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_51">
-                       <item>
-                        <widget class="QComboBox" name="ButterworthcomboBox">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="verticalSpacer_10">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Fixed</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QGroupBox" name="KalmanGroupBox">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="title">
-                       <string>Kalman filter</string>
-                      </property>
-                      <layout class="QFormLayout" name="formLayout_6">
-                       <property name="fieldGrowthPolicy">
-                        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-                       </property>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="label_50">
-                         <property name="text">
-                          <string>TextLabel</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QLineEdit" name="Kalman1lineEdit">
-                         <property name="maximumSize">
-                          <size>
-                           <width>25</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="label_49">
-                         <property name="text">
-                          <string>TextLabel</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QLineEdit" name="Kalman2lineEdit">
-                         <property name="maximumSize">
-                          <size>
-                           <width>25</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <layout class="QVBoxLayout" name="verticalLayout_24">
-                      <item>
-                       <spacer name="verticalSpacer_7">
-                        <property name="orientation">
-                         <enum>Qt::Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                         <enum>QSizePolicy::Minimum</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>20</width>
-                          <height>40</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="pushButton_2">
-                        <property name="enabled">
-                         <bool>false</bool>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>120</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>120</width>
-                          <height>16777215</height>
-                         </size>
-                        </property>
-                        <property name="text">
-                         <string>Run ECG_BASELINE</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
-                  </item>
                  </layout>
                 </widget>
                </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_24">
+                <item>
+                 <widget class="QGroupBox" name="groupBox_2">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="title">
+                   <string>Signals</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_28">
+                   <item>
+                    <widget class="QRadioButton" name="radioButton">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="radioButton_2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_8">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Minimum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="baselineGroupBox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="title">
+                   <string>Baseline wander removal method</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_17">
+                   <item>
+                    <widget class="QRadioButton" name="butterworthRadioButton">
+                     <property name="text">
+                      <string>Butterworth filter</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="movingAverageRadioButton">
+                     <property name="text">
+                      <string>Moving average</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="savitzkyGolayRadioButton">
+                     <property name="text">
+                      <string>Savitzky-Golay filter</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="kalmanRadioButton">
+                     <property name="text">
+                      <string>Kalman filter </string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="MovingAvarangeGroupBox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="title">
+                   <string>Moving average</string>
+                  </property>
+                  <layout class="QFormLayout" name="formLayout_3">
+                   <property name="fieldGrowthPolicy">
+                    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_47">
+                     <property name="text">
+                      <string>Czas uśredniania</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QLineEdit" name="CzasUsrednienialineEdit">
+                     <property name="maximumSize">
+                      <size>
+                       <width>25</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_51">
+                     <property name="text">
+                      <string>Częstotliwość próbkowania</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="CzestotliwoscProbkowanialineEdit">
+                     <property name="maximumSize">
+                      <size>
+                       <width>25</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="ButterworthGroupBox">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="title">
+                   <string>Butterworth filter</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_51">
+                   <item>
+                    <widget class="QComboBox" name="ButterworthcomboBox">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_10">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="KalmanGroupBox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="title">
+                   <string>Kalman filter</string>
+                  </property>
+                  <layout class="QFormLayout" name="formLayout_6">
+                   <property name="fieldGrowthPolicy">
+                    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_50">
+                     <property name="text">
+                      <string>TextLabel</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QLineEdit" name="Kalman1lineEdit">
+                     <property name="maximumSize">
+                      <size>
+                       <width>25</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_49">
+                     <property name="text">
+                      <string>TextLabel</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="Kalman2lineEdit">
+                     <property name="maximumSize">
+                      <size>
+                       <width>25</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_24">
+                  <item>
+                   <spacer name="verticalSpacer_7">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Minimum</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_2">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>120</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>Run ECG_BASELINE</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -868,7 +868,7 @@
                       <string>Hilbert transformation based algorithm</string>
                      </property>
                      <property name="checked">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </property>
                     </widget>
                    </item>
@@ -979,41 +979,6 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_23">
                 <item>
-                 <widget class="QPushButton" name="pushButton_5">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>100</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Run WAVES</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_6">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
                  <widget class="QCheckBox" name="wave_all">
                   <property name="text">
                    <string>all</string>
@@ -1063,6 +1028,41 @@
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_5">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Run WAVES</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
              </layout>
@@ -1074,6 +1074,9 @@
              <layout class="QVBoxLayout" name="verticalLayout_64">
               <item>
                <widget class="QTabWidget" name="tabHrv">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="currentIndex">
                  <number>0</number>
                 </property>
@@ -1238,8 +1241,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>964</width>
+                           <height>410</height>
                           </rect>
                          </property>
                         </widget>
@@ -1325,8 +1328,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>964</width>
+                           <height>403</height>
                           </rect>
                          </property>
                         </widget>
@@ -1447,8 +1450,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>43</width>
-                            <height>16</height>
+                            <width>986</width>
+                            <height>186</height>
                            </rect>
                           </property>
                          </widget>
@@ -1495,8 +1498,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>43</width>
-                            <height>16</height>
+                            <width>986</width>
+                            <height>185</height>
                            </rect>
                           </property>
                          </widget>
@@ -1585,38 +1588,6 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_7">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>100</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Run HRV2</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="pushButton_8">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>100</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Run HRV_DFA</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <spacer name="horizontalSpacer_16">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1645,7 +1616,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -2334,8 +2305,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>369</height>
                       </rect>
                      </property>
                     </widget>
@@ -2572,8 +2543,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>451</height>
                   </rect>
                  </property>
                 </widget>
