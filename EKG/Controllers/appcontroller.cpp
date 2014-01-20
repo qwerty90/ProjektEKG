@@ -6,6 +6,7 @@
 #include "ECG_BASELINE/src/movAvg.h"
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
+#include "QRS_CLASS/qrsclass.h"
 #include "HRV1/HRV1MainModule.h"
 #include "R_PEAKS/src/r_peaksmodule.h"
 
@@ -344,8 +345,6 @@ void AppController::runHRV1()
     QLOG_INFO() << "HRV1 statistical drawn.";
 }
 
-
-
 void AppController::runAtrialFibr()
 {
     QLOG_INFO() << "Start AtrialFibr";
@@ -429,22 +428,24 @@ void AppController::runQrsClass()
 {
     QLOG_INFO() << "Start QrsClass";
 
+    if (!this->entity || !this->entity->waves || !this->entity->ecg_baselined)
+        return;
+
     QRSClassModule QrsClassifier;
-//    QrsClassifier.setSettings(data->settings->qrsClassSettings);
-// ustawienia z GUI
+    QrsClassifier.setSettings(this->entity->settings->qrsClassSettings);
 
     QrsClassifier.setWaves(this->entity->waves);
     QrsClassifier.setEGCBaseline(this->entity->ecg_baselined);
 
-    //if (!QrsClassifier.process())
-    //{
-    //    qDebug() << myClass.getErrorMessage();
-    //}
-    //else
-    //{
+    if (!QrsClassifier.process())
+    {
+        qDebug() << QrsClassifier.getErrorMessage();
+    }
+    else
+    {
         QList<QRSClass>* classes = QrsClassifier.getClasses();
-    //    data->classes = classes;
-    //}
+        this->entity->classes = classes;
+    }
 
 //    emit QrsClass_done(this->entity);
     QLOG_INFO() << "QrsClass done";
