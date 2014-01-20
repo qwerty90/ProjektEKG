@@ -1791,8 +1791,7 @@ QwtPlot* AirEcgMain::plotPointsPlotDFA(QList<double> &x, QList<double> &y , doub
     magnifier->setAxisEnabled(QwtPlot::yLeft,false);
     return plot;
 }
-
-QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecgFrames, double samplingFrequency)
+QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency)
 {
    // QVector<int> yData = (QVector<int>)(ecgSignal);
     QVector<double> yDataFin = QVector<double>(ecgSignal.size());
@@ -1842,19 +1841,27 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecg
     zoom->setZoomBase(plot->canvas()->rect());
 
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+    //QVector<QVector<double>::const_iterator> * PWaveStart;
+    //QVector<QVector<double>::const_iterator> * PWaveEnd;
+    //QVector<QVector<double>::const_iterator> * QRS_onset;
+    //QVector<QVector<double>::const_iterator> * QRS_end;
+    //QVector<QVector<double>::const_iterator> * T_end;
 
+    int Count;
     QVector<unsigned int> P_onsetData;
     QVector<unsigned int> P_endData;
     QVector<unsigned int> Qrs_onsetData;
     QVector<unsigned int> Qrs_endData;
    // QVector<unsigned int> T_endData;
+                QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
     for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
-        /*P_onsetData.append(ecgFrames.PWaveEnd[i]);
-        P_endData.append(ecgFrames.PWaveStart[i]);
-        Qrs_onsetData.append(ecgFrames.QRS_onset[i]);
-        Qrs_endData.append(ecgFrames.QRS_end[i]);
-        T_endData.append(ecgFrames[i]->T_end);*/
+        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
+        QLOG_INFO() << "GUI/  P_onsetData..."<<QString::number(P_onsetData[i]);
+        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
+        Qrs_onsetData.append(ecgFrames.QRS_onset->at(i)-ecgFrames.QRS_onset->first());
+        Qrs_endData.append(ecgFrames.QRS_end->at(i)-ecgFrames.QRS_end->first());
+        //T_endData.append(ecgFrames[i]->T_end);
     }
 
 
@@ -1940,7 +1947,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecg
         Qrs_endPoints->attach( plot );
     }
 
-    /*
+#if 0
     if(ui->t_en->isChecked())
     {
     QwtPlotCurve *T_endPoints = new QwtPlotCurve();
@@ -1951,8 +1958,8 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecg
     T_endPoints->setStyle( QwtPlotCurve::NoCurve );
     T_endPoints->setSamples(T_endDataX,T_endDataY);
     T_endPoints->attach( plot );
+#endif
 
-*/
     QwtLegend* legend = new QwtLegend();
     legend->setItemMode(QwtLegend::ReadOnlyItem);
     plot->insertLegend(legend, QwtPlot::BottomLegend);
@@ -2298,11 +2305,13 @@ void AirEcgMain::drawTwa(EcgData *data)
 void AirEcgMain::drawWaves(EcgData *data)
 {
     QLOG_FATAL() << "GUI/ drawWaves not done yet.";
-    /*
-    QwtPlot *wavesPlot = plotWavesPlot(*(data->GetCurrentSignal()), *(data->Waves), 360.0);
+
+    QwtPlot *wavesPlot = plotWavesPlot(*(data->ecg_baselined), *(data->Waves), data->info->frequencyValue );
+
+
     ui->scrollAreaWaves->setWidget(wavesPlot);
     ui->scrollAreaWaves->show();
-    */
+
 }
 
 void AirEcgMain::drawQrsClass(EcgData *data)
