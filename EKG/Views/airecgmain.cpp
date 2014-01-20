@@ -1049,17 +1049,6 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
 
-    QVector<int> indeksy;
-    int i=0;
-
-    while(p.size()>i)
-    {
-        QLOG_TRACE() << "Rpik ";
-        indeksy.append(p.first() - p.at(i));
-        QLOG_TRACE() << QString::number(indeksy.at(i));
-                i++;
-    }
-
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
     QVector<unsigned int> pData;
     for (int i=0;i<p.size();i++)
