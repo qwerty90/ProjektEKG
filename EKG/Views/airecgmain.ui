@@ -341,7 +341,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -441,8 +441,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>506</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -482,8 +482,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>373</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -828,8 +828,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>407</height>
+                   <width>63</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -1241,8 +1241,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>964</width>
-                           <height>410</height>
+                           <width>63</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1328,8 +1328,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>964</width>
-                           <height>403</height>
+                           <width>63</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1450,8 +1450,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>986</width>
-                            <height>186</height>
+                            <width>43</width>
+                            <height>16</height>
                            </rect>
                           </property>
                          </widget>
@@ -1498,8 +1498,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>986</width>
-                            <height>185</height>
+                            <width>43</width>
+                            <height>16</height>
                            </rect>
                           </property>
                          </widget>
@@ -2305,8 +2305,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>369</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2665,7 +2665,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>1</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -3204,8 +3204,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>80</width>
-                   <height>198</height>
+                   <width>1030</width>
+                   <height>199</height>
                   </rect>
                  </property>
                 </widget>
@@ -3240,7 +3240,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>80</width>
+                   <width>1030</width>
                    <height>198</height>
                   </rect>
                  </property>

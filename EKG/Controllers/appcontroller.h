@@ -73,6 +73,7 @@ public slots:
     void runHRV1();
     void runRPeaks();
     void runWaves();
+    void runSigEdr();
 
     void onThreadFinished();
 };

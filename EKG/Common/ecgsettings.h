@@ -33,7 +33,9 @@ public:
     double slope_tresh;
     unsigned int detect_window;
     unsigned int smooth_window;
-
+    //SigEdr settings
+    bool SigEdr_rpeaks;
+    bool SigEdr_qrs;
 
 signals:
     
