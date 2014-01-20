@@ -17,6 +17,7 @@ include(ST_INTERVAL/st_interval.pri)
 include(HRV1/hrv1.pri)
 include(R_PEAKS/RPeaks.pri)
 include(Waves/waves.pri)
+include(SIG_EDR/sig_edr.pri)
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
