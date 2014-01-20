@@ -13,7 +13,7 @@
 EcgEntry::EcgEntry(QObject *parent) :
     QObject(parent)
 {
-    this->entity = NULL;//new EcgData();
+    this->entity = new EcgData();
 }
 
 QString* EcgEntry::Validate(QFile *file)

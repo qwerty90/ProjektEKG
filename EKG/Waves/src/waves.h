@@ -17,24 +17,24 @@ void envelope(QVector<double>::iterator, QVector<double>::iterator, QVector<doub
 class waves
 {
 public:
-    waves(){};
 
-    void calculate_waves(QVector<double>&,vector_it&,double);
-    const vector_it & get_qrs_onset();
-    const vector_it & get_qrs_begin();
+    waves(QVector<double> & sig_ref, float fs_in): ecg(sig_ref),fs(fs_in){};
+
+    const vector_it & get_qrs_onset(vector_it&);
+    const vector_it & get_qrs_end(vector_it&);
     const vector_it & get_p_onset();
     const vector_it & get_p_end();
 
 private:
-    void set_qrs_onset(QVector<double>&,vector_it&);
-    void set_qrs_end(QVector<double>&,vector_it&);
-    void set_p_onset(QVector<double>&);
-    void set_p_end(QVector<double>&);
-    double fs;
-    vector_it qrs_onset_it;
-    vector_it qrs_end_it;
-    vector_it p_end_it;
-    vector_it p_onset_it;
+
+     vector_it qrs_onset_it;
+     vector_it qrs_end_it;
+    const vector_it p_onset_it;
+    const vector_it p_end_it;
+
+
+    QVector<double> & ecg;
+    float fs;
 
 };
 
