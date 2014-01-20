@@ -2777,3 +2777,8 @@ void AirEcgMain::on_pushButton_17_clicked()
 {
     emit this->runRPeaks();
 }
+
+void AirEcgMain::on_pushButton_4_clicked()
+{
+    emit this->runSigEdr();
+}

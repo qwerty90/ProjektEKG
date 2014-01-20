@@ -20,4 +20,7 @@ EcgSettings::EcgSettings(QObject *parent) :
     this->morph_coeff   = 6.0;
     this->level_tresh   = 0.15;
     this->slope_tresh   = 35;
+    //SigEdr
+    this->SigEdr_qrs = true;
+    this->SigEdr_rpeaks=true;
 }

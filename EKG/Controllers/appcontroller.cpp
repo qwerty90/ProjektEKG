@@ -10,6 +10,7 @@
 #include "HRV1/HRV1MainModule.h"
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
+#include "SIG_EDR/sig_edr.h"
 
 #include <QThread>
 
@@ -50,6 +51,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runHRV1())       ,this, SLOT (runHRV1()));
     this->connect(view, SIGNAL(runRPeaks())     ,this, SLOT (runRPeaks()));
     this->connect(view, SIGNAL(runWaves())      ,this, SLOT (runWaves()));
+    this->connect(view, SIGNAL(runSigEdr())     ,this, SLOT (runSigEdr()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
     this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
@@ -454,6 +456,41 @@ void AppController::runWaves()
 
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
+}
+
+void AppController::runSigEdr()
+{
+    //WYMAGA KONSULTACJI!!!
+    /*
+    QVector<double> *tmp_baselined;
+    iters *tmp_Rpeaks;
+
+    QLOG_INFO() << "SigEdr started.";
+    if (this->entity->settings->SigEdr_rpeaks)
+    {
+        if((this->entity->Rpeaks==NULL) || (this->entity->ecg_baselined==NULL))
+        {
+            QLOG_ERROR() << "Brak danych dla SigEdr.";
+            return;
+        }
+        if (this->entity->settings->signalIndex==0)
+        {
+            tmp_baselined = new QVector<double>(*(this->entity->ecg_baselined));
+            tmp_Rpeaks    = new iters(*(this->entity->Rpeaks));
+            switchSignal(1);
+            runEcgBaseline();
+            runRPeaks();
+
+            sig_edr obj(*(this->entity->ecg_baselined),*(tmp_baselined));
+
+            sig_edr obiekt(*(this->entity->ecg_baselined),
+                            (this->entity->Rpeaks),
+                            *(tmp_baselined),
+                            *(tmp_Rpeaks));
+        }
+    }
+*/
+
 }
 
 void AppController::ecgBase_Kalman1Changed(const QString arg1)

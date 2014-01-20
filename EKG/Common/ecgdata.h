@@ -102,6 +102,10 @@ public:
     double RRIntDivergence;
     bool   AtrialFibr;
 
+    //modul SigEdr
+    QVector<QVector<double>::const_iterator> *SigEdr;
+
+
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;
 

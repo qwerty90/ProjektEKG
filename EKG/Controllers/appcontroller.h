@@ -74,6 +74,7 @@ public slots:
     void runRPeaks();
     void runQrsClass();
     void runWaves();
+    void runSigEdr();
 
     void onThreadFinished();
 };
