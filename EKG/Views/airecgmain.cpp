@@ -90,8 +90,8 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
    // ui->pushButton_3_2->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
     ui->pushButton_6->setEnabled(true);
-    ui->pushButton_7->setEnabled(true);
-    ui->pushButton_8->setEnabled(true);
+    //ui->pushButton_7->setEnabled(true);
+    //ui->pushButton_8->setEnabled(true);
     ui->pushButton_9->setEnabled(true);
     ui->pushButton_10->setEnabled(true);
     ui->pushButton_12->setEnabled(true);
@@ -1019,7 +1019,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
 
     QwtPlot *plot = new QwtPlot();
     plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, min, max );
+    plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
     plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
 
     QwtText xaxis("Time [s]");
@@ -1049,21 +1049,17 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
 
-    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
-    QVector<unsigned int> pData;
-    for (int i=0;i<p.size();i++)
-        pData.append(p.at(i)- yData.begin());
-    //QVector<unsigned int> pData = QVector<unsigned int>::fromList(p);
-    QVector<double> pDataX = QVector<double>(pData.size());
-    QVector<double> pDataY = QVector<double>(pData.size());
+    QVector<double> pDataY = QVector<double>(p.size());
+    QVector<double> pDataX = QVector<double>(p.size());
 
-    for (int i=0;i<pData.size();++i)
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
+    for (int i=0;i<p.size();i++)
     {
-        pDataX[i]=pData[i];
-        //pDataY[i]=yData[pDataX[i]];  /tak bylo
-        pDataY[i]=yData[i];     //@Krzysiek, czy tak ma byc?
-        pDataX[i]=pDataX[i]*tos;
+        pDataX[i] = ((unsigned int)(p.at(i)- p.first())*tos);
+        pDataY[i] = (*p.at(i));
+        QLOG_TRACE() <<"Rpik:X = "<< QString::number( pDataX[i])<< "Y = " << QString::number( pDataY[i]);
     }
+
 
     QwtPlotCurve *points = new QwtPlotCurve();
     QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
@@ -1097,6 +1093,112 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     return plot;
 }
 
+QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq){
+    //QVector<int> yData = QVector<int>::fromList(y);
+    QVector<double> yDataFin = QVector<double>(yData.size());
+    QVector<double> sampleNo = QVector<double>(yData.size());
+
+    int max=yData.first();
+    int min=yData.first();
+
+    double tos=1/freq;
+
+    for (int i=0;i<yData.size();++i)
+    {
+        sampleNo[i]=(i)*tos;
+        yDataFin[i]=yData[i];
+        if (max<yData[i]) max=yData[i];
+        if (min>yData[i]) min=yData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+
+    QwtText xaxis("Time [s]");
+    QwtText yaxis("Voltage [mV]");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve->setSamples(sampleNo,yDataFin);
+    curve->attach( plot );
+
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+    QVector<unsigned int> pData = QVector<unsigned int>(p.size());
+    for (int i=0;i<p.size();i++)
+    {
+        pData[i]=((unsigned int)p.at(i));
+        QLOG_TRACE() << QString::number( p.at(i));//- p.first());
+
+    }
+
+   // indeksy.append(this->entity->Rpeaks->first() - this->entity->Rpeaks->at(i));
+        //QVector<unsigned int> pData = QVector<unsigned int>::fromList(p);
+    QVector<double> pDataX = QVector<double>(pData.size());
+    QVector<double> pDataY = QVector<double>(pData.size());
+
+    for (int i=0;i<pData.size();++i)
+    {
+        pDataX[i]=pData[i]*tos;
+       // QLOG_TRACE() << QString::number( pDataX[i]);
+
+        pDataY[i]=yData[pData[i]];  //tak bylo
+       // QLOG_TRACE() << QString::number( yData[i]);
+        //pDataY[i]=yData[i];     //@Krzysiek, czy tak ma byc?
+        //pDataX[i]=pDataX[i]*tos;
+    }
+
+    QwtPlotCurve *points = new QwtPlotCurve();
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
+    points->setSymbol(marker);
+    points->setPen( QColor( Qt::red ) );
+    points->setStyle( QwtPlotCurve::NoCurve );
+    points->setSamples(pDataX,pDataY);
+    points->attach( plot );
+
+    //
+/*
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+*/
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    return plot;
+}
 QwtPlot* AirEcgMain::plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, double &sd1, double &sd2){
     QVector<int> yData = QVector<int>::fromList(y);
     QVector<unsigned int> xData = QVector<unsigned int>::fromList(x);
@@ -1676,8 +1778,7 @@ QwtPlot* AirEcgMain::plotPointsPlotDFA(QList<double> &x, QList<double> &y , doub
     magnifier->setAxisEnabled(QwtPlot::yLeft,false);
     return plot;
 }
-
-QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecgFrames, double samplingFrequency)
+QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency)
 {
    // QVector<int> yData = (QVector<int>)(ecgSignal);
     QVector<double> yDataFin = QVector<double>(ecgSignal.size());
@@ -1727,21 +1828,26 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecg
     zoom->setZoomBase(plot->canvas()->rect());
 
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+    //QVector<QVector<double>::const_iterator> * PWaveStart;
+    //QVector<QVector<double>::const_iterator> * PWaveEnd;
+    //QVector<QVector<double>::const_iterator> * QRS_onset;
+    //QVector<QVector<double>::const_iterator> * QRS_end;
+    //QVector<QVector<double>::const_iterator> * T_end;
 
     QVector<unsigned int> P_onsetData;
     QVector<unsigned int> P_endData;
     QVector<unsigned int> Qrs_onsetData;
     QVector<unsigned int> Qrs_endData;
    // QVector<unsigned int> T_endData;
+                QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
     for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
-        /*P_onsetData.append(ecgFrames.PWaveEnd[i]);
-        P_endData.append(ecgFrames.PWaveStart[i]);
-        Qrs_onsetData.append(ecgFrames.QRS_onset[i]);
-        Qrs_endData.append(ecgFrames.QRS_end[i]);
-        T_endData.append(ecgFrames[i]->T_end);*/
+        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
+        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
+        Qrs_onsetData.append(ecgFrames.QRS_onset->at(i)-ecgFrames.QRS_onset->first());
+        Qrs_endData.append(ecgFrames.QRS_end->at(i)-ecgFrames.QRS_end->first());
+        //T_endData.append(ecgFrames[i]->T_end);
     }
-
 
     QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
     QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
@@ -1825,7 +1931,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecg
         Qrs_endPoints->attach( plot );
     }
 
-    /*
+#if 0
     if(ui->t_en->isChecked())
     {
     QwtPlotCurve *T_endPoints = new QwtPlotCurve();
@@ -1836,8 +1942,8 @@ QwtPlot *AirEcgMain::plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecg
     T_endPoints->setStyle( QwtPlotCurve::NoCurve );
     T_endPoints->setSamples(T_endDataX,T_endDataY);
     T_endPoints->attach( plot );
+#endif
 
-*/
     QwtLegend* legend = new QwtLegend();
     legend->setItemMode(QwtLegend::ReadOnlyItem);
     plot->insertLegend(legend, QwtPlot::BottomLegend);
@@ -2059,7 +2165,8 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 {
 
     QLOG_TRACE() << "drawRPeaks";
-    QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
+    //QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
+    QwtPlot *plotVI = plotPointsPlot_uint((data->Rpeaks_uint),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
 }
@@ -2099,6 +2206,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
 
 void AirEcgMain::drawHrv2(EcgData *data)
 {
+    /*
     QwtPlot *plotHistogram = plotBarChart(*(data->histogram_x), *(data->histogram_y));
     ui->scrollAreaHistogram->setWidget(plotHistogram);
     ui->scrollAreaHistogram->show();
@@ -2117,6 +2225,7 @@ void AirEcgMain::drawHrv2(EcgData *data)
     ui->scrollAreaPoincare->show();
     ui->SD1->setText("SD1 = " % QString::number(*(data->SD1), 'f', 2));
     ui->SD2->setText("  SD2 = " % QString::number(*(data->SD2), 'f', 2));
+*/
 }
 
 void AirEcgMain::drawStInterval(EcgData *data)
@@ -2182,11 +2291,13 @@ void AirEcgMain::drawTwa(EcgData *data)
 void AirEcgMain::drawWaves(EcgData *data)
 {
     QLOG_FATAL() << "GUI/ drawWaves not done yet.";
-    /*
-    QwtPlot *wavesPlot = plotWavesPlot(*(data->GetCurrentSignal()), *(data->Waves), 360.0);
+
+    QwtPlot *wavesPlot = plotWavesPlot(*(data->ecg_baselined), *(data->Waves), data->info->frequencyValue );
+
+
     ui->scrollAreaWaves->setWidget(wavesPlot);
     ui->scrollAreaWaves->show();
-    */
+
 }
 
 void AirEcgMain::drawQrsClass(EcgData *data)

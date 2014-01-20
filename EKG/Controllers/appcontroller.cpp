@@ -333,7 +333,7 @@ void AppController::runRPeaks()
         obiekt.panTompkins();
     }
     this->entity->Rpeaks = new iters (obiekt.getPeaksIter());
-
+    this->entity->Rpeaks_uint = obiekt.getPeaksIndex();
     emit this->RPeaks_done(this->entity);
     QLOG_INFO() << "RPeaks done" ;
 }

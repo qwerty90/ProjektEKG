@@ -54,6 +54,8 @@ public:
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
     QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
+    QwtPlot* plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq);
+
     //HRV1*****************
     QwtPlot* plotPointsPlotDoubleToDouble(QList<double> &x, QList<double> &y);
     QwtPlot* plotLogPlotF(QList<double> &x,QList<double> &y,int rodzaj);
@@ -67,7 +69,8 @@ public:
     QwtPlot* plotPlotdfa(QList<double> &y1, QList<double> &y2);
     QwtPlot* plotPointsPlotDFA(QList<double> &x, QList<double> &y, double &wsp_a, double &wsp_b);
 
-    QwtPlot* plotWavesPlot(QVector<double> &ecgSignal, Waves_struct &ecgFrames, double samplingFrequency);
+
+    QwtPlot* plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
 //////////
      QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
