@@ -129,18 +129,6 @@ void AppController::onThreadFinished()
     emit this->processingResults(this->entity);
 }
 
-void AppController::runSingle(QString hash)
-{
-
-    /*
-    if(this->entity)
-    {
-        bool processed = this->supervisor->RunSingle(this->entity, hash);
-        emit singleProcessingResult(processed, this->entity);
-    }
-    */
-}
-
 void AppController::switchSignal(int index)
 {
 
@@ -193,7 +181,6 @@ void AppController::ResetModules()
 void AppController::runEcgBaseline()
 {
     QLOG_INFO() <<"Ecg baseline started.";
-
     //QVector<double> test;
     //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
@@ -251,6 +238,7 @@ void AppController::runEcgBaseline()
     }            
 
     QLOG_INFO() << "Ecg baseline done.";
+
     emit EcgBaseline_done(this->entity);
 }
 

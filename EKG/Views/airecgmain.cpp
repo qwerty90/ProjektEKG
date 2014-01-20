@@ -394,19 +394,59 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
 
-    /*
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer(plot->canvas());
-    zoomer->setRubberBandPen(QColor(Qt::black));
-    zoomer->setTrackerPen(QColor(Qt::black));
-    zoomer->setMousePattern(QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier);
-    zoomer->setMousePattern(QwtEventPattern::MouseSelect3,
-        Qt::RightButton);
-*/
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
     plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
+QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>& xData)
+{
+    double max = yData.first();
+    double min = yData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        max = qMax(max, yData.at(i));
+        min = qMin(min, yData.at(i));
+    }
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, min, max);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+
+    QwtText xaxis("Frequence [Hz]");
+    QwtText yaxis("Power");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->attach(plot);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 1));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(xData, yData);
+    curve->attach(plot);
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,xData.last(),0);
     zoom->setZoomBase(plot->canvas()->rect());
 
     QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
@@ -1000,7 +1040,6 @@ QwtPlot* AirEcgMain::plotBarChart(QList<unsigned int> &x, QList<int> &y){
 }
 
 QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterator> &p, const QVector<double> &yData, float freq){
-    //QVector<int> yData = QVector<int>::fromList(y);
     QVector<double> yDataFin = QVector<double>(yData.size());
     QVector<double> sampleNo = QVector<double>(yData.size());
 
@@ -1069,16 +1108,6 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     points->setSamples(pDataX,pDataY);
     points->attach( plot );
 
-    //
-/*
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-*/
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
@@ -1148,24 +1177,16 @@ QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<
     for (int i=0;i<p.size();i++)
     {
         pData[i]=((unsigned int)p.at(i));
-        QLOG_TRACE() << QString::number( p.at(i));//- p.first());
-
+        QLOG_TRACE() << QString::number( p.at(i));
     }
 
-   // indeksy.append(this->entity->Rpeaks->first() - this->entity->Rpeaks->at(i));
-        //QVector<unsigned int> pData = QVector<unsigned int>::fromList(p);
     QVector<double> pDataX = QVector<double>(pData.size());
     QVector<double> pDataY = QVector<double>(pData.size());
 
     for (int i=0;i<pData.size();++i)
     {
         pDataX[i]=pData[i]*tos;
-       // QLOG_TRACE() << QString::number( pDataX[i]);
-
-        pDataY[i]=yData[pData[i]];  //tak bylo
-       // QLOG_TRACE() << QString::number( yData[i]);
-        //pDataY[i]=yData[i];     //@Krzysiek, czy tak ma byc?
-        //pDataX[i]=pDataX[i]*tos;
+        pDataY[i]=yData[pData[i]];
     }
 
     QwtPlotCurve *points = new QwtPlotCurve();
@@ -1176,16 +1197,6 @@ QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<
     points->setSamples(pDataX,pDataY);
     points->attach( plot );
 
-    //
-/*
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-*/
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
@@ -1442,16 +1453,6 @@ QwtPlot* AirEcgMain::plotTWAPlot(const QVector<double> &yData, QList<unsigned in
     negPoints->setSamples(negDataX,negDataY);
     negPoints->attach( plot );
 
-    //
-/*
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-*/
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
@@ -1591,16 +1592,6 @@ QwtPlot* AirEcgMain::plotTWAPlot2(QList<unsigned int> &TWA_positive, QList<doubl
     negPoints->setSamples(negDataX,negDataY);
     negPoints->attach( plot );
 
-    //
-/*
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-*/
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
@@ -2182,15 +2173,9 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->SDANN->setText("SDANN = " %QString::number((data->SDANN), 'f', 2) + " ms");
     ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
     ui->SDSD->setText("SDSD");
-    /*
-    //Frequency Parameters
-    QwtPlot *plotRR = plotPoints(*(data->RR_x), *(data->RR_y), data->fftSamplesX,
-                                 data->fftSamplesY, data->interpolantX, data->interpolantY);
-    ui->scrollAreaRR->setWidget(plotRR);
-    ui->scrollAreaRR->show();
 
     //Fourier    
-    QwtPlot *plotFT = plotLogPlotF(*(data->fft_x), *(data->fft_y), 2);
+    QwtPlot *plotFT = plotPlot(*(data->fft_x), *(data->fft_y)); //to ma byc lista czy vector?
     ui->scrollAreaFT->setWidget(plotFT);
     ui->scrollAreaFT->show();
 
@@ -2201,7 +2186,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2));
     ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2));
     ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + "%");
-    */
+
 }
 
 void AirEcgMain::drawHrv2(EcgData *data)
@@ -2253,6 +2238,7 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
 
 void AirEcgMain::drawHrvDfa(EcgData *data)
 {
+    /*
 //    //DFA
     QwtPlot *plotFluctuaction =plotPointsPlotDFA(*(data->trend_y), *(data->trend_x), *(data->wsp_a), *(data->wsp_b));
     ui->scrollAreaFlu->setWidget(plotFluctuaction);
@@ -2267,6 +2253,7 @@ void AirEcgMain::drawHrvDfa(EcgData *data)
        ui->alfa2->setText("alfa = " % QString::number(*(data->alfa), 'f', 2));
        ui->window_plot->setText("box_plot = " % QString::number(*(data->window_plot), 'd', 0));
        ui->boxes2->setText("Boxes: " % QString::number(*(data->boxes), 'd', 0));
+       */
 }
 
 void AirEcgMain::drawTwa(EcgData *data)
@@ -2511,51 +2498,6 @@ void AirEcgMain::receiveResults(EcgData *data)
     }
 }*/
 
-void AirEcgMain::receiveSingleProcessingResult(bool succeeded, EcgData *data)
-{
-    if(succeeded)
-    {
-        if(this->hash =="ECG_BASELINE")
-        {
-            this->drawEcgBaseline(data);
-        }
-        else if(this->hash == "R_PEAKS")
-        {
-            this->drawRPeaks(data);
-        }
-        else if(this->hash == "WAVES")
-        {
-            this->drawWaves(data);
-        }
-        else if(this->hash == "HRV1")
-        {
-            this->drawHrv1(data);
-        }
-        else if(this->hash == "HRV2")
-        {
-            this->drawHrv2(data);
-        }
-        else if(this->hash == "HRV_DFA")
-        {
-            this->drawHrvDfa(data);
-        }
-        else if(this->hash == "QRS_CLASS")
-        {
-            this->drawQrsClass(data);
-        }
-        else if(this->hash == "T_WAVE_ALT")
-        {
-            this->drawTwa(data);
-        }
-    }
-    else
-    {
-        //Tutaj mozna wypisac, ze modul nie moze byc przetworzony bo nie jest gotowy
-        notready dialogNotReady;
-        dialogNotReady.setModal(true);
-        dialogNotReady.exec();
-    }
-}
 
 
 void AirEcgMain::on_pushButton_2_clicked()
@@ -2784,5 +2726,7 @@ void AirEcgMain::on_butterworthRadioButton_clicked()
 
 void AirEcgMain::on_pushButton_17_clicked()
 {
+    //TODO: Sprawdzanie czy wczesniej juz bylo policzone
+    emit this->runEcgBaseline();
     emit this->runRPeaks();
 }

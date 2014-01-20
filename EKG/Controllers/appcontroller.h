@@ -66,7 +66,6 @@ public slots:
     void qrsKClustersNumberChanged(int noClusters);*/
 
     void run();
-    void runSingle(QString hash);
     void runEcgBaseline();
     void runAtrialFibr();
     void runStInterval();

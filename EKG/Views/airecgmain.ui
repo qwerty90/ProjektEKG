@@ -351,7 +351,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>3</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -370,7 +370,7 @@
                  <enum>QTabWidget::East</enum>
                 </property>
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="tab_2">
                  <attribute name="title">
@@ -399,8 +399,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -868,7 +868,7 @@
                       <string>Hilbert transformation based algorithm</string>
                      </property>
                      <property name="checked">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -1078,7 +1078,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="hrv_statistical">
                  <attribute name="title">
@@ -1200,7 +1200,7 @@
                      <enum>QTabWidget::East</enum>
                     </property>
                     <property name="currentIndex">
-                     <number>1</number>
+                     <number>0</number>
                     </property>
                     <widget class="QWidget" name="tab_12">
                      <attribute name="title">
@@ -1217,8 +1217,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>964</width>
+                           <height>431</height>
                           </rect>
                          </property>
                         </widget>
@@ -1300,277 +1300,23 @@
                   </item>
                  </layout>
                 </widget>
-                <widget class="QWidget" name="hrv_geometrical">
-                 <attribute name="title">
-                  <string>Geometrical Parameters</string>
-                 </attribute>
-                 <layout class="QHBoxLayout" name="horizontalLayout_21">
-                  <item>
-                   <widget class="QTabWidget" name="tabGeo">
-                    <property name="tabPosition">
-                     <enum>QTabWidget::East</enum>
-                    </property>
-                    <property name="currentIndex">
-                     <number>0</number>
-                    </property>
-                    <widget class="QWidget" name="tab_6">
-                     <attribute name="title">
-                      <string>Histogram</string>
-                     </attribute>
-                     <layout class="QVBoxLayout" name="verticalLayout_9">
-                      <item>
-                       <widget class="QScrollArea" name="scrollAreaHistogram">
-                        <property name="widgetResizable">
-                         <bool>true</bool>
-                        </property>
-                        <widget class="QWidget" name="scrollAreaWidgetContents_3">
-                         <property name="geometry">
-                          <rect>
-                           <x>0</x>
-                           <y>0</y>
-                           <width>964</width>
-                           <height>403</height>
-                          </rect>
-                         </property>
-                        </widget>
-                       </widget>
-                      </item>
-                      <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_10">
-                        <item>
-                         <widget class="QLabel" name="triangularIndex">
-                          <property name="text">
-                           <string>Triangular index = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="TINN">
-                          <property name="text">
-                           <string>TINN = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_2">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
-                     </layout>
-                    </widget>
-                    <widget class="QWidget" name="tab_7">
-                     <attribute name="title">
-                      <string>Poincare plot</string>
-                     </attribute>
-                     <layout class="QVBoxLayout" name="verticalLayout_8">
-                      <item>
-                       <widget class="QScrollArea" name="scrollAreaPoincare">
-                        <property name="widgetResizable">
-                         <bool>true</bool>
-                        </property>
-                        <widget class="QWidget" name="scrollAreaWidgetContents_4">
-                         <property name="geometry">
-                          <rect>
-                           <x>0</x>
-                           <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
-                          </rect>
-                         </property>
-                        </widget>
-                       </widget>
-                      </item>
-                      <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_9">
-                        <item>
-                         <widget class="QLabel" name="SD1">
-                          <property name="text">
-                           <string>SD1 = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="SD2">
-                          <property name="text">
-                           <string>SD2 = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
-                     </layout>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-                <widget class="QWidget" name="hrv_dfa">
-                 <attribute name="title">
-                  <string>DFA Analysis</string>
-                 </attribute>
-                 <layout class="QVBoxLayout" name="verticalLayout">
-                  <item>
-                   <widget class="QFrame" name="tabGeo_2">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_2">
-                     <item>
-                      <layout class="QVBoxLayout" name="verticalLayout_40">
-                       <item>
-                        <widget class="QScrollArea" name="scrollAreaFlu">
-                         <property name="widgetResizable">
-                          <bool>true</bool>
-                         </property>
-                         <widget class="QWidget" name="scrollAreaWidgetContents_10">
-                          <property name="geometry">
-                           <rect>
-                            <x>0</x>
-                            <y>0</y>
-                            <width>986</width>
-                            <height>186</height>
-                           </rect>
-                          </property>
-                         </widget>
-                        </widget>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_15">
-                         <item>
-                          <widget class="QLabel" name="alfa2">
-                           <property name="text">
-                            <string>alfa = 0.0</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="boxes2">
-                           <property name="text">
-                            <string>boxes = 0.0</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_3">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <widget class="QScrollArea" name="scrollAreaTrend">
-                         <property name="widgetResizable">
-                          <bool>true</bool>
-                         </property>
-                         <widget class="QWidget" name="scrollAreaWidgetContents_7">
-                          <property name="geometry">
-                           <rect>
-                            <x>0</x>
-                            <y>0</y>
-                            <width>986</width>
-                            <height>185</height>
-                           </rect>
-                          </property>
-                         </widget>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_22">
-                       <item>
-                        <widget class="QLabel" name="window_min">
-                         <property name="text">
-                          <string>box_min = 0.0</string>
-                         </property>
-                         <property name="textFormat">
-                          <enum>Qt::AutoText</enum>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_14">
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="window_max">
-                         <property name="text">
-                          <string>box_max = 0.0</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_16">
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="window_plot">
-                         <property name="text">
-                          <string>box_plot = 0.0</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_4">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
                </widget>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_26">
+                <item>
+                 <spacer name="horizontalSpacer_16">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item>
                  <widget class="QPushButton" name="pushButton_6">
                   <property name="enabled">
@@ -1586,19 +1332,6 @@
                    <string>Run HRV1</string>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_16">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </item>
@@ -1616,7 +1349,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -2203,6 +1936,19 @@
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_27">
                     <item>
+                     <spacer name="horizontalSpacer_5">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
                      <widget class="QPushButton" name="qrsSettingsResultsButton">
                       <property name="enabled">
                        <bool>false</bool>
@@ -2252,19 +1998,6 @@
                        <string>RUN QRS_CLASS</string>
                       </property>
                      </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_5">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -2462,6 +2195,19 @@
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_52">
                     <item>
+                     <spacer name="horizontalSpacer_14">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
                      <widget class="QPushButton" name="pushButton_9">
                       <property name="enabled">
                        <bool>false</bool>
@@ -2482,19 +2228,6 @@
                        <string>Run T_WAVE_ALT</string>
                       </property>
                      </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_14">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -2665,7 +2398,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -2692,7 +2425,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>76</width>
+                       <width>1026</width>
                        <height>348</height>
                       </rect>
                      </property>
@@ -3204,8 +2937,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>80</width>
-                   <height>198</height>
+                   <width>1030</width>
+                   <height>199</height>
                   </rect>
                  </property>
                 </widget>
@@ -3240,7 +2973,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>80</width>
+                   <width>1030</width>
                    <height>198</height>
                   </rect>
                  </property>
@@ -3391,7 +3124,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_9">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="atrial_fibr">
              <attribute name="title">
@@ -3607,6 +3340,120 @@
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="sleep_apnea">
+             <attribute name="title">
+              <string>SLEEP_APNEA</string>
+             </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_77">
+              <item>
+               <widget class="QScrollArea" name="sleepArea1">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_13">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>1030</width>
+                   <height>232</height>
+                  </rect>
+                 </property>
+                </widget>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <item>
+                 <widget class="QLabel" name="label_20">
+                  <property name="text">
+                   <string>ilościowa ocena bezdechu w dziedzinie czasu = </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="sleepcnt">
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_24">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QScrollArea" name="sleepArea2">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_14">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>1030</width>
+                   <height>231</height>
+                  </rect>
+                 </property>
+                </widget>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_41">
+                <item>
+                 <widget class="QLabel" name="label_27">
+                  <property name="text">
+                   <string>ilościowa ocena bezdechu w dziedzinie częstotliwości = </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="sleepcntfrequence">
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_17">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_11">
+                  <property name="text">
+                   <string>Run SLEEP APNEA</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+             <zorder>sleepArea1</zorder>
+             <zorder></zorder>
+             <zorder>sleepArea2</zorder>
+             <zorder></zorder>
+            </widget>
             <widget class="QWidget" name="qt_disp">
              <attribute name="title">
               <string>QT_DISP</string>
@@ -3622,8 +3469,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>372</height>
                   </rect>
                  </property>
                 </widget>
@@ -3774,120 +3621,6 @@
               </item>
              </layout>
              <zorder>scrollArea_9</zorder>
-             <zorder></zorder>
-            </widget>
-            <widget class="QWidget" name="sleep_apnea">
-             <attribute name="title">
-              <string>SLEEP_APNEA</string>
-             </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout_77">
-              <item>
-               <widget class="QScrollArea" name="sleepArea1">
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_13">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                </widget>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
-                <item>
-                 <widget class="QLabel" name="label_20">
-                  <property name="text">
-                   <string>ilościowa ocena bezdechu w dziedzinie czasu = </string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="sleepcnt">
-                  <property name="text">
-                   <string>0</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_24">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QScrollArea" name="sleepArea2">
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_14">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                </widget>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_41">
-                <item>
-                 <widget class="QLabel" name="label_27">
-                  <property name="text">
-                   <string>ilościowa ocena bezdechu w dziedzinie częstotliwości = </string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="sleepcntfrequence">
-                  <property name="text">
-                   <string>0</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_17">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="pushButton_11">
-                  <property name="text">
-                   <string>Run SLEEP APNEA</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-             <zorder>sleepArea1</zorder>
-             <zorder></zorder>
-             <zorder>sleepArea2</zorder>
              <zorder></zorder>
             </widget>
            </widget>
