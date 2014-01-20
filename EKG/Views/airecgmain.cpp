@@ -90,8 +90,8 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
    // ui->pushButton_3_2->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
     ui->pushButton_6->setEnabled(true);
-    ui->pushButton_7->setEnabled(true);
-    ui->pushButton_8->setEnabled(true);
+    //ui->pushButton_7->setEnabled(true);
+    //ui->pushButton_8->setEnabled(true);
     ui->pushButton_9->setEnabled(true);
     ui->pushButton_10->setEnabled(true);
     ui->pushButton_12->setEnabled(true);
@@ -1019,7 +1019,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
 
     QwtPlot *plot = new QwtPlot();
     plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, min, 1+max );
+    plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
     plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
 
     QwtText xaxis("Time [s]");
@@ -1049,30 +1049,17 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
 
+    QVector<double> pDataY = QVector<double>(p.size());
+    QVector<double> pDataX = QVector<double>(p.size());
+
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
-    QVector<unsigned int> pData = QVector<unsigned int>(p.size());
-    for (int i=1;i<p.size();i++)
+    for (int i=0;i<p.size();i++)
     {
-        pData.append((unsigned int)(p.at(i)-p.first()));
-        QLOG_TRACE() << QString::number( p.at(i)- p.first());
-
+        pDataX[i] = ((unsigned int)(p.at(i)- p.first())*tos);
+        pDataY[i] = (*p.at(i));
+        QLOG_TRACE() <<"Rpik:X = "<< QString::number( pDataX[i])<< "Y = " << QString::number( pDataY[i]);
     }
 
-   // indeksy.append(this->entity->Rpeaks->first() - this->entity->Rpeaks->at(i));
-        //QVector<unsigned int> pData = QVector<unsigned int>::fromList(p);
-    QVector<double> pDataX = QVector<double>(pData.size());
-    QVector<double> pDataY = QVector<double>(pData.size());
-
-    for (int i=0;i<pData.size();++i)
-    {
-        pDataX[i]=pData[i]*tos;
-       // QLOG_TRACE() << QString::number( pDataX[i]);
-
-        pDataY[i]=yData[pData[i]];  //tak bylo
-       // QLOG_TRACE() << QString::number( yData[i]);
-        //pDataY[i]=yData[i];     //@Krzysiek, czy tak ma byc?
-        //pDataX[i]=pDataX[i]*tos;
-    }
 
     QwtPlotCurve *points = new QwtPlotCurve();
     QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
@@ -1847,7 +1834,6 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     //QVector<QVector<double>::const_iterator> * QRS_end;
     //QVector<QVector<double>::const_iterator> * T_end;
 
-    int Count;
     QVector<unsigned int> P_onsetData;
     QVector<unsigned int> P_endData;
     QVector<unsigned int> Qrs_onsetData;
@@ -1857,13 +1843,11 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
         P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
-        QLOG_INFO() << "GUI/  P_onsetData..."<<QString::number(P_onsetData[i]);
         P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
         Qrs_onsetData.append(ecgFrames.QRS_onset->at(i)-ecgFrames.QRS_onset->first());
         Qrs_endData.append(ecgFrames.QRS_end->at(i)-ecgFrames.QRS_end->first());
         //T_endData.append(ecgFrames[i]->T_end);
     }
-
 
     QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
     QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
@@ -2222,6 +2206,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
 
 void AirEcgMain::drawHrv2(EcgData *data)
 {
+    /*
     QwtPlot *plotHistogram = plotBarChart(*(data->histogram_x), *(data->histogram_y));
     ui->scrollAreaHistogram->setWidget(plotHistogram);
     ui->scrollAreaHistogram->show();
@@ -2240,6 +2225,7 @@ void AirEcgMain::drawHrv2(EcgData *data)
     ui->scrollAreaPoincare->show();
     ui->SD1->setText("SD1 = " % QString::number(*(data->SD1), 'f', 2));
     ui->SD2->setText("  SD2 = " % QString::number(*(data->SD2), 'f', 2));
+*/
 }
 
 void AirEcgMain::drawStInterval(EcgData *data)
