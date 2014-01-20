@@ -31,5 +31,6 @@ INCLUDEPATH += Include
 
 QMAKE_CXXFLAGS += -std=c++0x
 
-LIBS += -L$$PWD/R_PEAKS/fourier/ -lfftw3-3
+win32: LIBS += -L$$PWD/R_PEAKS/fourier/ -lfftw3-3
+unix : LIBS += -lfftw3
 
