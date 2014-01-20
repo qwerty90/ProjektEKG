@@ -54,7 +54,7 @@ class QRSCLASSSHARED_EXPORT QRSClassModule {
 public:
     QRSClassModule();
     void setClusterer(ClustererType clustererType);
-    void setEGCBaseline(QList<double> *ecg);
+    void setEGCBaseline(QVector<double> *ecg);
     void setWaves(QList<Waves::EcgFrame*> *waves);
     bool setSettings(QRSClassSettings settings);
     bool process();

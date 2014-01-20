@@ -425,6 +425,31 @@ void AppController::runStInterval()
     QLOG_INFO() << "StInterval done";
 }
 
+void AppController::runQrsClass()
+{
+    QLOG_INFO() << "Start QrsClass";
+
+    QRSClassModule QrsClassifier;
+//    QrsClassifier.setSettings(data->settings->qrsClassSettings);
+// ustawienia z GUI
+
+    QrsClassifier.setWaves(this->entity->waves);
+    QrsClassifier.setEGCBaseline(this->entity->ecg_baselined);
+
+    //if (!QrsClassifier.process())
+    //{
+    //    qDebug() << myClass.getErrorMessage();
+    //}
+    //else
+    //{
+        QList<QRSClass>* classes = QrsClassifier.getClasses();
+    //    data->classes = classes;
+    //}
+
+//    emit QrsClass_done(this->entity);
+    QLOG_INFO() << "QrsClass done";
+}
+
 void AppController::ecgBase_Kalman1Changed(const QString arg1)
 {
     this->entity->settings->kalman_arg1 = arg1;
