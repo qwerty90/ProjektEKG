@@ -59,6 +59,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(HRV1_done(EcgData*))       ,view, SLOT(drawHrv1(EcgData*)))      ;
     this->connect(this, SIGNAL(RPeaks_done(EcgData*))     ,view, SLOT(drawRPeaks(EcgData*)))    ;
     this->connect(this, SIGNAL(Waves_done(EcgData*))      ,view, SLOT(drawWaves(EcgData*)))     ;
+    this->connect(this, SIGNAL(SigEdr_done(EcgData*))     ,view, SLOT(drawSigEdr(EcgData*)))    ;
+    this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
 
 
     this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
@@ -382,7 +384,10 @@ void AppController::runQrsClass()
     QLOG_INFO() << "Start QrsClass";
 
     if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
+    {
+        QLOG_ERROR() <<"No data for QRS_Class";
         return;
+    }
 
     QRSClassModule QrsClassifier;
     //QrsClassifier.setSettings(this->entity->settings->qrsClassSettings);
@@ -400,7 +405,7 @@ void AppController::runQrsClass()
         this->entity->classes = classes;
     }
 
-//    emit QrsClass_done(this->entity);
+    emit QrsClass_done(this->entity);
     QLOG_INFO() << "QrsClass done";
 }
 

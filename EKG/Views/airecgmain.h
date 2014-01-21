@@ -37,7 +37,7 @@ class AirEcgMain : public QMainWindow
     void drawHrvDfa(EcgData* data);
     void drawTwa(EcgData* data);
     //void drawWaves(EcgData* data);
-    void drawQrsClass(EcgData* data);
+    //void drawQrsClass(EcgData* data);
 
     void drawSleep_Apnea(EcgData* data);
     void drawHrt(EcgData *data);
@@ -97,6 +97,7 @@ signals:
     void runHRV1();
     void runWaves();
     void runSigEdr();
+    void runQrsClass();
 
     void closeDialog();
 
@@ -131,7 +132,8 @@ public slots:
     void drawHrv1(EcgData *data);
     void drawRPeaks(EcgData *data);
     void drawWaves(EcgData *data);
-
+    void drawQrsClass(EcgData *data);
+    void drawSigEdr(EcgData *data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
