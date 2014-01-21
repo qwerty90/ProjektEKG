@@ -70,6 +70,8 @@ public:
 
         // funckja zwracajaca wektor indeksow probek z pikami R
         const QVector<unsigned int> & getPeaksIndex(void);
+
+        const R_peaksIter ecgBegin(void);
 };
 
 

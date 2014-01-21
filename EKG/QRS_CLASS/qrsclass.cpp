@@ -1,13 +1,13 @@
-#include "QRS_class/qrsclass.h"
+#include "QRS_CLASS/qrsclass.h"
 #include <QDebug>
-#include "QRS_class/instance.h"
-#include "QRS_class/Extractors/abstractextractor.h"
-#include "QRS_class/Extractors/malinowskaextractor.h"
-#include "QRS_class/Extractors/speedamplitudeextractor.h"
-#include "QRS_class/Extractors/maxspeedexceedextractor.h"
-#include "QRS_class/Clusterers/abstractclusterer.h"
-#include "QRS_class/Clusterers/kmeans.h"
-#include "QRS_class/Clusterers/gmeans.h"
+#include "QRS_CLASS/instance.h"
+#include "QRS_CLASS/Extractors/abstractextractor.h"
+#include "QRS_CLASS/Extractors/malinowskaextractor.h"
+#include "QRS_CLASS/Extractors/speedamplitudeextractor.h"
+#include "QRS_CLASS/Extractors/maxspeedexceedextractor.h"
+#include "QRS_CLASS/Clusterers/abstractclusterer.h"
+#include "QRS_CLASS/Clusterers/kmeans.h"
+#include "QRS_CLASS/Clusterers/gmeans.h"
 
 #include <QFile>
 #include <iostream>

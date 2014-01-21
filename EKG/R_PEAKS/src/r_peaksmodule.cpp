@@ -190,7 +190,7 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
     if(this->filteredSignal.at(peaks_cut[fst].second) > 0) {
         indexAlias.push_back(peaks_cut[fst].second);
         this->iter = this->filteredSignal.begin();
-        for(unsigned int j = 0; j < peaks_cut[fst].second; j ++) (this->iter)++;
+        for(unsigned int j = 0; j < peaks_cut[fst].second; j++) (this->iter)++;
         this->itVect.push_back(this->iter);
         prevPeak = peaks_cut[fst].second;
     }
@@ -208,7 +208,7 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
 
         indexAlias.push_back(possiblePeak);
         this->iter = this->filteredSignal.begin();
-        for(unsigned int j = 0; j < peaks_cut[fst].second; j ++) (this->iter)++;
+        for(unsigned int j = 0; j < possiblePeak; j++) (this->iter)++;
         this->itVect.push_back(this->iter);
         prevPeak = possiblePeak;
     }
@@ -218,7 +218,7 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
             if(filteredSignal.at(peaks_cut[i].second) > 0) {
                 indexAlias.push_back(peaks_cut[i].second);
                 this->iter = this->filteredSignal.begin();
-                for(unsigned int j = 0; j < peaks_cut[fst].second; j ++) (this->iter)++;
+                for(unsigned int j = 0; j < peaks_cut[fst].second; j++) (this->iter)++;
                 this->itVect.push_back(this->iter);
                 prevPeak = peaks_cut[i].second;
             }
@@ -236,7 +236,7 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
 
                 indexAlias.push_back(possiblePeak);
                 this->iter = this->filteredSignal.begin();
-                for(unsigned int j = 0; j < peaks_cut[fst].second; j ++) (this->iter)++;
+                for(unsigned int j = 0; j < possiblePeak; j++) (this->iter)++;
                 this->itVect.push_back(this->iter);
                 prevPeak = possiblePeak;
             }
@@ -614,7 +614,7 @@ void R_peaksModule::PanTompkinsSetPeaks(VectorPairDoubleUnsignedInt & filter, Ve
             int index = (temp1 + temp2)/2;
             indexAlias.push_back(index);
             this->iter = this->filteredSignal.begin();
-            for(unsigned int j = 0; j < index; j ++) (this->iter)++;
+            for(unsigned int j = 0; j < index; j++) (this->iter)++;
             this->itVect.push_back(this->iter);
         }
 
@@ -630,7 +630,7 @@ void R_peaksModule::PanTompkinsSetPeaks(VectorPairDoubleUnsignedInt & filter, Ve
         int index = (temp1 + temp2)/2;
         indexAlias.push_back(index);
         this->iter = this->filteredSignal.begin();
-        for(unsigned int j = 0; j < index; j ++) (this->iter)++;
+        for(unsigned int j = 0; j < index; j++) (this->iter)++;
         this->itVect.push_back(this->iter);
     }
 }
@@ -877,4 +877,9 @@ const R_peaksIterVector & R_peaksModule::getPeaksIter(void) {
 
 const QVector<unsigned int> & R_peaksModule::getPeaksIndex(void) {
     return this->indexVector;
+}
+
+const R_peaksIter R_peaksModule::ecgBegin(void) {
+    R_peaksIter ecgBeg = this->filteredSignal.begin();
+    return ecgBeg;
 }

@@ -341,7 +341,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -441,8 +441,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -828,8 +828,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>407</height>
                   </rect>
                  </property>
                 </widget>
@@ -843,7 +843,7 @@
                 <item>
                  <widget class="QGroupBox" name="rpeaksGroupBox_2">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -864,11 +864,17 @@
                    </item>
                    <item>
                     <widget class="QRadioButton" name="Hilbert_radiobutton">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
                      <property name="text">
                       <string>Hilbert transformation based algorithm</string>
                      </property>
+                     <property name="checkable">
+                      <bool>false</bool>
+                     </property>
                      <property name="checked">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </property>
                     </widget>
                    </item>
@@ -876,6 +882,9 @@
                     <widget class="QRadioButton" name="PanTompkins_radiobutton">
                      <property name="text">
                       <string>Pan - Tompkins algorithm</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -969,8 +978,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>499</height>
                   </rect>
                  </property>
                 </widget>
@@ -2543,8 +2552,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>451</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -2692,7 +2701,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
+                       <width>1026</width>
                        <height>348</height>
                       </rect>
                      </property>

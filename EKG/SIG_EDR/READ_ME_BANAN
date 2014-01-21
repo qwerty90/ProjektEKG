@@ -1,1 +1,4 @@
 Nie tworzyliśmy klasy API bo nie miało to większego sensu, gdyż wszystko co chciałeś masz już udostępnione w SIG_EDR. Poprzez konstruktor podajesz dane wejściowe które są potrzebne do obliczeń(wszystko jest w komentarzach) i masz dwie funkcje zwracające wartości(Qvector i std::Vector) potrzebne do wyrysowania wykresów. Wykresy mają się rysować przy pomocy splajnów. Dodatkowo jest kilka funkcji za pomocą można przeładować dane wejściowe jakby były potrzebne. W razie pytań napisz maila lub zadzwoń.
+
+
+Zmiany w update: teraz jako sygnal r-pik prześlij QVector<unsigned int> &. Rozmawiał ze Stefanem i mówił że zwraca wektor indeksów wykrytych pików R.

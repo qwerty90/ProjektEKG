@@ -30,6 +30,7 @@ void AppController::BindView(AirEcgMain *view)
 {
     this->connect(view, SIGNAL(loadEntity(QString,QString)), this, SLOT(loadData(QString,QString)));
     this->connect(view, SIGNAL(switchSignal(int)), this, SLOT(switchSignal(int)));
+    this->connect(view, SIGNAL(switchSignal_SIGEDR(int)), this, SLOT(switchSignal_SIGEDR(int)));
     this->connect(this, SIGNAL(patientData(EcgData*)), view, SLOT(receivePatientData(EcgData*)));
     this->connect(view, SIGNAL(switchEcgBaseline(int)), this, SLOT(switchEcgBaseline(int)));
     this->connect(view, SIGNAL(switchRPeaks(unsigned char)), this, SLOT(switchRPeaks(unsigned char)));
@@ -138,8 +139,13 @@ void AppController::switchSignal(int index)
 {
 
     this->entity->settings->signalIndex = index;
-    this->ResetModules();
+    //this->ResetModules();
 }
+void AppController::switchSignal_SIGEDR(int index)
+{
+    this->entity->settings->signalIndex = index;
+}
+
 
 void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
 {
@@ -460,35 +466,46 @@ void AppController::runWaves()
 void AppController::runSigEdr()
 {
     //WYMAGA KONSULTACJI!!!
-    /*
-    QVector<double> *tmp_baselined;
-    iters *tmp_Rpeaks;
 
     QLOG_INFO() << "SigEdr started.";
-    if (this->entity->settings->SigEdr_rpeaks)
-    {
-        if((this->entity->Rpeaks==NULL) || (this->entity->ecg_baselined==NULL))
-        {
-            QLOG_ERROR() << "Brak danych dla SigEdr.";
-            return;
-        }
-        if (this->entity->settings->signalIndex==0)
-        {
-            tmp_baselined = new QVector<double>(*(this->entity->ecg_baselined));
-            tmp_Rpeaks    = new iters(*(this->entity->Rpeaks));
-            switchSignal(1);
-            runEcgBaseline();
-            runRPeaks();
+//    QVector<double> *tmp_baselined = NULL;
+//    iters *tmp_Rpeaks = NULL;
+//    int sig_index2;
 
-            sig_edr obj(*(this->entity->ecg_baselined),*(tmp_baselined));
+//    if (this->entity->settings->SigEdr_rpeaks)
+//    {
 
-            sig_edr obiekt(*(this->entity->ecg_baselined),
-                            (this->entity->Rpeaks),
-                            *(tmp_baselined),
-                            *(tmp_Rpeaks));
-        }
-    }
-*/
+//        if((this->entity->Rpeaks==NULL) || (this->entity->ecg_baselined==NULL))
+//        {
+//            QLOG_ERROR() << "Brak danych dla SigEdr.";
+//            return;
+//        }
+//(this->entity->settings->signalIndex==0) ? sig_index2=1 : sig_index2=0;
+
+//        tmp_baselined = new QVector<double>(*(this->entity->ecg_baselined));
+//        tmp_Rpeaks    = new iters(*(this->entity->Rpeaks));
+//        switchSignal(sig_index2);
+//        runEcgBaseline();
+//        runRPeaks();
+
+//        QLOG_TRACE()<< "SIG_EDR/ Sizes are: "<<QString::number(this->entity->ecg_baselined->size())<<" "
+//                    <<QString::number(tmp_baselined->size())<<" "
+//                   <<QString::number(this->entity->Rpeaks->size())<<" "
+//                  <<QString::number(tmp_Rpeaks->size())<<"."  ;
+
+//        sig_edr obiekt(*(this->entity->ecg_baselined),
+//                       (this->entity->Rpeaks->first()),
+//                       *(tmp_baselined),
+//                       (tmp_Rpeaks->first()));
+
+//        obiekt.new_RPeaks_signal(1,this->entity->Rpeaks->first());
+//        this->entity->SigEdr_r = new QVector<double>(*(obiekt.retrieveEDR_QVec(1,sig_index2)));
+//        QLOG_INFO() << "SigEdr_r/ calculated " <<QString::number(this->entity->SigEdr_r->size())<<" samples";
+
+//    }
+
+    QLOG_INFO() <<"SigEdr done.";
+    emit this->SigEdr_done(this->entity);
 
 }
 

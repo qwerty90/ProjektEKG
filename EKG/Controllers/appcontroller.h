@@ -47,6 +47,7 @@ signals:
 public slots:
     void loadData(const QString &directory, const QString &name);
     void switchSignal(int index);
+    void switchSignal_SIGEDR(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
     //void sendQRSData(int index, int type);

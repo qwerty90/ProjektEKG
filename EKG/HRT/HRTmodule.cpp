@@ -1,19 +1,18 @@
+#include "stdafx.h"
 #include "HRTmodule.h"
 
 
 using namespace HRT;
 
 
-void HRTmodule::calculateHRT(QVector<int> Rpeaks, int samplingFrequency)
-//void HRTmodule::calculateHRT(vector<int> Rpeaks, int samplingFrequency)//mozna zamienic na QVector
+void HRTmodule::calculateHRT(QVector<unsigned int> Rpeaks, int samplingFrequency)
+//void HRTmodule::calculateHRT(vector<unsigned int> Rpeaks, int samplingFrequency)//mozna zamienic na QVector
 {
 	//////init
 	n_R=Rpeaks.size();
-	if(n_R>100)
-	{
-	frequency=float(samplingFrequency);
+	frequency=(double)samplingFrequency;
 	for (int i=0;i<n_R;i++)
-		this->R_peaks.push_back(int((Rpeaks[i]*1000.0)/frequency));//transform rpeaks
+		this->R_peaks.push_back((int)(Rpeaks[i]*1000.0)/frequency);//transform rpeaks
 
 	/////init
 
@@ -40,56 +39,56 @@ void HRTmodule::calculateHRT(QVector<int> Rpeaks, int samplingFrequency)
 	}
 	else
 		totalVEBcount=0;
-	}
+	
 }
 
 
-vector<float> 	HRTmodule::get_tachogram()
+//vector<double> 	HRTmodule::get_tachogram()
+QVector<double> 	HRTmodule::get_tachogram()
 {
+
 	return tacho;
 }
+
+
+
 int 			HRTmodule::get_VEBcount()
 {
 	return totalVEBcount;
 }
-float 			HRTmodule::get_TS()
+double 			HRTmodule::get_TS()
 {
 	return TS;
 }
-float 			HRTmodule::get_TO()
+double			HRTmodule::get_TO()
 {
 	return TO;
 }
-float			HRTmodule::get_a()
+double			HRTmodule::get_a()
 {
 	return TS;
 }
-float			HRTmodule::get_b()
+double			HRTmodule::get_b()
 {
 	return TS_B;
 }
 
 
-vector<float> HRTmodule::findVEB()  
+vector<double> HRTmodule::findVEB()  
 {
-	//cout<<" findVEB ";
-
-	vector<float> VEBlistT;
-	float RR1=R_peaks[1]-R_peaks[0];
-	float RR2=R_peaks[2]-R_peaks[1];
-	float RR3=R_peaks[3]-R_peaks[2];
-	float RR4=R_peaks[4]-R_peaks[3];
-	float RR5=R_peaks[5]-R_peaks[4];
-	float RR_v1, RR_v2, RR_av;
-	for (int i=n_R_l; i<n_R-n_R_u; ++i)   //odrzucamy poczatek i koniec
+	vector<double> VEBlistT;
+	double RR1=R_peaks[1]-R_peaks[0];
+	double RR2=R_peaks[2]-R_peaks[1];
+	double RR3=R_peaks[3]-R_peaks[2];
+	double RR4=R_peaks[4]-R_peaks[3];
+	double RR5=R_peaks[5]-R_peaks[4];
+	double RR_v1, RR_v2, RR_av;
+	for (int i=n_R_l; i<n_R-n_R_u; ++i) 
 	{
 		RR_v1=R_peaks[i]-R_peaks[i-1]; 
 		RR_v2=R_peaks[i+1]-R_peaks[i]; 
-
-		///////////////////////
 		if( (RR_v1>200) && (RR_v2>200))
 		{
-		///////////////////////////
 
 		RR_av=(RR1+RR2+RR3+RR4+RR5)/5;
 		
@@ -106,13 +105,10 @@ vector<float> HRTmodule::findVEB()
 	return VEBlistT;
 }
 
-vector<float> HRTmodule::filterVEB()
+vector<double> HRTmodule::filterVEB()
 {
-	//cout<<" filterVEB ";
-	
-	
 	int n=VEBlist.size();
-	vector<float> TempList;
+	vector<double> TempList;
 	if (n > 2)
 	{
 	
@@ -122,7 +118,7 @@ vector<float> HRTmodule::filterVEB()
 		for (int i=1; i<n-1; ++i)
 		{
 			if( ( (VEBlist[i+1] - VEBlist[i]) > Rdist ) && ((VEBlist[i] - VEBlist[i-1]) > Rdist ) )
-				TempList.push_back(int(VEBlist[i]));
+				TempList.push_back((int)VEBlist[i]);
 		}
     
 		if( (VEBlist[VEBlist.size()-1] - VEBlist[VEBlist.size()-2]) > Rdist )
@@ -135,40 +131,36 @@ vector<float> HRTmodule::filterVEB()
 			if((VEBlist[1] -VEBlist[0]) > Rdist )
 				TempList=VEBlist;
 
-
 	return TempList;
 }
 
-vector<vector<float>> HRTmodule::createRRlist()
+vector<vector<double>> HRTmodule::createRRlist()
 {
-	//cout<<" createRR ";
-	vector<vector<float>> RRlistT;
-	vector<float> temp;
+	vector<vector<double>> RRlistT;
+	vector<double> temp;
 	int n=VEBlist2.size();
 	
 	for (int i=0; i<n; ++i)
 	{
 		temp.push_back(VEBlist2[i]);
 		RRlistT.push_back(temp);
-		vector<float>().swap(temp);
+		vector<double>().swap(temp);
 	}
 	
 	for (int j=0; j<n; ++j)
 	{
 		for (int i=0; i<25; ++i)
 		{
-			RRlistT[j].push_back((R_peaks[int(VEBlist2[j] - 3 + i)] - R_peaks[int(VEBlist2[j] - 4 + i)]));
+			RRlistT[j].push_back((R_peaks[(int)VEBlist2[j] - 3 + i] - R_peaks[(int)VEBlist2[j] - 4 + i]));
 		}
 	}
 	return RRlistT;
 }
 
-vector<vector<float>> HRTmodule::filterRR()
+vector<vector<double>> HRTmodule::filterRR()
 {
-	//cout<<" filterRR ";
-	
 	bool flag=false;
-	vector<vector<float>> HRT_RR;
+	vector<vector<double>> HRT_RR;
 	int columns = RRlist[0].size();
 	int rows = RRlist.size();
 	for (int i=0; i<rows; ++i)
@@ -185,32 +177,27 @@ vector<vector<float>> HRTmodule::filterRR()
 
 		flag=false;
 	}
-
-	//cout<<"HRT RR size: "<<HRT_RR.size()<<endl;
 	return HRT_RR;
 }
 
 void HRTmodule::GlobalAverage()
 {
-	//cout<<" globalAV: "<<endl;
-
 	int n = HRT_RR.size();
 	int m = HRT_RR[0].size();
-	float TO_temp=0;
-	float RR1, RR2, RR_1, RR_2;
-	float sum=0;
-	float TS_T;
-	float B;		
-//	vector<int> x;	
-	vector<float> TO_T;
-	vector<float> temporaryVector;
-	vector<vector<float>> temporaryMatrix;
-	vector<float> TS_a;
-	vector<float> TS_b;
-	vector<vector<float>> XY;
-	vector<float> y;
-	vector<float> TO_TS_slope;
-	vector<float> xytemp(20);
+	double TO_temp=0;
+	double RR1, RR2, RR_1, RR_2;
+	double sum=0;
+	double TS_T;
+	double B;		
+	vector<double> TO_T;
+	vector<double> temporaryVector;
+	vector<vector<double>> temporaryMatrix;
+	vector<double> TS_a;
+	vector<double> TS_b;
+	vector<vector<double>> XY;
+	vector<double> y;
+	vector<double> TO_TS_slope;
+	vector<double> xytemp(20);
 
 	XY.push_back(xytemp); 
 	XY.push_back(xytemp); 
@@ -226,7 +213,7 @@ void HRTmodule::GlobalAverage()
 	
 	for(int i=0;i<n;i++)
 		TO_temp=TO_temp+TO_T[i];
-	TO_temp = TO_temp/float(n);
+	TO_temp = TO_temp/(double)n;
 	
 	if (n>1)
 	{
@@ -236,7 +223,7 @@ void HRTmodule::GlobalAverage()
 			{
 			sum=sum+HRT_RR[j][i];
 			}
-			XY[1][i-6]=sum/float(n);
+			XY[1][i-6]=sum/(double)n;
 			XY[0][i-6]=i;
 			sum=0;
 		}
@@ -268,13 +255,14 @@ void HRTmodule::GlobalAverage()
 	this->TS_B=B;
 } 
 
-vector<float> HRTmodule::tachogram()
+vector<double> HRTmodule::tachogram()
 {
 	int i,j;
 	int n = HRT_RR.size();
 	int m = HRT_RR[0].size();
-	float av=0;
-	vector<float> Tacho;
+	double av=0;
+	//vector<double> Tacho;
+	QVector<double> Tacho;
 
 	for (j=1;j<m;j++)
 	{

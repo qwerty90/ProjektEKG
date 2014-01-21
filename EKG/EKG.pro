@@ -19,7 +19,9 @@ include(HRV1/hrv1.pri)
 include(R_PEAKS/RPeaks.pri)
 include(Waves/waves.pri)
 include(SIG_EDR/sig_edr.pri)
-
+#include(HRT/hrt.pri)
+include(VCG_T_LOOP/VCG_T_LOOP.pri)
+include(SLEEP_APNEA/sleep_apnea.pri)
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = EKG
@@ -34,4 +36,3 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 win32: LIBS += -L$$PWD/R_PEAKS/fourier/ -lfftw3-3
 unix : LIBS += -lfftw3
-
