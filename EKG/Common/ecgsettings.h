@@ -2,7 +2,6 @@
 #define ECGSETTINGS_H
 
 #include <QObject>
-#include "qrsclass.h"
 
 //ustawienia dla modulow zadawane z UI
 
@@ -12,15 +11,32 @@ class EcgSettings : public QObject
 public:
     explicit EcgSettings(QObject *parent = 0);
 
+    //raw data settings
+    int signalIndex;
+    //baseline settings
     int EcgBaselineMode;
     QString kalman_arg1;
     QString kalman_arg2;
     double  averaging_time;
     int     avgWindowSize;
-    unsigned char RPeaksMode;
-    int signalIndex;
-    
-    QRSClassSettings qrsClassSettings;
+    //rpeaks settings
+    unsigned char RPeaksMode; //1-hilb 2-pan 3-falkowa
+    //waves settings
+    bool P_on_checked;
+    bool P_end_checked;
+    bool Qrs_on_checked;
+    bool Qrs_end_checked;
+    //st interval setting
+    bool quadratic; //0=linear
+    double morph_coeff;
+    double level_tresh;
+    double slope_tresh;
+    unsigned int detect_window;
+    unsigned int smooth_window;
+    //SigEdr settings
+    bool SigEdr_rpeaks;
+    bool SigEdr_qrs;
+
 signals:
     
 public slots:

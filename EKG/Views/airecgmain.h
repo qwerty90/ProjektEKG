@@ -36,24 +36,27 @@ class AirEcgMain : public QMainWindow
     void drawHrv2(EcgData* data);
     void drawHrvDfa(EcgData* data);
     void drawTwa(EcgData* data);
-    void drawWaves(EcgData* data);
-    void drawQrsClass(EcgData* data);
+    //void drawWaves(EcgData* data);
+    //void drawQrsClass(EcgData* data);
 
     void drawSleep_Apnea(EcgData* data);
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
-    void populareQRSClassBox(QRSClass currentClass, int type);
+    //void populareQRSClassBox(QRSClass currentClass, int type);
 public:
 
     explicit AirEcgMain(QWidget *parent = 0);
     ~AirEcgMain();
     QwtPlot* plotPlot(QList<int> &y, float freq);
+    QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
     QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
+    QwtPlot* plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq);
+
     //HRV1*****************
     QwtPlot* plotPointsPlotDoubleToDouble(QList<double> &x, QList<double> &y);
     QwtPlot* plotLogPlotF(QList<double> &x,QList<double> &y,int rodzaj);
@@ -67,7 +70,8 @@ public:
     QwtPlot* plotPlotdfa(QList<double> &y1, QList<double> &y2);
     QwtPlot* plotPointsPlotDFA(QList<double> &x, QList<double> &y, double &wsp_a, double &wsp_b);
 
-    QwtPlot* plotWavesPlot(QVector<double> &ecgSignal, QList<Waves::EcgFrame*> &ecgFrames, double samplingFrequency);
+
+    QwtPlot* plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
 //////////
      QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
@@ -91,11 +95,14 @@ signals:
     void runStInterval();
     void runRPeaks();
     void runHRV1();
+    void runWaves();
+    void runSigEdr();
+    void runQrsClass();
 
     void closeDialog();
 
     void qrsClassChanged(int index, int type);
-    void qrsClustererChanged(ClustererType type);
+    //void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
     void qrsParallelExecutionChanged(bool flag);
     void qrsGMinClustersChanged(int minClusters);
@@ -114,9 +121,9 @@ signals:
 public slots:
     void receivePatientData(EcgData *data);
     void receiveResults(EcgData *data);
-    void receiveQRSData(QRSClass currClass, int type);
+    //void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
-    void receiveSingleProcessingResult(bool succeeded, EcgData *data);
+    //void receiveSingleProcessingResult(bool succeeded, EcgData *data);
 
     //modules recieve
     void drawEcgBaseline(EcgData* data);//example
@@ -124,7 +131,9 @@ public slots:
     void drawStInterval(EcgData* data);
     void drawHrv1(EcgData *data);
     void drawRPeaks(EcgData *data);
-
+    void drawWaves(EcgData *data);
+    void drawQrsClass(EcgData *data);
+    void drawSigEdr(EcgData *data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -217,6 +226,8 @@ private slots:
     void on_kalmanRadioButton_clicked();
 
     void on_pushButton_17_clicked();
+
+    void on_pushButton_4_clicked();
 
 private:
     Ui::AirEcgMain *ui;
