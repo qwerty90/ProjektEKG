@@ -65,10 +65,10 @@ void QRSClassModule::setEGCBaseline(QVector<double> *ecg)
     this->ecgBaselined = ecg;
 }
 
-void QRSClassModule::setWaves(QVector<const double *> *&, QVector<const double *> *&)
+void QRSClassModule::setWaves(QVector<QVector<double>::const_iterator> *waves_onset, QVector<QVector<double>::const_iterator> *waves_end)
 {
-    ;
-    //this->waves = waves;
+    this->waves_onset = waves_onset;
+    this->waves_end = waves_end;
 }
 
 bool QRSClassModule::setSettings(QRSClassSettings settings)
@@ -130,12 +130,12 @@ bool QRSClassModule::process()
     extractors->append(new MaxSpeedExceedExtractor());
 
     QList<Instance>* features = new QList<Instance>();
-    for(int i = 0; i < waves_onset->count(); i++)
+    for(int i = 0; i < this->waves_onset->count(); i++)
     {
         QList<double> currentQRS;
 
         //POCZATEK KODU DO PRZEROBIENIA DO WAVES  ??
-        for(unsigned int j = waves_onset->at(i); j <= waves_end->at(i); j++)
+        for(unsigned int j = this->waves_onset->at(i) - this->waves_onset->at(0); j <= this->waves_end->at(i) - this->waves_onset->at(0); j++) //nie wiem czy bedzie dobrze
         {
             currentQRS.append(this->ecgBaselined->at(j));
         }
@@ -200,8 +200,8 @@ QVector<QRSClass> *QRSClassModule::getClasses()
 
         if (representativeId > -1)
         {
-            int begin = waves_onset->at(representativeId);
-            int end = waves_end->at(representativeId) + 1;
+            int begin = waves_onset->at(representativeId) - waves_onset->at(0); //do sprawdzenia!
+            int end = waves_end->at(representativeId) - waves_onset->at(0) + 1; //do sprawdzenia!
             for(int j = begin; j < end; j++)
                 currentClass.representative->append(ecgBaselined->at(j));
         }
