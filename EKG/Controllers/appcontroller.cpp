@@ -6,7 +6,7 @@
 #include "ECG_BASELINE/src/movAvg.h"
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
-//#include "QRS_CLASS/qrsclass.h"
+#include "QRS_CLASS/qrsclass.h"
 #include "HRV1/HRV1MainModule.h"
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
