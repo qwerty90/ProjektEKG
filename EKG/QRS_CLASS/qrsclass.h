@@ -5,7 +5,7 @@
 #include <QString>
 #include <QList>
 
-#include "waves/src/waves.h"
+#include "Waves/src/waves.h"
 
 class AbstractExtractor;
 class AbstractClusterer;
