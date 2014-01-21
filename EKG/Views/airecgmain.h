@@ -122,8 +122,13 @@ signals:
     void ecgBase_Kalman1Changed(const QString &arg1);
     void ecgBase_Kalman2Changed(const QString &arg1);
 
+    void on_st_interval_detection_width_Changed(const QString &arg1);
+    void on_st_interval_smothing_width_Changed(const QString &arg1);
+    void on_st_interval_morphology_Changed(const QString &arg1);
+    void on_st_interval_level_threshold_Changed(const QString &arg1);
+    void on_st_interval_slope_threshold_Changed(const QString &arg1);
 
-
+void switchDetectionAlgorithmType_ST_INTERVAL(int index);
 
 public slots:
     void receivePatientData(EcgData *data);
@@ -246,6 +251,20 @@ private slots:
     void on_pushButton_prev_vcg_clicked();
 
     void on_RUN_VCG_pushButton_clicked();
+
+    void on_st_interval_detection_width_textChanged(const QString &arg1);
+
+    void on_st_interval_smothing_width_textChanged(const QString &arg1);
+
+    void on_st_interval_morphology_textChanged(const QString &arg1);
+
+    void on_st_interval_level_threshold_textChanged(const QString &arg1);
+
+    void on_st_interval_slope_threshold_textChanged(const QString &arg1);
+
+    void on_detectionratesquare_clicked();
+
+    void on_detectionratelinear_clicked();
 
 private:
     Ui::AirEcgMain *ui;

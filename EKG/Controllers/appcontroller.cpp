@@ -46,6 +46,14 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
 
+    this->connect(view, SIGNAL(on_st_interval_detection_width_Changed(const QString &)),this,SLOT(on_st_interval_detection_width_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_smothing_width_Changed(const QString &)),this,SLOT(on_st_interval_smothing_width_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_morphology_Changed(const QString &)),this,SLOT(on_st_interval_morphology_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_level_threshold_Changed(const QString &)),this,SLOT(on_st_interval_level_threshold_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_slope_threshold_Changed(const QString &)),this,SLOT(on_st_interval_slope_threshold_Changed(const QString &)));
+    this->connect(view, SIGNAL(switchDetectionAlgorithmType_ST_INTERVAL(int)),this,SLOT(switchDetectionAlgorithmType_ST_INTERVAL(int)));
+
+
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
     this->connect(view, SIGNAL(runStInterval()) ,this, SLOT (runStInterval()));
@@ -354,7 +362,7 @@ void AppController::runRPeaks()
 void AppController::runStInterval()
 {
     QLOG_INFO() << "Start StInterval";
-
+#if 0
     EcgStAnalyzer analyzer;
     if (this->entity->settings->quadratic)
     analyzer.setAlgorithm(ST_QUADRATIC);
@@ -394,7 +402,7 @@ void AppController::runStInterval()
     // operacja analizy zwraca liste deskryptorow interwalow ST,
     // ktora mozna zapisac w EcgData:
     this->entity->STintervals = new QList<EcgStDescriptor>(result);
-
+#endif
     emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
 }
@@ -548,4 +556,32 @@ void AppController::CzasUsrednieniaEdit(const QString arg1)
 void AppController::ecgBase_WindowSizeEdit(const QString arg1)
 {
     this->entity->settings->avgWindowSize = arg1.toInt();
+}
+void AppController::on_st_interval_detection_width_Changed(const QString &arg1)
+{
+
+}
+
+void AppController::on_st_interval_smothing_width_Changed(const QString &arg1)
+{
+
+}
+
+void AppController::on_st_interval_morphology_Changed(const QString &arg1)
+{
+
+}
+
+void AppController::on_st_interval_level_threshold_Changed(const QString &arg1)
+{
+
+}
+
+void AppController::on_st_interval_slope_threshold_Changed(const QString &arg1)
+{
+
+}
+void AppController::switchDetectionAlgorithmType_ST_INTERVAL(int index)
+{
+
 }

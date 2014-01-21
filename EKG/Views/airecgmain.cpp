@@ -419,13 +419,16 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
 
     double tos=1/freq;
 
-    for (int i = 0; i < yData1.size(); ++i)
+    for (int i = 0; i < yData2.size(); ++i)
     {
         sampleNo[i] = i*tos;
-        max = qMax(max, yData1.at(i));
-        min = qMin(min, yData1.at(i));
         max = qMax(max, yData2.at(i));
         min = qMin(min, yData2.at(i));
+    }
+    for (int i = 0; i < yData1.size(); ++i)
+    {
+        max = qMax(max, yData1.at(i));
+        min = qMin(min, yData1.at(i));
     }
 
     QwtPlot* plot = new QwtPlot();
@@ -2304,6 +2307,22 @@ void AirEcgMain::drawHrv2(EcgData *data)
 void AirEcgMain::drawStInterval(EcgData *data)
 {
     QLOG_TRACE() << "Drawing StInterval not ready yet.";
+
+    ui->tableWidget_2->setRowCount(20);
+    for (int r = 0; r < ui->tableWidget_2->rowCount(); ++r)
+    {
+        QTableWidgetItem *newItem = new QTableWidgetItem("SDADAD");
+        ui->tableWidget_2->setItem(r,0 , newItem);
+        newItem = new QTableWidgetItem("DUPA");
+        ui->tableWidget_2->setItem(r, 1, newItem);
+        newItem = new QTableWidgetItem("AA");
+        ui->tableWidget_2->setItem(r, 2, newItem);
+        newItem = new QTableWidgetItem("COS");
+        ui->tableWidget_2->setItem(r, 3, newItem);
+        newItem = new QTableWidgetItem("ASDAD");
+        ui->tableWidget_2->setItem(r, 4, newItem);
+    }
+
   //  QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
  //   ui->stIntervalArea->setWidget(plotX);
   //  ui->stIntervalArea->show();
@@ -2876,4 +2895,40 @@ void AirEcgMain::on_pushButton_prev_vcg_clicked()
 void AirEcgMain::on_RUN_VCG_pushButton_clicked()
 {
     emit this->runVcgLoop();
+}
+
+
+void AirEcgMain::on_st_interval_detection_width_textChanged(const QString &arg1)
+{
+    emit on_st_interval_detection_width_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_smothing_width_textChanged(const QString &arg1)
+{
+    emit on_st_interval_smothing_width_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_morphology_textChanged(const QString &arg1)
+{
+    emit on_st_interval_morphology_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_level_threshold_textChanged(const QString &arg1)
+{
+    emit on_st_interval_level_threshold_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_slope_threshold_textChanged(const QString &arg1)
+{
+    emit on_st_interval_slope_threshold_Changed(arg1);
+}
+
+void AirEcgMain::on_detectionratesquare_clicked()
+{
+    emit switchDetectionAlgorithmType_ST_INTERVAL(0);
+}
+
+void AirEcgMain::on_detectionratelinear_clicked()
+{
+    emit switchDetectionAlgorithmType_ST_INTERVAL(1);
 }
