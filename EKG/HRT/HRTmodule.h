@@ -1,9 +1,8 @@
 #ifndef HRTMODULE_H
 #define HRTMODULE_H
-#include "stdafx.h"
 #include <array>
 #include <vector>
-//#include <QVector>
+#include <QVector>
 #include <numeric>
 #include <functional>
 #include <iostream>
