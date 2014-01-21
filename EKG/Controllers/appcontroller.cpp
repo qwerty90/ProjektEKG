@@ -6,7 +6,7 @@
 #include "ECG_BASELINE/src/movAvg.h"
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
-#include "QRS_CLASS/qrsclass.h"
+//#include "QRS_CLASS/qrsclass.h"
 #include "HRV1/HRV1MainModule.h"
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
@@ -379,6 +379,7 @@ void AppController::runStInterval()
 
 void AppController::runQrsClass()
 {
+    /*
     QLOG_INFO() << "Start QrsClass";
 
     if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
@@ -402,6 +403,7 @@ void AppController::runQrsClass()
 
 //    emit QrsClass_done(this->entity);
     QLOG_INFO() << "QrsClass done";
+    */
 }
 
 void AppController::runWaves()
