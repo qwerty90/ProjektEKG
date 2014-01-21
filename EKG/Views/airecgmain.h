@@ -96,6 +96,7 @@ signals:
     void runRPeaks();
     void runHRV1();
     void runWaves();
+    void runSigEdr();
 
     void closeDialog();
 
@@ -223,6 +224,8 @@ private slots:
     void on_kalmanRadioButton_clicked();
 
     void on_pushButton_17_clicked();
+
+    void on_pushButton_4_clicked();
 
 private:
     Ui::AirEcgMain *ui;
