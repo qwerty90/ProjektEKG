@@ -6,7 +6,6 @@
 
 QT += core gui
 
-
 include(Common/common.pri)
 include(Controllers/controllers.pri)
 include(Views/views.pri)
@@ -19,7 +18,7 @@ include(HRV1/hrv1.pri)
 include(R_PEAKS/RPeaks.pri)
 include(Waves/waves.pri)
 include(SIG_EDR/sig_edr.pri)
-include(HRT/hrt.pri)
+#include(HRT/hrt.pri)
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

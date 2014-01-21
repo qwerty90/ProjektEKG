@@ -1833,18 +1833,18 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
                 QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
     for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
-        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
-        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
+    //    P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
+    //    P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
         Qrs_onsetData.append(ecgFrames.QRS_onset->at(i)-ecgFrames.QRS_onset->first());
         Qrs_endData.append(ecgFrames.QRS_end->at(i)-ecgFrames.QRS_end->first());
         //T_endData.append(ecgFrames[i]->T_end);
     }
 
-    QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
-    QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
+   // QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
+  //  QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
 
-    QVector<double> P_endDataX = QVector<double>(ecgFrames.Count);
-    QVector<double> P_endDataY = QVector<double>(ecgFrames.Count);
+  //  QVector<double> P_endDataX = QVector<double>(ecgFrames.Count);
+   // QVector<double> P_endDataY = QVector<double>(ecgFrames.Count);
 
     QVector<double> Qrs_onsetDataX = QVector<double>(ecgFrames.Count);
     QVector<double> Qrs_onsetDataY = QVector<double>(ecgFrames.Count);
@@ -1858,11 +1858,11 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
 
     for (int i=0; i < ecgFrames.Count;++i)
     {
-        P_onsetDataX[i]=P_onsetData[i]*dt;
-        P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
+      //  P_onsetDataX[i]=P_onsetData[i]*dt;
+     //   P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
 
-        P_endDataX[i]=P_endData[i]*dt;
-        P_endDataY[i]=ecgSignal[P_endData[i]];
+     //   P_endDataX[i]=P_endData[i]*dt;
+     //   P_endDataY[i]=ecgSignal[P_endData[i]];
 
         Qrs_onsetDataX[i]=Qrs_onsetData[i]*dt;
         Qrs_onsetDataY[i]=ecgSignal[Qrs_onsetData[i]];
@@ -1873,7 +1873,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
       //  T_endDataX[i]=T_endData[i]*dt;
       //  T_endDataY[i]=ecgSignal[T_endData[i]];
     }
-
+/*
     if(ui->p_onset->isChecked() || ui->wave_all->isChecked())
     {
         QwtPlotCurve *P_onsetPoints = new QwtPlotCurve();
@@ -1897,7 +1897,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         P_endPoints->setSamples(P_endDataX,P_endDataY);
         P_endPoints->attach( plot );
     }
-
+*/
     if(ui->qrs_onset->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *Qrs_onsetPoints = new QwtPlotCurve();
@@ -2147,8 +2147,8 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 {
 
     QLOG_TRACE() << "drawRPeaks";
-    //QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
-    QwtPlot *plotVI = plotPointsPlot_uint((data->Rpeaks_uint),*(data->ecg_baselined),data->info->frequencyValue);
+    QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
+    //QwtPlot *plotVI = plotPointsPlot_uint((data->Rpeaks_uint),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
 }
