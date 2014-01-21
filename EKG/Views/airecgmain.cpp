@@ -1096,7 +1096,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     {
         pDataX[i] = ((unsigned int)(p.at(i)- p.first())*tos);
         pDataY[i] = (*p.at(i));
-        QLOG_TRACE() <<"Rpik:X = "<< QString::number( pDataX[i])<< "Y = " << QString::number( pDataY[i]);
+        //QLOG_TRACE() <<"Rpik:X = "<< QString::number( pDataX[i])<< "Y = " << QString::number( pDataY[i]);
     }
 
 
@@ -1177,7 +1177,7 @@ QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<
     for (int i=0;i<p.size();i++)
     {
         pData[i]=((unsigned int)p.at(i));
-        QLOG_TRACE() << QString::number( p.at(i));
+        //QLOG_TRACE() << QString::number( p.at(i));
     }
 
     QVector<double> pDataX = QVector<double>(pData.size());
@@ -2182,7 +2182,11 @@ void AirEcgMain::drawHrv1(EcgData *data)
 
 void AirEcgMain::drawSigEdr(EcgData *data)
 {
-    QLOG_TRACE() << "Drawing SigEdr not ready yet.";
+    QLOG_INFO() << "Drawing SigEdr not ready yet.";
+    if (data->SigEdr_r==NULL)
+        QLOG_FATAL() << "SigEdr does not exist";
+    else
+    QLOG_TRACE() << "GUI/ SigEdr has "<<QString::number(data->SigEdr_r->size())<< " points.";
 
 }
 

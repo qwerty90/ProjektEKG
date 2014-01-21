@@ -105,7 +105,7 @@ public:
     bool   AtrialFibr;
 
     //modul SigEdr
-    QVector<QVector<double>::const_iterator> *SigEdr;
+    QVector<double> *SigEdr_r;
 
 
     QList<EcgAnnotation> *annotations;

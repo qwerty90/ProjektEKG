@@ -23,6 +23,7 @@ EcgData::EcgData(QObject *parent) :
     this->fft_x = NULL;
     this->fft_y = NULL;
     this->classes=NULL;
+    this->SigEdr_r=NULL;
     //hrv2
     //twa
     //dfa
@@ -53,6 +54,7 @@ EcgData::EcgData(QString id)
     this->fft_x = NULL;
     this->fft_y = NULL;
     this->classes=NULL;
+    this->SigEdr_r=NULL;
 
     this->RecordId = id;
     this->settings = new EcgSettings();
