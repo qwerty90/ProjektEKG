@@ -878,3 +878,8 @@ const R_peaksIterVector & R_peaksModule::getPeaksIter(void) {
 const QVector<unsigned int> & R_peaksModule::getPeaksIndex(void) {
     return this->indexVector;
 }
+
+const R_peaksIter R_peaksModule::ecgBegin(void) {
+    R_peaksIter ecgBeg = this->filteredSignal.begin();
+    return ecgBeg;
+}
