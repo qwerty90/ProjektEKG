@@ -2180,6 +2180,12 @@ void AirEcgMain::drawHrv1(EcgData *data)
 
 }
 
+void AirEcgMain::drawSigEdr(EcgData *data)
+{
+    QLOG_TRACE() << "Drawing SigEdr not ready yet.";
+
+}
+
 void AirEcgMain::drawHrv2(EcgData *data)
 {
     /*
@@ -2537,8 +2543,9 @@ void AirEcgMain::on_pushButton_9_clicked()
 
 void AirEcgMain::on_pushButton_10_clicked()
 {
-    this->hash = "QRS_CLASS";
-    emit this->runSingle(this->hash);
+    //this->hash = "QRS_CLASS";
+    //emit this->runSingle(this->hash);
+    emit this->runQrsClass();
 }
 
 void AirEcgMain::on_pushButton_12_clicked()

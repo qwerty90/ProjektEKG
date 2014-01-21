@@ -11,6 +11,7 @@
 #include "ecgsettings.h"
 #include "QsLog/QsLog.h"
 #include "Waves/src/waves.h"
+#include "QRS_CLASS/qrsclass.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
@@ -52,6 +53,7 @@ public:
 
 
     //Wykryte klasy zespolu QRS - wyjscie modulu QRS_CLASS
+    QVector<QRSClass>* classes;
 
     // modul ST_INTERVAL
     QList<EcgStDescriptor> *STintervals;

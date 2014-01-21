@@ -41,6 +41,8 @@ signals:
     void HRV1_done(EcgData *data);
     void RPeaks_done(EcgData *data);
     void Waves_done(EcgData *data);
+    void SigEdr_done(EcgData *data);
+    void QrsClass_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
