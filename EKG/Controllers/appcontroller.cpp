@@ -391,7 +391,10 @@ void AppController::runStInterval()
 void AppController::runWaves()
 {
     QLOG_INFO() << "Waves started.";
-    waves obiekt(*(this->entity->ecg_baselined),(float)this->entity->info->frequencyValue);
+    waves obiekt;//(*(this->entity->ecg_baselined),(float)this->entity->info->frequencyValue);
+    obiekt.calculate_waves(*(this->entity->ecg_baselined),
+                           *(this->entity->Rpeaks),
+                           this->entity->info->frequencyValue);
 
     if (this->entity->Rpeaks==NULL)
     {
@@ -407,13 +410,14 @@ void AppController::runWaves()
     if (this->entity->settings->Qrs_on_checked)
     {
         QLOG_INFO() << "Waves/ calculate QRS_onset.";
-        this->entity->Waves->QRS_onset = new iters(obiekt.get_qrs_onset(*(this->entity->Rpeaks)));
-        QLOG_INFO() << "Waves/ calculated QRS_onset.";
+        this->entity->Waves->QRS_onset = new iters(obiekt.get_qrs_onset());
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_onset->size())<<" QRS_onset.";
     }
     if (this->entity->settings->Qrs_end_checked)
     {
         QLOG_INFO() << "Waves/ calculate QRS_end.";
-        this->entity->Waves->QRS_end = new iters(obiekt.get_qrs_onset(*(this->entity->Rpeaks)));
+        this->entity->Waves->QRS_end = new iters(obiekt.get_qrs_onset());
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_end->size())<<" QRS_end.";
     }
     if (this->entity->settings->P_on_checked)
     {
@@ -425,6 +429,8 @@ void AppController::runWaves()
         QLOG_FATAL() << "Waves/ PWaveEnd not ready yet.";
         //this->entity->Waves->QRS_end = iters(obiekt.get_p_end()(*(this->entity->Rpeaks)));
     }
+
+    this->entity->Waves->Count=this->entity->Waves->QRS_onset->size();
 
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
