@@ -2827,12 +2827,10 @@ void AirEcgMain::on_pushButton_4_clicked()
 
 void AirEcgMain::on_radioButton_3_clicked()
 {
-    emit this->switchSignal(0);
-        emit this->runEcgBaseline();
+    emit this->switchSignal_SIGEDR(0);
 }
 
 void AirEcgMain::on_radioButton_4_clicked()
 {
-    emit this->switchSignal(1);
-        emit this->runEcgBaseline();
+    emit this->switchSignal_SIGEDR(1);
 }

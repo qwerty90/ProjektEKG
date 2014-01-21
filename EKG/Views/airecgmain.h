@@ -82,6 +82,7 @@ public:
 signals:
     void loadEntity(const QString &directory, const QString &name);
     void switchSignal(int index);
+    void switchSignal_SIGEDR(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
     void switchTWA(unsigned char type);

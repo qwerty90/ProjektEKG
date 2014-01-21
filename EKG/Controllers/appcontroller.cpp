@@ -30,6 +30,7 @@ void AppController::BindView(AirEcgMain *view)
 {
     this->connect(view, SIGNAL(loadEntity(QString,QString)), this, SLOT(loadData(QString,QString)));
     this->connect(view, SIGNAL(switchSignal(int)), this, SLOT(switchSignal(int)));
+    this->connect(view, SIGNAL(switchSignal_SIGEDR(int)), this, SLOT(switchSignal_SIGEDR(int)));
     this->connect(this, SIGNAL(patientData(EcgData*)), view, SLOT(receivePatientData(EcgData*)));
     this->connect(view, SIGNAL(switchEcgBaseline(int)), this, SLOT(switchEcgBaseline(int)));
     this->connect(view, SIGNAL(switchRPeaks(unsigned char)), this, SLOT(switchRPeaks(unsigned char)));
@@ -140,6 +141,11 @@ void AppController::switchSignal(int index)
     this->entity->settings->signalIndex = index;
     //this->ResetModules();
 }
+void AppController::switchSignal_SIGEDR(int index)
+{
+    this->entity->settings->signalIndex = index;
+}
+
 
 void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
 {
