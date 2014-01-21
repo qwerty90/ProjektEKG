@@ -9,7 +9,6 @@ EcgData::EcgData(QObject *parent) :
     this->ecg_baselined = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
-    //this->Rpeaks_uint = NULL;
     //this->PWaveStart = NULL;//do wywalenia
     this->Waves = new Waves_struct;
     this->Waves->PWaveEnd = NULL;
@@ -39,7 +38,6 @@ EcgData::EcgData(QString id)
     this->ecg_baselined = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
-    //this->Rpeaks_uint = NULL;
     //this->PWaveStart = NULL;//do wywalenia
     this->Waves = new Waves_struct;
     this->Waves->PWaveEnd = NULL;

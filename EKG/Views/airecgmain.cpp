@@ -2124,16 +2124,7 @@ void AirEcgMain::drawAtrialFibr(EcgData *data)
     // QwtPlot *plotAtrialFibr;
     //ui->AtrialFibrArea->setWidget(plotAtrialFibr);
     //ui->AtrialFibrArea->show();
-    //macierz
-    ui->af_matrix11->setText("-");
-    ui->af_matrix12->setText("-");
-    ui->af_matrix13->setText("-");
-    ui->af_matrix21->setText("-");
-    ui->af_matrix22->setText("-");
-    ui->af_matrix23->setText("-");
-    ui->af_matrix31->setText("-");
-    ui->af_matrix32->setText("-");
-    ui->af_matrix33->setText("-");
+
     //parametry
     ui->Param1->setText(QString::number((data->PWaveOccurenceRatio), 'f', 2) + " ");
     ui->Param2->setText(QString::number((data->RRIntEntropy), 'f', 2) + " ");
