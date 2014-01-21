@@ -2674,7 +2674,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>2</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -2965,7 +2965,7 @@
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_41">
                   <item>
-                   <widget class="QScrollArea" name="scrollArea_6">
+                   <widget class="QScrollArea" name="scrollArea_VcgLoop1">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2974,15 +2974,15 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QScrollArea" name="scrollArea_7">
+                   <widget class="QScrollArea" name="scrollArea_VcgLoop2">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2991,8 +2991,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
@@ -3003,7 +3003,7 @@
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_39">
                   <item>
-                   <widget class="QScrollArea" name="scrollArea_3">
+                   <widget class="QScrollArea" name="scrollArea_VcgLoop3">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -3012,15 +3012,15 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QScrollArea" name="scrollArea_8">
+                   <widget class="QScrollArea" name="scrollArea_VcgLoop4">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -3029,8 +3029,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
@@ -3056,7 +3056,7 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_15">
+                 <widget class="QPushButton" name="pushButton_prev_vcg">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -3066,7 +3066,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_14">
+                 <widget class="QPushButton" name="pushButton_next_vcg">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -3100,7 +3100,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_29">
+                 <widget class="QLabel" name="vcg_ma">
                   <property name="minimumSize">
                    <size>
                     <width>25</width>
@@ -3126,7 +3126,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_31">
+                 <widget class="QLabel" name="vcg_rmmv">
                   <property name="minimumSize">
                    <size>
                     <width>25</width>
@@ -3146,7 +3146,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_33">
+                 <widget class="QLabel" name="vcg_dea">
                   <property name="minimumSize">
                    <size>
                     <width>25</width>
@@ -3172,16 +3172,22 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_4">
+                 <widget class="QLabel" name="min_electrodes">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="inputMethodHints">
+                   <set>Qt::ImhNone</set>
+                  </property>
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#ff0000;&quot;&gt;MIN 8 ELECTRODES !&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_13">
+                 <widget class="QPushButton" name="RUN_VCG_pushButton">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>RUN VCG LOOP</string>

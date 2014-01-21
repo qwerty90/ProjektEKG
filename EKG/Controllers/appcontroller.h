@@ -43,6 +43,7 @@ signals:
     void Waves_done(EcgData *data);
     void SigEdr_done(EcgData *data);
     void QrsClass_done(EcgData *data);
+    void runVcgLoop_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
@@ -59,6 +60,7 @@ public slots:
     void CzasUsrednieniaEdit   (const QString arg1);
     void ecgBase_WindowSizeEdit(const QString arg1);
 
+    void vcg_loop_change(int index);
 
     /*void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
@@ -77,7 +79,7 @@ public slots:
     void runQrsClass();
     void runWaves();
     void runSigEdr();
-
+ void runVcgLoop();
     void onThreadFinished();
 };
 

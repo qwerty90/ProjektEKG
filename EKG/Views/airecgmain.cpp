@@ -2323,6 +2323,33 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
     ui->sleepcnt->setText(QString::number(*(data->SD2)));
     ui->sleepcntfrequence->setText(QString::number(*(data->SD2)));
 }
+void AirEcgMain::drawVcgLoop(EcgData* data)
+{
+
+        ui->pushButton_prev_vcg->setEnabled(true);
+        ui->pushButton_next_vcg->setEnabled(true);
+
+        ui->vcg_dea->setText("-");//QString::number(*(data->SD2)));
+        ui->vcg_ma->setText("-");//QString::number(*(data->SD2)));
+        ui->vcg_rmmv->setText("-");//QString::number(*(data->SD2)));
+
+        QwtPlot *plotVcgLoop1 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+        ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
+        ui->scrollArea_VcgLoop1->show();
+
+        QwtPlot *plotVcgLoop2 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+        ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
+        ui->scrollArea_VcgLoop2->show();
+
+        QwtPlot *plotVcgLoop3 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+        ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
+        ui->scrollArea_VcgLoop3->show();
+
+        QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+        ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
+        ui->scrollArea_VcgLoop4->show();
+
+}
 
 void AirEcgMain::drawHrvDfa(EcgData *data)
 {
@@ -2833,4 +2860,20 @@ void AirEcgMain::on_radioButton_3_clicked()
 void AirEcgMain::on_radioButton_4_clicked()
 {
     emit this->switchSignal_SIGEDR(1);
+}
+
+void AirEcgMain::on_pushButton_next_vcg_clicked()
+{
+    emit this->vcg_loop_change(1);
+}
+
+void AirEcgMain::on_pushButton_prev_vcg_clicked()
+{
+    emit this->vcg_loop_change(0);
+}
+
+
+void AirEcgMain::on_RUN_VCG_pushButton_clicked()
+{
+    emit this->runVcgLoop();
 }

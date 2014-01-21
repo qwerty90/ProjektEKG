@@ -40,6 +40,7 @@ class AirEcgMain : public QMainWindow
     //void drawQrsClass(EcgData* data);
 
     void drawSleep_Apnea(EcgData* data);
+
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -83,6 +84,7 @@ signals:
     void loadEntity(const QString &directory, const QString &name);
     void switchSignal(int index);
     void switchSignal_SIGEDR(int index);
+    void vcg_loop_change(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
     void switchTWA(unsigned char type);
@@ -90,6 +92,7 @@ signals:
     void run();
     void test(int index, int type);
     void runSingle(QString hash);
+
 
     //modules invoke
     void runEcgBaseline();//example
@@ -100,6 +103,8 @@ signals:
     void runWaves();
     void runSigEdr();
     void runQrsClass();
+
+    void runVcgLoop();
 
     void closeDialog();
 
@@ -136,6 +141,7 @@ public slots:
     void drawWaves(EcgData *data);
     void drawQrsClass(EcgData *data);
     void drawSigEdr(EcgData *data);
+    void drawVcgLoop(EcgData* data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -234,6 +240,12 @@ private slots:
     void on_radioButton_3_clicked();
 
     void on_radioButton_4_clicked();
+
+    void on_pushButton_next_vcg_clicked();
+
+    void on_pushButton_prev_vcg_clicked();
+
+    void on_RUN_VCG_pushButton_clicked();
 
 private:
     Ui::AirEcgMain *ui;

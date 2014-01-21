@@ -53,6 +53,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runRPeaks())     ,this, SLOT (runRPeaks()));
     this->connect(view, SIGNAL(runWaves())      ,this, SLOT (runWaves()));
     this->connect(view, SIGNAL(runSigEdr())     ,this, SLOT (runSigEdr()));
+    this->connect(view, SIGNAL(runVcgLoop())     ,this, SLOT (runVcgLoop()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
     this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
@@ -62,6 +63,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(Waves_done(EcgData*))      ,view, SLOT(drawWaves(EcgData*)))     ;
     this->connect(this, SIGNAL(SigEdr_done(EcgData*))     ,view, SLOT(drawSigEdr(EcgData*)))    ;
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
+    this->connect(this, SIGNAL(runVcgLoop_done(EcgData*))   ,view, SLOT(drawVcgLoop(EcgData*)))  ;
+
 
 
     this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
@@ -72,6 +75,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsKClustersNumberChanged(int)),this,SLOT(qrsKClustersNumberChanged(int)));
     this->connect(view, SIGNAL(qrsMaxIterationsChanged(int)),this,SLOT(qrsMaxIterationsChanged(int)));
     this->connect(view, SIGNAL(qrsParallelExecutionChanged(bool)),this,SLOT(qrsParallelExecutionChanged(bool)));
+
+    this->connect(view, SIGNAL(vcg_loop_change(int)),this,SLOT(vcg_loop_change(int)));
 
 }
 
@@ -144,6 +149,15 @@ void AppController::switchSignal(int index)
 void AppController::switchSignal_SIGEDR(int index)
 {
     this->entity->settings->signalIndex = index;
+}
+void AppController::vcg_loop_change(int index)
+{
+    int ecg_index = 1 ;//tutaj jakies pole z ecgdata
+    if(ecg_index>0)
+    {
+        if(index==1) ecg_index++;
+        if(index==0) ecg_index--;
+    }
 }
 
 
@@ -413,6 +427,16 @@ void AppController::runQrsClass()
 
     emit QrsClass_done(this->entity);
     QLOG_INFO() << "QrsClass done";
+}
+
+void AppController::runVcgLoop()
+{
+    QLOG_INFO() << "Start VcgLoop";
+
+
+
+    emit runVcgLoop_done(this->entity);
+    QLOG_INFO() << "VcgLoop done";
 }
 
 void AppController::runWaves()
