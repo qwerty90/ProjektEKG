@@ -6,6 +6,7 @@
 #include "ECG_BASELINE/src/movAvg.h"
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
+#include "QRS_CLASS/qrsclass.h"
 #include "HRV1/HRV1MainModule.h"
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
@@ -386,6 +387,33 @@ void AppController::runStInterval()
 
     emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
+}
+
+void AppController::runQrsClass()
+{
+    QLOG_INFO() << "Start QrsClass";
+
+    if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
+        return;
+
+    QRSClassModule QrsClassifier;
+    //QrsClassifier.setSettings(this->entity->settings->qrsClassSettings);
+
+    QrsClassifier.setWaves(this->entity->Waves->QRS_onset, this->entity->Waves->QRS_end);
+    QrsClassifier.setEGCBaseline(this->entity->ecg_baselined);
+
+    if (!QrsClassifier.process())
+    {
+        qDebug() << QrsClassifier.getErrorMessage();
+    }
+    else
+    {
+        QList<QRSClass>* classes = QrsClassifier.getClasses();
+//        this->entity->classes = classes;
+    }
+
+//    emit QrsClass_done(this->entity);
+    QLOG_INFO() << "QrsClass done";
 }
 
 void AppController::runWaves()

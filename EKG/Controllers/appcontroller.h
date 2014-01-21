@@ -72,6 +72,7 @@ public slots:
     void runStInterval();
     void runHRV1();
     void runRPeaks();
+    void runQrsClass();
     void runWaves();
     void runSigEdr();
 

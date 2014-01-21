@@ -3,5 +3,5 @@ HEADERS += \
     R_PEAKS/fourier/fftw3.h \
 
 SOURCES += \
-    R_PEAKS\src\r_peaksmodule.cpp
+    R_PEAKS/src/r_peaksmodule.cpp
 
