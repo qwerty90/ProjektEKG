@@ -408,8 +408,8 @@ void AppController::runQrsClass()
     }
     else
     {
-        QList<QRSClass>* classes = QrsClassifier.getClasses();
-//        this->entity->classes = classes;
+        QVector<QRSClass>* classes = QrsClassifier.getClasses();
+        this->entity->classes = classes;
     }
 
 //    emit QrsClass_done(this->entity);
