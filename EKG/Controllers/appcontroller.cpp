@@ -6,7 +6,7 @@
 #include "ECG_BASELINE/src/movAvg.h"
 #include "ECG_BASELINE/src/sgolay.h"
 #include "ST_INTERVAL/ecgstanalyzer.h"
-#include "QRS_CLASS/qrsclass.h"
+//#include "QRS_CLASS/qrsclass.h"
 #include "HRV1/HRV1MainModule.h"
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
@@ -132,18 +132,6 @@ void AppController::onThreadFinished()
     emit this->processingResults(this->entity);
 }
 
-void AppController::runSingle(QString hash)
-{
-
-    /*
-    if(this->entity)
-    {
-        bool processed = this->supervisor->RunSingle(this->entity, hash);
-        emit singleProcessingResult(processed, this->entity);
-    }
-    */
-}
-
 void AppController::switchSignal(int index)
 {
 
@@ -196,7 +184,6 @@ void AppController::ResetModules()
 void AppController::runEcgBaseline()
 {
     QLOG_INFO() <<"Ecg baseline started.";
-
     //QVector<double> test;
     //test << 0.5 << 0.5 << 0.5;
     KalmanFilter kalman;
@@ -254,6 +241,7 @@ void AppController::runEcgBaseline()
     }            
 
     QLOG_INFO() << "Ecg baseline done.";
+
     emit EcgBaseline_done(this->entity);
 }
 
@@ -391,6 +379,7 @@ void AppController::runStInterval()
 
 void AppController::runQrsClass()
 {
+    /*
     QLOG_INFO() << "Start QrsClass";
 
     if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
@@ -414,6 +403,7 @@ void AppController::runQrsClass()
 
 //    emit QrsClass_done(this->entity);
     QLOG_INFO() << "QrsClass done";
+    */
 }
 
 void AppController::runWaves()

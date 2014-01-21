@@ -49,6 +49,7 @@ public:
     explicit AirEcgMain(QWidget *parent = 0);
     ~AirEcgMain();
     QwtPlot* plotPlot(QList<int> &y, float freq);
+    QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
@@ -121,7 +122,7 @@ public slots:
     void receiveResults(EcgData *data);
     //void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
-    void receiveSingleProcessingResult(bool succeeded, EcgData *data);
+    //void receiveSingleProcessingResult(bool succeeded, EcgData *data);
 
     //modules recieve
     void drawEcgBaseline(EcgData* data);//example

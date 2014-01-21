@@ -10,7 +10,6 @@ QT += core gui
 include(Common/common.pri)
 include(Controllers/controllers.pri)
 include(Views/views.pri)
-include(QRS_CLASS/qrs_class.pri)
 include(QsLog/QsLog.pri)
 include(ECG_BASELINE/ecg_baseline.pri)
 include(ATRIAL_FIBR/atrial_fibr.pri)

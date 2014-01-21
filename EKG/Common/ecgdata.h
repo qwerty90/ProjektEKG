@@ -70,8 +70,8 @@ public:
 
     //dane czestotliwosciowe
     double TP, HF, LF, VLF, ULF, LFHF;
-    QList<double> *fft_x;
-    QList<double> *fft_y;
+    QVector<double> *fft_x;
+    QVector<double> *fft_y;
 
     //dane histogramu, dane wykresu Poincare - wyjscie modulu HRV2
     QList<unsigned int> *histogram_x, *poincare_x;
