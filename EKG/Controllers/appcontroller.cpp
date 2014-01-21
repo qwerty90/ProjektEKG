@@ -379,7 +379,6 @@ void AppController::runStInterval()
 
 void AppController::runQrsClass()
 {
-    /*
     QLOG_INFO() << "Start QrsClass";
 
     if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
@@ -403,7 +402,6 @@ void AppController::runQrsClass()
 
 //    emit QrsClass_done(this->entity);
     QLOG_INFO() << "QrsClass done";
-    */
 }
 
 void AppController::runWaves()
