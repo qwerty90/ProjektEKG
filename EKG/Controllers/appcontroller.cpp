@@ -499,7 +499,7 @@ void AppController::runSigEdr()
 //    }
 
     QLOG_INFO() <<"SigEdr done.";
-//    emit this->SigEdr_done(this->entity);
+    emit this->SigEdr_done(this->entity);
 
 }
 

@@ -51,6 +51,7 @@ public:
     QwtPlot* plotPlot(QList<int> &y, float freq);
     QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
+    QwtPlot* plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
@@ -228,6 +229,10 @@ private slots:
     void on_pushButton_17_clicked();
 
     void on_pushButton_4_clicked();
+
+    void on_radioButton_3_clicked();
+
+    void on_radioButton_4_clicked();
 
 private:
     Ui::AirEcgMain *ui;
