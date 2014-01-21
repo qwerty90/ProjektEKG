@@ -41,6 +41,8 @@ signals:
     void HRV1_done(EcgData *data);
     void RPeaks_done(EcgData *data);
     void Waves_done(EcgData *data);
+    void SigEdr_done(EcgData *data);
+    void QrsClass_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
@@ -66,13 +68,14 @@ public slots:
     void qrsKClustersNumberChanged(int noClusters);*/
 
     void run();
-    void runSingle(QString hash);
     void runEcgBaseline();
     void runAtrialFibr();
     void runStInterval();
     void runHRV1();
     void runRPeaks();
+    void runQrsClass();
     void runWaves();
+    void runSigEdr();
 
     void onThreadFinished();
 };

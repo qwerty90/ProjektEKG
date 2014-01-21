@@ -37,7 +37,7 @@ class AirEcgMain : public QMainWindow
     void drawHrvDfa(EcgData* data);
     void drawTwa(EcgData* data);
     //void drawWaves(EcgData* data);
-    void drawQrsClass(EcgData* data);
+    //void drawQrsClass(EcgData* data);
 
     void drawSleep_Apnea(EcgData* data);
     void drawHrt(EcgData *data);
@@ -49,6 +49,7 @@ public:
     explicit AirEcgMain(QWidget *parent = 0);
     ~AirEcgMain();
     QwtPlot* plotPlot(QList<int> &y, float freq);
+    QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
@@ -95,6 +96,8 @@ signals:
     void runRPeaks();
     void runHRV1();
     void runWaves();
+    void runSigEdr();
+    void runQrsClass();
 
     void closeDialog();
 
@@ -120,7 +123,7 @@ public slots:
     void receiveResults(EcgData *data);
     //void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
-    void receiveSingleProcessingResult(bool succeeded, EcgData *data);
+    //void receiveSingleProcessingResult(bool succeeded, EcgData *data);
 
     //modules recieve
     void drawEcgBaseline(EcgData* data);//example
@@ -129,7 +132,8 @@ public slots:
     void drawHrv1(EcgData *data);
     void drawRPeaks(EcgData *data);
     void drawWaves(EcgData *data);
-
+    void drawQrsClass(EcgData *data);
+    void drawSigEdr(EcgData *data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -222,6 +226,8 @@ private slots:
     void on_kalmanRadioButton_clicked();
 
     void on_pushButton_17_clicked();
+
+    void on_pushButton_4_clicked();
 
 private:
     Ui::AirEcgMain *ui;

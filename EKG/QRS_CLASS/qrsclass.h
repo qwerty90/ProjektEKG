@@ -5,25 +5,19 @@
 #include <QString>
 #include <QList>
 
-#if defined(QRSCLASS_LIBRARY)
-#  define QRSCLASSSHARED_EXPORT Q_DECL_EXPORT
-#else
-#  define QRSCLASSSHARED_EXPORT Q_DECL_IMPORT
-#endif
-
-#include "waves.h"
+#include "Waves/src/waves.h"
 
 class AbstractExtractor;
 class AbstractClusterer;
 
-
 enum ClustererType
 {
     KMeansClusterer,
-    GMeansClusterer
+    GMeansClusterer,
+    EMClusterer
 };
 
-struct QRSCLASSSHARED_EXPORT QRSClassSettings {
+struct QRSClassSettings {
     ClustererType clusterer;
     int maxIterations;
     int minClusterNo;
@@ -32,7 +26,7 @@ struct QRSCLASSSHARED_EXPORT QRSClassSettings {
     int insideIterations;
 };
 
-struct QRSCLASSSHARED_EXPORT QRSClass {
+struct QRSClass {
     QString classLabel;
     QList<double> *features;
     QList<QString> *featureNames;
@@ -41,13 +35,14 @@ struct QRSCLASSSHARED_EXPORT QRSClass {
     QList<int> *classMembers;
 };
 
-class QRSCLASSSHARED_EXPORT QRSClassModule {
+class QRSClassModule {
     QList<AbstractExtractor*> *extractors;
     AbstractClusterer *clusterer;
     //ClustererType clusterer;
     QString errMsg;
-    QList<double> *ecgBaselined;
-    QList<Waves::EcgFrame*> *waves;
+    QVector<double> *ecgBaselined;
+    QVector<const double> *waves_onset;
+    QVector<const double> *waves_end;
     QList<int> *artifactsList;
     bool runParallel;
     void setDefaultConfiguration();
@@ -55,10 +50,10 @@ public:
     QRSClassModule();
     void setClusterer(ClustererType clustererType);
     void setEGCBaseline(QVector<double> *ecg);
-    void setWaves(QList<Waves::EcgFrame*> *waves);
+    void setWaves(QVector<const double*>*&, QVector<const double*>*&);
     bool setSettings(QRSClassSettings settings);
     bool process();
-    QList<QRSClass>* getClasses();
+    QVector<QRSClass>* getClasses();
     QString getErrorMessage();
 };
 
