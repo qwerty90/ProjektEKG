@@ -412,23 +412,61 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
 QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
 {
-    QVector<double> sampleNo = QVector<double>(yData1.size());
-
-    double max = yData1.first();
-    double min = yData1.first();
-
     double tos=1/freq;
+    double max=0;
+    double min=9999999999999999999;
+    QVector<double> sampleNo;
+    if(no == 0)
+    {
+        sampleNo = QVector<double>(yData2.size());
 
-    for (int i = 0; i < yData2.size(); ++i)
-    {
-        sampleNo[i] = i*tos;
-        max = qMax(max, yData2.at(i));
-        min = qMin(min, yData2.at(i));
+        max = yData2.first();
+        min = yData2.first();
+
+        for (int i = 0; i < yData2.size(); ++i)
+        {
+            sampleNo[i] = i*tos;
+            max = qMax(max, yData2.at(i));
+            min = qMin(min, yData2.at(i));
+        }
     }
-    for (int i = 0; i < yData1.size(); ++i)
+    if(no == 1)
     {
-        max = qMax(max, yData1.at(i));
-        min = qMin(min, yData1.at(i));
+       sampleNo = QVector<double>(yData2.size());
+
+        max = yData2.first();
+        min = yData2.first();
+
+        for (int i = 0; i < yData1.size(); ++i)
+        {
+            max = qMax(max, yData1.at(i));
+            min = qMin(min, yData1.at(i));
+        }
+    }
+    if(no==2)
+    {
+        int krotszy=0;
+        if(yData2.size()>yData1.size())
+        {
+            sampleNo = QVector<double>(yData2.size());
+            krotszy = yData1.size();
+        }
+        else
+        {
+            sampleNo = QVector<double>(yData1.size());
+            krotszy = yData2.size();
+        }
+
+        max = yData2.first();
+        min = yData2.first();
+
+        for (int i = 0; i < krotszy; ++i)
+        {
+            max = qMax(max, yData1.at(i));
+            min = qMin(min, yData1.at(i));
+            max = qMax(max, yData2.at(i));
+            min = qMin(min, yData2.at(i));
+        }
     }
 
     QwtPlot* plot = new QwtPlot();
