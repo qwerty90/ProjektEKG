@@ -293,9 +293,11 @@ void AppController::runAtrialFibr()
 {
     QLOG_INFO() << "Start AtrialFibr";
 
-    if (this->entity->Rpeaks==NULL || this->entity->Waves==NULL || this->entity->Waves->PWaveStart== NULL )
+    ifWavesExists();
+
+    if (this->entity->Waves->PWaveStart== NULL )
     {
-        QLOG_ERROR() << "Brak danych dla modulu AtrialFibr";
+        QLOG_FATAL() << "Brak PWaveStart dla modulu AtrialFibr";
         return;
     }
 
