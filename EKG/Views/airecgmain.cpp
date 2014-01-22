@@ -499,21 +499,33 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
 
     return plot;
 }
+//HRV1
 QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>& xData)
 {
-    double max = yData.first();
-    double min = yData.first();
+    double maxy = yData.first();
+    double miny = yData.first();
 
     for (int i = 0; i < yData.size(); ++i)
     {
-        max = qMax(max, yData.at(i));
-        min = qMin(min, yData.at(i));
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
     }
+    double maxx = xData.first();
+    double minx = xData.first();
 
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+    if(maxy>10000)
+        maxy=10000;
+    if(miny<-10000)
+        miny=-10000;
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
     QwtText xaxis("Frequence [Hz]");
     QwtText yaxis("Power");
@@ -1988,7 +2000,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         P_endPoints->attach( plot );
     }
 */
-    if(ui->qrs_onset->isChecked()|| ui->wave_all->isChecked())
+   // if(ui->qrs_onset->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *Qrs_onsetPoints = new QwtPlotCurve();
         QwtSymbol *Qrs_onsetMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
@@ -2000,7 +2012,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         Qrs_onsetPoints->attach( plot );
     }
 
-    if(ui->qrs_end->isChecked()|| ui->wave_all->isChecked())
+   // if(ui->qrs_end->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *Qrs_endPoints = new QwtPlotCurve();
         QwtSymbol *Qrs_endMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::magenta, QPen( Qt::magenta ), QSize( 5, 5 ) );
@@ -2254,7 +2266,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     QLOG_DEBUG() << "GUI/HRV1 1";
 
     //Fourier    
-    QwtPlot *plotFT = plotPlot(*(data->fft_x), *(data->fft_y)); //to ma byc lista czy vector?
+    QwtPlot *plotFT = plotPlot(*(data->fft_y),*(data->fft_x)); //to ma byc lista czy vector?
     ui->scrollAreaFT->setWidget(plotFT);
     ui->scrollAreaFT->show();
     QLOG_DEBUG() << "GUI/HRV1 2";
