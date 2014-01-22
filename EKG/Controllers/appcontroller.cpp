@@ -498,11 +498,20 @@ void AppController::runWaves()
 
 void AppController::runSigEdr()
 {
-    //WYMAGA KONSULTACJI!!!
-
     QLOG_INFO() << "SigEdr started.";
 
     ifWavesExists();
+
+    if (this->entity->SigEdr_q!= NULL)
+    {
+        this->entity->SigEdr_q->clear();
+        this->entity->SigEdr_q=NULL;
+    }
+    if (this->entity->SigEdr_r!= NULL)
+    {
+        this->entity->SigEdr_r->clear();
+        this->entity->SigEdr_r=NULL;
+    }
 
     QVector<double> *tmp_baselined = NULL;
     QVector<unsigned int> tmp_Rpeaks;
@@ -666,7 +675,7 @@ void AppController::ifRpeaksExists(void)
 void AppController::ifWavesExists()
 {
     //ifRpeaksExists();
-    if (this->entity->Waves==NULL)
+    if (this->entity->Waves->Count==0)
         runWaves();
 }
 
@@ -700,6 +709,7 @@ void AppController::deleteWaves(void)
             QLOG_INFO() << "MVC/ delete QrsEnd";
         }
 
+        this->entity->Waves->Count=0;
      //   delete this->entity->Waves;
       //  this->entity->Waves = new Waves_struct;
     }
