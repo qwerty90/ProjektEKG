@@ -29,6 +29,14 @@ public:
     //void InitializeDependencies();
     //void RunMock();
     void BindView(AirEcgMain *view);
+
+    /*8****useful functions*/
+    void ifEcgBaselineExists(void);
+    void ifEcgRpeaksExists(void);
+    void ifEcgWavesExists(void);
+
+
+
 signals:
     void patientData(EcgData *info);
     //void sendQRSData(QRSClass qrsSegment, int type);

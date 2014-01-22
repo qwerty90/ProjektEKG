@@ -2883,12 +2883,12 @@ void AirEcgMain::on_pushButton_4_clicked()
 
 void AirEcgMain::on_radioButton_3_clicked()
 {
-    emit this->switchSignal_SIGEDR(0);
+    emit this->switchSignal_SIGEDR(1);
 }
 
 void AirEcgMain::on_radioButton_4_clicked()
 {
-    emit this->switchSignal_SIGEDR(1);
+    emit this->switchSignal_SIGEDR(2);
 }
 
 void AirEcgMain::on_pushButton_next_vcg_clicked()
