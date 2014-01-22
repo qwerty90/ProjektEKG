@@ -2240,6 +2240,7 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 
 void AirEcgMain::drawHrv1(EcgData *data)
 {
+    QLOG_DEBUG() << "GUI/HRV1 0";
     QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
     ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
@@ -2250,11 +2251,13 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
     ui->SDSD->setText("SDSD");
 
+    QLOG_DEBUG() << "GUI/HRV1 1";
+
     //Fourier    
     QwtPlot *plotFT = plotPlot(*(data->fft_x), *(data->fft_y)); //to ma byc lista czy vector?
     ui->scrollAreaFT->setWidget(plotFT);
     ui->scrollAreaFT->show();
-
+    QLOG_DEBUG() << "GUI/HRV1 2";
     //Frequency Coefficients
     ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2));
     ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2));
@@ -2262,7 +2265,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2));
     ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2));
     ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + "%");
-
+    QLOG_DEBUG() << "GUI/HRV1 3";
 }
 
 void AirEcgMain::drawSigEdr(EcgData *data)

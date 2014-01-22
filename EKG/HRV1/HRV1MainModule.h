@@ -21,7 +21,7 @@ public:
 	static HRV1BundleStatistical evaluateStatistical(); //evaluates and returns arguments of Statistical analysys
 	static HRV1BundleFrequency evaluateFrequency(); //evaluates and returns frequency analysys
 
-    ~HRV1MainModule(void);
+    //~HRV1MainModule(void);
 private:
 	static HRV1MainModule* instance;
 	static void createInstance();
