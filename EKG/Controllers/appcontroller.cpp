@@ -328,7 +328,11 @@ void AppController::runAtrialFibr()
 void AppController::runRPeaks()
 {
     QLOG_INFO() << "Run RPeaks" ;
-    R_peaksModule obiekt(*(this->entity->GetCurrentSignal()), (float)this->entity->info->frequencyValue);
+
+    if(this->entity->ecg_baselined==NULL)
+        runEcgBaseline();
+
+    R_peaksModule obiekt(*(this->entity->ecg_baselined), this->entity->info->frequencyValue);
     switch (this->entity->settings->RPeaksMode)
     {
     case 1:
@@ -347,10 +351,24 @@ void AppController::runRPeaks()
         QLOG_INFO() << "RPeaks/ using default (PanTompkins)";
         obiekt.panTompkins();
     }
-    this->entity->Rpeaks = new iters (obiekt.getPeaksIter());
+    //this->entity->Rpeaks = new iters (obiekt.getPeaksIter());
     this->entity->Rpeaks_uint = obiekt.getPeaksIndex();
+    iters tmp_it;
+    for(int i=0 ; i<this->entity->Rpeaks_uint.size();i++)
+        tmp_it.append(&((*this->entity->ecg_baselined)[ this->entity->Rpeaks_uint.at(i) ]));
+
+    this->entity->Rpeaks = new iters (tmp_it);
+
     emit this->RPeaks_done(this->entity);
-    QLOG_INFO() << "RPeaks done" ;
+    QLOG_INFO() << "RPeaks done." ;
+
+    /*
+    QLOG_INFO() << "MVC/ iters range : \n"
+                <<QString::number((int)this->entity->ecg_baselined->begin())<<"    "
+                <<QString::number((int)this->entity->ecg_baselined->end())  ;
+    for (int i=0 ; i<this->entity->Rpeaks->size();i++)
+        QLOG_TRACE()<<"Rpeak "<<i<<" "<<QString::number((int)this->entity->Rpeaks->at(i));
+        */
 }
 
 void AppController::runStInterval()
@@ -444,6 +462,10 @@ void AppController::runVcgLoop()
 void AppController::runWaves()
 {
     QLOG_INFO() << "Waves started.";
+
+    //if(this->entity->ecg_baselined->)
+
+
     waves obiekt;//(*(this->entity->ecg_baselined),(float)this->entity->info->frequencyValue);
     obiekt.calculate_waves(*(this->entity->ecg_baselined),
                            *(this->entity->Rpeaks),
@@ -604,4 +626,18 @@ void AppController::on_st_interval_slope_threshold_Changed(const QString &arg1)
 void AppController::switchDetectionAlgorithmType_ST_INTERVAL(int index)
 {
 
+}
+
+/************************************************************/
+//useful functions
+void AppController::ifEcgBaselineExists(void)
+{
+    if (this->entity->ecg_baselined==NULL)
+        runEcgBaseline();
+}
+void AppController::ifEcgRpeaksExists(void)
+{
+    ifEcgBaselineExists();
+    if (this->entity->Rpeaks==NULL)
+        runRPeaks();
 }
