@@ -60,7 +60,6 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->progressBar->setVisible(false);
 }
 
-
 AirEcgMain::~AirEcgMain()
 {
     delete ui;
@@ -80,8 +79,6 @@ void AirEcgMain::on_actionWczytaj_triggered()
     dialogFileBrowser.exec();
     ui->progressBar->setVisible(false);
 }
-
-
 
 void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
 {
