@@ -41,10 +41,14 @@ signals:
     void HRV1_done(EcgData *data);
     void RPeaks_done(EcgData *data);
     void Waves_done(EcgData *data);
+    void SigEdr_done(EcgData *data);
+    void QrsClass_done(EcgData *data);
+    void runVcgLoop_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
     void switchSignal(int index);
+    void switchSignal_SIGEDR(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
     //void sendQRSData(int index, int type);
@@ -56,6 +60,14 @@ public slots:
     void CzasUsrednieniaEdit   (const QString arg1);
     void ecgBase_WindowSizeEdit(const QString arg1);
 
+    void vcg_loop_change(int index);
+
+    void on_st_interval_detection_width_Changed(const QString &arg1);
+    void on_st_interval_smothing_width_Changed(const QString &arg1);
+    void on_st_interval_morphology_Changed(const QString &arg1);
+    void on_st_interval_level_threshold_Changed(const QString &arg1);
+    void on_st_interval_slope_threshold_Changed(const QString &arg1);
+void switchDetectionAlgorithmType_ST_INTERVAL(int index);
 
     /*void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
@@ -66,14 +78,15 @@ public slots:
     void qrsKClustersNumberChanged(int noClusters);*/
 
     void run();
-    void runSingle(QString hash);
     void runEcgBaseline();
     void runAtrialFibr();
     void runStInterval();
     void runHRV1();
     void runRPeaks();
+    void runQrsClass();
     void runWaves();
-
+    void runSigEdr();
+ void runVcgLoop();
     void onThreadFinished();
 };
 

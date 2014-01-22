@@ -9,7 +9,6 @@ EcgData::EcgData(QObject *parent) :
     this->ecg_baselined = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
-    //this->Rpeaks_uint = NULL;
     //this->PWaveStart = NULL;//do wywalenia
     this->Waves = new Waves_struct;
     this->Waves->PWaveEnd = NULL;
@@ -23,6 +22,8 @@ EcgData::EcgData(QObject *parent) :
     this->RR_y = NULL;
     this->fft_x = NULL;
     this->fft_y = NULL;
+    this->classes=NULL;
+    this->SigEdr_r=NULL;
     //hrv2
     //twa
     //dfa
@@ -39,7 +40,6 @@ EcgData::EcgData(QString id)
     this->ecg_baselined = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
-    //this->Rpeaks_uint = NULL;
     //this->PWaveStart = NULL;//do wywalenia
     this->Waves = new Waves_struct;
     this->Waves->PWaveEnd = NULL;
@@ -53,6 +53,8 @@ EcgData::EcgData(QString id)
     this->RR_y = NULL;
     this->fft_x = NULL;
     this->fft_y = NULL;
+    this->classes=NULL;
+    this->SigEdr_r=NULL;
 
     this->RecordId = id;
     this->settings = new EcgSettings();

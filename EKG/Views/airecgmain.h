@@ -37,9 +37,10 @@ class AirEcgMain : public QMainWindow
     void drawHrvDfa(EcgData* data);
     void drawTwa(EcgData* data);
     //void drawWaves(EcgData* data);
-    void drawQrsClass(EcgData* data);
+    //void drawQrsClass(EcgData* data);
 
     void drawSleep_Apnea(EcgData* data);
+
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -49,7 +50,9 @@ public:
     explicit AirEcgMain(QWidget *parent = 0);
     ~AirEcgMain();
     QwtPlot* plotPlot(QList<int> &y, float freq);
+    QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
+    QwtPlot* plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
@@ -80,6 +83,8 @@ public:
 signals:
     void loadEntity(const QString &directory, const QString &name);
     void switchSignal(int index);
+    void switchSignal_SIGEDR(int index);
+    void vcg_loop_change(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
     void switchTWA(unsigned char type);
@@ -88,6 +93,7 @@ signals:
     void test(int index, int type);
     void runSingle(QString hash);
 
+
     //modules invoke
     void runEcgBaseline();//example
     void runAtrialFibr();
@@ -95,6 +101,10 @@ signals:
     void runRPeaks();
     void runHRV1();
     void runWaves();
+    void runSigEdr();
+    void runQrsClass();
+
+    void runVcgLoop();
 
     void closeDialog();
 
@@ -112,15 +122,20 @@ signals:
     void ecgBase_Kalman1Changed(const QString &arg1);
     void ecgBase_Kalman2Changed(const QString &arg1);
 
+    void on_st_interval_detection_width_Changed(const QString &arg1);
+    void on_st_interval_smothing_width_Changed(const QString &arg1);
+    void on_st_interval_morphology_Changed(const QString &arg1);
+    void on_st_interval_level_threshold_Changed(const QString &arg1);
+    void on_st_interval_slope_threshold_Changed(const QString &arg1);
 
-
+void switchDetectionAlgorithmType_ST_INTERVAL(int index);
 
 public slots:
     void receivePatientData(EcgData *data);
     void receiveResults(EcgData *data);
     //void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
-    void receiveSingleProcessingResult(bool succeeded, EcgData *data);
+    //void receiveSingleProcessingResult(bool succeeded, EcgData *data);
 
     //modules recieve
     void drawEcgBaseline(EcgData* data);//example
@@ -129,7 +144,9 @@ public slots:
     void drawHrv1(EcgData *data);
     void drawRPeaks(EcgData *data);
     void drawWaves(EcgData *data);
-
+    void drawQrsClass(EcgData *data);
+    void drawSigEdr(EcgData *data);
+    void drawVcgLoop(EcgData* data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -222,6 +239,32 @@ private slots:
     void on_kalmanRadioButton_clicked();
 
     void on_pushButton_17_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_radioButton_3_clicked();
+
+    void on_radioButton_4_clicked();
+
+    void on_pushButton_next_vcg_clicked();
+
+    void on_pushButton_prev_vcg_clicked();
+
+    void on_RUN_VCG_pushButton_clicked();
+
+    void on_st_interval_detection_width_textChanged(const QString &arg1);
+
+    void on_st_interval_smothing_width_textChanged(const QString &arg1);
+
+    void on_st_interval_morphology_textChanged(const QString &arg1);
+
+    void on_st_interval_level_threshold_textChanged(const QString &arg1);
+
+    void on_st_interval_slope_threshold_textChanged(const QString &arg1);
+
+    void on_detectionratesquare_clicked();
+
+    void on_detectionratelinear_clicked();
 
 private:
     Ui::AirEcgMain *ui;
