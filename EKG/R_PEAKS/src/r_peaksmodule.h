@@ -24,6 +24,7 @@ class R_peaksModule {
         static const unsigned int PT_MW_N;
 
         QVector<double> filteredSignal;
+        const QVector<double> & ecgSignal;
         R_peaksIterVector itVect;
         QVector<unsigned int> indexVector;
         R_peaksIter iter;
@@ -53,9 +54,6 @@ class R_peaksModule {
 public:
         // konstruktor parametryczny, obiekt incjowany przy pomocy sygnalu z ecg_baseline i czestotliwosci tego sygnalu
         R_peaksModule(const QVector<double> & filteredSignal, double freq);
-
-        // funkcja ustawiajaca na nowo sygnal i czestotliwosc, czyszczone sa wektory z indeksami i iteratorami
-        void R_peaksSetModule(const QVector<double> & filteredSignal, double freq);
 
         // funkcja znajdujaca piki metoda transformacji Hilberta
         void hilbert(void);

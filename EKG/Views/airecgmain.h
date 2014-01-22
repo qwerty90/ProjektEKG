@@ -40,6 +40,7 @@ class AirEcgMain : public QMainWindow
     //void drawQrsClass(EcgData* data);
 
     void drawSleep_Apnea(EcgData* data);
+
     void drawHrt(EcgData *data);
 
     void resetQrsToolbox(EcgData* data);
@@ -83,6 +84,7 @@ signals:
     void loadEntity(const QString &directory, const QString &name);
     void switchSignal(int index);
     void switchSignal_SIGEDR(int index);
+    void vcg_loop_change(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
     void switchTWA(unsigned char type);
@@ -90,6 +92,7 @@ signals:
     void run();
     void test(int index, int type);
     void runSingle(QString hash);
+
 
     //modules invoke
     void runEcgBaseline();//example
@@ -101,7 +104,7 @@ signals:
     void runSigEdr();
     void runQrsClass();
 
-    void closeDialog();
+    void runVcgLoop();
 
     void qrsClassChanged(int index, int type);
     //void qrsClustererChanged(ClustererType type);
@@ -117,15 +120,18 @@ signals:
     void ecgBase_Kalman1Changed(const QString &arg1);
     void ecgBase_Kalman2Changed(const QString &arg1);
 
-
-
+    void on_st_interval_detection_width_Changed(const QString &arg1);
+    void on_st_interval_smothing_width_Changed(const QString &arg1);
+    void on_st_interval_morphology_Changed(const QString &arg1);
+    void on_st_interval_level_threshold_Changed(const QString &arg1);
+    void on_st_interval_slope_threshold_Changed(const QString &arg1);
+    void switchDetectionAlgorithmType_ST_INTERVAL(int index);
 
 public slots:
     void receivePatientData(EcgData *data);
-    void receiveResults(EcgData *data);
+
     //void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
-    //void receiveSingleProcessingResult(bool succeeded, EcgData *data);
 
     //modules recieve
     void drawEcgBaseline(EcgData* data);//example
@@ -136,6 +142,7 @@ public slots:
     void drawWaves(EcgData *data);
     void drawQrsClass(EcgData *data);
     void drawSigEdr(EcgData *data);
+    void drawVcgLoop(EcgData* data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -148,7 +155,6 @@ private slots:
     void qrssample_changed(QString text);
 
     void qrcclasslabel_changed(QString value);
-
 
 
     void on_checkBox_toggled(bool checked);
@@ -234,6 +240,26 @@ private slots:
     void on_radioButton_3_clicked();
 
     void on_radioButton_4_clicked();
+
+    void on_pushButton_next_vcg_clicked();
+
+    void on_pushButton_prev_vcg_clicked();
+
+    void on_RUN_VCG_pushButton_clicked();
+
+    void on_st_interval_detection_width_textChanged(const QString &arg1);
+
+    void on_st_interval_smothing_width_textChanged(const QString &arg1);
+
+    void on_st_interval_morphology_textChanged(const QString &arg1);
+
+    void on_st_interval_level_threshold_textChanged(const QString &arg1);
+
+    void on_st_interval_slope_threshold_textChanged(const QString &arg1);
+
+    void on_detectionratesquare_clicked();
+
+    void on_detectionratelinear_clicked();
 
 private:
     Ui::AirEcgMain *ui;
