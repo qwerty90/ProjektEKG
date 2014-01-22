@@ -191,6 +191,19 @@ void AppController::ResetModules()
         this->entity->Rpeaks_uint.clear();
         QLOG_INFO() << "MVC/ Rpeaks uint removed.";
     }
+    if (this->entity->fft_x != NULL)
+    {
+        this->entity->fft_x->clear();
+        this->entity->fft_x=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-x removed.";
+    }
+    if (this->entity->fft_y != NULL)
+    {
+        this->entity->fft_y->clear();
+        this->entity->fft_y=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-y removed.";
+    }
+
 
     deleteWaves();
 
@@ -264,14 +277,26 @@ void AppController::runEcgBaseline()
 void AppController::runHRV1()
 {
     QLOG_INFO() << "HRV1 started.";
-    QVector<int> *wektor = new QVector<int>;
-    int i=0;
-    while (i<this->entity->Rpeaks->size())
+    ifRpeaksExists();
+
+    if (this->entity->fft_x != NULL)
     {
-        //DO POPRAWY!!!
-        wektor->append(this->entity->Rpeaks->at(i) - this->entity->Rpeaks->first());
-        i++;
+        this->entity->fft_x->clear();
+        this->entity->fft_x=NULL;
     }
+    if (this->entity->fft_y != NULL)
+    {
+        this->entity->fft_y->clear();
+        this->entity->fft_y=NULL;
+    }
+
+    QVector<int> *wektor = new QVector<int>(this->entity->Rpeaks_uint.size());
+
+    for (int i=0 ; i<wektor->size();i++)
+    {
+        (*wektor)[i] = (int)this->entity->Rpeaks_uint.at(i);
+    }
+
     HRV1MainModule obiekt;
     obiekt.prepare(wektor,(int)this->entity->info->frequencyValue);
     HRV1BundleStatistical results = obiekt.evaluateStatistical();
@@ -285,7 +310,20 @@ void AppController::runHRV1()
     this->entity->SDSD = results.SDSD;
     QLOG_INFO() << "HRV1 statistical done.";
 
+    HRV1BundleFrequency results_freq = obiekt.evaluateFrequency();
+    this->entity->fft_x = new QVector<double>(*(results_freq.xData));
+    this->entity->fft_y = new QVector<double>(*(results_freq.yData));
+    this->entity->TP = results_freq.TP;
+    this->entity->HF = results_freq.HF;
+    this->entity->LF = results_freq.LF;
+    this->entity->ULF = results_freq.ULF;
+    this->entity->LFHF = results_freq.LFHF;
+
+    QLOG_INFO() << "HRV1 frequency done.";
+
     emit this->HRV1_done(this->entity);
+    results_freq.xData->clear();
+    results_freq.yData->clear();
     QLOG_TRACE() << "HRV1 statistical drawn.";
 }
 
