@@ -422,20 +422,22 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
 
         for (int i = 0; i < yData2.size(); ++i)
         {
-            sampleNo[i] = i*tos;
+            sampleNo[i] = i;
             max = qMax(max, yData2.at(i));
             min = qMin(min, yData2.at(i));
+            QLOG_TRACE() <<"SIGEDR:X = "<< QString::number( yData2.at(i));
         }
     }
     if(no == 1)
     {
-       sampleNo = QVector<double>(yData2.size());
+       sampleNo = QVector<double>(yData1.size());
 
         max = yData2.first();
         min = yData2.first();
 
         for (int i = 0; i < yData1.size(); ++i)
         {
+            sampleNo[i] = i;
             max = qMax(max, yData1.at(i));
             min = qMin(min, yData1.at(i));
         }
@@ -459,13 +461,15 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
 
         for (int i = 0; i < krotszy; ++i)
         {
+            sampleNo[i] = i;
             max = qMax(max, yData1.at(i));
             min = qMin(min, yData1.at(i));
             max = qMax(max, yData2.at(i));
             min = qMin(min, yData2.at(i));
         }
     }
-
+           QLOG_TRACE() <<"SIGEDR:X = "<< QString::number(min);
+                      QLOG_TRACE() <<"SIGEDR:X = "<< QString::number(max);
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, min, max);
@@ -488,6 +492,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
         QwtPlotCurve* curve = new QwtPlotCurve();
         curve->setPen(QPen(Qt::blue, 1));
         curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve->setTitle("SIG EDR Rpeak");
         curve->setSamples(sampleNo, yData1);
         curve->attach(plot);
     }
@@ -496,9 +501,15 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
         QwtPlotCurve* curve2 = new QwtPlotCurve();
         curve2->setPen(QPen(Qt::red, 1));
         curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve2->setTitle("SIG EDR Wavse");
         curve2->setSamples(sampleNo, yData2);
         curve2->attach(plot);
     }
+
+    QwtLegend* legend = new QwtLegend();
+    legend->setItemMode(QwtLegend::ReadOnlyItem);
+    plot->insertLegend(legend, QwtPlot::BottomLegend);
+
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
@@ -2306,7 +2317,7 @@ void AirEcgMain::drawSigEdr(EcgData *data)
                 no = 0;
         }
                                              //data waves            //data baseline
-        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->ecg_baselined),*(data->ecg_baselined),data->info->frequencyValue, no);
+        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->SigEdr_r),*(data->SigEdr_r),data->info->frequencyValue, no);
         ui->scrollArea_2->setWidget(plotEDR);
         ui->scrollArea_2->show();
     }
