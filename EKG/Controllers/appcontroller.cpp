@@ -36,11 +36,10 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(switchRPeaks(unsigned char)), this, SLOT(switchRPeaks(unsigned char)));
     this->connect(view, SIGNAL(switchWaves_p_onset(bool)), this, SLOT(switchWaves_p_onset( bool)));
     this->connect(view, SIGNAL(switchTWA(unsigned char)), this, SLOT(switchTWA(unsigned char)));
-    this->connect(view, SIGNAL(run()), this, SLOT(run()));
-    this->connect(this, SIGNAL(processingResults(EcgData*)), view, SLOT(receiveResults(EcgData*)));
+
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
-    this->connect(view, SIGNAL(runSingle(QString)), this, SLOT(runSingle(QString)));
+
     this->connect(view, SIGNAL(ecgBase_CzasUsrednieniaChanged(QString)),this,SLOT(CzasUsrednieniaEdit(QString)));
     this->connect(view, SIGNAL(ecgBase_Kalman1Changed(QString)),this,SLOT(ecgBase_Kalman1Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
@@ -53,7 +52,6 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(on_st_interval_slope_threshold_Changed(const QString &)),this,SLOT(on_st_interval_slope_threshold_Changed(const QString &)));
     this->connect(view, SIGNAL(switchDetectionAlgorithmType_ST_INTERVAL(int)),this,SLOT(switchDetectionAlgorithmType_ST_INTERVAL(int)));
 
-
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
     this->connect(view, SIGNAL(runStInterval()) ,this, SLOT (runStInterval()));
@@ -62,6 +60,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runWaves())      ,this, SLOT (runWaves()));
     this->connect(view, SIGNAL(runSigEdr())     ,this, SLOT (runSigEdr()));
     this->connect(view, SIGNAL(runVcgLoop())     ,this, SLOT (runVcgLoop()));
+
+    this->connect(view, SIGNAL(run()), this, SLOT(run()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
     this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
@@ -73,9 +73,6 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
     this->connect(this, SIGNAL(runVcgLoop_done(EcgData*))   ,view, SLOT(drawVcgLoop(EcgData*)))  ;
 
-
-
-    this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
     this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
     this->connect(view, SIGNAL(qrsGMaxKIterations(int)),this,SLOT(qrsGMaxKIterations(int)));
@@ -143,10 +140,6 @@ void AppController::run()
     }*/
 }
 
-void AppController::onThreadFinished()
-{
-    emit this->processingResults(this->entity);
-}
 
 void AppController::switchSignal(int index)
 {

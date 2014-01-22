@@ -106,8 +106,6 @@ signals:
 
     void runVcgLoop();
 
-    void closeDialog();
-
     void qrsClassChanged(int index, int type);
     //void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
@@ -127,15 +125,13 @@ signals:
     void on_st_interval_morphology_Changed(const QString &arg1);
     void on_st_interval_level_threshold_Changed(const QString &arg1);
     void on_st_interval_slope_threshold_Changed(const QString &arg1);
-
-void switchDetectionAlgorithmType_ST_INTERVAL(int index);
+    void switchDetectionAlgorithmType_ST_INTERVAL(int index);
 
 public slots:
     void receivePatientData(EcgData *data);
-    void receiveResults(EcgData *data);
+
     //void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
-    //void receiveSingleProcessingResult(bool succeeded, EcgData *data);
 
     //modules recieve
     void drawEcgBaseline(EcgData* data);//example
@@ -159,7 +155,6 @@ private slots:
     void qrssample_changed(QString text);
 
     void qrcclasslabel_changed(QString value);
-
 
 
     void on_checkBox_toggled(bool checked);

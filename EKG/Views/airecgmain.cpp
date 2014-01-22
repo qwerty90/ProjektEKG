@@ -414,7 +414,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
 {
     double tos=1/freq;
     double max=0;
-    double min=9999999999999999999;
+    double min=9999999;
     QVector<double> sampleNo;
     if(no == 0)
     {
@@ -2473,22 +2473,6 @@ void AirEcgMain::drawHrt(EcgData *data)
     ui->turbulence_slope_val->setText(QString::number(*(data->turbulence_slope), 'f', 2));
 }
 
-void AirEcgMain::receiveResults(EcgData *data)
-{
-    this->drawEcgBaseline(data);
-    this->drawRPeaks(data);
-    this->drawHrv1(data);
-    this->drawHrv2(data);
-    this->drawHrvDfa(data);
-    this->drawTwa(data);
-    this->drawWaves(data);
-    this->drawQrsClass(data);
-    this->drawStInterval(data);
-    this->drawHrt(data);
-    emit this->closeDialog();
-    return;
-}
-
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
@@ -2919,7 +2903,6 @@ void AirEcgMain::on_pushButton_prev_vcg_clicked()
 {
     emit this->vcg_loop_change(0);
 }
-
 
 void AirEcgMain::on_RUN_VCG_pushButton_clicked()
 {

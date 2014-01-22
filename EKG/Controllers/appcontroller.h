@@ -32,8 +32,6 @@ public:
 signals:
     void patientData(EcgData *info);
     //void sendQRSData(QRSClass qrsSegment, int type);
-    void singleProcessingResult(bool succeeded, EcgData *data);
-    void processingResults(EcgData *data);
 
     void EcgBaseline_done(EcgData *data);
     void AtrialFibr_done (EcgData *data);
@@ -67,7 +65,7 @@ public slots:
     void on_st_interval_morphology_Changed(const QString &arg1);
     void on_st_interval_level_threshold_Changed(const QString &arg1);
     void on_st_interval_slope_threshold_Changed(const QString &arg1);
-void switchDetectionAlgorithmType_ST_INTERVAL(int index);
+    void switchDetectionAlgorithmType_ST_INTERVAL(int index);
 
     /*void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
@@ -87,7 +85,7 @@ void switchDetectionAlgorithmType_ST_INTERVAL(int index);
     void runWaves();
     void runSigEdr();
  void runVcgLoop();
-    void onThreadFinished();
+
 };
 
 #endif // APPCONTROLLER_H
