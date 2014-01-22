@@ -145,7 +145,7 @@ void AppController::switchSignal(int index)
 {
 
     this->entity->settings->signalIndex = index;
-    //this->ResetModules();
+    this->ResetModules();
 }
 void AppController::switchSignal_SIGEDR(int index)
 {
@@ -162,17 +162,12 @@ void AppController::vcg_loop_change(int index)
 }
 
 
-void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
+void AppController::deep_copy_vect(QVector<unsigned int> &dest, QVector<unsigned int> &src)
 {
-    //QList<int>::Iterator iter_dest = dest;
-    QList<int>::Iterator iter_src  = src->begin();
+    dest.resize(src.size());
 
-    while (iter_src != src->end())
-    {
-        dest->append(*iter_src);
-        iter_src++;
-    }
-
+    for (int i=0 ; i<src.size() ; i++)
+        dest[i]=src.at(i);
 }
 
 void AppController::ResetModules()
@@ -181,26 +176,24 @@ void AppController::ResetModules()
     if (this->entity->ecg_baselined)
     {
         this->entity->ecg_baselined->clear();
-        QLOG_INFO() << "Baselined signal removed.";
+        this->entity->ecg_baselined=NULL;
+        QLOG_INFO() << "MVC/ Baselined signal removed.";
     }
-    else
-        QLOG_INFO() << "Baselined signal did not exist.";
-    if (this->entity->Waves->PWaveStart)
-    {
-        this->entity->Waves->PWaveStart->clear();
-        QLOG_INFO() << "PWaveStart removed.";
-    }
-    else
-        QLOG_INFO() << "PWaveStart did not exist.";
 
     if (this->entity->Rpeaks)
     {
-
         this->entity->Rpeaks->clear();
-        QLOG_INFO() << "Rpeaks removed.";
+        this->entity->Rpeaks=NULL;
+        QLOG_INFO() << "MVC/ Rpeaks removed.";
     }
-    else
-        QLOG_INFO() << "RPeaks did not exist.";
+    if (!this->entity->Rpeaks_uint.isEmpty())
+    {
+        this->entity->Rpeaks_uint.clear();
+        QLOG_INFO() << "MVC/ Rpeaks uint removed.";
+    }
+
+    deleteWaves();
+
     QLOG_INFO() << "All removed.";
 }
 
@@ -329,8 +322,12 @@ void AppController::runRPeaks()
 {
     QLOG_INFO() << "Run RPeaks" ;
 
-    if(this->entity->ecg_baselined==NULL)
-        runEcgBaseline();
+    ifEcgBaselineExists();
+
+    if (this->entity->Rpeaks!=NULL)
+        this->entity->Rpeaks->clear();
+    if (!(this->entity->Rpeaks_uint.isEmpty()))
+        this->entity->Rpeaks_uint.clear();
 
     R_peaksModule obiekt(*(this->entity->ecg_baselined), this->entity->info->frequencyValue);
     switch (this->entity->settings->RPeaksMode)
@@ -463,49 +460,37 @@ void AppController::runWaves()
 {
     QLOG_INFO() << "Waves started.";
 
-    //if(this->entity->ecg_baselined->)
+    ifRpeaksExists();
 
+    deleteWaves();// to sprawdza, czy zeby nie nadpisac
 
-    waves obiekt;//(*(this->entity->ecg_baselined),(float)this->entity->info->frequencyValue);
+    waves obiekt;
     obiekt.calculate_waves(*(this->entity->ecg_baselined),
                            *(this->entity->Rpeaks),
                            this->entity->info->frequencyValue);
 
-    if (this->entity->Rpeaks==NULL)
-    {
-        QLOG_ERROR() << "Brak danych dla Waves.";
-        return;
-    }
     if (this->entity->Waves==NULL)
     {
         QLOG_TRACE() << "Waves was NULL before.";
         this->entity->Waves = new Waves_struct;
     }
 
-    if (this->entity->settings->Qrs_on_checked)
-    {
-        QLOG_INFO() << "Waves/ calculate QRS_onset.";
         this->entity->Waves->QRS_onset = new iters(obiekt.get_qrs_onset());
-        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_onset->size())<<" QRS_onset.";
-    }
-    if (this->entity->settings->Qrs_end_checked)
-    {
-        QLOG_INFO() << "Waves/ calculate QRS_end.";
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_onset->size())
+                    <<" QRS_onset points.";
         this->entity->Waves->QRS_end = new iters(obiekt.get_qrs_onset());
-        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_end->size())<<" QRS_end.";
-    }
-    if (this->entity->settings->P_on_checked)
-    {
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_end->size())
+                    <<" QRS_end points.";
+
         QLOG_FATAL() << "Waves/ PWaveStart not ready yet.";
         //this->entity->Waves->QRS_end = iters(obiekt.get_p_onset()(*(this->entity->Rpeaks)));
-    }
-    if (this->entity->settings->P_on_checked)
-    {
+
         QLOG_FATAL() << "Waves/ PWaveEnd not ready yet.";
         //this->entity->Waves->QRS_end = iters(obiekt.get_p_end()(*(this->entity->Rpeaks)));
-    }
 
-    this->entity->Waves->Count=this->entity->Waves->QRS_onset->size();
+        this->entity->Waves->Count=this->entity->Waves->QRS_onset->size();
+        if (this->entity->Waves->Count>this->entity->Waves->QRS_end->size())
+            this->entity->Waves->Count=this->entity->Waves->QRS_end->size();
 
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
@@ -516,25 +501,33 @@ void AppController::runSigEdr()
     //WYMAGA KONSULTACJI!!!
 
     QLOG_INFO() << "SigEdr started.";
+
+    ifWavesExists();
+
     QVector<double> *tmp_baselined = NULL;
     QVector<unsigned int> tmp_Rpeaks;
     const int edr_lead = this->entity->settings->SigEdr_lead;
+    iters *Qrs_on ;
+    iters *Qrs_end;
+
 
     //policzony sygnal
     (this->entity->settings->signalIndex==0) ? this->entity->settings->signalIndex=1 : this->entity->settings->signalIndex=0;
-    tmp_baselined = new QVector<double>(*(this->entity->ecg_baselined));
-    runEcgBaseline();    //trzeba bêdzie wróciæ
+    tmp_baselined = new QVector<double>(*(this->entity->ecg_baselined));  //kopia policzonego
+    runEcgBaseline();    //liczenie nowego dla drugiej elektrody
 
     if (this->entity->settings->SigEdr_rpeaks)
     {
 
-        if((this->entity->Rpeaks==NULL) || (this->entity->ecg_baselined==NULL))
+        if(this->entity->ecg_baselined==NULL)
         {
-            QLOG_ERROR() << "Brak danych dla SigEdr.";
+            QLOG_FATAL() << "Brak danych dla SigEdr.";
             return;
         }
 
-        tmp_Rpeaks    = (this->entity->Rpeaks_uint);
+        //tmp_Rpeaks    = (this->entity->Rpeaks_uint); //kopia starego
+        deep_copy_vect(tmp_Rpeaks,this->entity->Rpeaks_uint);
+
         runRPeaks();
 
         QLOG_TRACE()<< "SIG_EDR/ Sizes are: "<<QString::number(this->entity->ecg_baselined->size())<<" "
@@ -557,20 +550,49 @@ void AppController::runSigEdr()
             obiekt.new_RPeaks_signal(edr_lead,this->entity->Rpeaks_uint);
 
         this->entity->SigEdr_r = new QVector<double>(*(obiekt.retrieveEDR_QVec(1,this->entity->settings->SigEdr_lead)));
-        QLOG_INFO() << "SigEdr_r/ calculated from RPeaks." <<QString::number(this->entity->SigEdr_r->size())<<" samples";
+        QLOG_INFO() << "SigEdr_r/ calculated from RPeaks " <<QString::number(this->entity->SigEdr_r->size())<<" samples.";
     }
  /*DLA QRS'OW****************************************************************/
 
     if (this->entity->settings->SigEdr_qrs)
     {
-        if((this->entity->Waves==NULL)||(this->entity->Waves->QRS_onset==NULL) ||
-           (this->entity->Waves->QRS_end == NULL)||(this->entity->ecg_baselined==NULL) )
+        if((this->entity->Waves->QRS_onset==NULL) ||
+            (this->entity->Waves->QRS_end == NULL))
         {
-            QLOG_ERROR() << "MVC/ Sig_Edr for QRS not attached yet.";
+            QLOG_ERROR() << "MVC/ Sig_Edr has no QRS.";
             return;
         }
+        Qrs_on = new iters(*(this->entity->Waves->QRS_onset));
+        Qrs_end= new iters(*(this->entity->Waves->QRS_end));
+
+        runWaves();
+
+        QLOG_TRACE()<< "SIG_EDR/ Sizes are: "
+                   <<QString::number(this->entity->Waves->QRS_onset->size())<<" tmp-q_on\n"
+                   <<QString::number(this->entity->Waves->QRS_end->size())<<" tmp-q_end\n"
+                  <<QString::number(Qrs_on->size()) << "entity-q_on\n"  ;
+
+        sig_edr obiekt_qrs(*(this->entity->ecg_baselined),
+                           *(this->entity->Waves->QRS_onset)->begin(),
+                           *(this->entity->Waves->QRS_end  )->begin(),
+                           *tmp_baselined,
+                           *Qrs_on->begin(),
+                           *Qrs_end->begin());
+
+        obiekt_qrs.new_Waves_signal(*(this->entity->Waves->QRS_onset)->begin(),
+                                    *(this->entity->Waves->QRS_end  )->begin(),
+                                    *Qrs_on->begin(),
+                                    *Qrs_end->begin());
+
+        this->entity->SigEdr_q = new QVector<double>(*obiekt_qrs.retrieveEDR_QVec(2,edr_lead));
 
     }
+
+//przywrocenie odpowiedniego sygnalu
+(this->entity->settings->signalIndex==0) ? this->entity->settings->signalIndex=1 : this->entity->settings->signalIndex=0;
+runEcgBaseline();
+runRPeaks();
+runWaves();
 
     QLOG_INFO() <<"SigEdr done.";
     emit this->SigEdr_done(this->entity);
@@ -635,9 +657,50 @@ void AppController::ifEcgBaselineExists(void)
     if (this->entity->ecg_baselined==NULL)
         runEcgBaseline();
 }
-void AppController::ifEcgRpeaksExists(void)
+void AppController::ifRpeaksExists(void)
 {
-    ifEcgBaselineExists();
+    //ifEcgBaselineExists();
     if (this->entity->Rpeaks==NULL)
         runRPeaks();
+}
+void AppController::ifWavesExists()
+{
+    //ifRpeaksExists();
+    if (this->entity->Waves==NULL)
+        runWaves();
+}
+
+void AppController::deleteWaves(void)
+{
+    QLOG_INFO() << "MVC/ delete Waves only";
+    if (this->entity->Waves!=NULL)
+    {
+        if (this->entity->Waves->PWaveEnd!=NULL && !(this->entity->Waves->PWaveEnd->isEmpty()))
+        {
+            this->entity->Waves->PWaveEnd->clear();
+            this->entity->Waves->PWaveEnd=NULL;
+            QLOG_INFO() << "MVC/ delete PwaveEnd";
+        }
+        if (this->entity->Waves->PWaveStart!=NULL && !(this->entity->Waves->PWaveStart->isEmpty()))
+        {
+            this->entity->Waves->PWaveStart->clear();
+            this->entity->Waves->PWaveStart=NULL;
+            QLOG_INFO() << "MVC/ delete PwaveStart";
+        }
+        if (this->entity->Waves->QRS_onset!=NULL && !(this->entity->Waves->QRS_onset->isEmpty()))
+        {
+            this->entity->Waves->QRS_onset->clear();
+            this->entity->Waves->QRS_onset=NULL;
+            QLOG_INFO() << "MVC/ delete QRS_onset";
+        }
+        if (this->entity->Waves->QRS_end!=NULL && !(this->entity->Waves->QRS_end->isEmpty()))
+        {
+            this->entity->Waves->QRS_end->clear();
+            this->entity->Waves->QRS_end=NULL;
+            QLOG_INFO() << "MVC/ delete QrsEnd";
+        }
+
+     //   delete this->entity->Waves;
+      //  this->entity->Waves = new Waves_struct;
+    }
 }

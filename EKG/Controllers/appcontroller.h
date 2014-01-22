@@ -21,7 +21,7 @@ private:
     //SupervisoryModule *supervisor;
     EcgData *entity;
     //results AllData;
-    void deep_copy_list(QList<int> *dest, QList<int> *src);
+    void deep_copy_vect(QVector<unsigned int> &dest, QVector<unsigned int> &src);
     void ResetModules();
 
 public:
@@ -32,8 +32,9 @@ public:
 
     /*8****useful functions*/
     void ifEcgBaselineExists(void);
-    void ifEcgRpeaksExists(void);
-    void ifEcgWavesExists(void);
+    void ifRpeaksExists(void);
+    void ifWavesExists(void);
+    void deleteWaves(void);
 
 
 
