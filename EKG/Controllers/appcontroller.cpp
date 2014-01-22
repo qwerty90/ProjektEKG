@@ -30,20 +30,27 @@ void AppController::BindView(AirEcgMain *view)
 {
     this->connect(view, SIGNAL(loadEntity(QString,QString)), this, SLOT(loadData(QString,QString)));
     this->connect(view, SIGNAL(switchSignal(int)), this, SLOT(switchSignal(int)));
+    this->connect(view, SIGNAL(switchSignal_SIGEDR(int)), this, SLOT(switchSignal_SIGEDR(int)));
     this->connect(this, SIGNAL(patientData(EcgData*)), view, SLOT(receivePatientData(EcgData*)));
     this->connect(view, SIGNAL(switchEcgBaseline(int)), this, SLOT(switchEcgBaseline(int)));
     this->connect(view, SIGNAL(switchRPeaks(unsigned char)), this, SLOT(switchRPeaks(unsigned char)));
     this->connect(view, SIGNAL(switchWaves_p_onset(bool)), this, SLOT(switchWaves_p_onset( bool)));
     this->connect(view, SIGNAL(switchTWA(unsigned char)), this, SLOT(switchTWA(unsigned char)));
-    this->connect(view, SIGNAL(run()), this, SLOT(run()));
-    this->connect(this, SIGNAL(processingResults(EcgData*)), view, SLOT(receiveResults(EcgData*)));
+
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
-    this->connect(view, SIGNAL(runSingle(QString)), this, SLOT(runSingle(QString)));
+
     this->connect(view, SIGNAL(ecgBase_CzasUsrednieniaChanged(QString)),this,SLOT(CzasUsrednieniaEdit(QString)));
     this->connect(view, SIGNAL(ecgBase_Kalman1Changed(QString)),this,SLOT(ecgBase_Kalman1Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
+
+    this->connect(view, SIGNAL(on_st_interval_detection_width_Changed(const QString &)),this,SLOT(on_st_interval_detection_width_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_smothing_width_Changed(const QString &)),this,SLOT(on_st_interval_smothing_width_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_morphology_Changed(const QString &)),this,SLOT(on_st_interval_morphology_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_level_threshold_Changed(const QString &)),this,SLOT(on_st_interval_level_threshold_Changed(const QString &)));
+    this->connect(view, SIGNAL(on_st_interval_slope_threshold_Changed(const QString &)),this,SLOT(on_st_interval_slope_threshold_Changed(const QString &)));
+    this->connect(view, SIGNAL(switchDetectionAlgorithmType_ST_INTERVAL(int)),this,SLOT(switchDetectionAlgorithmType_ST_INTERVAL(int)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
@@ -52,6 +59,9 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runRPeaks())     ,this, SLOT (runRPeaks()));
     this->connect(view, SIGNAL(runWaves())      ,this, SLOT (runWaves()));
     this->connect(view, SIGNAL(runSigEdr())     ,this, SLOT (runSigEdr()));
+    this->connect(view, SIGNAL(runVcgLoop())     ,this, SLOT (runVcgLoop()));
+
+    this->connect(view, SIGNAL(run()), this, SLOT(run()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
     this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
@@ -61,9 +71,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(Waves_done(EcgData*))      ,view, SLOT(drawWaves(EcgData*)))     ;
     this->connect(this, SIGNAL(SigEdr_done(EcgData*))     ,view, SLOT(drawSigEdr(EcgData*)))    ;
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
+    this->connect(this, SIGNAL(runVcgLoop_done(EcgData*))   ,view, SLOT(drawVcgLoop(EcgData*)))  ;
 
-
-    this->connect(this, SIGNAL(singleProcessingResult(bool, EcgData*)), view, SLOT(receiveSingleProcessingResult(bool, EcgData*)));
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
     this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
     this->connect(view, SIGNAL(qrsGMaxKIterations(int)),this,SLOT(qrsGMaxKIterations(int)));
@@ -71,6 +80,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsKClustersNumberChanged(int)),this,SLOT(qrsKClustersNumberChanged(int)));
     this->connect(view, SIGNAL(qrsMaxIterationsChanged(int)),this,SLOT(qrsMaxIterationsChanged(int)));
     this->connect(view, SIGNAL(qrsParallelExecutionChanged(bool)),this,SLOT(qrsParallelExecutionChanged(bool)));
+
+    this->connect(view, SIGNAL(vcg_loop_change(int)),this,SLOT(vcg_loop_change(int)));
 
 }
 
@@ -129,10 +140,6 @@ void AppController::run()
     }*/
 }
 
-void AppController::onThreadFinished()
-{
-    emit this->processingResults(this->entity);
-}
 
 void AppController::switchSignal(int index)
 {
@@ -140,6 +147,20 @@ void AppController::switchSignal(int index)
     this->entity->settings->signalIndex = index;
     //this->ResetModules();
 }
+void AppController::switchSignal_SIGEDR(int index)
+{
+    this->entity->settings->signalIndex = index;
+}
+void AppController::vcg_loop_change(int index)
+{
+    int ecg_index = 1 ;//tutaj jakies pole z ecgdata
+    if(ecg_index>0)
+    {
+        if(index==1) ecg_index++;
+        if(index==0) ecg_index--;
+    }
+}
+
 
 void AppController::deep_copy_list(QList<int> *dest, QList<int> *src)
 {
@@ -334,7 +355,7 @@ void AppController::runRPeaks()
 void AppController::runStInterval()
 {
     QLOG_INFO() << "Start StInterval";
-
+#if 0
     EcgStAnalyzer analyzer;
     if (this->entity->settings->quadratic)
     analyzer.setAlgorithm(ST_QUADRATIC);
@@ -374,7 +395,7 @@ void AppController::runStInterval()
     // operacja analizy zwraca liste deskryptorow interwalow ST,
     // ktora mozna zapisac w EcgData:
     this->entity->STintervals = new QList<EcgStDescriptor>(result);
-
+#endif
     emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
 }
@@ -407,6 +428,16 @@ void AppController::runQrsClass()
 
     emit QrsClass_done(this->entity);
     QLOG_INFO() << "QrsClass done";
+}
+
+void AppController::runVcgLoop()
+{
+    QLOG_INFO() << "Start VcgLoop";
+
+
+
+    emit runVcgLoop_done(this->entity);
+    QLOG_INFO() << "VcgLoop done";
 }
 
 void AppController::runWaves()
@@ -499,9 +530,11 @@ void AppController::runSigEdr()
 //    }
 
     QLOG_INFO() <<"SigEdr done.";
-//    emit this->SigEdr_done(this->entity);
+    emit this->SigEdr_done(this->entity);
 
 }
+
+//ECG BASELINE
 
 void AppController::ecgBase_Kalman1Changed(const QString arg1)
 {
@@ -518,4 +551,36 @@ void AppController::CzasUsrednieniaEdit(const QString arg1)
 void AppController::ecgBase_WindowSizeEdit(const QString arg1)
 {
     this->entity->settings->avgWindowSize = arg1.toInt();
+}
+
+//ST INTERVAL
+
+void AppController::on_st_interval_detection_width_Changed(const QString &arg1)
+{
+    this->entity->settings->detect_window = arg1.toDouble();
+}
+
+void AppController::on_st_interval_smothing_width_Changed(const QString &arg1)
+{
+    this->entity->settings->smooth_window = arg1.toDouble();
+}
+
+void AppController::on_st_interval_morphology_Changed(const QString &arg1)
+{
+    this->entity->settings->morph_coeff = arg1.toDouble();
+}
+
+void AppController::on_st_interval_level_threshold_Changed(const QString &arg1)
+{
+    this->entity->settings->level_tresh = arg1.toDouble();
+}
+
+void AppController::on_st_interval_slope_threshold_Changed(const QString &arg1)
+{
+    this->entity->settings->slope_tresh = arg1.toDouble();
+}
+
+void AppController::switchDetectionAlgorithmType_ST_INTERVAL(int index)
+{
+
 }

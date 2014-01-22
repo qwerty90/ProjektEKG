@@ -409,6 +409,114 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
     return plot;
 }
+
+QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
+{
+    double tos=1/freq;
+    double max=0;
+    double min=9999999;
+    QVector<double> sampleNo;
+    if(no == 0)
+    {
+        sampleNo = QVector<double>(yData2.size());
+
+        max = yData2.first();
+        min = yData2.first();
+
+        for (int i = 0; i < yData2.size(); ++i)
+        {
+            sampleNo[i] = i*tos;
+            max = qMax(max, yData2.at(i));
+            min = qMin(min, yData2.at(i));
+        }
+    }
+    if(no == 1)
+    {
+       sampleNo = QVector<double>(yData2.size());
+
+        max = yData2.first();
+        min = yData2.first();
+
+        for (int i = 0; i < yData1.size(); ++i)
+        {
+            max = qMax(max, yData1.at(i));
+            min = qMin(min, yData1.at(i));
+        }
+    }
+    if(no==2)
+    {
+        int krotszy=0;
+        if(yData2.size()>yData1.size())
+        {
+            sampleNo = QVector<double>(yData2.size());
+            krotszy = yData1.size();
+        }
+        else
+        {
+            sampleNo = QVector<double>(yData1.size());
+            krotszy = yData2.size();
+        }
+
+        max = yData2.first();
+        min = yData2.first();
+
+        for (int i = 0; i < krotszy; ++i)
+        {
+            max = qMax(max, yData1.at(i));
+            min = qMin(min, yData1.at(i));
+            max = qMax(max, yData2.at(i));
+            min = qMin(min, yData2.at(i));
+        }
+    }
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, min, max);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+
+    QwtText xaxis("Time [s]");
+    QwtText yaxis("Voltage [mV]");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->attach(plot);
+
+    if(no == 1 || no == 2)
+    {
+        QwtPlotCurve* curve = new QwtPlotCurve();
+        curve->setPen(QPen(Qt::blue, 1));
+        curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve->setSamples(sampleNo, yData1);
+        curve->attach(plot);
+    }
+    if(no == 0 || no == 2)
+    {
+        QwtPlotCurve* curve2 = new QwtPlotCurve();
+        curve2->setPen(QPen(Qt::red, 1));
+        curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve2->setSamples(sampleNo, yData2);
+        curve2->attach(plot);
+    }
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
 QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>& xData)
 {
     double max = yData.first();
@@ -2109,11 +2217,6 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
 
     QStringList list=(QStringList()<<"red"<<"yellow"<<"blue");
     ui->ButterworthcomboBox->addItems(list);
-
-    //dla sig edr
-    QwtPlot *plotBaseEDR = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
-    ui->Baseline_edr->setWidget(plotBaseEDR);
-    ui->Baseline_edr->show();
 }
 
 void AirEcgMain::drawAtrialFibr(EcgData *data)
@@ -2182,11 +2285,36 @@ void AirEcgMain::drawHrv1(EcgData *data)
 
 void AirEcgMain::drawSigEdr(EcgData *data)
 {
-    QLOG_INFO() << "Drawing SigEdr not ready yet.";
-    if (data->SigEdr_r==NULL)
-        QLOG_FATAL() << "SigEdr does not exist";
-    else
-    QLOG_TRACE() << "GUI/ SigEdr has "<<QString::number(data->SigEdr_r->size())<< " points.";
+    QLOG_INFO() << "Drawing SigEdr.";
+    //if (data->SigEdr_r==NULL)
+    //    QLOG_FATAL() << "SigEdr does not exist";
+    //else
+    {
+        //Rysowanie Baselina dla sig edr
+        QwtPlot *plotBaseEDR = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
+        ui->Baseline_edr->setWidget(plotBaseEDR);
+        ui->Baseline_edr->show();
+
+        //dla sig edr
+        unsigned int no=0;
+        if(ui->checkBox_2->isChecked() && ui->checkBox_4->isChecked()) //oba sygnaly
+        {
+            no = 2;
+        }
+        else
+        {
+            if (ui->checkBox_2->isChecked()) //pierwszy
+                no = 1;
+            else //drugi
+                no = 0;
+        }
+                                             //data waves            //data baseline
+        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->ecg_baselined),*(data->ecg_baselined),data->info->frequencyValue, no);
+        ui->scrollArea_2->setWidget(plotEDR);
+        ui->scrollArea_2->show();
+    }
+
+   // QLOG_TRACE() << "GUI/ SigEdr has "<<QString::number(data->SigEdr_r->size())<< " points.";
 
 }
 
@@ -2217,6 +2345,22 @@ void AirEcgMain::drawHrv2(EcgData *data)
 void AirEcgMain::drawStInterval(EcgData *data)
 {
     QLOG_TRACE() << "Drawing StInterval not ready yet.";
+
+    ui->tableWidget_2->setRowCount(20);
+    for (int r = 0; r < ui->tableWidget_2->rowCount(); ++r)
+    {
+        QTableWidgetItem *newItem = new QTableWidgetItem("SDADAD");
+        ui->tableWidget_2->setItem(r,0 , newItem);
+        newItem = new QTableWidgetItem("DUPA");
+        ui->tableWidget_2->setItem(r, 1, newItem);
+        newItem = new QTableWidgetItem("AA");
+        ui->tableWidget_2->setItem(r, 2, newItem);
+        newItem = new QTableWidgetItem("COS");
+        ui->tableWidget_2->setItem(r, 3, newItem);
+        newItem = new QTableWidgetItem("ASDAD");
+        ui->tableWidget_2->setItem(r, 4, newItem);
+    }
+
   //  QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
  //   ui->stIntervalArea->setWidget(plotX);
   //  ui->stIntervalArea->show();
@@ -2235,6 +2379,33 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
 
     ui->sleepcnt->setText(QString::number(*(data->SD2)));
     ui->sleepcntfrequence->setText(QString::number(*(data->SD2)));
+}
+void AirEcgMain::drawVcgLoop(EcgData* data)
+{
+
+    ui->pushButton_prev_vcg->setEnabled(true);
+    ui->pushButton_next_vcg->setEnabled(true);
+
+    ui->vcg_dea->setText("-");//QString::number(*(data->SD2)));
+    ui->vcg_ma->setText("-");//QString::number(*(data->SD2)));
+    ui->vcg_rmmv->setText("-");//QString::number(*(data->SD2)));
+
+    QwtPlot *plotVcgLoop1 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
+    ui->scrollArea_VcgLoop1->show();
+
+    QwtPlot *plotVcgLoop2 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
+    ui->scrollArea_VcgLoop2->show();
+
+    QwtPlot *plotVcgLoop3 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
+    ui->scrollArea_VcgLoop3->show();
+
+    QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
+    ui->scrollArea_VcgLoop4->show();
+
 }
 
 void AirEcgMain::drawHrvDfa(EcgData *data)
@@ -2282,7 +2453,6 @@ void AirEcgMain::drawWaves(EcgData *data)
 
     QwtPlot *wavesPlot = plotWavesPlot(*(data->ecg_baselined), *(data->Waves), data->info->frequencyValue );
 
-
     ui->scrollAreaWaves->setWidget(wavesPlot);
     ui->scrollAreaWaves->show();
 
@@ -2301,22 +2471,6 @@ void AirEcgMain::drawHrt(EcgData *data)
     ui->vpbs_detected_count->setText(QString::number(*(data->vpbs_detected_count), 'f', 0));
     ui->turbulence_onset_val->setText(QString::number(*(data->turbulence_onset), 'f', 2));
     ui->turbulence_slope_val->setText(QString::number(*(data->turbulence_slope), 'f', 2));
-}
-
-void AirEcgMain::receiveResults(EcgData *data)
-{
-    this->drawEcgBaseline(data);
-    this->drawRPeaks(data);
-    this->drawHrv1(data);
-    this->drawHrv2(data);
-    this->drawHrvDfa(data);
-    this->drawTwa(data);
-    this->drawWaves(data);
-    this->drawQrsClass(data);
-    this->drawStInterval(data);
-    this->drawHrt(data);
-    emit this->closeDialog();
-    return;
 }
 
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
@@ -2508,22 +2662,16 @@ void AirEcgMain::on_pushButton_2_clicked()
 
 void AirEcgMain::on_pushButton_3_clicked()
 {
-    //this->hash = "R_PEAKS";
-    //emit this->runSingle(this->hash);
     emit this->runAtrialFibr();//linia 36
 }
 
 void AirEcgMain::on_pushButton_5_clicked()
 {
-    //this->hash = "WAVES";
-    //emit this->runSingle(this->hash);
     emit this->runWaves();
 }
 
 void AirEcgMain::on_pushButton_6_clicked()
 {
-    //this->hash = "HRV1";
-    //emit this->runSingle(this->hash);
     emit this->runHRV1();
 }
 
@@ -2547,8 +2695,6 @@ void AirEcgMain::on_pushButton_9_clicked()
 
 void AirEcgMain::on_pushButton_10_clicked()
 {
-    //this->hash = "QRS_CLASS";
-    //emit this->runSingle(this->hash);
     emit this->runQrsClass();
 }
 
@@ -2736,4 +2882,64 @@ void AirEcgMain::on_pushButton_17_clicked()
 void AirEcgMain::on_pushButton_4_clicked()
 {
     emit this->runSigEdr();
+}
+
+void AirEcgMain::on_radioButton_3_clicked()
+{
+    emit this->switchSignal_SIGEDR(0);
+}
+
+void AirEcgMain::on_radioButton_4_clicked()
+{
+    emit this->switchSignal_SIGEDR(1);
+}
+
+void AirEcgMain::on_pushButton_next_vcg_clicked()
+{
+    emit this->vcg_loop_change(1);
+}
+
+void AirEcgMain::on_pushButton_prev_vcg_clicked()
+{
+    emit this->vcg_loop_change(0);
+}
+
+void AirEcgMain::on_RUN_VCG_pushButton_clicked()
+{
+    emit this->runVcgLoop();
+}
+
+void AirEcgMain::on_st_interval_detection_width_textChanged(const QString &arg1)
+{
+    emit on_st_interval_detection_width_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_smothing_width_textChanged(const QString &arg1)
+{
+    emit on_st_interval_smothing_width_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_morphology_textChanged(const QString &arg1)
+{
+    emit on_st_interval_morphology_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_level_threshold_textChanged(const QString &arg1)
+{
+    emit on_st_interval_level_threshold_Changed(arg1);
+}
+
+void AirEcgMain::on_st_interval_slope_threshold_textChanged(const QString &arg1)
+{
+    emit on_st_interval_slope_threshold_Changed(arg1);
+}
+
+void AirEcgMain::on_detectionratesquare_clicked()
+{
+    emit switchDetectionAlgorithmType_ST_INTERVAL(0);
+}
+
+void AirEcgMain::on_detectionratelinear_clicked()
+{
+    emit switchDetectionAlgorithmType_ST_INTERVAL(1);
 }
