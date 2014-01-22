@@ -541,6 +541,8 @@ void AppController::runSigEdr()
 
 }
 
+//ECG BASELINE
+
 void AppController::ecgBase_Kalman1Changed(const QString arg1)
 {
     this->entity->settings->kalman_arg1 = arg1;
@@ -557,30 +559,34 @@ void AppController::ecgBase_WindowSizeEdit(const QString arg1)
 {
     this->entity->settings->avgWindowSize = arg1.toInt();
 }
+
+//ST INTERVAL
+
 void AppController::on_st_interval_detection_width_Changed(const QString &arg1)
 {
-
+    this->entity->settings->detect_window = arg1.toDouble();
 }
 
 void AppController::on_st_interval_smothing_width_Changed(const QString &arg1)
 {
-
+    this->entity->settings->smooth_window = arg1.toDouble();
 }
 
 void AppController::on_st_interval_morphology_Changed(const QString &arg1)
 {
-
+    this->entity->settings->morph_coeff = arg1.toDouble();
 }
 
 void AppController::on_st_interval_level_threshold_Changed(const QString &arg1)
 {
-
+    this->entity->settings->level_tresh = arg1.toDouble();
 }
 
 void AppController::on_st_interval_slope_threshold_Changed(const QString &arg1)
 {
-
+    this->entity->settings->slope_tresh = arg1.toDouble();
 }
+
 void AppController::switchDetectionAlgorithmType_ST_INTERVAL(int index)
 {
 

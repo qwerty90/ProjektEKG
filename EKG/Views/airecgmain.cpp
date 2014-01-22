@@ -2383,28 +2383,28 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
 void AirEcgMain::drawVcgLoop(EcgData* data)
 {
 
-        ui->pushButton_prev_vcg->setEnabled(true);
-        ui->pushButton_next_vcg->setEnabled(true);
+    ui->pushButton_prev_vcg->setEnabled(true);
+    ui->pushButton_next_vcg->setEnabled(true);
 
-        ui->vcg_dea->setText("-");//QString::number(*(data->SD2)));
-        ui->vcg_ma->setText("-");//QString::number(*(data->SD2)));
-        ui->vcg_rmmv->setText("-");//QString::number(*(data->SD2)));
+    ui->vcg_dea->setText("-");//QString::number(*(data->SD2)));
+    ui->vcg_ma->setText("-");//QString::number(*(data->SD2)));
+    ui->vcg_rmmv->setText("-");//QString::number(*(data->SD2)));
 
-        QwtPlot *plotVcgLoop1 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
-        ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
-        ui->scrollArea_VcgLoop1->show();
+    QwtPlot *plotVcgLoop1 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
+    ui->scrollArea_VcgLoop1->show();
 
-        QwtPlot *plotVcgLoop2 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
-        ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
-        ui->scrollArea_VcgLoop2->show();
+    QwtPlot *plotVcgLoop2 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
+    ui->scrollArea_VcgLoop2->show();
 
-        QwtPlot *plotVcgLoop3 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
-        ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
-        ui->scrollArea_VcgLoop3->show();
+    QwtPlot *plotVcgLoop3 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
+    ui->scrollArea_VcgLoop3->show();
 
-        QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
-        ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
-        ui->scrollArea_VcgLoop4->show();
+    QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
+    ui->scrollArea_VcgLoop4->show();
 
 }
 
@@ -2452,7 +2452,6 @@ void AirEcgMain::drawWaves(EcgData *data)
     QLOG_FATAL() << "GUI/ drawWaves not done yet.";
 
     QwtPlot *wavesPlot = plotWavesPlot(*(data->ecg_baselined), *(data->Waves), data->info->frequencyValue );
-
 
     ui->scrollAreaWaves->setWidget(wavesPlot);
     ui->scrollAreaWaves->show();
@@ -2679,22 +2678,16 @@ void AirEcgMain::on_pushButton_2_clicked()
 
 void AirEcgMain::on_pushButton_3_clicked()
 {
-    //this->hash = "R_PEAKS";
-    //emit this->runSingle(this->hash);
     emit this->runAtrialFibr();//linia 36
 }
 
 void AirEcgMain::on_pushButton_5_clicked()
 {
-    //this->hash = "WAVES";
-    //emit this->runSingle(this->hash);
     emit this->runWaves();
 }
 
 void AirEcgMain::on_pushButton_6_clicked()
 {
-    //this->hash = "HRV1";
-    //emit this->runSingle(this->hash);
     emit this->runHRV1();
 }
 
@@ -2718,8 +2711,6 @@ void AirEcgMain::on_pushButton_9_clicked()
 
 void AirEcgMain::on_pushButton_10_clicked()
 {
-    //this->hash = "QRS_CLASS";
-    //emit this->runSingle(this->hash);
     emit this->runQrsClass();
 }
 
@@ -2934,7 +2925,6 @@ void AirEcgMain::on_RUN_VCG_pushButton_clicked()
 {
     emit this->runVcgLoop();
 }
-
 
 void AirEcgMain::on_st_interval_detection_width_textChanged(const QString &arg1)
 {
