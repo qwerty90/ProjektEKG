@@ -341,7 +341,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -351,7 +351,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -828,8 +828,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>407</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -978,8 +978,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>499</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -1625,7 +1625,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -2314,8 +2314,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>988</width>
+                       <height>369</height>
                       </rect>
                      </property>
                     </widget>
@@ -2552,8 +2552,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>451</height>
                   </rect>
                  </property>
                 </widget>
@@ -2674,7 +2674,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -2785,14 +2785,14 @@
                     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                    </property>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="label_8">
+                    <widget class="QLabel" name="st_interval_detection">
                      <property name="text">
                       <string>detection window width</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QLineEdit" name="lineEdit">
+                    <widget class="QLineEdit" name="st_interval_detection_width">
                      <property name="maximumSize">
                       <size>
                        <width>25</width>
@@ -2815,7 +2815,7 @@
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QLineEdit" name="lineEdit_2">
+                    <widget class="QLineEdit" name="st_interval_smothing_width">
                      <property name="maximumSize">
                       <size>
                        <width>25</width>
@@ -2847,7 +2847,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_5">
+                    <widget class="QLineEdit" name="st_interval_morphology">
                      <property name="maximumSize">
                       <size>
                        <width>25</width>
@@ -2872,14 +2872,14 @@
                     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                    </property>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="label_21">
+                    <widget class="QLabel" name="label_4">
                      <property name="text">
                       <string>abnormal ST level threshold</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QLineEdit" name="lineEdit_4">
+                    <widget class="QLineEdit" name="st_interval_level_threshold">
                      <property name="maximumSize">
                       <size>
                        <width>50</width>
@@ -2899,7 +2899,7 @@
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QLineEdit" name="lineEdit_3">
+                    <widget class="QLineEdit" name="st_interval_slope_threshold">
                      <property name="maximumSize">
                       <size>
                        <width>50</width>
@@ -2974,8 +2974,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2991,8 +2991,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3012,8 +3012,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3029,8 +3029,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3219,8 +3219,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>199</height>
+                   <width>98</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -3255,7 +3255,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
+                   <width>98</width>
                    <height>198</height>
                   </rect>
                  </property>
@@ -3406,7 +3406,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_9">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="atrial_fibr">
              <attribute name="title">
@@ -3637,8 +3637,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>372</height>
                   </rect>
                  </property>
                 </widget>
@@ -3806,8 +3806,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>232</height>
                   </rect>
                  </property>
                 </widget>
@@ -3854,8 +3854,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>231</height>
                   </rect>
                  </property>
                 </widget>
