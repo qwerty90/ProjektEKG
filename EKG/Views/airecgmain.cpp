@@ -409,67 +409,38 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
 QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
 {
-    double tos=1/freq;
+       double tos=1/freq;
     double max=0;
     double min=9999999;
-    QVector<double> sampleNo;
-    if(no == 0)
+    QVector<double> sampleNo1;
+    QVector<double> sampleNo2;
+
+    if(no == 0 || no == 2 )
     {
-        sampleNo = QVector<double>(yData2.size());
-
-        max = yData2.first();
-        min = yData2.first();
-
+        sampleNo2 = QVector<double>(yData2.size());
         for (int i = 0; i < yData2.size(); ++i)
         {
-            sampleNo[i] = i;
+            sampleNo2[i] = i * tos;
             max = qMax(max, yData2.at(i));
             min = qMin(min, yData2.at(i));
-            QLOG_TRACE() <<"SIGEDR:X = "<< QString::number( yData2.at(i));
         }
+        QLOG_TRACE() <<"SIGEDR:size1 = "<< QString::number(yData1.size());
     }
-    if(no == 1)
+    if(no == 1 || no == 2 )
     {
-       sampleNo = QVector<double>(yData1.size());
-
-        max = yData2.first();
-        min = yData2.first();
-
+        sampleNo1 = QVector<double>(yData1.size());
         for (int i = 0; i < yData1.size(); ++i)
         {
-            sampleNo[i] = i;
+            sampleNo1[i] = i;
             max = qMax(max, yData1.at(i));
             min = qMin(min, yData1.at(i));
         }
+        QLOG_TRACE() <<"SIGEDR:size2 = "<< QString::number(yData2.size());
     }
-    if(no==2)
-    {
-        int krotszy=0;
-        if(yData2.size()>yData1.size())
-        {
-            sampleNo = QVector<double>(yData2.size());
-            krotszy = yData1.size();
-        }
-        else
-        {
-            sampleNo = QVector<double>(yData1.size());
-            krotszy = yData2.size();
-        }
 
-        max = yData2.first();
-        min = yData2.first();
+    QLOG_TRACE() <<"SIGEDR:MIN = "<< QString::number(min);
+    QLOG_TRACE() <<"SIGEDR:MAX = "<< QString::number(max);
 
-        for (int i = 0; i < krotszy; ++i)
-        {
-            sampleNo[i] = i;
-            max = qMax(max, yData1.at(i));
-            min = qMin(min, yData1.at(i));
-            max = qMax(max, yData2.at(i));
-            min = qMin(min, yData2.at(i));
-        }
-    }
-           QLOG_TRACE() <<"SIGEDR:X = "<< QString::number(min);
-                      QLOG_TRACE() <<"SIGEDR:X = "<< QString::number(max);
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, min, max);
@@ -493,7 +464,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
         curve->setPen(QPen(Qt::blue, 1));
         curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
         curve->setTitle("SIG EDR Rpeak");
-        curve->setSamples(sampleNo, yData1);
+        curve->setSamples(sampleNo1, yData1);
         curve->attach(plot);
     }
     if(no == 0 || no == 2)
@@ -502,7 +473,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
         curve2->setPen(QPen(Qt::red, 1));
         curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
         curve2->setTitle("SIG EDR Wavse");
-        curve2->setSamples(sampleNo, yData2);
+        curve2->setSamples(sampleNo2, yData2);
         curve2->attach(plot);
     }
 
@@ -513,7 +484,10 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    if(no == 1)
+        plot->canvas()->setGeometry(0,0,sampleNo1.last(),0);
+    else
+        plot->canvas()->setGeometry(0,0,sampleNo2.last(),0);
     zoom->setZoomBase(plot->canvas()->rect());
 
     QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
@@ -2317,7 +2291,7 @@ void AirEcgMain::drawSigEdr(EcgData *data)
                 no = 0;
         }
                                              //data waves            //data baseline
-        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->SigEdr_r),*(data->SigEdr_r),data->info->frequencyValue, no);
+        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->SigEdr_r),*(data->SigEdr_q),data->info->frequencyValue, no);
         ui->scrollArea_2->setWidget(plotEDR);
         ui->scrollArea_2->show();
     }
