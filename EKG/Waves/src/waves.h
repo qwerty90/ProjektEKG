@@ -28,8 +28,8 @@ public:
 private:
     void set_qrs_onset(QVector<double>&,vector_it&);
     void set_qrs_end(QVector<double>&,vector_it&);
-    void set_p_onset(QVector<double>&);
-    void set_p_end(QVector<double>&);
+    void set_p_onset(QVector<double>&,vector_it&);
+    void set_p_end(QVector<double>&,vector_it&);
     double fs;
     vector_it qrs_onset_it;
     vector_it qrs_end_it;

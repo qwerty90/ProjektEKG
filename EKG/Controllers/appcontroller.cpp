@@ -577,7 +577,7 @@ void AppController::runSigEdr()
                        (this->entity->Rpeaks_uint),
                        *(tmp_baselined),
                        (tmp_Rpeaks));
-
+/*
         if (this->entity->settings->signalIndex == 1 && edr_lead ==2 )
             obiekt.new_RPeaks_signal(edr_lead,tmp_Rpeaks);
         if (this->entity->settings->signalIndex == 1 && edr_lead ==1 )
@@ -586,7 +586,7 @@ void AppController::runSigEdr()
             obiekt.new_RPeaks_signal(edr_lead,tmp_Rpeaks);
         if (this->entity->settings->signalIndex == 1 && edr_lead ==2 )
             obiekt.new_RPeaks_signal(edr_lead,this->entity->Rpeaks_uint);
-
+*/
         this->entity->SigEdr_r = new QVector<double>(*(obiekt.retrieveEDR_QVec(1,this->entity->settings->SigEdr_lead)));
         QLOG_INFO() << "SigEdr_r/ calculated from RPeaks " <<QString::number(this->entity->SigEdr_r->size())<<" samples.";
     }
@@ -611,17 +611,17 @@ void AppController::runSigEdr()
                   <<QString::number(Qrs_on->size()) << "entity-q_on\n"  ;
 
         sig_edr obiekt_qrs(*(this->entity->ecg_baselined),
-                           *(this->entity->Waves->QRS_onset)->begin(),
-                           *(this->entity->Waves->QRS_end  )->begin(),
+                           *(this->entity->Waves->QRS_onset),
+                           *(this->entity->Waves->QRS_end  ),
                            *tmp_baselined,
-                           *Qrs_on->begin(),
-                           *Qrs_end->begin());
-
-        obiekt_qrs.new_Waves_signal(*(this->entity->Waves->QRS_onset)->begin(),
-                                    *(this->entity->Waves->QRS_end  )->begin(),
-                                    *Qrs_on->begin(),
-                                    *Qrs_end->begin());
-
+                           *Qrs_on,
+                           *Qrs_end);
+/*
+        obiekt_qrs.new_Waves_signal(*(this->entity->Waves->QRS_onset),
+                                    *(this->entity->Waves->QRS_end  ),
+                                    *Qrs_on,
+                                    *Qrs_end);
+*/
         this->entity->SigEdr_q = new QVector<double>(*obiekt_qrs.retrieveEDR_QVec(2,edr_lead));
 
     }
