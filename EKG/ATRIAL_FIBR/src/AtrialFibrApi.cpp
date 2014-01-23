@@ -18,8 +18,8 @@ double AtrialFibrApi::GetRRIntEntropy() const { return entropyResult; }
 
 double AtrialFibrApi::GetRRIntDivergence() const { return divergenceResult; }
 
-double AtrialFibrApi::GetPWaveOccurenceRatio() const {
-  return pWaveOccurenceRatioResult;
+double AtrialFibrApi::GetPWaveAbsenceRatio() const {
+  return 1 - pWaveOccurenceRatioResult;
 }
 
 static const double divergenceFactor = 0.25;
@@ -30,6 +30,6 @@ static const double AtrialFibrThreshold = 0.7;
 bool AtrialFibrApi::isAtrialFibr() const {
   return GetRRIntDivergence() * divergenceFactor +
              GetRRIntEntropy() * entropyFactor +
-             (1 - GetPWaveOccurenceRatio()) * pWaveOccFactor >
+             GetPWaveAbsenceRatio() * pWaveOccFactor >
          AtrialFibrThreshold;
 }

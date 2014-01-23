@@ -343,7 +343,7 @@ void AppController::runAtrialFibr()
                          *(this->entity->Rpeaks) ,
                          *(this->entity->Waves->PWaveStart) )   ;
 
-    this->entity->PWaveOccurenceRatio= obiekt.GetPWaveOccurenceRatio();
+    this->entity->PWaveOccurenceRatio= obiekt.GetPWaveAbsenceRatio();
     this->entity->RRIntDivergence    = obiekt.GetRRIntDivergence();
     this->entity->RRIntEntropy       = obiekt.GetRRIntEntropy();
     this->entity->AtrialFibr         = obiekt.isAtrialFibr();
