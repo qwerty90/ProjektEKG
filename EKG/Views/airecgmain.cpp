@@ -94,6 +94,8 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->pushButton_12->setEnabled(true);
    ui->rpeaksGroupBox_2->setEnabled(true);
     ui->baselineGroupBox->setEnabled(true);
+    ui->tabWidget_5->setEnabled(true);
+    ui->tabHrv->setEnabled(true);
 
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
