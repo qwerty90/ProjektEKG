@@ -337,11 +337,14 @@
       </item>
       <item>
        <widget class="QTabWidget" name="tabWidget_5">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="tabPosition">
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -399,8 +402,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -686,7 +689,7 @@
                 <item>
                  <widget class="QGroupBox" name="ButterworthGroupBox">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="title">
                    <string>Butterworth filter</string>
@@ -828,8 +831,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>407</height>
                   </rect>
                  </property>
                 </widget>
@@ -843,7 +846,7 @@
                 <item>
                  <widget class="QGroupBox" name="rpeaksGroupBox_2">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -871,10 +874,10 @@
                       <string>Hilbert transformation based algorithm</string>
                      </property>
                      <property name="checkable">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                      <property name="checked">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -884,7 +887,7 @@
                       <string>Pan - Tompkins algorithm</string>
                      </property>
                      <property name="checked">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </property>
                     </widget>
                    </item>
@@ -978,8 +981,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>499</height>
                   </rect>
                  </property>
                 </widget>
@@ -1084,7 +1087,7 @@
               <item>
                <widget class="QTabWidget" name="tabHrv">
                 <property name="enabled">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="currentIndex">
                  <number>0</number>
@@ -1250,8 +1253,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>964</width>
+                           <height>410</height>
                           </rect>
                          </property>
                         </widget>
@@ -1337,8 +1340,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>964</width>
+                           <height>403</height>
                           </rect>
                          </property>
                         </widget>
@@ -1444,7 +1447,7 @@
                   <item>
                    <widget class="QFrame" name="tabGeo_2">
                     <property name="enabled">
-                     <bool>true</bool>
+                     <bool>false</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_2">
                      <item>
@@ -1459,8 +1462,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
-                            <height>28</height>
+                            <width>986</width>
+                            <height>186</height>
                            </rect>
                           </property>
                          </widget>
@@ -1507,8 +1510,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
-                            <height>28</height>
+                            <width>986</width>
+                            <height>185</height>
                            </rect>
                           </property>
                          </widget>
@@ -1625,7 +1628,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -2651,6 +2654,9 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="pushButton_18">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>RUN HRT</string>
                     </property>
@@ -3174,7 +3180,7 @@
                 <item>
                  <widget class="QLabel" name="min_electrodes">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="inputMethodHints">
                    <set>Qt::ImhNone</set>
@@ -3187,7 +3193,7 @@
                 <item>
                  <widget class="QPushButton" name="RUN_VCG_pushButton">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>RUN VCG LOOP</string>
@@ -3587,8 +3593,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>864</width>
-                     <height>497</height>
+                     <width>98</width>
+                     <height>28</height>
                     </rect>
                    </property>
                   </widget>
@@ -3806,8 +3812,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>232</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3854,8 +3860,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>231</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>

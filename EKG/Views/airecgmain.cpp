@@ -23,7 +23,7 @@
 #include <qwt_point_3d.h>
 #include <qwt_color_map.h>
 #include <qwt_plot_marker.h>
-
+#include <qwt_curve_fitter.h>
 AirEcgMain::AirEcgMain(QWidget *parent) :
     QMainWindow(parent),
     baselineSignalMapper(new QSignalMapper(this)),
@@ -94,6 +94,8 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->pushButton_12->setEnabled(true);
    ui->rpeaksGroupBox_2->setEnabled(true);
     ui->baselineGroupBox->setEnabled(true);
+    ui->tabWidget_5->setEnabled(true);
+    ui->tabHrv->setEnabled(true);
 
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
@@ -464,8 +466,22 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
         curve->setPen(QPen(Qt::blue, 1));
         curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
         curve->setTitle("SIG EDR Rpeak");
-        curve->setSamples(sampleNo1, yData1);
+        curve->setSamples(sampleNo1,yData1 );
         curve->attach(plot);
+
+        QwtPlotCurve *curve1 = new QwtPlotCurve();
+        QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
+        fitter->setFitMode(QwtSplineCurveFitter::Spline);
+        curve1->setSamples(sampleNo1, yData1);//pointsF);
+        curve1->setStyle(QwtPlotCurve::Lines);
+        curve1->setPen(QPen(Qt::black, 2));
+        curve1->setCurveAttribute(QwtPlotCurve::Fitted, true);
+        curve1->attach(plot);
+        fitter->setSplineSize(10000);
+        curve1->setCurveFitter(fitter);
+
+
+
     }
     if(no == 0 || no == 2)
     {
@@ -1196,7 +1212,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
     for (int i=0;i<p.size();i++)
     {
-        pDataX[i] = ((unsigned int)(p.at(i)- p.first())*tos);
+        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos);
         pDataY[i] = (*p.at(i));
         //QLOG_TRACE() <<"Rpik:X = "<< QString::number( pDataX[i])<< "Y = " << QString::number( pDataY[i]);
     }

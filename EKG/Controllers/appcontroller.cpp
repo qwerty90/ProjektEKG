@@ -411,7 +411,7 @@ void AppController::runRPeaks()
 void AppController::runStInterval()
 {
     QLOG_INFO() << "Start StInterval";
-#if 0
+
     EcgStAnalyzer analyzer;
     if (this->entity->settings->quadratic)
     analyzer.setAlgorithm(ST_QUADRATIC);
@@ -424,14 +424,13 @@ void AppController::runStInterval()
     analyzer.setSlopeThreshold(this->entity->settings->slope_tresh);
     analyzer.setMorphologyCoeff(this->entity->settings->morph_coeff);
 
-    if (this->entity->Rpeaks == NULL  ||
-            this->entity->Waves==NULL ||
-            this->entity->Waves->QRS_end==NULL||
-            this->entity->Waves->T_end==NULL)
+    ifWavesExists();
+    if (this->entity->Waves->T_end == NULL)
     {
-        QLOG_ERROR() << "Brak danych dla modulu ST_Interval";
+        QLOG_FATAL() << "ST_INTERVAL/ no Twave_end for me!";
         return;
     }
+
     QList<EcgStDescriptor> result;
 
     result = analyzer.analyze(*(this->entity->ecg_baselined),
@@ -439,19 +438,9 @@ void AppController::runStInterval()
                               *(this->entity->Waves->QRS_end),
                               *(this->entity->Waves->T_end),
                               (double)this->entity->info->frequencyValue);
-    // teraz nalezy wywolac analyzer.analyze z odpowiednimi parametrami
-    // result = analyzer.analyze(
-    //  *this->entity->ecg_baselined, /* sygnal po baseline */
-    //  *this->entity->Rpeaks, /* punkty Rpeak */
-    //  ..., /* punkty J lub QRSend */
-    //  ..., /* punkty Tend */
-    //  ...  /* czestotliwosc probkowania sygnalu w Hz */
-    // );
-    //
-    // operacja analizy zwraca liste deskryptorow interwalow ST,
-    // ktora mozna zapisac w EcgData:
+
     this->entity->STintervals = new QList<EcgStDescriptor>(result);
-#endif
+
     emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
 }
@@ -522,15 +511,23 @@ void AppController::runWaves()
         QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_end->size())
                     <<" QRS_end points.";
 
-        QLOG_FATAL() << "Waves/ PWaveStart not ready yet.";
-        //this->entity->Waves->QRS_end = iters(obiekt.get_p_onset()(*(this->entity->Rpeaks)));
+        this->entity->Waves->PWaveStart = new iters(obiekt.get_p_onset());
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->PWaveStart->size())
+                    <<" PWaveStart points.";
+        //QLOG_FATAL() << "Waves/ PWaveStart not ready yet.";
 
-        QLOG_FATAL() << "Waves/ PWaveEnd not ready yet.";
-        //this->entity->Waves->QRS_end = iters(obiekt.get_p_end()(*(this->entity->Rpeaks)));
+        //QLOG_FATAL() << "Waves/ PWaveEnd not ready yet.";
+        this->entity->Waves->PWaveEnd   = new iters(obiekt.get_p_end());
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->PWaveEnd->size())
+                    <<" PWaveEnd points.";
 
         this->entity->Waves->Count=this->entity->Waves->QRS_onset->size();
         if (this->entity->Waves->Count>this->entity->Waves->QRS_end->size())
             this->entity->Waves->Count=this->entity->Waves->QRS_end->size();
+        if (this->entity->Waves->Count>this->entity->Waves->PWaveStart->size())
+            this->entity->Waves->Count=this->entity->Waves->PWaveStart->size();
+        if (this->entity->Waves->Count>this->entity->Waves->PWaveEnd->size())
+            this->entity->Waves->Count=this->entity->Waves->PWaveEnd->size();
 
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
