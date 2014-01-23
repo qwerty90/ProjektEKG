@@ -213,8 +213,13 @@ void AppController::ResetModules()
 void AppController::runEcgBaseline()
 {
     QLOG_INFO() <<"Ecg baseline started.";
-    //QVector<double> test;
-    //test << 0.5 << 0.5 << 0.5;
+
+    if (this->entity->primary==NULL || this->entity->secondary==NULL)
+    {
+        QLOG_FATAL() << "No data loaded";
+        return;
+    }
+
     KalmanFilter kalman;
     const QVector<ButterCoefficients> coeff = predefinedButterCoefficientSets();
 
@@ -360,7 +365,7 @@ void AppController::runAtrialFibr()
 }
 void AppController::runRPeaks()
 {
-    QLOG_INFO() << "Run RPeaks" ;
+    QLOG_INFO() << "RPeaks stared." ;
 
     ifEcgBaselineExists();
 
