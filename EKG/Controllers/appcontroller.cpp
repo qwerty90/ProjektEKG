@@ -511,15 +511,23 @@ void AppController::runWaves()
         QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_end->size())
                     <<" QRS_end points.";
 
-        QLOG_FATAL() << "Waves/ PWaveStart not ready yet.";
-        //this->entity->Waves->QRS_end = iters(obiekt.get_p_onset()(*(this->entity->Rpeaks)));
+        this->entity->Waves->PWaveStart = new iters(obiekt.get_p_onset());
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->PWaveStart->size())
+                    <<" PWaveStart points.";
+        //QLOG_FATAL() << "Waves/ PWaveStart not ready yet.";
 
-        QLOG_FATAL() << "Waves/ PWaveEnd not ready yet.";
-        //this->entity->Waves->QRS_end = iters(obiekt.get_p_end()(*(this->entity->Rpeaks)));
+        //QLOG_FATAL() << "Waves/ PWaveEnd not ready yet.";
+        this->entity->Waves->PWaveEnd   = new iters(obiekt.get_p_end());
+        QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->PWaveEnd->size())
+                    <<" PWaveEnd points.";
 
         this->entity->Waves->Count=this->entity->Waves->QRS_onset->size();
         if (this->entity->Waves->Count>this->entity->Waves->QRS_end->size())
             this->entity->Waves->Count=this->entity->Waves->QRS_end->size();
+        if (this->entity->Waves->Count>this->entity->Waves->PWaveStart->size())
+            this->entity->Waves->Count=this->entity->Waves->PWaveStart->size();
+        if (this->entity->Waves->Count>this->entity->Waves->PWaveEnd->size())
+            this->entity->Waves->Count=this->entity->Waves->PWaveEnd->size();
 
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
