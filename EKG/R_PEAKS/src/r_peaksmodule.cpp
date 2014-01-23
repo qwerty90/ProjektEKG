@@ -21,14 +21,6 @@ const unsigned int R_peaksModule::PT_MW_N = 58;
 R_peaksModule::R_peaksModule(const QVector<double> & signal, double freq): ecgSignal(signal) {
     this->filteredSignal = signal;
     this->frequency = freq;
-    ////QLOG_INFO() << "konstruktor" << signal.begin() - this->ecgSignal.begin();
-    unsigned int index = 50;
-    this->iter = this->ecgSignal.begin();
-    for(unsigned int j = 0; j < index; j++) (this->iter)++;
-    ////QLOG_INFO() << "roznica1" << this->iter - this->ecgSignal.begin();
-    this->itVect.push_back(this->iter);
-    ////QLOG_INFO() << "roznica2" << this->itVect.at(0) - this->ecgSignal.begin();
-    this->itVect.clear();
 }
 
 //======================= HILBERT ====================================
@@ -191,11 +183,11 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
     //first R peak
     if(this->filteredSignal.at(peaks_cut[fst].second) > 0) {
         indexAlias.push_back(peaks_cut[fst].second);
-        this->iter = this->ecgSignal.begin();
-        for(unsigned int j = 0; j < peaks_cut[fst].second; j++) (this->iter)++;
-        //QLOG_INFO() << "roznica" << this->iter - this->ecgSignal.begin();
+        R_peaksIter iter = this->ecgSignal.begin();
+        for(unsigned int j = 0; j < peaks_cut[fst].second; j++) iter++;
+        //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
         //QLOG_INFO() << "indeks" << peaks_cut[fst].second;
-        this->itVect.push_back(this->iter);
+        this->itVect.push_back(iter);
         prevPeak = peaks_cut[fst].second;
     }
     else {
@@ -211,10 +203,10 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
         if(fst<cutoff) fst--;
 
         indexAlias.push_back(possiblePeak);
-        this->iter = this->ecgSignal.begin();
-        for(unsigned int j = 0; j < possiblePeak; j++) (this->iter)++;
-        this->itVect.push_back(this->iter);
-        //QLOG_INFO() << "roznica" << this->iter - this->ecgSignal.begin();
+        R_peaksIter iter = this->ecgSignal.begin();
+        for(unsigned int j = 0; j < possiblePeak; j++) iter++;
+        this->itVect.push_back(iter);
+        //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
         //QLOG_INFO() << "indeks" << possiblePeak;
         prevPeak = possiblePeak;
     }
@@ -223,10 +215,10 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
         if((int)peaks_cut[i].second - (int)prevPeak > max_scope) {
             if(this->filteredSignal.at(peaks_cut[i].second) > 0) {
                 indexAlias.push_back(peaks_cut[i].second);
-                this->iter = this->ecgSignal.begin();
-                for(unsigned int j = 0; j < peaks_cut[i].second; j++) (this->iter)++;
-                this->itVect.push_back(this->iter);
-                //QLOG_INFO() << "roznica" << this->iter - this->ecgSignal.begin();
+                R_peaksIter iter = this->ecgSignal.begin();
+                for(unsigned int j = 0; j < peaks_cut[i].second; j++) iter++;
+                this->itVect.push_back(iter);
+                //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
                 //QLOG_INFO() << "indeks" << peaks_cut[i].second;
                 prevPeak = peaks_cut[i].second;
             }
@@ -243,10 +235,10 @@ void R_peaksModule::setHilbertRPeaks(const VectorPairDoubleUnsignedInt & peaks, 
                 if(i<cutoff) i--;
 
                 indexAlias.push_back(possiblePeak);
-                this->iter = this->ecgSignal.begin();
-                for(unsigned int j = 0; j < possiblePeak; j++) (this->iter)++;
-                this->itVect.push_back(this->iter);
-                //QLOG_INFO() << "roznica" << this->iter - this->ecgSignal.begin();
+                R_peaksIter iter = this->ecgSignal.begin();
+                for(unsigned int j = 0; j < possiblePeak; j++) iter++;
+                this->itVect.push_back(iter);
+                //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
                 //QLOG_INFO() << "indeks" << possiblePeak;
                 prevPeak = possiblePeak;
             }
@@ -623,10 +615,10 @@ void R_peaksModule::PanTompkinsSetPeaks(VectorPairDoubleUnsignedInt & filter, Ve
         if(abs(temp1 - temp2) <= eps) {
             int index = (temp1 + temp2)/2;
             indexAlias.push_back(index);
-            this->iter = this->ecgSignal.begin();
-            for(unsigned int j = 0; j < index; j++) (this->iter)++;
-            this->itVect.push_back(this->iter);
-            //QLOG_INFO() << "roznica" << this->iter - this->ecgSignal.begin();
+            R_peaksIter iter = this->ecgSignal.begin();
+            for(unsigned int j = 0; j < index; j++) iter++;
+            this->itVect.push_back(iter);
+            //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
             //QLOG_INFO() << "indeks" << index;
         }
 
@@ -641,10 +633,10 @@ void R_peaksModule::PanTompkinsSetPeaks(VectorPairDoubleUnsignedInt & filter, Ve
     if (abs(temp1 - temp2) <= eps) {
         int index = (temp1 + temp2)/2;
         indexAlias.push_back(index);
-        this->iter = this->ecgSignal.begin();
-        for(unsigned int j = 0; j < index; j++) (this->iter)++;
-        this->itVect.push_back(this->iter);
-        //QLOG_INFO() << "roznica" << this->iter - this->ecgSignal.begin();
+        R_peaksIter iter = this->ecgSignal.begin();
+        for(unsigned int j = 0; j < index; j++) iter++;
+        this->itVect.push_back(iter);
+        //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
         //QLOG_INFO() << "indeks" << index;
     }
 }
@@ -879,10 +871,10 @@ void R_peaksModule::wavelet(void) {
             }
         }
         this->indexVector.push_back(indexOfMax);
-        this->iter = this->ecgSignal.begin();
-        for(unsigned int j = 0; j < indexOfMax; j ++) (this->iter)++;
-        this->itVect.push_back(this->iter);
-        //QLOG_INFO() << "roznica" << this->iter - this->ecgSignal.begin();
+        R_peaksIter iter = this->ecgSignal.begin();
+        for(unsigned int j = 0; j < indexOfMax; j ++) iter++;
+        this->itVect.push_back(iter);
+        //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
         //QLOG_INFO() << "indeks" << indexOfMax;
     }
 }
