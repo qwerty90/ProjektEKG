@@ -3,13 +3,12 @@
 EcgData::EcgData(QObject *parent) :
     QObject(parent)
 {
-    QLOG_INFO() << "Stworzono obiekt typu ecgdata.";
+    //QLOG_INFO() << "Stworzono obiekt typu ecgdata.";
     this->primary = NULL;
     this->secondary = NULL;
     this->ecg_baselined = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
-    //this->PWaveStart = NULL;//do wywalenia
     this->Waves = new Waves_struct;
     this->Waves->PWaveEnd = NULL;
     this->Waves->QRS_end  = NULL;
@@ -27,6 +26,8 @@ EcgData::EcgData(QObject *parent) :
     this->SigEdr_q=NULL;
     this->fft_x=NULL;
     this->fft_y=NULL;
+    this->SleepApnea=NULL;
+    this->SleepApnea_plot=NULL;
     //hrv2
     //twa
     //dfa
@@ -37,13 +38,12 @@ EcgData::EcgData(QObject *parent) :
 
 EcgData::EcgData(QString id)
 {
-    QLOG_INFO() << "Stworzono obiekt typu ecgdata dla "<<id<<"." ;
+    QLOG_INFO() << "Stworzono obiekt typu ecgdata dla pacjenta "<<id<<"." ;
     this->primary = NULL;
     this->secondary = NULL;
     this->ecg_baselined = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
-    //this->PWaveStart = NULL;//do wywalenia
     this->Waves = new Waves_struct;
     this->Waves->PWaveEnd = NULL;
     this->Waves->QRS_end  = NULL;
@@ -61,6 +61,8 @@ EcgData::EcgData(QString id)
     this->SigEdr_q=NULL;
     this->fft_x=NULL;
     this->fft_y=NULL;
+    this->SleepApnea=NULL;
+    this->SleepApnea_plot=NULL;
 
     this->RecordId = id;
     this->settings = new EcgSettings();

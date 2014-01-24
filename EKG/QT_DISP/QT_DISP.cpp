@@ -16,13 +16,13 @@ QT_DISP::QT_DISP()
 
 void QT_DISP::getInput(vector<vector<double>> in_signals, vector <vector <int>> in_QRS_On, vector <vector <int>> in_QRS_End, vector <vector <int>> in_P_On)
 {
-    signals = in_signals;
+    signals2 = in_signals;
 	QRS_On = in_QRS_On;
 	QRS_End = in_QRS_End;
 	P_On = in_P_On;
 
 	heartBeats = QRS_On.size() - 1;
-    channels = signals.size() - 1;
+    channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
 	T_EndT.resize(channels);
@@ -56,8 +56,8 @@ void QT_DISP::getInput(string path)
 			file >> channel0[i];
 		}
 
-        signals.push_back(time);
-        signals.push_back(channel0);
+        signals2.push_back(time);
+        signals2.push_back(channel0);
 	
 		file >> heartBeats;
 
@@ -82,7 +82,7 @@ void QT_DISP::getInput(string path)
 		QRS_End.push_back(QRS_EndCH0);
 		P_On.push_back(P_OnCH0);
 
-        channels = signals.size() - 1;
+        channels = signals2.size() - 1;
 		T_Peak.resize(channels);
 		T_EndP.resize(channels);
 		T_EndT.resize(channels);
@@ -114,8 +114,8 @@ void QT_DISP::Run()
     {
         for(int j = 0; j < heartBeats; ++j)
         {
-            vector <double> x (signals[0].begin() + QRS_On[i][j], signals[0].begin() + QRS_On[i][j + 1]);
-            vector <double> y (signals[i+1].begin() + QRS_On[i][j], signals[i+1].begin() + QRS_On[i][j + 1]);
+            vector <double> x (signals2[0].begin() + QRS_On[i][j], signals2[0].begin() + QRS_On[i][j + 1]);
+            vector <double> y (signals2[i+1].begin() + QRS_On[i][j], signals2[i+1].begin() + QRS_On[i][j + 1]);
 
             int iQRS_On = QRS_On[i][j] - QRS_On[i][j];
             int iQRS_End = QRS_End[i][j] - QRS_On[i][j];
@@ -304,7 +304,7 @@ void QT_DISP::EvaluateQTDisp()
 		double test2 = QRS_On[i][0];
 		double test3 = QRS_On[i][QRS_On[i].size()-1];
 
-        heartAction[i]=(60 * (QRS_On[i].size() / ((-signals[i][0] + signals[i][signals[i].size()-1]))) ) ;
+        heartAction[i]=(60 * (QRS_On[i].size() / ((-signals2[i][0] + signals2[i][signals2[i].size()-1]))) ) ;
 	}
 
 	for (int i =0; i< T_EndP.size(); i++)
