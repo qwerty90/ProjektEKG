@@ -7,7 +7,7 @@ void HRV1MainModule::createInstance(){
 }
 
 
-
+/*
 HRV1MainModule::~HRV1MainModule(void)
 {
     peaks.~QVector();
@@ -20,7 +20,7 @@ HRV1MainModule::~HRV1MainModule(void)
     toReturnFrequency.xData->~QVector();
     toReturnFrequency.yData->~QVector();
 }
-
+*/
 void HRV1MainModule::cutPeaksVector(QVector<int>* peaks){
 	int intervalNumber = 1;
     QVector<int>* vector;

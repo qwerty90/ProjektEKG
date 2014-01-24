@@ -7,8 +7,8 @@ void waves::calculate_waves(QVector<double>& ecg,vector_it& r_peaks, double fs_i
     fs=fs_in;
     set_qrs_onset(ecg,r_peaks);
     set_qrs_end(ecg,r_peaks);
-    set_p_onset(ecg);
-    set_p_end(ecg);
+    set_p_onset(ecg,r_peaks);
+    set_p_end(ecg,r_peaks);
 }
 
 void waves::set_qrs_onset(QVector<double>& ecg, vector_it& r_peaks)
@@ -191,14 +191,195 @@ void waves::set_qrs_end(QVector<double>& ecg,vector_it& r_peaks)
 
 }
 
-void waves::set_p_onset(QVector<double>& ecg)
+void waves::set_p_onset(QVector<double>& ecg, vector_it& r_peaks)
 {
+    double Rv;
+    double mediana=0;
+    double Pmax=0;
+    int P_mid;
+    int ipeak;
+    QVector<int> P_oneset;
+    QVector<int> P_middle;
+    QVector<int> window_length;
+    QVector<double> PToneset;
+    QVector<double> dPToneset;
+    QVector<double> window_signal;
+    QVector<double> onset_signal;
+    QVector<double> Pt;
+    QVector<double> M;
+    int p_one_end_window=20;
+    for(int i=0;i<r_peaks.size()-1;i++)
+    {
 
+        window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
+    }
+    for(int i=0;i<window_length.size()-1;i++)
+    {
+        Rv=0.003;
+        for(int j=0;j<window_length.at(i);j++)
+        {
+            window_signal.push_back(ecg.at(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i)-1+j));
+        }
+        for(int j=0;j<window_signal.size();j++)
+        {
+            mediana+=window_signal.at(j);
+        }
+        mediana/=window_length.at(i);
+        for(int j=0;j<window_signal.size();j++)
+        {
+            window_signal.replace(j,window_signal.at(j)-mediana);
+            Pt.push_back(atan(window_signal.at(j)/Rv));
+            M.push_back(sqrt(pow(Rv,2)+ pow(window_signal.at(j),2)));
+        }
+        mediana=0;
+        for(int j=0;j<Pt.size();j++)
+        {
+            if(Pmax<=Pt.at(j))
+            {
+                Pmax=Pt.at(j);
+                ipeak=j;
+            }
+        }
+
+        if (ipeak==0) ipeak=1;                      // Umozliwiają przejscie algorytmu w przypadkach krytycznych by TTDW
+        if (ipeak==M.size()-1) ipeak=M.size()-2;    // Jeszcze będzie poprawiane
+        if((M.at(ipeak-1)<M.at(ipeak))&&(M.at(ipeak)>M.at(ipeak+1)))
+        {
+            P_mid=ipeak+(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i));
+            P_middle.push_back(P_mid);
+            Rv=0.005;
+            for(int j=P_mid-p_one_end_window;j<P_mid;j++)
+            {
+                onset_signal.push_back(ecg.at(j));
+                mediana+=onset_signal.last();
+            }
+            mediana/=onset_signal.size();
+            for(int j=0;j<onset_signal.size();j++)
+                onset_signal.replace(j,onset_signal.at(j)-mediana);
+            for(int j=0;j<onset_signal.size();j++)
+            {
+                PToneset.push_back(atan(onset_signal.at(j)/Rv));
+                if(j==0)
+                    continue;
+                else
+                {
+                    dPToneset.push_back(PToneset.at(j)-PToneset.at(j-1));
+                    if(dPToneset.last()>0.01)
+                    {
+                        P_oneset.push_back(P_mid-p_one_end_window+j-1);
+                        p_onset_it.push_back(ecg.begin()+P_mid-p_one_end_window+j-1);
+                        break;
+                    }
+                }
+            }
+        }
+        window_signal.clear();
+        onset_signal.clear();
+        Pt.clear();
+        M.clear();
+        PToneset.clear();
+        dPToneset.clear();
+        Pmax=0;
+    }
 
 }
-void waves::set_p_end(QVector<double>& ecg)
+void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
 {
+    double Rv;
+    double mediana=0;
+    double Pmax=0;
+    int P_mid;
+    int ipeak;
+    QVector<int> P_end;
+    QVector<int> P_middle;
+    QVector<int> window_length;
+    QVector<double> PTend;
+    QVector<double> dPTend;
+    QVector<double> window_signal;
+    QVector<double> onset_signal;
+    QVector<double> Pt;
+    QVector<double> M;
 
+    int p_one_end_window=20;
+    for(int i=0;i<r_peaks.size()-1;i++)
+    {
+        window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
+    }
+    for(int i=0;i<window_length.size()-1;i++)
+    {
+        Rv=0.003;
+
+        for(int j=0;j<window_length.at(i);j++)
+        {
+            window_signal.push_back(ecg.at(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i)-1+j));
+        }
+        for(int j=0;j<window_signal.size();j++)
+        {
+            mediana+=window_signal.at(j);
+        }
+        mediana/=window_length.at(i);
+        for(int j=0;j<window_signal.size();j++)
+        {
+            window_signal.replace(j,window_signal.at(j)-mediana);
+            Pt.push_back(atan(window_signal.at(j)/Rv));
+            M.push_back(sqrt(pow(Rv,2)+ pow(window_signal.at(j),2)));
+        }
+        mediana=0;
+        for(int j=0;j<Pt.size();j++)
+        {
+            if(Pmax<=Pt.at(j))
+            {
+                Pmax=Pt.at(j);
+                ipeak=j;
+            }
+        }
+        if (ipeak==0) ipeak=1;                          //analogicznie jak w p_onset
+        if (ipeak==M.size()-1) ipeak=M.size()-2;        //
+        if((M.at(ipeak-1)<M.at(ipeak))&&(M.at(ipeak)>M.at(ipeak+1)))
+        {
+            P_mid=ipeak+(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i));
+            P_middle.push_back(P_mid);
+            Rv=0.005;
+            for(int j=P_mid;j<P_mid+p_one_end_window;j++)
+            {
+                onset_signal.push_back(ecg.at(j));
+                mediana+=onset_signal.last();
+            }
+            mediana/=onset_signal.size();
+
+            for(int j=0;j<onset_signal.size();j++)
+            {
+                onset_signal.replace(j,onset_signal.at(j)-mediana);
+                PTend.push_back(atan(onset_signal.at(j)/Rv));
+            }
+            for(int j=onset_signal.size()-1;j>0;j--)
+            {
+                if(j==(onset_signal.size()-1))
+                    continue;
+                else
+                {
+
+                    dPTend.push_front(PTend.at(j)-PTend.at(j+1));
+
+
+
+                    if(dPTend.first()>0.01)
+                    {
+                        P_end.push_back(P_mid+j);
+
+                        p_end_it.push_back(ecg.begin()+P_mid+j);
+                        break;
+                    }
+                }
+            }}
+        window_signal.clear();
+        onset_signal.clear();
+        Pt.clear();
+        M.clear();
+        PTend.clear();
+        dPTend.clear();
+        Pmax=0;
+    }
 }
 
 const vector_it & waves::get_qrs_onset()

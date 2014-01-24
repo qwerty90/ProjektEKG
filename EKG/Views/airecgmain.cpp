@@ -23,7 +23,7 @@
 #include <qwt_point_3d.h>
 #include <qwt_color_map.h>
 #include <qwt_plot_marker.h>
-
+#include <qwt_curve_fitter.h>
 AirEcgMain::AirEcgMain(QWidget *parent) :
     QMainWindow(parent),
     baselineSignalMapper(new QSignalMapper(this)),
@@ -60,7 +60,6 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->progressBar->setVisible(false);
 }
 
-
 AirEcgMain::~AirEcgMain()
 {
     delete ui;
@@ -81,8 +80,6 @@ void AirEcgMain::on_actionWczytaj_triggered()
     ui->progressBar->setVisible(false);
 }
 
-
-
 void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
 {
     emit loadEntity(directory, name);
@@ -97,6 +94,8 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->pushButton_12->setEnabled(true);
    ui->rpeaksGroupBox_2->setEnabled(true);
     ui->baselineGroupBox->setEnabled(true);
+    ui->tabWidget_5->setEnabled(true);
+    ui->tabHrv->setEnabled(true);
 
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
@@ -410,64 +409,41 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
+QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
 {
     double tos=1/freq;
     double max=0;
-    double min=9999999999999999999;
-    QVector<double> sampleNo;
-    if(no == 0)
+    double min=9999999;
+
+    if(no == 0 || no == 2 )
     {
-        sampleNo = QVector<double>(yData2.size());
-
-        max = yData2.first();
-        min = yData2.first();
-
         for (int i = 0; i < yData2.size(); ++i)
         {
-            sampleNo[i] = i*tos;
             max = qMax(max, yData2.at(i));
             min = qMin(min, yData2.at(i));
         }
+        QLOG_TRACE() <<"SIGEDR:size1 = "<< QString::number(yData1.size());
     }
-    if(no == 1)
+    if(no == 1 || no == 2 )
     {
-       sampleNo = QVector<double>(yData2.size());
-
-        max = yData2.first();
-        min = yData2.first();
-
         for (int i = 0; i < yData1.size(); ++i)
         {
             max = qMax(max, yData1.at(i));
             min = qMin(min, yData1.at(i));
         }
+        QLOG_TRACE() <<"SIGEDR:size2 = "<< QString::number(yData2.size());
     }
-    if(no==2)
+
+    QVector<double> pDataX = QVector<double>(p.size());
+
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+    for (int i=0;i<p.size();i++)
     {
-        int krotszy=0;
-        if(yData2.size()>yData1.size())
-        {
-            sampleNo = QVector<double>(yData2.size());
-            krotszy = yData1.size();
-        }
-        else
-        {
-            sampleNo = QVector<double>(yData1.size());
-            krotszy = yData2.size();
-        }
-
-        max = yData2.first();
-        min = yData2.first();
-
-        for (int i = 0; i < krotszy; ++i)
-        {
-            max = qMax(max, yData1.at(i));
-            min = qMin(min, yData1.at(i));
-            max = qMax(max, yData2.at(i));
-            min = qMin(min, yData2.at(i));
-        }
+        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos);
     }
+
+    QLOG_TRACE() <<"SIGEDR:MIN = "<< QString::number(min);
+    QLOG_TRACE() <<"SIGEDR:MAX = "<< QString::number(max);
 
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
@@ -489,23 +465,55 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
     if(no == 1 || no == 2)
     {
         QwtPlotCurve* curve = new QwtPlotCurve();
-        curve->setPen(QPen(Qt::blue, 1));
+        curve->setPen(QPen(Qt::black, 1));
         curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-        curve->setSamples(sampleNo, yData1);
+        curve->setSamples(pDataX,yData1 );
         curve->attach(plot);
+
+        QwtPlotCurve *curve1 = new QwtPlotCurve();
+        QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
+        fitter->setFitMode(QwtSplineCurveFitter::Spline);
+        curve1->setSamples(pDataX, yData1);//pointsF);
+        curve1->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve1->setTitle("SIG EDR Rpeak");
+        curve1->setStyle(QwtPlotCurve::Lines);
+        curve1->setPen(QPen(Qt::blue, 1));
+        curve1->setCurveAttribute(QwtPlotCurve::Fitted, true);
+        curve1->attach(plot);
+        fitter->setSplineSize(60000);
+        curve1->setCurveFitter(fitter);
     }
+
     if(no == 0 || no == 2)
     {
         QwtPlotCurve* curve2 = new QwtPlotCurve();
-        curve2->setPen(QPen(Qt::red, 1));
+        curve2->setPen(QPen(Qt::black, 1));
         curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-        curve2->setSamples(sampleNo, yData2);
+        curve2->setSamples(pDataX, yData2);
         curve2->attach(plot);
+
+        QwtPlotCurve *curve3 = new QwtPlotCurve();
+        QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
+        fitter->setFitMode(QwtSplineCurveFitter::Spline);
+        curve3->setSamples(pDataX, yData2);//pointsF);
+        curve3->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve3->setTitle("SIG EDR Wavse");
+        curve3->setStyle(QwtPlotCurve::Lines);
+        curve3->setPen(QPen(Qt::red, 1));
+        curve3->setCurveAttribute(QwtPlotCurve::Fitted, true);
+        curve3->attach(plot);
+        fitter->setSplineSize(60000);
+        curve3->setCurveFitter(fitter);
     }
+
+    QwtLegend* legend = new QwtLegend();
+    legend->setItemMode(QwtLegend::ReadOnlyItem);
+    plot->insertLegend(legend, QwtPlot::BottomLegend);
+
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    plot->canvas()->setGeometry(0,0,pDataX.last(),0);
     zoom->setZoomBase(plot->canvas()->rect());
 
     QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
@@ -517,21 +525,33 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
 
     return plot;
 }
+//HRV1
 QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>& xData)
 {
-    double max = yData.first();
-    double min = yData.first();
+    double maxy = yData.first();
+    double miny = yData.first();
 
     for (int i = 0; i < yData.size(); ++i)
     {
-        max = qMax(max, yData.at(i));
-        min = qMin(min, yData.at(i));
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
     }
+    double maxx = xData.first();
+    double minx = xData.first();
 
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+    if(maxy>10000)
+        maxy=10000;
+    if(miny<-10000)
+        miny=-10000;
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
     QwtText xaxis("Frequence [Hz]");
     QwtText yaxis("Power");
@@ -1202,7 +1222,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
     for (int i=0;i<p.size();i++)
     {
-        pDataX[i] = ((unsigned int)(p.at(i)- p.first())*tos);
+        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos);
         pDataY[i] = (*p.at(i));
         //QLOG_TRACE() <<"Rpik:X = "<< QString::number( pDataX[i])<< "Y = " << QString::number( pDataY[i]);
     }
@@ -2006,7 +2026,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         P_endPoints->attach( plot );
     }
 */
-    if(ui->qrs_onset->isChecked()|| ui->wave_all->isChecked())
+   // if(ui->qrs_onset->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *Qrs_onsetPoints = new QwtPlotCurve();
         QwtSymbol *Qrs_onsetMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
@@ -2018,7 +2038,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         Qrs_onsetPoints->attach( plot );
     }
 
-    if(ui->qrs_end->isChecked()|| ui->wave_all->isChecked())
+   // if(ui->qrs_end->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *Qrs_endPoints = new QwtPlotCurve();
         QwtSymbol *Qrs_endMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::magenta, QPen( Qt::magenta ), QSize( 5, 5 ) );
@@ -2258,6 +2278,7 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 
 void AirEcgMain::drawHrv1(EcgData *data)
 {
+    QLOG_DEBUG() << "GUI/HRV1 0";
     QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
     ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
@@ -2268,11 +2289,13 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
     ui->SDSD->setText("SDSD");
 
+    QLOG_DEBUG() << "GUI/HRV1 1";
+
     //Fourier    
-    QwtPlot *plotFT = plotPlot(*(data->fft_x), *(data->fft_y)); //to ma byc lista czy vector?
+    QwtPlot *plotFT = plotPlot(*(data->fft_y),*(data->fft_x)); //to ma byc lista czy vector?
     ui->scrollAreaFT->setWidget(plotFT);
     ui->scrollAreaFT->show();
-
+    QLOG_DEBUG() << "GUI/HRV1 2";
     //Frequency Coefficients
     ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2));
     ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2));
@@ -2280,7 +2303,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2));
     ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2));
     ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + "%");
-
+    QLOG_DEBUG() << "GUI/HRV1 3";
 }
 
 void AirEcgMain::drawSigEdr(EcgData *data)
@@ -2309,7 +2332,7 @@ void AirEcgMain::drawSigEdr(EcgData *data)
                 no = 0;
         }
                                              //data waves            //data baseline
-        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->ecg_baselined),*(data->ecg_baselined),data->info->frequencyValue, no);
+        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->Rpeaks),*(data->ecg_baselined),*(data->SigEdr_r),*(data->SigEdr_q),data->info->frequencyValue, no);
         ui->scrollArea_2->setWidget(plotEDR);
         ui->scrollArea_2->show();
     }
@@ -2471,22 +2494,6 @@ void AirEcgMain::drawHrt(EcgData *data)
     ui->vpbs_detected_count->setText(QString::number(*(data->vpbs_detected_count), 'f', 0));
     ui->turbulence_onset_val->setText(QString::number(*(data->turbulence_onset), 'f', 2));
     ui->turbulence_slope_val->setText(QString::number(*(data->turbulence_slope), 'f', 2));
-}
-
-void AirEcgMain::receiveResults(EcgData *data)
-{
-    this->drawEcgBaseline(data);
-    this->drawRPeaks(data);
-    this->drawHrv1(data);
-    this->drawHrv2(data);
-    this->drawHrvDfa(data);
-    this->drawTwa(data);
-    this->drawWaves(data);
-    this->drawQrsClass(data);
-    this->drawStInterval(data);
-    this->drawHrt(data);
-    emit this->closeDialog();
-    return;
 }
 
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
@@ -2902,12 +2909,12 @@ void AirEcgMain::on_pushButton_4_clicked()
 
 void AirEcgMain::on_radioButton_3_clicked()
 {
-    emit this->switchSignal_SIGEDR(0);
+    emit this->switchSignal_SIGEDR(1);
 }
 
 void AirEcgMain::on_radioButton_4_clicked()
 {
-    emit this->switchSignal_SIGEDR(1);
+    emit this->switchSignal_SIGEDR(2);
 }
 
 void AirEcgMain::on_pushButton_next_vcg_clicked()
@@ -2919,7 +2926,6 @@ void AirEcgMain::on_pushButton_prev_vcg_clicked()
 {
     emit this->vcg_loop_change(0);
 }
-
 
 void AirEcgMain::on_RUN_VCG_pushButton_clicked()
 {

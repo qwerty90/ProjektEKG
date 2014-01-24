@@ -36,6 +36,7 @@ public:
     //SigEdr settings
     bool SigEdr_rpeaks;
     bool SigEdr_qrs;
+    int  SigEdr_lead;
 
 signals:
     
