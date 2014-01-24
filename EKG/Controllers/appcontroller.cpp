@@ -317,6 +317,7 @@ void AppController::runHRV1()
     this->entity->HF = results_freq.HF;
     this->entity->LF = results_freq.LF;
     this->entity->ULF = results_freq.ULF;
+    this->entity->VLF = results_freq.VLF;
     this->entity->LFHF = results_freq.LFHF;
 
     QLOG_INFO() << "HRV1 frequency done.";
