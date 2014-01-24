@@ -39,7 +39,7 @@ class AirEcgMain : public QMainWindow
     //void drawWaves(EcgData* data);
     //void drawQrsClass(EcgData* data);
 
-    void drawSleep_Apnea(EcgData* data);
+    //void drawSleep_Apnea(EcgData* data);
 
     void drawHrt(EcgData *data);
 
@@ -103,7 +103,7 @@ signals:
     void runWaves();
     void runSigEdr();
     void runQrsClass();
-
+    void runSleepApnea();
     void runVcgLoop();
 
     void qrsClassChanged(int index, int type);
@@ -143,6 +143,7 @@ public slots:
     void drawQrsClass(EcgData *data);
     void drawSigEdr(EcgData *data);
     void drawVcgLoop(EcgData* data);
+    void drawSleep_Apnea(EcgData *data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -260,6 +261,8 @@ private slots:
     void on_detectionratesquare_clicked();
 
     void on_detectionratelinear_clicked();
+
+    void on_pushButton_11_clicked();
 
 private:
     Ui::AirEcgMain *ui;

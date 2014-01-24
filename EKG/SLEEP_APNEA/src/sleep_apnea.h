@@ -16,22 +16,22 @@ public:
 
     //module set properties
     int data_freq;          //sampling freqency of data (tested for 100Hz)
-    int window=41;          //window for averange filter (set 41 !!!)
-    int LFILT=32;           //for hilbert transform (set 32 !!! must be even !!!)
-    int window_median=60;   //window for median filter (set 60 !!!)
+    int window;          //window for averange filter (set 41 !!!)
+    int LFILT;           //for hilbert transform (set 32 !!! must be even !!!)
+    int window_median;   //window for median filter (set 60 !!!)
 
     //OUTPUT FOR GUI
         //vector of pairs:(begin and end sample of apnea detection)
-        QVector<BeginEndPair> sleep_apnea_output(QVector<unsigned int> tab_R_peaks);
+        QVector<BeginEndPair> sleep_apnea_output(QVector<unsigned int> tab_R_peaks);//tab_R_peaks MUST BE CONNECTED WITH OUTPUT OF RPEAKS MODULE!!
         //Qvector[0]: Treshold value of max_amplitude [s]
         //Qvector[1]: Treshold value of min_frequency [Hz]
         //Qvector[2]: Apnea assessment in the time domain [%]
         //Qvector[3]: Apnea assessment in the frequency domain [%]
-        QVector<double> gui_output(QVector<unsigned int> tab_R_peaks);
+        QVector<double> gui_output(QVector<unsigned int> tab_R_peaks);//tab_R_peaks MUST BE CONNECTED WITH OUTPUT OF RPEAKS MODULE!!
 
 private:
     //basic functions
-    QVector<QVector<double>> RR_intervals(QVector<unsigned int> tab_R_peaks);
+    QVector<QVector<double>> RR_intervals(QVector<unsigned int> tab_R_peaks);//tab_R_peaks MUST BE CONNECTED WITH OUTPUT OF RPEAKS MODULE!!
     QVector<QVector<double> > averange_filter(QVector<QVector<double> > tab_RR);
     QVector<QVector<double> > resample(QVector<QVector<double> > tab_RR_new);
     void HP_LP_filter (QVector<QVector<double> > &tab_res);

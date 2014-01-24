@@ -51,6 +51,7 @@ signals:
     void SigEdr_done(EcgData *data);
     void QrsClass_done(EcgData *data);
     void runVcgLoop_done(EcgData *data);
+    void SleepApnea_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
@@ -93,6 +94,7 @@ public slots:
     void runQrsClass();
     void runWaves();
     void runSigEdr();
+    void runSleepApnea();
  void runVcgLoop();
 
 };

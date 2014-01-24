@@ -1,7 +1,10 @@
 #include "sleep_apnea.h"
 
 sleep_apnea::sleep_apnea(const int sampling_freqency)
-    : data_freq(sampling_freqency)
+    : data_freq(sampling_freqency),
+      window(41),
+      LFILT(32),
+      window_median(60)
 { }
 
 QVector<QVector<double>> sleep_apnea::RR_intervals(QVector<unsigned int> tab_R_peaks)
