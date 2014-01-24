@@ -12,6 +12,7 @@
 #include "QsLog/QsLog.h"
 #include "Waves/src/waves.h"
 #include "QRS_CLASS/qrsclass.h"
+#include "SLEEP_APNEA/src/sleep_apnea.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
@@ -33,6 +34,8 @@ public:
 
     QString RecordId;
 
+    // czasy
+    QVector<double> *times;
     //wartosci liczbowe z dwoch elektrod
     QVector<double> *primary;
     QVector<double> *secondary;
@@ -47,11 +50,8 @@ public:
     //QVector<int>          Rpeaks_int ;//po raz trzeci - wygrałem!!!
 
     //punkty charakterystyczne - wyjscie modulu WAVES
-    // EcgFrame zawiera punkty charakterystyczne: QRS_onset, QRS_end, T_end, P_onset, P_end
-        //na razie wrzuce osobno PWaveStart, ale docelowo ladniej by bylo miec to w jednej klasie jak wyzej
     Waves_struct *Waves;
     //QVector<QVector<double>::const_iterator> *PWaveStart;
-
 
     //Wykryte klasy zespolu QRS - wyjscie modulu QRS_CLASS
     QVector<QRSClass>* classes;
@@ -108,6 +108,10 @@ public:
     //modul SigEdr
     QVector<double> *SigEdr_r;
     QVector<double> *SigEdr_q;
+
+    //modul sleep apnea
+    QVector<BeginEndPair> *SleepApnea;
+    QVector<double>       *SleepApnea_plot;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;

@@ -7,7 +7,12 @@
 #include "alglib/fasttransforms.h"
 
 #define INTERVAL_LENGTH 300
-#define PRECISION 0.05 //must be 0.001 < x < 1
+#define PRECISION 0.01 //must be 0.001 < x < 0.1
+#define FREQUENCY_TRESHOLD 0.4
+
+#define HF_RANGE 0.15
+#define LF_RANGE 0.04
+#define VLF_RANGE 0.003
 
 
 class HRV1MainModule
@@ -15,38 +20,33 @@ class HRV1MainModule
 public:
 
 	//INPUT:
-    static void prepare(QVector<int>* RRPeaks, int samplingFrequency = 1000); //use this function to prepare whole module (default sampling frequency - 1000 Hz)
+    void prepare(QVector<int>* RRPeaks, int samplingFrequency = 1000); //use this function to prepare whole module (default sampling frequency - 1000 Hz)
 
 	//OUTPUT:
-	static HRV1BundleStatistical evaluateStatistical(); //evaluates and returns arguments of Statistical analysys
-	static HRV1BundleFrequency evaluateFrequency(); //evaluates and returns frequency analysys
+    HRV1BundleStatistical evaluateStatistical(); //evaluates and returns arguments of Statistical analysys
+    HRV1BundleFrequency evaluateFrequency(); //evaluates and returns frequency analysys
 
-    //~HRV1MainModule(void);
+    HRV1MainModule(void);
+    ~HRV1MainModule(void);
 private:
-	static HRV1MainModule* instance;
-	static void createInstance();
 
-    QVector<QVector<int>*> dividedPeaks;
-    QVector<int> peaks;
+    QVector<QVector<double>*> dividedPeaks;
+    QVector<double> peaks;
     QVector<double> RRDifferences;
 
-	int samplingFrequency;
+    double samplingFrequency;
 	
-
-
     void cutPeaksVector(QVector<int>* peaks);
 	void evaluateRRDifferences();
 
 	//Statistical analysys
 	HRV1BundleStatistical toReturnStatistical;
 
-    double evaluateRRMean(QVector<int>* peaks);
-    double evaluateSDNN(QVector<int>* peaks, double mean);
+    double evaluateRRMean(QVector<double>* peaks);
+    double evaluateSDNN(QVector<double>* peaks, double mean);
 
     double evaluateSimpleMean(QVector<double>* vector);
-    double evaluateSimpleMean(QVector<int>* vector);
     double evaluateStandardDeviation(QVector<double>* vector, double mean);
-    double evaluateStandardDeviation(QVector<int>* vector, double mean);
 
 	void evaluateRRMeanEntirety();
 	void evaluateSDNNEntirety();
@@ -65,4 +65,13 @@ private:
 
 	void evaluateSplainInterpolation();
 	void evaluateFFT();
+
+    void evaluateTP();
+    void evaluateHF();
+    void evaluateLF();
+    void evaluateVLF();
+    void evaluateULF();
+    void evaluateLFHF();
+
+    double evaluateFrequencyPower(double low, double high);
 };

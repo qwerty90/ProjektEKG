@@ -17,6 +17,6 @@ public:
                 const QVector<QVector<double>::const_iterator> &pWaveStarts);
   double GetRRIntEntropy() const;
   double GetRRIntDivergence() const;
-  double GetPWaveOccurenceRatio() const;
+  double GetPWaveAbsenceRatio() const;
   bool isAtrialFibr() const;
 };

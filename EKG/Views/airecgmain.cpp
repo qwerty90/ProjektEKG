@@ -24,6 +24,9 @@
 #include <qwt_color_map.h>
 #include <qwt_plot_marker.h>
 #include <qwt_curve_fitter.h>
+
+#include "ECG_BASELINE/src/butter.h"
+
 AirEcgMain::AirEcgMain(QWidget *parent) :
     QMainWindow(parent),
     baselineSignalMapper(new QSignalMapper(this)),
@@ -58,6 +61,8 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
     ui->QRSSampleDataGroupBox->setVisible(false);
     ui->progressBar->setVisible(false);
+
+    initEcgBaselineGui();
 }
 
 AirEcgMain::~AirEcgMain()
@@ -409,20 +414,16 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
+QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
 {
-       double tos=1/freq;
+    double tos=1/freq;
     double max=0;
     double min=9999999;
-    QVector<double> sampleNo1;
-    QVector<double> sampleNo2;
 
     if(no == 0 || no == 2 )
     {
-        sampleNo2 = QVector<double>(yData2.size());
         for (int i = 0; i < yData2.size(); ++i)
         {
-            sampleNo2[i] = i * tos;
             max = qMax(max, yData2.at(i));
             min = qMin(min, yData2.at(i));
         }
@@ -430,14 +431,20 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
     }
     if(no == 1 || no == 2 )
     {
-        sampleNo1 = QVector<double>(yData1.size());
         for (int i = 0; i < yData1.size(); ++i)
         {
-            sampleNo1[i] = i;
             max = qMax(max, yData1.at(i));
             min = qMin(min, yData1.at(i));
         }
         QLOG_TRACE() <<"SIGEDR:size2 = "<< QString::number(yData2.size());
+    }
+
+    QVector<double> pDataX = QVector<double>(p.size());
+
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+    for (int i=0;i<p.size();i++)
+    {
+        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos);
     }
 
     QLOG_TRACE() <<"SIGEDR:MIN = "<< QString::number(min);
@@ -463,34 +470,45 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
     if(no == 1 || no == 2)
     {
         QwtPlotCurve* curve = new QwtPlotCurve();
-        curve->setPen(QPen(Qt::blue, 1));
+        curve->setPen(QPen(Qt::black, 1));
         curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-        curve->setTitle("SIG EDR Rpeak");
-        curve->setSamples(sampleNo1,yData1 );
+        curve->setSamples(pDataX,yData1 );
         curve->attach(plot);
 
         QwtPlotCurve *curve1 = new QwtPlotCurve();
         QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
         fitter->setFitMode(QwtSplineCurveFitter::Spline);
-        curve1->setSamples(sampleNo1, yData1);//pointsF);
+        curve1->setSamples(pDataX, yData1);//pointsF);
+        curve1->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve1->setTitle("SIG EDR Rpeak");
         curve1->setStyle(QwtPlotCurve::Lines);
-        curve1->setPen(QPen(Qt::black, 2));
+        curve1->setPen(QPen(Qt::blue, 1));
         curve1->setCurveAttribute(QwtPlotCurve::Fitted, true);
         curve1->attach(plot);
-        fitter->setSplineSize(10000);
+        fitter->setSplineSize(60000);
         curve1->setCurveFitter(fitter);
-
-
-
     }
+
     if(no == 0 || no == 2)
     {
         QwtPlotCurve* curve2 = new QwtPlotCurve();
-        curve2->setPen(QPen(Qt::red, 1));
+        curve2->setPen(QPen(Qt::black, 1));
         curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-        curve2->setTitle("SIG EDR Wavse");
-        curve2->setSamples(sampleNo2, yData2);
+        curve2->setSamples(pDataX, yData2);
         curve2->attach(plot);
+
+        QwtPlotCurve *curve3 = new QwtPlotCurve();
+        QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
+        fitter->setFitMode(QwtSplineCurveFitter::Spline);
+        curve3->setSamples(pDataX, yData2);//pointsF);
+        curve3->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        curve3->setTitle("SIG EDR Wavse");
+        curve3->setStyle(QwtPlotCurve::Lines);
+        curve3->setPen(QPen(Qt::red, 1));
+        curve3->setCurveAttribute(QwtPlotCurve::Fitted, true);
+        curve3->attach(plot);
+        fitter->setSplineSize(60000);
+        curve3->setCurveFitter(fitter);
     }
 
     QwtLegend* legend = new QwtLegend();
@@ -500,10 +518,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<double>& yData1,const QVecto
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
-    if(no == 1)
-        plot->canvas()->setGeometry(0,0,sampleNo1.last(),0);
-    else
-        plot->canvas()->setGeometry(0,0,sampleNo2.last(),0);
+    plot->canvas()->setGeometry(0,0,pDataX.last(),0);
     zoom->setZoomBase(plot->canvas()->rect());
 
     QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
@@ -2224,9 +2239,6 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
     QwtPlot *plotMLII = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->baselinedArea->setWidget(plotMLII);
     ui->baselinedArea->show();
-
-    QStringList list=(QStringList()<<"red"<<"yellow"<<"blue");
-    ui->ButterworthcomboBox->addItems(list);
 }
 
 void AirEcgMain::drawAtrialFibr(EcgData *data)
@@ -2322,7 +2334,7 @@ void AirEcgMain::drawSigEdr(EcgData *data)
                 no = 0;
         }
                                              //data waves            //data baseline
-        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->SigEdr_r),*(data->SigEdr_q),data->info->frequencyValue, no);
+        QwtPlot *plotEDR = plotPlot_SIG_EDR(*(data->Rpeaks),*(data->ecg_baselined),*(data->SigEdr_r),*(data->SigEdr_q),data->info->frequencyValue, no);
         ui->scrollArea_2->setWidget(plotEDR);
         ui->scrollArea_2->show();
     }
@@ -2390,8 +2402,8 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
-    ui->sleepcnt->setText(QString::number(*(data->SD2)));
-    ui->sleepcntfrequence->setText(QString::number(*(data->SD2)));
+    ui->sleepcnt->setText(QString::number(data->SleepApnea->at(2).first));
+    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea->at(3).first));
 }
 void AirEcgMain::drawVcgLoop(EcgData* data)
 {
@@ -2819,29 +2831,25 @@ void AirEcgMain::on_movingAverageRadioButton_clicked()
 {
     ui->MovingAvarangeGroupBox->setEnabled(true);
     ui->ButterworthcomboBox->setEnabled(false);
-    ui->KalmanGroupBox->setEnabled(false);
 }
 
 void AirEcgMain::on_savitzkyGolayRadioButton_clicked()
 {
     ui->ButterworthcomboBox->setEnabled(false);
     ui->MovingAvarangeGroupBox->setEnabled(false);
-    ui->KalmanGroupBox->setEnabled(false);
 }
 
 void AirEcgMain::on_kalmanRadioButton_clicked()
 {
-    ui->KalmanGroupBox->setEnabled(true);
     ui->ButterworthcomboBox->setEnabled(false);
-    ui->MovingAvarangeGroupBox->setEnabled(false);
 }
 
-void AirEcgMain::on_CzasUsrednienialineEdit_textEdited(const QString &arg1)
+void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
 {
     emit ecgBase_CzasUsrednieniaChanged(arg1);
 }
 
-void AirEcgMain::on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1)
+void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
 {
     emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
 }
@@ -2882,7 +2890,9 @@ void AirEcgMain::on_checkBox_2_clicked(bool checked)
 
 void AirEcgMain::on_butterworthRadioButton_clicked()
 {
-
+    ui->ButterworthGroupBox->setEnabled(true);
+    ui->ButterworthcomboBox->setEnabled(true);
+    ui->MovingAvarangeGroupBox->setEnabled(false);
 }
 
 void AirEcgMain::on_pushButton_17_clicked()
@@ -2955,4 +2965,21 @@ void AirEcgMain::on_detectionratesquare_clicked()
 void AirEcgMain::on_detectionratelinear_clicked()
 {
     emit switchDetectionAlgorithmType_ST_INTERVAL(1);
+}
+
+void AirEcgMain::on_pushButton_11_clicked()
+{
+    emit runSleepApnea();
+}
+
+void AirEcgMain::initEcgBaselineGui()
+{
+    QStringList coeffList;
+    foreach(const ButterCoefficients &coeff, predefinedButterCoefficientSets()) {
+        coeffList.append(coeff.name());
+    }
+
+    ui->ButterworthcomboBox->addItems(coeffList);
+
+    on_butterworthRadioButton_clicked();
 }

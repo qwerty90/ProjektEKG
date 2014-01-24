@@ -39,7 +39,7 @@ class AirEcgMain : public QMainWindow
     //void drawWaves(EcgData* data);
     //void drawQrsClass(EcgData* data);
 
-    void drawSleep_Apnea(EcgData* data);
+    //void drawSleep_Apnea(EcgData* data);
 
     void drawHrt(EcgData *data);
 
@@ -52,7 +52,7 @@ public:
     QwtPlot* plotPlot(QList<int> &y, float freq);
     QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
-    QwtPlot* plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
+    QwtPlot* plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
     QwtPlot* plotHrt(QList<double>& y);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
@@ -103,7 +103,7 @@ signals:
     void runWaves();
     void runSigEdr();
     void runQrsClass();
-
+    void runSleepApnea();
     void runVcgLoop();
 
     void qrsClassChanged(int index, int type);
@@ -143,6 +143,7 @@ public slots:
     void drawQrsClass(EcgData *data);
     void drawSigEdr(EcgData *data);
     void drawVcgLoop(EcgData* data);
+    void drawSleep_Apnea(EcgData *data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -213,9 +214,9 @@ private slots:
 
     //void on_radioButton_5_clicked();
 
-    void on_CzasUsrednienialineEdit_textEdited(const QString &arg1);
+    void on_maTimeSpinBox_valueChanged(const QString &arg1);
 
-    void on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1);
+    void on_maWindowSpinBox_valueChanged(const QString &arg1);
 
     void on_Kalman1lineEdit_textEdited(const QString &arg1);
 
@@ -260,6 +261,10 @@ private slots:
     void on_detectionratesquare_clicked();
 
     void on_detectionratelinear_clicked();
+
+    void on_pushButton_11_clicked();
+
+    void initEcgBaselineGui();
 
 private:
     Ui::AirEcgMain *ui;

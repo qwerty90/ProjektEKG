@@ -28,10 +28,10 @@ class RRIntervalMethod {
   double countNormalization();
 
 public:
-  QVector<double> countRRInvervals(const QVector<double> &RRtime);
+  QVector<int> countRRInvervals(const QVector<QVector<double>::const_iterator> &RRtime);
   QVector<classification>
-  classifyIntervals(const QVector<double> &RRIntervals);
-  void countAverageInterval(const QVector<double> &RRIntervals);
+  classifyIntervals(const QVector<int> &RRIntervals);
+  void countAverageInterval(const QVector<int> &RRIntervals);
   void countTransitions(const QVector<classification> &classifiedIntervals);
   void normalizeMarkovTable();
   std::array<std::array<double, 3>, 3> getMarkovTable() { return markovTable; }

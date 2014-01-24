@@ -74,7 +74,7 @@ QVector<double> KalmanFilter::processKalman(const QVector<double> &ecgData) {
     EcgParams ecgParameters = calculateEcgParameters(preprocessedInput, phaseVector, bins);
     std::tie(ecgMean, ecgSD, ecgMeanPhase) = ecgParameters;
 
-    QVector<double> pointsToOptimize = getEquidistPoints(20, 240, 15);
+    QVector<double> pointsToOptimize = getEquidistPoints(20, 240, 20);
     QVector<double> peaks = findPeaks(ecgData, 250);
     pointsToOptimize.append(peaks.indexOf(1,0));
 
