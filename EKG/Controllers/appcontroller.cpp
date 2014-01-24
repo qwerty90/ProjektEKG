@@ -11,6 +11,8 @@
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
 #include "SIG_EDR/sig_edr.h"
+#include "QT_DISP/QT_DISP.h"
+#include "SLEEP_APNEA/src/sleep_apnea.h"
 
 #include <QThread>
 
@@ -59,7 +61,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runRPeaks())     ,this, SLOT (runRPeaks()));
     this->connect(view, SIGNAL(runWaves())      ,this, SLOT (runWaves()));
     this->connect(view, SIGNAL(runSigEdr())     ,this, SLOT (runSigEdr()));
-    this->connect(view, SIGNAL(runVcgLoop())     ,this, SLOT (runVcgLoop()));
+    this->connect(view, SIGNAL(runVcgLoop())    ,this, SLOT (runVcgLoop()));
+    this->connect(view, SIGNAL(runSleepApnea()) ,this, SLOT (runSleepApnea()));
 
     this->connect(view, SIGNAL(run()), this, SLOT(run()));
 
@@ -71,7 +74,8 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(Waves_done(EcgData*))      ,view, SLOT(drawWaves(EcgData*)))     ;
     this->connect(this, SIGNAL(SigEdr_done(EcgData*))     ,view, SLOT(drawSigEdr(EcgData*)))    ;
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
-    this->connect(this, SIGNAL(runVcgLoop_done(EcgData*))   ,view, SLOT(drawVcgLoop(EcgData*)))  ;
+    this->connect(this, SIGNAL(runVcgLoop_done(EcgData*)) ,view, SLOT(drawVcgLoop(EcgData*)))   ;
+    this->connect(this, SIGNAL(SleepApnea_done(EcgData*)) ,view, SLOT(drawSleep_Apnea(EcgData*)));
 
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
     this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
@@ -93,8 +97,8 @@ void AppController::loadData(const QString &directory, const QString &name)
     {
         return;
     }
-    //if(this->entity)
-        //this->ResetModules();
+    if(this->entity)
+        this->ResetModules();
     this->entity = entry->entity;
 
     emit patientData(this->entity);
@@ -213,6 +217,12 @@ void AppController::ResetModules()
 void AppController::runEcgBaseline()
 {
     QLOG_INFO() <<"Ecg baseline started.";
+
+    if (this->entity->primary==NULL || this->entity->secondary==NULL)
+    {
+        QLOG_FATAL() << "No data loaded";
+        return;
+    }
 
     const QVector<ButterCoefficients> coeff = predefinedButterCoefficientSets();
 
@@ -363,7 +373,7 @@ void AppController::runAtrialFibr()
 }
 void AppController::runRPeaks()
 {
-    QLOG_INFO() << "Run RPeaks" ;
+    QLOG_INFO() << "RPeaks stared." ;
 
     ifEcgBaselineExists();
 
@@ -601,7 +611,7 @@ void AppController::runSigEdr()
         this->entity->SigEdr_r = new QVector<double>(*(obiekt.retrieveEDR_QVec(1,this->entity->settings->SigEdr_lead)));
         QLOG_INFO() << "SigEdr_r/ calculated from RPeaks " <<QString::number(this->entity->SigEdr_r->size())<<" samples.";
     }
- /*DLA QRS'OW****************************************************************/
+                    /*DLA QRS'OW************************************/
 
     if (this->entity->settings->SigEdr_qrs)
     {
@@ -645,6 +655,28 @@ runWaves();
 
     QLOG_INFO() <<"SigEdr done.";
     emit this->SigEdr_done(this->entity);
+
+}
+
+void AppController::runSleepApnea()
+{
+    QLOG_INFO()<< "Sleep apnea started.";
+
+    ifRpeaksExists();
+    sleep_apnea obiekt((int)this->entity->info->frequencyValue);
+
+    this->entity->SleepApnea = new QVector<BeginEndPair>(obiekt.sleep_apnea_output(
+                                                             this->entity->Rpeaks_uint));
+
+    this->entity->SleepApnea_plot = new QVector<double>(obiekt.gui_output(
+                                                            this->entity->Rpeaks_uint));
+
+    for(int i =0; i< this->entity->SleepApnea->size();i++)
+        QLOG_TRACE() << "Sleep Apnea/ "<<
+                        (this->entity->SleepApnea->at(i).first)     <<" "
+                        <<(this->entity->SleepApnea->at(i).second);
+    QLOG_INFO() << "Sleep_Apnea done.";
+    emit this->SleepApnea_done(this->entity);
 
 }
 
@@ -721,9 +753,9 @@ void AppController::ifWavesExists()
 
 void AppController::deleteWaves(void)
 {
-    QLOG_INFO() << "MVC/ delete Waves only";
     if (this->entity->Waves!=NULL)
     {
+            QLOG_INFO() << "MVC/ delete Waves only";
         if (this->entity->Waves->PWaveEnd!=NULL && !(this->entity->Waves->PWaveEnd->isEmpty()))
         {
             this->entity->Waves->PWaveEnd->clear();

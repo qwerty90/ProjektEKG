@@ -2402,8 +2402,8 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
-    ui->sleepcnt->setText(QString::number(*(data->SD2)));
-    ui->sleepcntfrequence->setText(QString::number(*(data->SD2)));
+    ui->sleepcnt->setText(QString::number(data->SleepApnea->at(2).first));
+    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea->at(3).first));
 }
 void AirEcgMain::drawVcgLoop(EcgData* data)
 {
@@ -2968,6 +2968,11 @@ void AirEcgMain::on_detectionratesquare_clicked()
 void AirEcgMain::on_detectionratelinear_clicked()
 {
     emit switchDetectionAlgorithmType_ST_INTERVAL(1);
+}
+
+void AirEcgMain::on_pushButton_11_clicked()
+{
+    emit runSleepApnea();
 }
 
 void AirEcgMain::initEcgBaselineGui()
