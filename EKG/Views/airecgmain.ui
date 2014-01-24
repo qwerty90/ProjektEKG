@@ -444,8 +444,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1014</width>
-                       <height>502</height>
+                       <width>86</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -779,8 +779,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>385</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -929,8 +929,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>488</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -2655,7 +2655,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1048</width>
+                       <width>82</width>
                        <height>344</height>
                       </rect>
                      </property>
@@ -3760,8 +3760,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>226</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -3808,8 +3808,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>226</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>

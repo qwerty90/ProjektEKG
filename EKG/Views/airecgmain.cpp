@@ -2844,12 +2844,12 @@ void AirEcgMain::on_kalmanRadioButton_clicked()
     ui->ButterworthcomboBox->setEnabled(false);
 }
 
-void AirEcgMain::on_CzasUsrednienialineEdit_textEdited(const QString &arg1)
+void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
 {
     emit ecgBase_CzasUsrednieniaChanged(arg1);
 }
 
-void AirEcgMain::on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1)
+void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
 {
     emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
 }
