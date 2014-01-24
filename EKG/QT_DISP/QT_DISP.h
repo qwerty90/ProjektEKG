@@ -12,7 +12,7 @@ using namespace std;
 class QT_DISP
 {
 private:
-	/*dane wejsciowe*/		vector <vector <double>> signals; 
+    /*dane wejsciowe*/	//	vector <vector <double>> signals;
 	/*dane wejsciowe*/		vector <vector <int>> QRS_On, QRS_End, P_On;
 	/*dane wejsciowe*/		vector <double> heartAction;
 	/*dane wyjsciowe*/		vector <Evaluation> evaluations;

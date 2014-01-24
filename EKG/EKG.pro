@@ -22,6 +22,7 @@ include(SIG_EDR/sig_edr.pri)
 #include(HRT/hrt.pri)
 include(VCG_T_LOOP/VCG_T_LOOP.pri)
 include(SLEEP_APNEA/sleep_apnea.pri)
+include(QT_DISP/QT_DISP.pri)
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = EKG

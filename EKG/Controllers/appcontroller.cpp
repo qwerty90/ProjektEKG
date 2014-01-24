@@ -11,6 +11,7 @@
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
 #include "SIG_EDR/sig_edr.h"
+#include "QT_DISP/QT_DISP.h"
 
 #include <QThread>
 
