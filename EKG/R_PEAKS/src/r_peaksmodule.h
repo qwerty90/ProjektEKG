@@ -27,7 +27,6 @@ class R_peaksModule {
         const QVector<double> & ecgSignal;
         R_peaksIterVector itVect;
         QVector<unsigned int> indexVector;
-        R_peaksIter iter;
         double frequency;
 
         void fft(const QVector<double> & x, VectorComplexDouble & result);

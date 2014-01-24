@@ -20,8 +20,7 @@ class RRSanityTest : public QObject {
 public:
   RRSanityTest();
 
-private
-Q_SLOTS:
+private Q_SLOTS:
   void initTestCase();
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
@@ -49,23 +48,30 @@ void RRSanityTest::initTestCase() {}
 
 void RRSanityTest::countRRIntervalsOneInterval() {
   // Arrange
-  QVector<double> RRTime = { 0.1, 0.2 };
+  QVector<double> signal(10);
+  QVector<QVector<double>::const_iterator> RRTime{ signal.begin() + 1,
+                                                   signal.begin() + 2 };
 
   // Act
-  QVector<double> intervals = rrmethod.countRRInvervals(RRTime);
+  QVector<int> intervals = rrmethod.countRRInvervals(RRTime);
 
   // Assert
-  QCOMPARE(intervals.front(), 0.1);
+  QCOMPARE(intervals.front(), 1);
   QCOMPARE(intervals.size(), RRTime.size() - 1);
 }
 
 void RRSanityTest::countRRIntervalsThreeIntervals() {
+  QVector<double> signal(10);
+
   // Arrange
-  QVector<double> RRTime = { 0.1, 0.2, 0.5, 0.7, 0.9 };
-  QVector<double> ExpIntervals = { 0.2 - 0.1, 0.5 - 0.2, 0.7 - 0.5, 0.9 - 0.7 };
+  QVector<QVector<double>::const_iterator> RRTime = {
+    signal.begin() + 1, signal.begin() + 2, signal.begin() + 5,
+    signal.begin() + 7, signal.begin() + 9
+  };
+  QVector<int> ExpIntervals = { 1, 3, 2, 2 };
 
   // Act
-  QVector<double> intervals = rrmethod.countRRInvervals(RRTime);
+  QVector<int> intervals = rrmethod.countRRInvervals(RRTime);
 
   // Assert
   QCOMPARE(intervals.size(), RRTime.size() - 1);
@@ -74,7 +80,7 @@ void RRSanityTest::countRRIntervalsThreeIntervals() {
 
 void RRSanityTest::classifyIntervalsTest() {
   // Arrange
-  QVector<double> intervals = { 1, 1, 1.5, 0.5 };
+  QVector<int> intervals = { 10, 10, 15, 5 };
   QVector<classification> expectedIntervals = { Regular, Regular, Long, Short };
 
   // Act
@@ -88,7 +94,7 @@ void RRSanityTest::classifyIntervalsTest() {
 
 void RRSanityTest::countTransitionsTest() {
   // Arrange
-  QVector<double> intervals = { 1, 1, 1.5, 0.5 };
+  QVector<int> intervals = { 10, 10, 15, 05 };
   std::array<std::array<double, 3>, 3> ExpectedArray = {
     { { { 0, 0, 0 } }, { { 0, 1, 1 } }, { { 1, 0, 0 } } }
   };
@@ -105,7 +111,7 @@ void RRSanityTest::countTransitionsTest() {
 
 void RRSanityTest::normalizeMarkovTableTest() {
   // Arrange
-  QVector<double> intervals = { 1, 1, 1, 1.5, 0.5 };
+  QVector<int> intervals = { 10, 10, 10, 15, 5 };
   std::array<std::array<double, 3>, 3> ExpectedArray = {
     { { { 0, 0, 0 } }, { { 0, 0.5, 0.25 } }, { { 0.25, 0, 0 } } }
   };
@@ -154,8 +160,7 @@ void RRSanityTest::entropyBig() {
 void RRSanityTest::entropySmall() {
   // Arrange
   std::array<std::array<double, 3>, 3> arr = {
-    { { { 0.0, 0.0, 0.0 } }, { { 0.0, 1.000, 0.0 } },
-      { { 0.0, 0.0, 0.0 } } }
+    { { { 0.0, 0.0, 0.0 } }, { { 0.0, 1.000, 0.0 } }, { { 0.0, 0.0, 0.0 } } }
   };
 
   // Assert
@@ -206,8 +211,7 @@ void RRSanityTest::JKDivergenceTest() {
       { { 0.11, 0.11, 0.11 } } }
   };
   std::array<std::array<double, 3>, 3> arr = {
-    { { { 0.0, 0.0, 0.0 } }, { { 0.0, 1.000, 0.0 } },
-      { { 0.0, 0.0, 0.0 } } }
+    { { { 0.0, 0.0, 0.0 } }, { { 0.0, 1.000, 0.0 } }, { { 0.0, 0.0, 0.0 } } }
   };
   // Assert
   QVERIFY(JKdivergence(arr, pattern) > 0.51);
@@ -224,9 +228,10 @@ void RRSanityTest::pWaveOccurence_AllFound() {
   // Arrange
   QVector<double> signal(200);
   QVector<QVector<double>::iterator> pWaveStarts = { signal.begin() + 10,
-                                                   signal.begin() + 70 };
-  QVector<QVector<double>::const_iterator> pWaveStartsC = { signal.begin() + 10,
-                                                          signal.begin() + 70 };
+                                                     signal.begin() + 70 };
+  QVector<QVector<double>::const_iterator> pWaveStartsC = {
+    signal.begin() + 10, signal.begin() + 70
+  };
   for (auto it : pWaveStarts)
     copy(begin(averagePWave), end(averagePWave), it);
   // Assert
@@ -236,8 +241,9 @@ void RRSanityTest::pWaveOccurence_AllFound() {
 void RRSanityTest::pWaveOccurence_HalfFound() {
   // Arrange
   QVector<double> signal(200);
-  QVector<QVector<double>::const_iterator> pWaveStarts = { signal.begin() + 10,
-                                                         signal.begin() + 70 };
+  QVector<QVector<double>::const_iterator> pWaveStarts = {
+    signal.begin() + 10, signal.begin() + 70
+  };
   copy(begin(averagePWave), end(averagePWave), begin(signal) + 10);
 
   // Assert
@@ -248,7 +254,8 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
   // Arrange
   QVector<double> signal(100);
   copy(begin(averagePWave), begin(averagePWave) + 10, begin(signal) + 90);
-  QVector<QVector<double>::const_iterator> pWaveStarts = { signal.begin() + 90 };
+  QVector<QVector<double>::const_iterator> pWaveStarts = { signal.begin() +
+                                                           90 };
   bool thrown = false;
 
   // Act
@@ -267,9 +274,10 @@ void RRSanityTest::GetPWaveOccurenceRatioTest() {
   // Arrange
   QVector<double> signal(200);
   QVector<QVector<double>::iterator> pWaveStarts = { signal.begin() + 10,
-                                                   signal.begin() + 70 };
-  QVector<QVector<double>::const_iterator> pWaveStartsC = { signal.begin() + 10,
-                                                          signal.begin() + 70 };
+                                                     signal.begin() + 70 };
+  QVector<QVector<double>::const_iterator> pWaveStartsC = {
+    signal.begin() + 10, signal.begin() + 70
+  };
   for (auto it : pWaveStarts)
     copy(begin(averagePWave), end(averagePWave), it);
   AtrialFibrApi AtrFibrApi(signal, pWaveStartsC, pWaveStartsC);
