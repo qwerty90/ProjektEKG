@@ -664,6 +664,23 @@ runWaves();
 
 }
 
+void AppController::runHRT()
+{
+    QLOG_INFO() << "HRT started.";
+/*
+    HRTModule obiekt;
+    obiekt.calculateHRT(this->entity->Rpeaks_uint,(int)this->entity->info->frequencyValue);
+    void calculateHRT(QVector<unsigned int> Rpeaks, int samplingFrequency=360);
+    this->entity->hrt_tachogram = new QVector<double>(obiekt.get_tachogram()); //zwraca vektor reprezentujacy tachogram (25 elementow)
+    this->entity->vpbs_detected_count = obiekt.get_VEBcount();//zwraca liczbę znalezionych i zaakceptowanych VEB'ow
+    this->entity->turbulence_slope=	obiekt.get_TS();
+    this->entity->turbulence_onset= obiekt.get_TO();
+    this->entity->hrt_a	= obiekt.get_a();// zwraca wspolczynnik kierunkowy prostej
+    this->entity->hrt_b	= obiekt.get_b();// ax+b - do wyrysowania na tachogramie
+*/
+    QLOG_INFO() << "HRT done.";
+}
+
 void AppController::runSleepApnea()
 {
     QLOG_INFO()<< "Sleep apnea started.";
@@ -703,6 +720,10 @@ void AppController::CzasUsrednieniaEdit(const QString arg1)
 void AppController::ecgBase_WindowSizeEdit(const QString arg1)
 {
     this->entity->settings->avgWindowSize = arg1.toInt();
+}
+void AppController::ecgButterChanged(const int set_number)
+{
+    this->entity->settings->coeff_set = set_number;
 }
 
 //ST INTERVAL

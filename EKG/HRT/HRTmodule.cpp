@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "HRTmodule.h"
 
 
@@ -28,7 +28,7 @@ void HRTmodule::calculateHRT(QVector<unsigned int> Rpeaks, int samplingFrequency
 			if(HRT_RR.size()>0)
 			{
 				GlobalAverage();
-				tacho=tachogram();
+                tacho=tachogram();
 				totalVEBcount=HRT_RR.size();
 			}
 			else

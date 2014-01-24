@@ -67,6 +67,7 @@ public slots:
     void ecgBase_Kalman2Changed(const QString arg2);
     void CzasUsrednieniaEdit   (const QString arg1);
     void ecgBase_WindowSizeEdit(const QString arg1);
+    void ecgButterChanged      (const int set_number);
 
     void vcg_loop_change(int index);
 
@@ -94,6 +95,7 @@ public slots:
     void runQrsClass();
     void runWaves();
     void runSigEdr();
+    void runHRT();
     void runSleepApnea();
  void runVcgLoop();
 

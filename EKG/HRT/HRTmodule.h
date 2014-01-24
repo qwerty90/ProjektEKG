@@ -39,7 +39,7 @@ private:
 	vector<vector<double>> 	createRRlist();
 	vector<vector<double>> 	filterRR();
 	void 					GlobalAverage();// wylicza {TO,TS,TS_B}
-	vector<double>			tachogram();
+    vector<double>			tachogram();
 
 public:
 

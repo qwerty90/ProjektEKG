@@ -98,8 +98,9 @@ public:
 
     //modul HRT
     double *turbulence_slope, *turbulence_onset;
+    double hrt_a , hrt_b;
     int *vpbs_detected_count;
-    QList<double> *hrt_tachogram;
+    QVector<double> *hrt_tachogram;
 
     //modul ATRIAL_FIBR
     double PWaveOccurenceRatio;

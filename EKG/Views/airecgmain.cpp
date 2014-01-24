@@ -2488,9 +2488,9 @@ void AirEcgMain::drawQrsClass(EcgData *data)
 
 void AirEcgMain::drawHrt(EcgData *data)
 {
-    QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram));
-    ui->scrollAreaHrt->setWidget(hrtTachogram);
-    ui->scrollAreaHrt->show();
+    //QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram));  //tu trzeba wymienic liste na wektor
+   // ui->scrollAreaHrt->setWidget(hrtTachogram);
+   // ui->scrollAreaHrt->show();
     ui->vpbs_detected_count->setText(QString::number(*(data->vpbs_detected_count), 'f', 0));
     ui->turbulence_onset_val->setText(QString::number(*(data->turbulence_onset), 'f', 2));
     ui->turbulence_slope_val->setText(QString::number(*(data->turbulence_slope), 'f', 2));
