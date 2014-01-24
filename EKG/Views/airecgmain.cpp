@@ -24,6 +24,9 @@
 #include <qwt_color_map.h>
 #include <qwt_plot_marker.h>
 #include <qwt_curve_fitter.h>
+
+#include "ECG_BASELINE/src/butter.h"
+
 AirEcgMain::AirEcgMain(QWidget *parent) :
     QMainWindow(parent),
     baselineSignalMapper(new QSignalMapper(this)),
@@ -58,6 +61,8 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
     ui->QRSSampleDataGroupBox->setVisible(false);
     ui->progressBar->setVisible(false);
+
+    initEcgBaselineGui();
 }
 
 AirEcgMain::~AirEcgMain()
@@ -2234,9 +2239,6 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
     QwtPlot *plotMLII = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->baselinedArea->setWidget(plotMLII);
     ui->baselinedArea->show();
-
-    QStringList list=(QStringList()<<"red"<<"yellow"<<"blue");
-    ui->ButterworthcomboBox->addItems(list);
 }
 
 void AirEcgMain::drawAtrialFibr(EcgData *data)
@@ -2867,6 +2869,7 @@ void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
 
 void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
 {
+
     if(index==0)
     {
 
@@ -2965,4 +2968,14 @@ void AirEcgMain::on_detectionratesquare_clicked()
 void AirEcgMain::on_detectionratelinear_clicked()
 {
     emit switchDetectionAlgorithmType_ST_INTERVAL(1);
+}
+
+void AirEcgMain::initEcgBaselineGui()
+{
+    QStringList coeffList;
+    foreach(const ButterCoefficients &coeff, predefinedButterCoefficientSets()) {
+        coeffList.append(coeff.name());
+    }
+
+    ui->ButterworthcomboBox->addItems(coeffList);
 }

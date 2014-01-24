@@ -261,6 +261,8 @@ private slots:
 
     void on_detectionratelinear_clicked();
 
+    void initEcgBaselineGui();
+
 private:
     Ui::AirEcgMain *ui;
 };
