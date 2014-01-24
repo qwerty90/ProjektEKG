@@ -101,6 +101,9 @@ void AppController::loadData(const QString &directory, const QString &name)
         this->ResetModules();
     this->entity = entry->entity;
 
+    this->entity->butter_coeffs = new QVector<ButterCoefficients>(predefinedButterCoefficientSets());
+        //const QVector<ButterCoefficients> coeff = predefinedButterCoefficientSets();
+
     emit patientData(this->entity);
 }
 
@@ -235,8 +238,12 @@ void AppController::runEcgBaseline()
     switch (this->entity->settings->EcgBaselineMode)
     {
     case 0: //butterworth
-        QLOG_INFO() << "BASELINE/ Using butterworth filter.";
-        this->entity->ecg_baselined = new QVector<double>(processButter(*(this->entity->GetCurrentSignal()),coeff[0]));
+        QLOG_INFO() << "BASELINE/ Using butterworth filter with coefficiets "
+                       <<((*this->entity->butter_coeffs)[this->entity->settings->coeff_set]).name();
+        this->entity->ecg_baselined =
+                new QVector<double>(processButter(
+                                        *(this->entity->GetCurrentSignal()),
+                                        ((*this->entity->butter_coeffs)[this->entity->settings->coeff_set])));
         break;
     case 1:
         QLOG_INFO() << "BASELINE/ Using moving average filter.";
@@ -244,11 +251,13 @@ void AppController::runEcgBaseline()
         {
             QLOG_INFO() << "BASELINE/ Using moving average filter with averaging time = "
                         << QString::number(this->entity->settings->averaging_time) << " .";
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                                                            (int)(this->entity->info->frequencyValue),
-                                                                            this->entity->settings->averaging_time));
-            this->entity->characteristics = new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
-                                                                               this->entity->settings->averaging_time));
+            this->entity->ecg_baselined =
+                    new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                        (int)(this->entity->info->frequencyValue),
+                                         this->entity->settings->averaging_time));
+            this->entity->characteristics =
+                    new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
+                                         this->entity->settings->averaging_time));
         }
         else if (this->entity->settings->avgWindowSize!=0)
         {

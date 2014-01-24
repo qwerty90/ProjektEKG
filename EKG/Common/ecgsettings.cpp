@@ -7,6 +7,7 @@ EcgSettings::EcgSettings(QObject *parent) :
     this->EcgBaselineMode = 0;    
     this->averaging_time=0;
     this->avgWindowSize =0;
+    this->coeff_set     =0;
     //Rpeaks init
     this->RPeaksMode = 1;
     //waves init

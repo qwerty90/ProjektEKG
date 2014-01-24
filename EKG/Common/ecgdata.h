@@ -13,6 +13,7 @@
 #include "Waves/src/waves.h"
 #include "QRS_CLASS/qrsclass.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
+#include "ECG_BASELINE/src/butter.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
@@ -43,6 +44,7 @@ public:
     //przefiltrowany sygnal ekg - wyjscie modulu ECG_BASELINE
     QVector<double> *ecg_baselined;
     QVector<QPointF> *characteristics;
+    QVector<ButterCoefficients> *butter_coeffs;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
     QVector<QVector<double>::const_iterator> *Rpeaks;

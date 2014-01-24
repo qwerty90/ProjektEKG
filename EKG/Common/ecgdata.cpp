@@ -7,6 +7,7 @@ EcgData::EcgData(QObject *parent) :
     this->primary = NULL;
     this->secondary = NULL;
     this->ecg_baselined = NULL;
+    this->butter_coeffs = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
     this->Waves = new Waves_struct;
@@ -42,6 +43,7 @@ EcgData::EcgData(QString id)
     this->primary = NULL;
     this->secondary = NULL;
     this->ecg_baselined = NULL;
+    this->butter_coeffs = NULL;
     this->characteristics=NULL;
     this->Rpeaks = NULL;
     this->Waves = new Waves_struct;
