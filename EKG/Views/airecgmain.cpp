@@ -2831,21 +2831,17 @@ void AirEcgMain::on_movingAverageRadioButton_clicked()
 {
     ui->MovingAvarangeGroupBox->setEnabled(true);
     ui->ButterworthcomboBox->setEnabled(false);
-    ui->KalmanGroupBox->setEnabled(false);
 }
 
 void AirEcgMain::on_savitzkyGolayRadioButton_clicked()
 {
     ui->ButterworthcomboBox->setEnabled(false);
     ui->MovingAvarangeGroupBox->setEnabled(false);
-    ui->KalmanGroupBox->setEnabled(false);
 }
 
 void AirEcgMain::on_kalmanRadioButton_clicked()
 {
-    ui->KalmanGroupBox->setEnabled(true);
     ui->ButterworthcomboBox->setEnabled(false);
-    ui->MovingAvarangeGroupBox->setEnabled(false);
 }
 
 void AirEcgMain::on_CzasUsrednienialineEdit_textEdited(const QString &arg1)
@@ -2869,7 +2865,6 @@ void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
 
 void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
 {
-
     if(index==0)
     {
 
@@ -2895,7 +2890,9 @@ void AirEcgMain::on_checkBox_2_clicked(bool checked)
 
 void AirEcgMain::on_butterworthRadioButton_clicked()
 {
-
+    ui->ButterworthGroupBox->setEnabled(true);
+    ui->ButterworthcomboBox->setEnabled(true);
+    ui->MovingAvarangeGroupBox->setEnabled(false);
 }
 
 void AirEcgMain::on_pushButton_17_clicked()
@@ -2983,4 +2980,6 @@ void AirEcgMain::initEcgBaselineGui()
     }
 
     ui->ButterworthcomboBox->addItems(coeffList);
+
+    on_butterworthRadioButton_clicked();
 }
