@@ -344,7 +344,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -402,8 +402,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>86</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -444,8 +444,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>86</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -485,8 +485,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1014</width>
-                       <height>363</height>
+                       <width>988</width>
+                       <height>373</height>
                       </rect>
                      </property>
                     </widget>
@@ -509,7 +509,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>86</width>
+                       <width>80</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -779,8 +779,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>407</height>
                   </rect>
                  </property>
                 </widget>
@@ -815,14 +815,8 @@
                    </item>
                    <item>
                     <widget class="QRadioButton" name="Hilbert_radiobutton">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
                      <property name="text">
                       <string>Hilbert transformation based algorithm</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
                      </property>
                      <property name="checked">
                       <bool>true</bool>
@@ -929,8 +923,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>499</height>
                   </rect>
                  </property>
                 </widget>
@@ -1177,7 +1171,7 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>86</width>
+                           <width>80</width>
                            <height>16</height>
                           </rect>
                          </property>
@@ -1201,7 +1195,7 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>71</width>
+                           <width>80</width>
                            <height>16</height>
                           </rect>
                          </property>
@@ -1288,7 +1282,7 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>71</width>
+                           <width>80</width>
                            <height>16</height>
                           </rect>
                          </property>
@@ -1343,7 +1337,7 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>71</width>
+                           <width>80</width>
                            <height>16</height>
                           </rect>
                          </property>
@@ -1410,7 +1404,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>76</width>
+                            <width>60</width>
                             <height>16</height>
                            </rect>
                           </property>
@@ -1458,7 +1452,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>76</width>
+                            <width>60</width>
                             <height>16</height>
                            </rect>
                           </property>
@@ -1626,8 +1620,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>180</width>
-                            <height>144</height>
+                            <width>161</width>
+                            <height>141</height>
                            </rect>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1647,8 +1641,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>145</width>
-                                <height>84</height>
+                                <width>126</width>
+                                <height>89</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -1665,8 +1659,8 @@
                                    <rect>
                                     <x>0</x>
                                     <y>0</y>
-                                    <width>116</width>
-                                    <height>76</height>
+                                    <width>89</width>
+                                    <height>73</height>
                                    </rect>
                                   </property>
                                   <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -2265,7 +2259,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>71</width>
+                       <width>80</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -2475,7 +2469,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>86</width>
+                       <width>80</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -2503,7 +2497,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
+                   <width>80</width>
                    <height>16</height>
                   </rect>
                  </property>
@@ -2628,7 +2622,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -2655,8 +2649,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>82</width>
-                       <height>344</height>
+                       <width>1026</width>
+                       <height>348</height>
                       </rect>
                      </property>
                     </widget>
@@ -2928,7 +2922,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
+                       <width>33</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -2945,7 +2939,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
+                       <width>33</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -2966,7 +2960,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
+                       <width>33</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -2983,7 +2977,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
+                       <width>33</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -3165,6 +3159,9 @@
                   <height>200</height>
                  </size>
                 </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAsNeeded</enum>
+                </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
@@ -3173,8 +3170,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>86</width>
-                   <height>194</height>
+                   <width>1030</width>
+                   <height>212</height>
                   </rect>
                  </property>
                 </widget>
@@ -3209,8 +3206,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>86</width>
-                   <height>194</height>
+                   <width>1030</width>
+                   <height>211</height>
                   </rect>
                  </property>
                 </widget>
@@ -3233,13 +3230,20 @@
                   <property name="minimumSize">
                    <size>
                     <width>50</width>
-                    <height>75</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="title">
                    <string>Source</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_35">
+                  <layout class="QHBoxLayout" name="horizontalLayout_31">
+                   <item>
+                    <widget class="QCheckBox" name="checkBox_4">
+                     <property name="text">
+                      <string>Waves</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QCheckBox" name="checkBox_2">
                      <property name="text">
@@ -3247,13 +3251,6 @@
                      </property>
                      <property name="checked">
                       <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="checkBox_4">
-                     <property name="text">
-                      <string>Waves</string>
                      </property>
                     </widget>
                    </item>
@@ -3265,12 +3262,24 @@
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="title">
                    <string>Signals</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_36">
+                  <layout class="QHBoxLayout" name="horizontalLayout_30">
                    <item>
-                    <widget class="QRadioButton" name="radioButton_3">
+                    <widget class="QRadioButton" name="radioButton_4">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -3283,13 +3292,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QRadioButton" name="radioButton_4">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
+                    <widget class="QRadioButton" name="radioButton_3">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -3330,7 +3333,7 @@
                     <property name="sizeHint" stdset="0">
                      <size>
                       <width>20</width>
-                      <height>40</height>
+                      <height>20</height>
                      </size>
                     </property>
                    </spacer>
@@ -3541,7 +3544,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>22</width>
+                     <width>35</width>
                      <height>16</height>
                     </rect>
                    </property>
@@ -3591,7 +3594,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
+                   <width>80</width>
                    <height>16</height>
                   </rect>
                  </property>
@@ -3760,8 +3763,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>232</height>
                   </rect>
                  </property>
                 </widget>
@@ -3808,8 +3811,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>231</height>
                   </rect>
                  </property>
                 </widget>

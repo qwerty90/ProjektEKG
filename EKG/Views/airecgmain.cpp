@@ -25,6 +25,14 @@
 #include <qwt_plot_marker.h>
 #include <qwt_curve_fitter.h>
 
+#include <qwt_scale_engine.h>
+#include <qpainter.h>
+#include <qwt_plot_layout.h>
+#include <qwt_scale_draw.h>
+#include <qwt_scale_widget.h>
+#include <qwt_legend_item.h>
+#include "time_scal.h"
+
 #include "ECG_BASELINE/src/butter.h"
 
 AirEcgMain::AirEcgMain(QWidget *parent) :
@@ -270,7 +278,7 @@ QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
     plot->setCanvasBackground( Qt::white );
     plot->setAxisScale( QwtPlot::yLeft, min, max,0.5 );
 
-    plot->setAxisScale( QwtPlot::xBottom , 0.0,4.0,1);// sampleNo.last());
+    plot->setAxisScale( QwtPlot::xBottom , 0.0,4000.0,1);// sampleNo.last());
 
     QList<double> ticks;
     for(int i=0; i<100;i++)
@@ -359,6 +367,9 @@ QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
     return plot;
 }
 
+
+
+
 QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 {
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -370,7 +381,7 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
     for (int i = 0; i < yData.size(); ++i)
     {
-        sampleNo[i] = i*tos;
+        sampleNo[i] = i*tos*1000; //*1000 przeliczenie na ms
         max = qMax(max, yData.at(i));
         min = qMin(min, yData.at(i));
     }
@@ -378,9 +389,10 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
-
-    QwtText xaxis("Time [s]");
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+     QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -438,13 +450,10 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
         }
         QLOG_TRACE() <<"SIGEDR:size2 = "<< QString::number(yData2.size());
     }
-
     QVector<double> pDataX = QVector<double>(p.size());
-
-    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
     for (int i=0;i<p.size();i++)
     {
-        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos);
+        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos*1000);
     }
 
     QLOG_TRACE() <<"SIGEDR:MIN = "<< QString::number(min);
@@ -452,10 +461,12 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
 
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale(QwtPlot::yLeft, min, max,0);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -469,11 +480,11 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
 
     if(no == 1 || no == 2)
     {
-        QwtPlotCurve* curve = new QwtPlotCurve();
+        /*QwtPlotCurve* curve = new QwtPlotCurve();
         curve->setPen(QPen(Qt::black, 1));
         curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
         curve->setSamples(pDataX,yData1 );
-        curve->attach(plot);
+        curve->attach(plot);*/
 
         QwtPlotCurve *curve1 = new QwtPlotCurve();
         QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
@@ -491,11 +502,11 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
 
     if(no == 0 || no == 2)
     {
-        QwtPlotCurve* curve2 = new QwtPlotCurve();
+        /*QwtPlotCurve* curve2 = new QwtPlotCurve();
         curve2->setPen(QPen(Qt::black, 1));
         curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
         curve2->setSamples(pDataX, yData2);
-        curve2->attach(plot);
+        curve2->attach(plot);*/
 
         QwtPlotCurve *curve3 = new QwtPlotCurve();
         QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
@@ -611,9 +622,11 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData, float freq)
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -653,9 +666,10 @@ QwtPlot* AirEcgMain::plotSleep_Apneafrequence(const QVector<double>& yData, floa
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
-
-    QwtText xaxis("Time [s]");
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -954,7 +968,9 @@ QwtPlot* AirEcgMain::plotPoints(QList<double> &x, QList<double> &y, QList<double
     plot->setAxisScale( QwtPlot::xBottom , minX, maxX);
 
     //labels
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Time [ms]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -1171,7 +1187,7 @@ QwtPlot* AirEcgMain::plotBarChart(QList<unsigned int> &x, QList<int> &y){
     magnifier->setAxisEnabled(QwtPlot::yLeft,false);
     return plot;
 }
-
+//R Peaks
 QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterator> &p, const QVector<double> &yData, float freq){
     QVector<double> yDataFin = QVector<double>(yData.size());
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -1183,7 +1199,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
 
     for (int i=0;i<yData.size();++i)
     {
-        sampleNo[i]=(i)*tos;
+        sampleNo[i]=(i)*tos*1000;
         yDataFin[i]=yData[i];
         if (max<yData[i]) max=yData[i];
         if (min>yData[i]) min=yData[i];
@@ -1192,9 +1208,11 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     QwtPlot *plot = new QwtPlot();
     plot->setCanvasBackground( Qt::white );
     plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -1227,7 +1245,7 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych    
     for (int i=0;i<p.size();i++)
     {
-        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos);
+        pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos*1000);
         pDataY[i] = (*p.at(i));
         //QLOG_TRACE() <<"Rpik:X = "<< QString::number( pDataX[i])<< "Y = " << QString::number( pDataY[i]);
     }
@@ -1276,9 +1294,11 @@ QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<
     QwtPlot *plot = new QwtPlot();
     plot->setCanvasBackground( Qt::white );
     plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -1564,7 +1584,7 @@ QwtPlot* AirEcgMain::plotTWAPlot(const QVector<double> &yData, QList<unsigned in
     curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
     plot->setAxisScale( QwtPlot::yLeft, min, max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
@@ -1597,8 +1617,9 @@ QwtPlot* AirEcgMain::plotTWAPlot(const QVector<double> &yData, QList<unsigned in
     panner->setOrientations(Qt::Horizontal);
     QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
     magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -1687,7 +1708,7 @@ QwtPlot* AirEcgMain::plotTWAPlot2(QList<unsigned int> &TWA_positive, QList<doubl
     QwtPlot *plot = new QwtPlot();
     plot->setCanvasBackground( Qt::white );
     //plot->setAxisScale( QwtPlot::yLeft, min, max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
     QwtPlotGrid *grid = new QwtPlotGrid();
     QPen *pen = new QPen;
@@ -1914,7 +1935,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     double dt = 1.0/samplingFrequency;
     for (int i=0;i<ecgSignal.size();++i)
     {
-        sampleNo[i]=(i)*dt;
+        sampleNo[i]=(i)*dt*1000;// *1000 ms
         //yDataFin[i]=yData[i];
         yDataFin[i]=ecgSignal[i];
         if (max<ecgSignal[i]) max=ecgSignal[i];
@@ -1924,7 +1945,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     QwtPlot *plot = new QwtPlot();
     plot->setCanvasBackground( Qt::white );
     plot->setAxisScale( QwtPlot::yLeft, min, max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4.0);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
     QwtPlotGrid *grid = new QwtPlotGrid();
     QPen *pen = new QPen;
@@ -1991,19 +2012,19 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
 
     for (int i=0; i < ecgFrames.Count;++i)
     {
-      //  P_onsetDataX[i]=P_onsetData[i]*dt;
+      //  P_onsetDataX[i]=P_onsetData[i]*dt*1000;
      //   P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
 
-     //   P_endDataX[i]=P_endData[i]*dt;
+     //   P_endDataX[i]=P_endData[i]*dt*1000;
      //   P_endDataY[i]=ecgSignal[P_endData[i]];
 
-        Qrs_onsetDataX[i]=Qrs_onsetData[i]*dt;
+        Qrs_onsetDataX[i]=Qrs_onsetData[i]*dt*1000;
         Qrs_onsetDataY[i]=ecgSignal[Qrs_onsetData[i]];
 
-        Qrs_endDataX[i]=Qrs_endData[i]*dt;
+        Qrs_endDataX[i]=Qrs_endData[i]*dt*1000;
         Qrs_endDataY[i]=ecgSignal[Qrs_endData[i]];
 
-      //  T_endDataX[i]=T_endData[i]*dt;
+      //  T_endDataX[i]=T_endData[i]*dt*1000;
       //  T_endDataY[i]=ecgSignal[T_endData[i]];
     }
 /*
@@ -2086,8 +2107,9 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     panner->setOrientations(Qt::Horizontal);
     QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
     magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -2110,7 +2132,7 @@ QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &s
     double dt = 1.0/samplingFrequency;
     for (int i=0;i<yData.size();++i)
     {
-        sampleNo[i]=(i)*dt;
+        sampleNo[i]=(i)*dt*1000;// *1000 ms
         yDataFin[i]=yData[i];
         if (max<yData[i]) max=yData[i];
         if (min>yData[i]) min=yData[i];
@@ -2222,7 +2244,9 @@ QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &s
     QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
     magnifier->setAxisEnabled(QwtPlot::yLeft,false);
 
-    QwtText xaxis("Time [s]");
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
