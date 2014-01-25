@@ -2,12 +2,12 @@
 \section{Moduł R\_PEAKS}
 \subsection{Badania literaturowe}
 
-Zadaniem modułu R\_PEAKS jest detekcja załamków R w elektrokardiogramie. Jest to jeden z kluczowych etapów analizy sygnału EKG. Poprawne wykrycie i oznaczenie załamków R umożliwia bowiem wykrycie pozostałych punktów charakterystycznych cyklu pracy serca. Pozwala to dalej np. na przeprowadzenie dokładnej analizy zmienności rytmu serca. Załamki R są częścią tzw. zespołu QRS, który został przedstawiony na rysunku ~\ref{fig:RP_QRS}.
+Zadaniem modułu R\_PEAKS jest detekcja załamków R w elektrokardiogramie. Jest to jeden z kluczowych etapów analizy sygnału EKG. Poprawne wykrycie i oznaczenie załamków R umożliwia bowiem wykrycie pozostałych punktów charakterystycznych cyklu pracy serca. Pozwala to dalej np. na przeprowadzenie dokładnej analizy zmienności rytmu serca. Załamki R są częścią tzw. zespołu QRS, który został przedstawiony na rysunku \ref{fig:RPQRS}.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{R_PEAKS/img/qrs_class}
-\label{fig:RP_QRS}
 \caption{Fragment sygnału EKG z zaznaczonym zespołem QRS (QRS Complex)}
+\label{fig:RPQRS}
 \end{figure}
 Zespół QRS tworzą trzy sąsiadujące ze sobą punkty elektrokardiogramu, które składają się na wychylenie w kształcie wąskiego impulsu. Załamek Q to pierwsze ujemne wychylenie elektrokardiogramu, załamek R to pierwsze dodatnie wychylenie elektrokardiogramu, a załamek S to ostatnie ujemne wychylenie elektrokardiogramu w zespole QRS.
 
@@ -28,7 +28,7 @@ Algorytm ten można podzielić na dwa etapy. Pierwszym jest odpowiednie przygoto
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{R_PEAKS/img/pan_tompkins_alg}
-\label{fig:RP_PTA}
+\label{fig:RPPTA}
 \caption{Kolejne etapy algorytmu Pan - Tompkins}
 \end{figure}
 Jako, że moduł R\_PEAKS otrzymuje już przefiltrowany sygnał od innego modułu, analiza poszczególnych faz algorytmu zacznie się od fazy różniczkowania.
@@ -140,12 +140,12 @@ gdzie:
 \item $\tilde{s} _\Psi$ - współczynnik falkowy zależny od parametrów a i b
 \item $\Psi(\frac{t-b}{a})$ - jądro przekształcenia
 \end{itemize}
-Zastosowanie transformacji falkowej pozwala rozłożyć sygnał na kilka subpasm (rysunek ~\ref{fig:RP_WS}). Następnie dobiera się odpowiednie subpasma i rekonstruuje sygnał. Tak uzyskany sygnał poddaje się takiej samej procedurze progowania i detekcji załamków R jak w przypadku wcześniej opisywanego algorytmu wykorzystującego przekształcenia Hilberta.
+Zastosowanie transformacji falkowej pozwala rozłożyć sygnał na kilka subpasm (rysunek \ref{fig:RPWS}). Następnie dobiera się odpowiednie subpasma i rekonstruuje sygnał. Tak uzyskany sygnał poddaje się takiej samej procedurze progowania i detekcji załamków R jak w przypadku wcześniej opisywanego algorytmu wykorzystującego przekształcenia Hilberta.
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.85]{R_PEAKS/img/wavelet_schema}
-\label{fig:RP_WS}
+\includegraphics[scale=0.6]{R_PEAKS/img/wavelet_schema}
 \caption{Dekompozycja sygnału na subpasma za pomocą transformacji falkowej}
+\label{fig:RPWS}
 \end{figure}
 \subsection{Rezultaty i wnioski}
 \subsection{Literatura}
