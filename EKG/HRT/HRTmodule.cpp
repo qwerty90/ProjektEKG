@@ -254,7 +254,7 @@ void HRTmodule::GlobalAverage()
 	this->TS_B=B;
 } 
 
-Qvector<double> HRTmodule::tachogram()
+QVector<double> HRTmodule::tachogram()
 {
 	int i,j;
 	int n = HRT_RR.size();
