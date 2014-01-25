@@ -15,7 +15,7 @@ class HRTmodule
 {
 private:
 	vector<unsigned int> 		R_peaks;
-	int 				frequency;
+	double 				frequency;
 	unsigned int			n_R;
 	int				totalVEBcount;
 	double				TO;
