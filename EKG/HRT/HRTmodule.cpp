@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "HRTmodule.h"
 
 
@@ -6,7 +5,7 @@ using namespace HRT;
 
 
 void HRTmodule::calculateHRT(QVector<unsigned int> Rpeaks, int samplingFrequency)
-//void HRTmodule::calculateHRT(vector<unsigned int> Rpeaks, int samplingFrequency)//mozna zamienic na QVector
+//void HRTmodule::calculateHRT(vector<unsigned int> Rpeaks, int samplingFrequency)
 {
 	//////init
 	n_R=Rpeaks.size();
@@ -255,7 +254,7 @@ void HRTmodule::GlobalAverage()
 	this->TS_B=B;
 } 
 
-vector<double> HRTmodule::tachogram()
+Qvector<double> HRTmodule::tachogram()
 {
 	int i,j;
 	int n = HRT_RR.size();
