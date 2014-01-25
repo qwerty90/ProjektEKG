@@ -14,9 +14,9 @@ namespace HRT{
 class HRTmodule
 {
 private:
-    	vector<unsigned int> 		R_peaks;
+	vector<unsigned int> 		R_peaks;
 	int 				frequency;
-	unsigned int 			n_R;
+	unsigned in			n_R;
 	int				totalVEBcount;
 	double				TO;
 	double				TS;	
