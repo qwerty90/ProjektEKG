@@ -452,9 +452,9 @@ void AppController::runStInterval()
 
     EcgStAnalyzer analyzer;
     if (this->entity->settings->quadratic)
-    analyzer.setAlgorithm(ST_QUADRATIC);
-        else
-    analyzer.setAlgorithm(ST_LINEAR);
+        analyzer.setAlgorithm(EcgStAnalyzer::QUADRATIC);
+    else
+        analyzer.setAlgorithm(EcgStAnalyzer::LINEAR);
 
     analyzer.setDetectionSize(this->entity->settings->detect_window);
     analyzer.setSmoothSize(this->entity->settings->smooth_window);
@@ -469,15 +469,18 @@ void AppController::runStInterval()
         return;
     }
 
-    QList<EcgStDescriptor> result;
+    bool res = analyzer.analyze(*(this->entity->ecg_baselined),
+                                *(this->entity->Rpeaks),
+                                *(this->entity->Waves->QRS_end),
+                                *(this->entity->Waves->T_end),
+                                (double)this->entity->info->frequencyValue);
+    if (!res)
+    {
+        EcgStAnalyzer::ErrorType error = analyzer.getLastError();
+        QLOG_FATAL() << "ST_INTERVAL analyzer error: " << error;
+    }
 
-    result = analyzer.analyze(*(this->entity->ecg_baselined),
-                              *(this->entity->Rpeaks),
-                              *(this->entity->Waves->QRS_end),
-                              *(this->entity->Waves->T_end),
-                              (double)this->entity->info->frequencyValue);
-
-    this->entity->STintervals = new QList<EcgStDescriptor>(result);
+    this->entity->STintervals = new QList<EcgStDescriptor>(analyzer.getResult());
 
     // !!! Ponizej znajduje sie generowanie przykladowych danych dla zestawu 100.dat,
     // !!! dzieki czemu mozna przetestowac rysowanie ST
