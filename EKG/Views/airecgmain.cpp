@@ -2403,8 +2403,8 @@ void AirEcgMain::drawStInterval(EcgData *data)
 
     int num = data->STintervals->size();
 
- //   ui->stIntervalList->setRowCount(num);
- //   ui->stIntervalList->setEditTriggers(QAbstractItemView::NoEditTriggers); // disable list edit
+    ui->stIntervalList->setRowCount(num);
+    ui->stIntervalList->setEditTriggers(QAbstractItemView::NoEditTriggers); // disable list edit
 
     QVector<QPointF> stOn;
     QVector<QPointF> stMid;
@@ -2483,7 +2483,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
         QString time = QString("%1:%2:%3").arg(mm, 2, 10, QChar('0')).arg(ss, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
 
         // create list item
-  /*      QTableWidgetItem *newItem = new QTableWidgetItem(QString::number(i + 1));
+        QTableWidgetItem *newItem = new QTableWidgetItem(QString::number(i + 1));
         ui->stIntervalList->setItem(i, 0 , newItem);
         newItem = new QTableWidgetItem(time);
         ui->stIntervalList->setItem(i, 1, newItem);
@@ -2496,7 +2496,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
         newItem = new QTableWidgetItem(QString::number(desc.slope1));
         ui->stIntervalList->setItem(i, 5, newItem);
         newItem = new QTableWidgetItem(QString::number(desc.slope2));
-        ui->stIntervalList->setItem(i, 6, newItem);*/
+        ui->stIntervalList->setItem(i, 6, newItem);
     }
 
     // draw STon points
