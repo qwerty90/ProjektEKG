@@ -578,16 +578,16 @@ void AppController::runQtDisp()
 
     for(int i=0; i<this->entity->Waves->QRS_onset->size();i++)
     {
-        qrs_on.push_back((int)this->entity->Waves->QRS_onset->at(i) - (int)point0);
+        qrs_on.push_back(this->entity->Waves->QRS_onset->at(i) - point0);
         //QLOG_TRACE() << qrs_on.at(i);
     }
     for(int i=0; i<this->entity->Waves->QRS_end->size();i++)
     {
-        qrs_end.push_back((int)this->entity->Waves->QRS_end->at(i) - (int)point0);
+        qrs_end.push_back(this->entity->Waves->QRS_end->at(i) - point0);
     }
     for(int i=0; i<this->entity->Waves->PWaveStart->size();i++)
     {
-        Pwave_start.push_back((int)this->entity->Waves->PWaveStart->at(i) - (int)point0);
+        Pwave_start.push_back(this->entity->Waves->PWaveStart->at(i) - point0);
     }
 
     obiekt.getInput((*this->entity->ecg_baselined).toStdVector(),
@@ -657,7 +657,7 @@ void AppController::runWaves()
         for(int i=0 ; i<this->entity->Waves->Count-1;i++)
         {
             QLOG_TRACE() <<"MVC/ qrs difference "
-                        <<((int)(this->entity->Waves->QRS_end->at(i+1)
+                        <<((this->entity->Waves->QRS_end->at(i+1)
                            - this->entity->Waves->QRS_onset->at(i)));
         }
 
