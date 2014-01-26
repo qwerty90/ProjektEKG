@@ -367,9 +367,18 @@ QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
     return plot;
 }
 
+class TempScaleDraw: public QwtScaleDraw
+{
+public:
+    TempScaleDraw()
+    {
+        setTickLength( QwtScaleDiv::MajorTick, 10 );
+        setTickLength( QwtScaleDiv::MinorTick, 10 );
+        setTickLength( QwtScaleDiv::MediumTick, 10 );
 
-
-
+        setSpacing( 5 );
+    }
+};
 QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 {
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -402,10 +411,15 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+
     grid->attach(plot);
 
     QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 1));
+    curve->setPen(QPen(Qt::blue, 2));
     curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
@@ -422,7 +436,6 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
     QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
     magnifier->setAxisEnabled(QwtPlot::yLeft, false);
-
     return plot;
 }
 
