@@ -1,5 +1,6 @@
 // medyczne.cpp : Defines the entry point for the console application.
 #include "QT_DISP.h"
+#include "QsLog/QsLog.h"
 using namespace std;
 
 QT_DISP::QT_DISP()
@@ -22,7 +23,8 @@ void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vect
 	P_On = in_P_On;
 	samplingFrequency = in_samplingFrequency;
 
-	heartBeats = QRS_On.size() - 1;
+    //heartBeats = QRS_On.size() - 1;
+    heartBeats = P_On.size()-1;
 	/*channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
@@ -99,7 +101,7 @@ Evaluation QT_DISP::returnEvaluations(int number)
 	return evaluations[number];
 }
 
-void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <double> T_End)
+void QT_DISP::setOutput(vector <Evaluation> &out_evaluations, vector <double> &T_End)
 {
 
 	//out_evaluations = evaluations;
@@ -137,7 +139,7 @@ void QT_DISP::Run()
 			//odnalezienie potrzebnych do wyszukania konca zalamka miejsc dodatkowych
 			int iT_Peak = FindTPeak(y,iQRS_End,iP_On); 
 			T_Peak[j] = iT_Peak;
-
+            QLOG_TRACE() << "QT_DISP/ TPeak value: " << iT_Peak;
 			int highestvelocity = HighestVelocity(&x, &y, iT_Peak,  iP_On);
 
 			//wyznaczenie koncow zalamka T przy pomocy metod: paraboli oraz stycznej
