@@ -54,7 +54,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(stInterval_smoothingWidthChanged(int)),this,SLOT(stInterval_smoothingWidthChanged(int)));
     this->connect(view, SIGNAL(stInterval_morphologyChanged(double)),this,SLOT(stInterval_morphologyChanged(double)));
     this->connect(view, SIGNAL(stInterval_levelThresholdChanged(double)),this,SLOT(stInterval_levelThresholdChanged(double)));
-    this->connect(view, SIGNAL(stInterval_slopeTthresholdChanged(double)),this,SLOT(stInterval_slopeTthresholdChanged(double)));
+    this->connect(view, SIGNAL(stInterval_slopeThresholdChanged(double)),this,SLOT(stInterval_slopeThresholdChanged(double)));
     this->connect(view, SIGNAL(stInterval_algorithmChanged(int)),this,SLOT(stInterval_algorithmChanged(int)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example

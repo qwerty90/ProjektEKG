@@ -3087,7 +3087,7 @@ void AirEcgMain::on_st_interval_level_threshold_valueChanged(double arg1)
 
 void AirEcgMain::on_st_interval_slope_threshold_valueChanged(double arg1)
 {
-    emit stInterval_morphologyChanged(arg1);
+    emit stInterval_slopeThresholdChanged(arg1);
 }
 
 void AirEcgMain::on_detectionratesquare_clicked()
