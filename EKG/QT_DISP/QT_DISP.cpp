@@ -22,17 +22,15 @@ void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vect
 	P_On = in_P_On;
 	samplingFrequency = in_samplingFrequency;
 
-	/*heartBeats = QRS_On.size() - 1;
-	channels = signals2.size() - 1;
+	heartBeats = QRS_On.size() - 1;
+	/*channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
 	T_EndT.resize(channels);
-	for(int i = 0; i < channels; ++i)
-	{
-		T_Peak[i].resize(heartBeats);
-		T_EndT[i].resize(heartBeats);
-		T_EndP[i].resize(heartBeats);
-	}*/
+	*/
+		T_Peak.resize(heartBeats);
+		T_EndT.resize(heartBeats);
+		T_EndP.resize(heartBeats);
 }
 
 void QT_DISP::getInput(string path)
