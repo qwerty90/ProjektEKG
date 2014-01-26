@@ -119,7 +119,7 @@ signals:
     void qrsKClustersNumberChanged(int noClusters);
 
     void ecgBase_CzasUsrednieniaChanged(const QString &arg1);
-    void ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1);
+    void ecgBase_WindowSizeChanged(const QString &arg1);
     void ecgBase_Kalman1Changed(const QString &arg1);
     void ecgBase_Kalman2Changed(const QString &arg1);
     void ecgBase_ButterworthCoeffSetChanged(int set);
@@ -220,12 +220,6 @@ private slots:
     //void on_radioButton_5_clicked();
 
     void on_maTimeSpinBox_valueChanged(const QString &arg1);
-
-    void on_maWindowSpinBox_valueChanged(const QString &arg1);
-
-    void on_Kalman1lineEdit_textEdited(const QString &arg1);
-
-    void on_Kalman2lineEdit_textEdited(const QString &arg1);
 
     void on_ButterworthcomboBox_currentIndexChanged(int index);
 

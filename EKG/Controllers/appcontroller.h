@@ -67,7 +67,6 @@ public slots:
 
     void ecgBase_Kalman1Changed(const QString arg1);
     void ecgBase_Kalman2Changed(const QString arg2);
-    void CzasUsrednieniaEdit   (const QString arg1);
     void ecgBase_WindowSizeEdit(const QString arg1);
     void ecgButterChanged      (const int set_number);
 

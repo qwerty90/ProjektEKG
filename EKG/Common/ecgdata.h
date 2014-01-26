@@ -115,8 +115,8 @@ public:
     QVector<double> *SigEdr_q;
 
     //modul sleep apnea
-    QVector<BeginEndPair> *SleepApnea;
-    QVector<double>       *SleepApnea_plot;
+    QVector<BeginEndPair>    *SleepApnea;
+    QVector<double>          *SleepApnea_plot;
 
     //modul QtDisp (bez TWaves)
     QVector<Evaluation> *evaluations;

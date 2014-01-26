@@ -344,7 +344,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -402,8 +402,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>86</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -444,8 +444,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>1014</width>
+                       <height>502</height>
                       </rect>
                      </property>
                     </widget>
@@ -485,8 +485,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>1014</width>
+                       <height>363</height>
                       </rect>
                      </property>
                     </widget>
@@ -628,7 +628,29 @@
                    <item row="0" column="0">
                     <widget class="QLabel" name="label_47">
                      <property name="text">
-                      <string>Averaging time</string>
+                      <string>Averaging time [s]</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QDoubleSpinBox" name="maTimeSpinBox">
+                     <property name="suffix">
+                      <string/>
+                     </property>
+                     <property name="decimals">
+                      <number>3</number>
+                     </property>
+                     <property name="minimum">
+                      <double>0.001000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>10.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.001000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.500000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -640,17 +662,11 @@
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QSpinBox" name="maWindowSpinBox">
-                     <property name="maximum">
-                      <number>999</number>
-                     </property>
-                     <property name="value">
-                      <number>150</number>
+                    <widget class="QLabel" name="windowSizeLabel">
+                     <property name="text">
+                      <string>180</string>
                      </property>
                     </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QDoubleSpinBox" name="maTimeSpinBox"/>
                    </item>
                   </layout>
                  </widget>
@@ -751,8 +767,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1052</width>
+                   <height>385</height>
                   </rect>
                  </property>
                 </widget>
@@ -895,8 +911,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1052</width>
+                   <height>488</height>
                   </rect>
                  </property>
                 </widget>
@@ -1143,8 +1159,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>86</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1167,8 +1183,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>71</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1254,8 +1270,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>71</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1309,8 +1325,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>71</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1376,8 +1392,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
-                            <height>28</height>
+                            <width>76</width>
+                            <height>16</height>
                            </rect>
                           </property>
                          </widget>
@@ -1424,8 +1440,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
-                            <height>28</height>
+                            <width>76</width>
+                            <height>16</height>
                            </rect>
                           </property>
                          </widget>
@@ -1592,7 +1608,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
+                            <width>180</width>
                             <height>144</height>
                            </rect>
                           </property>
@@ -1613,8 +1629,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>98</width>
-                                <height>88</height>
+                                <width>145</width>
+                                <height>84</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -1631,24 +1647,15 @@
                                    <rect>
                                     <x>0</x>
                                     <y>0</y>
-                                    <width>98</width>
-                                    <height>70</height>
+                                    <width>116</width>
+                                    <height>76</height>
                                    </rect>
                                   </property>
                                   <layout class="QVBoxLayout" name="verticalLayout_14">
                                    <property name="spacing">
                                     <number>0</number>
                                    </property>
-                                   <property name="leftMargin">
-                                    <number>0</number>
-                                   </property>
-                                   <property name="topMargin">
-                                    <number>0</number>
-                                   </property>
-                                   <property name="rightMargin">
-                                    <number>0</number>
-                                   </property>
-                                   <property name="bottomMargin">
+                                   <property name="margin">
                                     <number>0</number>
                                    </property>
                                    <item>
@@ -1665,8 +1672,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>98</width>
-                                <height>28</height>
+                                <width>100</width>
+                                <height>30</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -1733,16 +1740,7 @@
                           <enum>QFrame::Raised</enum>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="1,1">
-                          <property name="leftMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="topMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="rightMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="bottomMargin">
+                          <property name="margin">
                            <number>0</number>
                           </property>
                           <item>
@@ -2249,8 +2247,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>71</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2459,8 +2457,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>86</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2487,8 +2485,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -2639,8 +2637,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>348</height>
+                       <width>1048</width>
+                       <height>344</height>
                       </rect>
                      </property>
                     </widget>
@@ -2934,8 +2932,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2951,8 +2949,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2972,8 +2970,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2989,8 +2987,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -3182,8 +3180,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>198</height>
+                   <width>86</width>
+                   <height>194</height>
                   </rect>
                  </property>
                 </widget>
@@ -3218,8 +3216,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>198</height>
+                   <width>86</width>
+                   <height>194</height>
                   </rect>
                  </property>
                 </widget>
@@ -3556,8 +3554,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>98</width>
-                     <height>28</height>
+                     <width>22</width>
+                     <height>16</height>
                     </rect>
                    </property>
                   </widget>
@@ -3606,8 +3604,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -3775,8 +3773,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1034</width>
-                   <height>219</height>
+                   <width>1052</width>
+                   <height>226</height>
                   </rect>
                  </property>
                 </widget>
@@ -3787,7 +3785,7 @@
                 <item>
                  <widget class="QLabel" name="label_20">
                   <property name="text">
-                   <string>Apnea assessment in time domain:</string>
+                   <string>ilościowa ocena bezdechu w dziedzinie czasu = </string>
                   </property>
                  </widget>
                 </item>
@@ -3823,8 +3821,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1034</width>
-                   <height>219</height>
+                   <width>1052</width>
+                   <height>226</height>
                   </rect>
                  </property>
                 </widget>
@@ -3835,7 +3833,7 @@
                 <item>
                  <widget class="QLabel" name="label_27">
                   <property name="text">
-                   <string>Apnea assessment in freqency domain:</string>
+                   <string>ilościowa ocena bezdechu w dziedzinie częstotliwości = </string>
                   </property>
                  </widget>
                 </item>
@@ -3957,7 +3955,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMenu">

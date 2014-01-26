@@ -52,11 +52,12 @@ void fitFunc(const real_1d_array &c, const real_1d_array &x, double &func, void*
     func = KalmanFilter::syntheticEcgModelPoint(x[0], c);
 }
 
-KalmanFilter::KalmanFilter(): SNR(10.0), theta(0.0), bins(250), samplingFrequency(500), rrPeriod(samplingFrequency), gamma(1.0) {
+KalmanFilter::KalmanFilter(): SNR(10.0), samplingFrequency(500), rrPeriod(samplingFrequency), theta(0.0), gamma(1.0), bins(250) {
 
 }
 
-KalmanFilter::KalmanFilter(double _samplingFrequency): SNR(10.0), theta(0.0), bins(250), samplingFrequency(_samplingFrequency), rrPeriod(_samplingFrequency), gamma(1.0) {
+KalmanFilter::KalmanFilter(double _samplingFrequency): SNR(10.0), samplingFrequency(_samplingFrequency), rrPeriod(_samplingFrequency),
+    theta(0.0), gamma(1.0), bins(250) {
 
 }
 

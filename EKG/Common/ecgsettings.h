@@ -17,7 +17,6 @@ public:
     int EcgBaselineMode;
     QString kalman_arg1;
     QString kalman_arg2;
-    double  averaging_time;
     int     avgWindowSize;
     int     coeff_set; //wybrany zestaw parametrow
     //rpeaks settings
