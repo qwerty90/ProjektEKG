@@ -4,25 +4,26 @@ using namespace std;
 
 QT_DISP::QT_DISP()
 {
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Bazzet"));
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Frideric"));
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Hodges"));
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Framigham"));
-	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Bazzet"));
-	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Frideric"));
-	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Hodges"));
 	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Framigham"));
+	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Hodges"));
+	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Frideric"));
+	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Bazzet"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Framigham"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Hodges"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Frideric"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Bazzet"));
 }
 
-void QT_DISP::getInput(vector<vector<double>> in_signals, vector <vector <int>> in_QRS_On, vector <vector <int>> in_QRS_End, vector <vector <int>> in_P_On)
+void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vector <int> in_QRS_End, vector <int> in_P_On, double in_samplingFrequency)
 {
-    signals2 = in_signals;
+	signals2 = in_signals2;
 	QRS_On = in_QRS_On;
 	QRS_End = in_QRS_End;
 	P_On = in_P_On;
+	samplingFrequency = in_samplingFrequency;
 
-	heartBeats = QRS_On.size() - 1;
-    channels = signals2.size() - 1;
+	/*heartBeats = QRS_On.size() - 1;
+	channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
 	T_EndT.resize(channels);
@@ -31,7 +32,7 @@ void QT_DISP::getInput(vector<vector<double>> in_signals, vector <vector <int>> 
 		T_Peak[i].resize(heartBeats);
 		T_EndT[i].resize(heartBeats);
 		T_EndP[i].resize(heartBeats);
-	}
+	}*/
 }
 
 void QT_DISP::getInput(string path)
@@ -43,63 +44,64 @@ void QT_DISP::getInput(string path)
 	{
 		int count;
 		file >> count;
+		file >> samplingFrequency;
 		
-		vector <double> time(count, 0.0);
-		vector <double> channel0(count, 0.0);
+		signals2 = vector <double>(count, 0.0);
 		
 		for(int i = 0; i < count; ++i)
 		{
-			file >> time[i];
+			file >> signals2[i];
 		}
-		for(int i = 0; i < count; ++i)
-		{
-			file >> channel0[i];
-		}
-
-        signals2.push_back(time);
-        signals2.push_back(channel0);
 	
 		file >> heartBeats;
 
-		vector <int> QRS_OnCH0(heartBeats + 1, 0);
-		vector <int> QRS_EndCH0(heartBeats + 1, 0);
-		vector <int> P_OnCH0(heartBeats, 0);
+		QRS_On = vector <int>(heartBeats + 1, 0);
+		QRS_End = vector <int>(heartBeats + 1, 0);
+		P_On = vector <int>(heartBeats, 0);
 
 		for(int i = 0; i < heartBeats + 1; ++i)
 		{
-			file >> QRS_OnCH0[i];
+			file >> QRS_On[i];
 		}
 		for(int i = 0; i < heartBeats + 1; ++i)
 		{
-			file >> QRS_EndCH0[i];
+			file >> QRS_End[i];
 		}
 		for(int i = 0; i < heartBeats; ++i)
 		{
-			file >> P_OnCH0[i];
+			file >> P_On[i];
 		}
 
-		QRS_On.push_back(QRS_OnCH0);
-		QRS_End.push_back(QRS_EndCH0);
-		P_On.push_back(P_OnCH0);
-
-        channels = signals2.size() - 1;
-		T_Peak.resize(channels);
-		T_EndP.resize(channels);
-		T_EndT.resize(channels);
-		for(int i = 0; i < channels; ++i)
-		{
-			T_Peak[i].resize(heartBeats);
-			T_EndT[i].resize(heartBeats);
-			T_EndP[i].resize(heartBeats);
-		}
+		T_Peak.resize(heartBeats);
+		T_EndT.resize(heartBeats);
+		T_EndP.resize(heartBeats);
 
 		file.close();
 	}
 }
 	
-// Funkcja wyjsciowa - kazde z wyjsc ulozone w wektor wektorow (zewnetrzny - kanal, wewnetrzny - numer cyklu sercowego)
-// 
-void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <vector <double>> T_End)
+// Funkcja wyjsciowa - konce zalamka T
+vector <double> QT_DISP::returnTEnd()
+{
+	return T_EndP;
+}
+
+
+//zwraca dana ewaluacje
+//0 - Bazzet Tangent
+//1 - Frideric Tangent
+//2 - Hodges Tangent
+//3 - Framingham Tangent
+//4 - Bazzet Parabol
+//5 - Frideric Parabol
+//6 - Hodges Parabol
+//7 - Framingham Parabol
+Evaluation QT_DISP::returnEvaluations(int number)
+{
+	return evaluations[number];
+}
+
+void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <double> T_End)
 {
 
 	//out_evaluations = evaluations;
@@ -110,16 +112,23 @@ void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <vector <dou
 
 void QT_DISP::Run()
 {
-	for(int i = 0; i < channels;  ++i)
-    {
         for(int j = 0; j < heartBeats; ++j)
         {
-            vector <double> x (signals2[0].begin() + QRS_On[i][j], signals2[0].begin() + QRS_On[i][j + 1]);
-            vector <double> y (signals2[i+1].begin() + QRS_On[i][j], signals2[i+1].begin() + QRS_On[i][j + 1]);
+            //vector <double> x (signals2.begin() + QRS_On[j], signals2.begin() + QRS_On[j + 1]);
+            vector <double> y (signals2.begin() + QRS_On[j], signals2.begin() + QRS_On[j + 1]);
+			vector <double> x;
 
-            int iQRS_On = QRS_On[i][j] - QRS_On[i][j];
-            int iQRS_End = QRS_End[i][j] - QRS_On[i][j];
-            int iP_On = P_On[i][j] - QRS_On[i][j];
+			x.resize(QRS_On[j+1]-QRS_On[j]);
+			int iterator = 0;
+			for (int i=QRS_On[j]; i<QRS_On[j+1];i++)
+			{
+				x[iterator] = i/samplingFrequency;
+				iterator++;
+			}
+
+            int iQRS_On = QRS_On[j] - QRS_On[j];
+            int iQRS_End = QRS_End[j] - QRS_On[j];
+            int iP_On = P_On[j] - QRS_On[j];
 
 			//filtrowanie
 			Filtering(&y, iQRS_End, iP_On);
@@ -129,15 +138,14 @@ void QT_DISP::Run()
 
 			//odnalezienie potrzebnych do wyszukania konca zalamka miejsc dodatkowych
 			int iT_Peak = FindTPeak(y,iQRS_End,iP_On); 
-			T_Peak[i][j] = iT_Peak;
+			T_Peak[j] = iT_Peak;
 
 			int highestvelocity = HighestVelocity(&x, &y, iT_Peak,  iP_On);
 
 			//wyznaczenie koncow zalamka T przy pomocy metod: paraboli oraz stycznej
-			T_EndP[i][j]=CalculateTendParabol(&x, &y, highestvelocity, iT_Peak, iP_On);
-			T_EndT[i][j]=CalculateTendTangent(&x, &y, highestvelocity, iT_Peak, iP_On);			
+			T_EndP[j]=CalculateTendParabol(&x, &y, highestvelocity, iT_Peak, iP_On);
+			T_EndT[j]=CalculateTendTangent(&x, &y, highestvelocity, iT_Peak, iP_On);			
 		}
-	}
 	EvaluateQTDisp();
 }
 
@@ -165,7 +173,7 @@ int QT_DISP::FindTPeak(vector<double> y, int QRS_End, int P_On)
 	double maxValue = 0;
 	int maxPlace = 0;
 
-	for(int i = QRS_End; i<P_On;i++)
+	for(int i = QRS_End; i < (P_On - 20); i++)
 	{
 		if (maxValue < y[i])
 		{
@@ -182,7 +190,7 @@ int QT_DISP::HighestVelocity(vector <double> *x, vector <double> *y, int TPeak, 
 	double highestValue=0;
 	int highestPlace=0;
 
-	for (int i = TPeak; i < P_On; i++)
+	for (int i = TPeak; i < (P_On - 5); i++)
 	{
 		if( (y->at(i+1) - y->at(i)) / (x->at(i+1) - x->at(i)) < highestValue)
 		{
@@ -296,24 +304,13 @@ double QT_DISP::CalculateTendParabol(vector <double> *x, vector <double> *y, int
 
 void QT_DISP::EvaluateQTDisp()
 {
+		heartAction = (60 * samplingFrequency * QRS_On.size() / signals2.size() ) ;
 
-	heartAction.resize(QRS_On.size());
-	for (int i=0; i<QRS_On.size();i++)
-	{
-		double test1 = QRS_On[i].size();
-		double test2 = QRS_On[i][0];
-		double test3 = QRS_On[i][QRS_On[i].size()-1];
-
-        heartAction[i]=(60 * (QRS_On[i].size() / ((-signals2[i][0] + signals2[i][signals2[i].size()-1]))) ) ;
-	}
-
-	for (int i =0; i< T_EndP.size(); i++)
-	{
-		for(int j =0; j< T_EndP[i].size(); j++)
+		for(int j =0; j< T_EndP.size(); j++)
 		{
-			double RR = 60/heartAction[i];
-			double gapQT_T = T_EndT[i][j]-QRS_On[i][j];
-			double gapQT_P = T_EndP[i][j]-QRS_On[i][j];
+			double RR = 60/heartAction;
+			double gapQT_T = 1000*(T_EndT[j]-QRS_On[j]/samplingFrequency);
+			double gapQT_P = 1000*(T_EndP[j]-QRS_On[j]/samplingFrequency);
 
 			int EvaluatedValue;
 
@@ -329,7 +326,7 @@ void QT_DISP::EvaluateQTDisp()
 						EvaluatedValue = EvaluateFrideric(gapQT_T, RR);
 						break;
    					case 2:
-						EvaluatedValue = EvaluateHodges(gapQT_T, heartAction[i]);
+						EvaluatedValue = EvaluateHodges(gapQT_T, heartAction);
 						break;
     
 					case 3:
@@ -344,7 +341,7 @@ void QT_DISP::EvaluateQTDisp()
 						EvaluatedValue = EvaluateFrideric(gapQT_P, RR);
 						break;
    					case 6:
-						EvaluatedValue = EvaluateHodges(gapQT_P, heartAction[i]);
+						EvaluatedValue = EvaluateHodges(gapQT_P, heartAction);
 						break;
     
 					case 7:
@@ -360,8 +357,6 @@ void QT_DISP::EvaluateQTDisp()
 					evaluations[k].numberOfTooHighQT++;
 			}
 		}
-
-	}
 }
 
 int QT_DISP::EvaluateBazzet(double gapQT, double RR)
@@ -459,7 +454,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 //	
 //{
 //
-//    int channels = signals.size() - 1;
+//    int channels = signals2.size() - 1;
 //    
 //	//ponizej, zakomentowany znajduje sie sposob zadeklarowania wektorow potrzebnych do przeslania danych : sama skladnia oraz rozmiary, jakie beda nam potrzebne
 //	/*
@@ -510,15 +505,15 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
  //   {
  //       for(int j = 0; j < qrs_on.size() - 1; ++j)
  //       {
- //           vector <double> x (signals[0].begin() + qrs_on[i][j], signals[0].begin() + qrs_on[i][j + 1]);
- //           vector <double> y (signals[i+1].begin() + qrs_on[i][j], signals[i+1].begin() + qrs_on[i][j + 1]);
+ //           vector <double> x (signals2[0].begin() + qrs_on[i][j], signals2[0].begin() + qrs_on[i][j + 1]);
+ //           vector <double> y (signals2[i+1].begin() + qrs_on[i][j], signals2[i+1].begin() + qrs_on[i][j + 1]);
 
  //           int iqrs_on = qrs_on[i][j];
  //           int iqrs_end = qrs_end[i][j];
  //           int ip_on = p_on [i][j];
 
-	//		vector <double> xqrsend_pon (signals[0].begin() +iqrs_end, signals[0].begin() + ip_on);
-	//		vector <double> yqrsend_pon (signals[i+1].begin() + iqrs_end, signals[i+1].begin() + ip_on);
+	//		vector <double> xqrsend_pon (signals2[0].begin() +iqrs_end, signals2[0].begin() + ip_on);
+	//		vector <double> yqrsend_pon (signals2[i+1].begin() + iqrs_end, signals2[i+1].begin() + ip_on);
 
 
 	//		filtering(xqrsend_pon,yqrsend_pon);
