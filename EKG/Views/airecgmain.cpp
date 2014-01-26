@@ -2420,18 +2420,18 @@ void AirEcgMain::drawStInterval(EcgData *data)
         int mid = desc.STMid - data->ecg_baselined->constBegin();
         int end = desc.STEnd - data->ecg_baselined->constBegin();
 
-        double onTime = (double)on / data->info->frequencyValue * 1000;
+        double onTime = static_cast<double>(on) / data->info->frequencyValue * 1000;
 
         stOn.append(QPointF(onTime, *desc.STOn));
-        stMid.append(QPointF((double)mid / data->info->frequencyValue * 1000, *desc.STMid));
-        stEnd.append(QPointF((double)end / data->info->frequencyValue * 1000, *desc.STEnd));
+        stMid.append(QPointF(static_cast<double>(mid) / data->info->frequencyValue * 1000, *desc.STMid));
+        stEnd.append(QPointF(static_cast<double>(end) / data->info->frequencyValue * 1000, *desc.STEnd));
 
         QVector<double> x;
         QVector<double> y;
         for (QVector<double>::const_iterator k = desc.STOn; k != desc.STEnd; ++k)
         {
             int sampleNum = k - data->ecg_baselined->constBegin();
-            x.append((double)sampleNum / data->info->frequencyValue * 1000);
+            x.append(static_cast<double>(sampleNum) / data->info->frequencyValue * 1000);
             y.append(*k);
         }
 
@@ -2479,9 +2479,9 @@ void AirEcgMain::drawStInterval(EcgData *data)
         }
 
         // create STon time string
-        int ms = (int)onTime % 1000;
-        int ss = (int)onTime / 1000 % 60;
-        int mm = (int)onTime / 60000;
+        int ms = static_cast<int>(onTime) % 1000;
+        int ss = static_cast<int>(onTime) / 1000 % 60;
+        int mm = static_cast<int>(onTime) / 60000;
         QString time = QString("%1:%2:%3").arg(mm, 2, 10, QChar('0')).arg(ss, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
 
         // create list item

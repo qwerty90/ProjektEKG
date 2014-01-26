@@ -473,7 +473,7 @@ void AppController::runStInterval()
                                 *(this->entity->Rpeaks),
                                 *(this->entity->Waves->QRS_end),
                                 *(this->entity->Waves->T_end),
-                                (double)this->entity->info->frequencyValue);
+                                static_cast<double>(this->entity->info->frequencyValue));
     if (!res)
     {
         EcgStAnalyzer::ErrorType error = analyzer.getLastError();
