@@ -14,6 +14,8 @@
 #include "QRS_CLASS/qrsclass.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
 #include "ECG_BASELINE/src/butter.h"
+//#include "QT_DISP/Evaluation.h"
+#include "QT_DISP/QT_DISP.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
@@ -97,9 +99,9 @@ public:
      double *alfa, *wsp_a, *wsp_b;
 
     //modul HRT
-    double *turbulence_slope, *turbulence_onset;
+    double turbulence_slope, turbulence_onset;
     double hrt_a , hrt_b;
-    int *vpbs_detected_count;
+    int vpbs_detected_count;
     QVector<double> *hrt_tachogram;
 
     //modul ATRIAL_FIBR
@@ -115,6 +117,9 @@ public:
     //modul sleep apnea
     QVector<BeginEndPair> *SleepApnea;
     QVector<double>       *SleepApnea_plot;
+
+    //modul QtDisp (bez TWaves)
+    QVector<Evaluation> *evaluations;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;

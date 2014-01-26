@@ -53,6 +53,7 @@ signals:
     void QrsClass_done(EcgData *data);
     void runVcgLoop_done(EcgData *data);
     void SleepApnea_done(EcgData *data);
+    void QtDisp_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
@@ -98,7 +99,8 @@ public slots:
     void runSigEdr();
     void runHRT();
     void runSleepApnea();
- void runVcgLoop();
+    void runVcgLoop();
+    void runQtDisp();
 
 };
 

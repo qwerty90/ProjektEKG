@@ -22,16 +22,16 @@ private:
 
 //	/*ilosc kanalow*/			int channels;
 	/*ilosc akcji serca*/				int heartBeats; 
-	/*nr próbek Tpeak*/					vector <int> T_Peak;
+	/*nr prï¿½bek Tpeak*/					vector <int> T_Peak;
 	/*czas Tend dla wyszukiwania parabolicznego*/			vector <double> T_EndP;
 	/*czas Tend dla wyszukiwania styczna*/					vector <double> T_EndT;
-	/*d³ugoœci odcinków QT*/	vector <double> QT;
+	/*dï¿½ugoï¿½ci odcinkï¿½w QT*/	vector <double> QT;
 
 public:
 	QT_DISP();
 	void getInput(vector <double> in_signals2, vector <int> in_QRS_On, vector <int> in_QRS_End, vector <int> in_P_On, double in_samplingFrequency);
 	void getInput(string path);
-	void setOutput(vector <Evaluation> out_evaluation, vector <double> T_End);
+    void setOutput(vector<Evaluation> &out_evaluation, vector<double> &T_End);
 	void Run();
 
 private:

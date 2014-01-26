@@ -11,7 +11,9 @@
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
 #include "SIG_EDR/sig_edr.h"
-#include "QT_DISP/QT_DISP.h"
+//#include "QT_DISP/QT_DISP.h"
+//#include "QT_DISP/Evaluation.h"
+#include "HRT/HRTmodule.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
 
 #include <QThread>
@@ -63,6 +65,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runSigEdr())     ,this, SLOT (runSigEdr()));
     this->connect(view, SIGNAL(runVcgLoop())    ,this, SLOT (runVcgLoop()));
     this->connect(view, SIGNAL(runSleepApnea()) ,this, SLOT (runSleepApnea()));
+    this->connect(view, SIGNAL(runQtDisp())     ,this, SLOT (runQtDisp()));
 
     this->connect(view, SIGNAL(run()), this, SLOT(run()));
 
@@ -294,7 +297,6 @@ void AppController::runEcgBaseline()
 
     emit EcgBaseline_done(this->entity);
 
-    runVcgLoop();
 }
 
 void AppController::runHRV1()
@@ -509,6 +511,56 @@ void AppController::runVcgLoop()
     QLOG_INFO() << "VcgLoop done";
 }
 
+void AppController::runQtDisp()
+{
+    QLOG_INFO() <<"QT_DISP started.";
+
+    ifWavesExists();
+    QT_DISP obiekt;
+
+    vector<int> qrs_on;
+    vector<int> qrs_end;
+    vector<int> Pwave_start;
+
+    vector<Evaluation> output;
+    vector<double> T_end;
+
+    QVector<double>::iterator point0 = this->entity->ecg_baselined->begin();
+
+    for(int i=0; i<this->entity->Waves->QRS_onset->size();i++)
+    {
+        qrs_on.push_back((int)this->entity->Waves->QRS_onset->at(i) - (int)point0);
+        QLOG_TRACE() << qrs_on.at(i);
+    }
+    for(int i=0; i<this->entity->Waves->QRS_end->size();i++)
+    {
+        qrs_end.push_back((int)this->entity->Waves->QRS_end->at(i) - (int)point0);
+    }
+    for(int i=0; i<this->entity->Waves->PWaveStart->size();i++)
+    {
+        Pwave_start.push_back((int)this->entity->Waves->PWaveStart->at(i) - (int)point0);
+    }
+
+    obiekt.getInput((*this->entity->ecg_baselined).toStdVector(),
+                    qrs_on,qrs_end,Pwave_start,(double)this->entity->info->frequencyValue);
+    obiekt.Run();
+    QLOG_TRACE() <<"MVC/ QT_DISP calculated.";
+    obiekt.setOutput(output,T_end);
+
+
+    iters tmp_it;
+    for(int i=0 ; i<T_end.size();i++)
+        tmp_it.append(&((*this->entity->ecg_baselined)[ T_end.at(i) ]));
+
+    this->entity->Waves->T_end = new iters (tmp_it);
+
+    this->entity->evaluations = new QVector<Evaluation>(QVector<Evaluation>::fromStdVector(output));
+
+    emit this->QtDisp_done(this->entity);
+    QLOG_INFO() << "QT_DISP done.";
+
+}
+
 void AppController::runWaves()
 {
     QLOG_INFO() << "Waves started.";
@@ -672,17 +724,18 @@ runWaves();
 void AppController::runHRT()
 {
     QLOG_INFO() << "HRT started.";
-/*
-    HRTModule obiekt;
+    ifRpeaksExists();
+
+    HRT::HRTmodule obiekt;
     obiekt.calculateHRT(this->entity->Rpeaks_uint,(int)this->entity->info->frequencyValue);
-    void calculateHRT(QVector<unsigned int> Rpeaks, int samplingFrequency=360);
+
     this->entity->hrt_tachogram = new QVector<double>(obiekt.get_tachogram()); //zwraca vektor reprezentujacy tachogram (25 elementow)
     this->entity->vpbs_detected_count = obiekt.get_VEBcount();//zwraca liczbę znalezionych i zaakceptowanych VEB'ow
     this->entity->turbulence_slope=	obiekt.get_TS();
     this->entity->turbulence_onset= obiekt.get_TO();
     this->entity->hrt_a	= obiekt.get_a();// zwraca wspolczynnik kierunkowy prostej
     this->entity->hrt_b	= obiekt.get_b();// ax+b - do wyrysowania na tachogramie
-*/
+
     QLOG_INFO() << "HRT done.";
 }
 

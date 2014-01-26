@@ -22,8 +22,8 @@ void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vect
 	P_On = in_P_On;
 	samplingFrequency = in_samplingFrequency;
 
-	/*heartBeats = QRS_On.size() - 1;
-	channels = signals2.size() - 1;
+    heartBeats = QRS_On.size() - 1;
+    /*channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
 	T_EndT.resize(channels);
@@ -101,7 +101,7 @@ Evaluation QT_DISP::returnEvaluations(int number)
 	return evaluations[number];
 }
 
-void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <double> T_End)
+void QT_DISP::setOutput(vector <Evaluation> &out_evaluations, vector <double> &T_End)
 {
 
 	//out_evaluations = evaluations;
@@ -112,6 +112,7 @@ void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <double> T_E
 
 void QT_DISP::Run()
 {
+
         for(int j = 0; j < heartBeats; ++j)
         {
             //vector <double> x (signals2.begin() + QRS_On[j], signals2.begin() + QRS_On[j + 1]);

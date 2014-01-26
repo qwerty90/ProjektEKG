@@ -2517,9 +2517,14 @@ void AirEcgMain::drawHrt(EcgData *data)
     //QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram));  //tu trzeba wymienic liste na wektor
    // ui->scrollAreaHrt->setWidget(hrtTachogram);
    // ui->scrollAreaHrt->show();
-    ui->vpbs_detected_count->setText(QString::number(*(data->vpbs_detected_count), 'f', 0));
-    ui->turbulence_onset_val->setText(QString::number(*(data->turbulence_onset), 'f', 2));
-    ui->turbulence_slope_val->setText(QString::number(*(data->turbulence_slope), 'f', 2));
+    ui->vpbs_detected_count->setText(QString::number((data->vpbs_detected_count), 'f', 0));
+    ui->turbulence_onset_val->setText(QString::number((data->turbulence_onset), 'f', 2));
+    ui->turbulence_slope_val->setText(QString::number((data->turbulence_slope), 'f', 2));
+}
+
+void AirEcgMain::drawQtDisp(EcgData *data)
+{
+    QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
 
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
@@ -3006,4 +3011,9 @@ void AirEcgMain::initEcgBaselineGui()
     ui->ButterworthcomboBox->addItems(coeffList);
 
     on_butterworthRadioButton_clicked();
+}
+
+void AirEcgMain::on_pushButton_16_clicked()
+{
+    emit runQtDisp();
 }

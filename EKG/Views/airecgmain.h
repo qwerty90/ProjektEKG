@@ -105,6 +105,7 @@ signals:
     void runQrsClass();
     void runSleepApnea();
     void runVcgLoop();
+    void runQtDisp();
 
     void qrsClassChanged(int index, int type);
     //void qrsClustererChanged(ClustererType type);
@@ -144,6 +145,7 @@ public slots:
     void drawSigEdr(EcgData *data);
     void drawVcgLoop(EcgData* data);
     void drawSleep_Apnea(EcgData *data);
+    void drawQtDisp(EcgData *data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -265,6 +267,8 @@ private slots:
     void on_pushButton_11_clicked();
 
     void initEcgBaselineGui();
+
+    void on_pushButton_16_clicked();
 
 private:
     Ui::AirEcgMain *ui;
