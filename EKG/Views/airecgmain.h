@@ -120,6 +120,7 @@ signals:
     void ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1);
     void ecgBase_Kalman1Changed(const QString &arg1);
     void ecgBase_Kalman2Changed(const QString &arg1);
+    void ecgBase_ButterworthCoeffSetChanged(int set);
 
     void on_st_interval_detection_width_Changed(const QString &arg1);
     void on_st_interval_smothing_width_Changed(const QString &arg1);

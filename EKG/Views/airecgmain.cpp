@@ -3009,18 +3009,7 @@ void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
 
 void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
 {
-    if(index==0)
-    {
-
-    }
-    else if(index==1)
-    {
-
-    }
-    else if(index==2)
-    {
-
-    }
+    emit ecgBase_ButterworthCoeffSetChanged(index);
 }
 
 void AirEcgMain::on_checkBox_2_clicked(bool checked)
