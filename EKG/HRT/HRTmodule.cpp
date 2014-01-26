@@ -1,4 +1,3 @@
-//#include "stdafx.h"
 #include "HRTmodule.h"
 
 
@@ -6,13 +5,13 @@ using namespace HRT;
 
 
 void HRTmodule::calculateHRT(QVector<unsigned int> Rpeaks, int samplingFrequency)
-//void HRTmodule::calculateHRT(vector<unsigned int> Rpeaks, int samplingFrequency)//mozna zamienic na QVector
+//void HRTmodule::calculateHRT(vector<unsigned int> Rpeaks, int samplingFrequency)
 {
 	//////init
 	n_R=Rpeaks.size();
 	frequency=(double)samplingFrequency;
-	for (int i=0;i<n_R;i++)
-		this->R_peaks.push_back((int)(Rpeaks[i]*1000.0)/frequency);//transform rpeaks
+	for (unsigned int i=0;i<n_R;i++)
+		this->R_peaks.push_back((unsigned int)(Rpeaks[i]*1000.0)/frequency);//transform rpeaks
 
 	/////init
 
@@ -28,7 +27,7 @@ void HRTmodule::calculateHRT(QVector<unsigned int> Rpeaks, int samplingFrequency
 			if(HRT_RR.size()>0)
 			{
 				GlobalAverage();
-                tacho=tachogram();
+				tacho=tachogram();
 				totalVEBcount=HRT_RR.size();
 			}
 			else
@@ -83,7 +82,7 @@ vector<double> HRTmodule::findVEB()
 	double RR4=R_peaks[4]-R_peaks[3];
 	double RR5=R_peaks[5]-R_peaks[4];
 	double RR_v1, RR_v2, RR_av;
-	for (int i=n_R_l; i<n_R-n_R_u; ++i) 
+	for (unsigned int i=n_R_l; i<n_R-n_R_u; ++i) 
 	{
 		RR_v1=R_peaks[i]-R_peaks[i-1]; 
 		RR_v2=R_peaks[i+1]-R_peaks[i]; 
@@ -255,7 +254,7 @@ void HRTmodule::GlobalAverage()
 	this->TS_B=B;
 } 
 
-vector<double> HRTmodule::tachogram()
+QVector<double> HRTmodule::tachogram()
 {
 	int i,j;
 	int n = HRT_RR.size();

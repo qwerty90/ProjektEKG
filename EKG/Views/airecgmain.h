@@ -214,9 +214,9 @@ private slots:
 
     //void on_radioButton_5_clicked();
 
-    void on_CzasUsrednienialineEdit_textEdited(const QString &arg1);
+    void on_maTimeSpinBox_valueChanged(const QString &arg1);
 
-    void on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1);
+    void on_maWindowSpinBox_valueChanged(const QString &arg1);
 
     void on_Kalman1lineEdit_textEdited(const QString &arg1);
 
@@ -263,6 +263,8 @@ private slots:
     void on_detectionratelinear_clicked();
 
     void on_pushButton_11_clicked();
+
+    void initEcgBaselineGui();
 
 private:
     Ui::AirEcgMain *ui;

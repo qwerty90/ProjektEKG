@@ -17,7 +17,8 @@ HEADERS += \
     Views/processing.h \
     Views/notready.h \
     Views/scrollzoomer.h\
-    Views/scrollbar.h
+    Views/scrollbar.h \
+    Views/time_scal.h
 
 FORMS    += \
     Views/airecgmain.ui \

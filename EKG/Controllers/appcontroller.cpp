@@ -227,7 +227,6 @@ void AppController::runEcgBaseline()
         return;
     }
 
-    KalmanFilter kalman;
     const QVector<ButterCoefficients> coeff = predefinedButterCoefficientSets();
 
     if (this->entity->ecg_baselined!=NULL)
@@ -269,7 +268,8 @@ void AppController::runEcgBaseline()
         else
         {
             QLOG_INFO() << "BASELINE/ Using moving average filter with default window width = 3." ;
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                                                            entity->settings->avgWindowSize));
         }
 
         break;
@@ -279,11 +279,14 @@ void AppController::runEcgBaseline()
         break;
     case 3:  //kalman
         QLOG_INFO() << "BASELINE/ Using kalman filter.";
-        this->entity->ecg_baselined = new QVector<double>(kalman.processKalman(*(this->entity->GetCurrentSignal())));
+
+        this->entity->ecg_baselined = new QVector<double>(processKalman(*(this->entity->GetCurrentSignal()),
+                                                                        entity->info->frequencyValue));
         break;
     default:
         QLOG_INFO() << "BASELINE/ Using default filter.";
-        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),3));
+        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                                                        entity->settings->avgWindowSize));
         break;
     }            
 
