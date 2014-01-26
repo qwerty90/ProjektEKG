@@ -30,6 +30,8 @@ class AirEcgMain : public QMainWindow
     QSignalMapper* baselineSignalMapper;
     QString hash;
 
+    EcgData *currentEcgData;
+
     //void drawEcgBaseline(EcgData* data);
     //void drawRPeaks(EcgData* data);
     //void drawHrv1(EcgData* data);

@@ -118,6 +118,8 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
 
 void AirEcgMain::receivePatientData(EcgData *data)
 {
+    currentEcgData = data;
+
     EcgInfo *info = data->info;
     ui->patientSexLabel_2->setText(info->sex);
     ui->patientAgeLabel_2->setText(QString::number(info->age));
@@ -2990,11 +2992,17 @@ void AirEcgMain::on_kalmanRadioButton_clicked()
 
 void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
 {
+    double time = arg1.toDouble();
+    ui->maWindowSpinBox->setValue(ceil(time * currentEcgData->info->frequencyValue));
+
     emit ecgBase_CzasUsrednieniaChanged(arg1);
 }
 
 void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
 {
+    int size = arg1.toInt();
+    ui->maTimeSpinBox->setValue(float(size / currentEcgData->info->frequencyValue));
+
     emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
 }
 
