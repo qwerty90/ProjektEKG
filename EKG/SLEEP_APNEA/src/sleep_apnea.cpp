@@ -453,6 +453,34 @@ QVector<BeginEndPair> sleep_apnea::apnea_detection(QVector<QVector<double> > tab
 /*************************************************
 ********************FOR GUI***********************
 *************************************************/
+QVector<QVector<double>> sleep_apnea::sleep_apnea_plots(QVector<unsigned int> tab_R_peaks)
+{
+    //getting data
+    QVector<QVector<double>>tab_RR,tab_RR_new,tab_res;
+    QVector<QVector<double>>h_amp(2);
+    QVector<QVector<double>>h_freq(2);
+    QVector<QVector<double>> apnea_plots(3);
+
+    tab_RR=RR_intervals(tab_R_peaks);
+    tab_RR_new=averange_filter(tab_RR);
+    tab_res=resample(tab_RR_new);
+    HP_LP_filter(tab_res);
+    hilbert(tab_res,h_amp,h_freq);
+    freq_amp_filter(h_freq,h_amp);
+    median_filter(h_freq,h_amp);
+
+    //resizing output
+    apnea_plots[0].resize(h_amp[0].size());
+    apnea_plots[1].resize(h_amp[1].size());
+    apnea_plots[2].resize(h_freq[1].size());
+    //writing output
+    int i;
+    for(i=0;i<apnea_plots[0].size();i++)apnea_plots[0][i]=h_amp[0][i];
+    for(i=0;i<apnea_plots[1].size();i++)apnea_plots[1][i]=h_amp[1][i];
+    for(i=0;i<apnea_plots[2].size();i++)apnea_plots[2][i]=h_freq[1][i];
+    return apnea_plots;
+}
+
 QVector<BeginEndPair> sleep_apnea::sleep_apnea_output(QVector<unsigned int> tab_R_peaks)
 {
     //getting data

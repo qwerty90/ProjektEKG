@@ -808,8 +808,11 @@ void AppController::runSleepApnea()
     this->entity->SleepApnea = new QVector<BeginEndPair>(obiekt.sleep_apnea_output(
                                                              this->entity->Rpeaks_uint));
 
+    //narysować proste na podstawie wartosci treshold z obiekt.gui_output
     this->entity->SleepApnea_plot = new QVector<double>(obiekt.gui_output(
                                                             this->entity->Rpeaks_uint));
+
+    //wykorzystac obiekt.sleep_apnea_plots() do wyrysowania dwóch wykresów!!!
 
     for(int i =0; i< this->entity->SleepApnea->size();i++)
         QLOG_TRACE() << "Sleep Apnea/ "<<

@@ -2543,8 +2543,8 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
-    ui->sleepcnt->setText(QString::number(data->SleepApnea->at(2).first));
-    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea->at(3).first));
+    ui->sleepcnt->setText(QString::number(data->SleepApnea_plot->value(2))+" %");
+    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea_plot->value(3))+" %");
 }
 void AirEcgMain::drawVcgLoop(EcgData* data)
 {
