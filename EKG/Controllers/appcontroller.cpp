@@ -467,6 +467,43 @@ void AppController::runStInterval()
 
     this->entity->STintervals = new QList<EcgStDescriptor>(result);
 
+    // !!! Ponizej znajduje sie generowanie przykladowych danych dla zestawu 100.dat,
+    // !!! dzieki czemu mozna przetestowac rysowanie ST
+//    runEcgBaseline();
+
+//    int stOn[] = { 95, 387, 677, 963, 1244 };
+//    int stEnd[] = { 184, 445, 761, 1047, 1308 };
+//    EcgStPosition pos[] = {
+//        ST_POS_DEPRESSION,
+//        ST_POS_NORMAL,
+//        ST_POS_NORMAL,
+//        ST_POS_NORMAL,
+//        ST_POS_NORMAL
+//    };
+//    EcgStShape shape[] = {
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL
+//    };
+
+//    this->entity->STintervals = new QList<EcgStDescriptor>();
+//    for (int i = 0; i < 5; i++)
+//    {
+//        EcgStDescriptor desc;
+//        desc.STOn = this->entity->ecg_baselined->constBegin() + (stOn[i] - 1);
+//        desc.STEnd = this->entity->ecg_baselined->constBegin() + (stEnd[i] - 1);
+//        desc.STMid = desc.STOn + (stEnd[i] - stOn[i]) / 2;
+//        desc.offset = 666.6;
+//        desc.slope1 = 69.0;
+//        desc.slope2 = 96.0;
+//        desc.position = pos[i];
+//        desc.shape = shape[i];
+
+//        this->entity->STintervals->append(desc);
+//    }
+
     emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
 }
