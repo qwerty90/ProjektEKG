@@ -2993,17 +2993,15 @@ void AirEcgMain::on_kalmanRadioButton_clicked()
 void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
 {
     double time = arg1.toDouble();
-    ui->maWindowSpinBox->setValue(ceil(time * currentEcgData->info->frequencyValue));
+    int windowSize = ceil(time * currentEcgData->info->frequencyValue);
+    ui->windowSizeLabel->setText(QString::number(windowSize));
 
-    emit ecgBase_CzasUsrednieniaChanged(arg1);
+    emit ecgBase_WindowSizeChanged(QString::number(windowSize));
 }
 
 void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
 {
-    int size = arg1.toInt();
-    ui->maTimeSpinBox->setValue(float(size / currentEcgData->info->frequencyValue));
 
-    emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
 }
 
 void AirEcgMain::on_Kalman1lineEdit_textEdited(const QString &arg1)
@@ -3122,6 +3120,7 @@ void AirEcgMain::initEcgBaselineGui()
 
     ui->ButterworthcomboBox->addItems(coeffList);
 
+    ecgBase_WindowSizeChanged("150");
     on_butterworthRadioButton_clicked();
 }
 

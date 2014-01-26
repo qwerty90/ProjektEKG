@@ -47,7 +47,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(ecgBase_CzasUsrednieniaChanged(QString)),this,SLOT(CzasUsrednieniaEdit(QString)));
     this->connect(view, SIGNAL(ecgBase_Kalman1Changed(QString)),this,SLOT(ecgBase_Kalman1Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
-    this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
+    this->connect(view, SIGNAL(ecgBase_WindowSizeChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
     this->connect(view, SIGNAL(ecgBase_ButterworthCoeffSetChanged(int)), this, SLOT(ecgButterChanged(int)));
 
     this->connect(view, SIGNAL(stInterval_detectionWidthChanged(int)),this,SLOT(stInterval_detectionWidthChanged(int)));
@@ -250,33 +250,24 @@ void AppController::runEcgBaseline()
         break;
     case 1:
         QLOG_INFO() << "BASELINE/ Using moving average filter.";
-        if(this->entity->settings->averaging_time!=0)
-        {
-            QLOG_INFO() << "BASELINE/ Using moving average filter with averaging time = "
-                        << QString::number(this->entity->settings->averaging_time) << " .";
-            this->entity->ecg_baselined =
-                    new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                        (int)(this->entity->info->frequencyValue),
-                                         this->entity->settings->averaging_time));
-            this->entity->characteristics =
-                    new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
-                                         this->entity->settings->averaging_time));
-        }
-        else if (this->entity->settings->avgWindowSize!=0)
-        {
-            QLOG_INFO() << "BASELINE/ Using moving average filter with window width = "
-                        << QString::number(this->entity->settings->avgWindowSize) << " .";
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                                                            this->entity->settings->avgWindowSize));
-        }
-        else
-        {
-            QLOG_INFO() << "BASELINE/ Using moving average filter with default window width = 3." ;
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                                                            entity->settings->avgWindowSize));
-        }
-
+//        if(this->entity->settings->averaging_time!=0)
+//        {
+//            QLOG_INFO() << "BASELINE/ Using moving average filter with averaging time = "
+//                        << QString::number(this->entity->settings->averaging_time) << " .";
+//            this->entity->ecg_baselined =
+//                    new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+//                                        (int)(this->entity->info->frequencyValue),
+//                                         this->entity->settings->averaging_time));
+//            this->entity->characteristics =
+//                    new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
+//                                         this->entity->settings->averaging_time));
+//        }
+        QLOG_INFO() << "BASELINE/ Using moving average filter with window width = "
+                    << QString::number(this->entity->settings->avgWindowSize) << " .";
+        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                                                        this->entity->settings->avgWindowSize));
         break;
+
     case 2: //savitzky-golay
         QLOG_INFO() << "BASELINE/ Using Savitzky-Golay filter.";
         this->entity->ecg_baselined = new QVector<double>(processSGolay(*(this->entity->GetCurrentSignal())));
