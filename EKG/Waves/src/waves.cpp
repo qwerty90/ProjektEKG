@@ -17,7 +17,7 @@ void waves::set_qrs_onset(QVector<double>& ecg, vector_it& r_peaks)
     const float hi_freq_lim = 40;
 
     double a_t_max, env_t=0.0, a_t=0.0;
-    int window_qrs_onset=ceil(0.25*fs);
+    int window_qrs_onset=ceil(0.1*fs);
     int sliding_win_start,s2=0,tp_int=0,w=0,temp_j=0,win_end=0;
     QVector<double> envelope_win;
     it tp, envelope_end, envelope_start;
@@ -193,86 +193,105 @@ void waves::set_qrs_end(QVector<double>& ecg,vector_it& r_peaks)
 
 void waves::set_p_onset(QVector<double>& ecg, vector_it& r_peaks)
 {
-    double Rv;
-    double mediana=0;
-    double Pmax=0;
-    int P_mid;
-    int ipeak;
-    QVector<int> P_oneset;
-    QVector<int> P_middle;
-    QVector<int> window_length;
-    QVector<double> PToneset;
-    QVector<double> dPToneset;
-    QVector<double> window_signal;
-    QVector<double> onset_signal;
-    QVector<double> Pt;
-    QVector<double> M;
-    int p_one_end_window=20;
-    for(int i=0;i<r_peaks.size()-1;i++)
-    {
+ double Rv;
+ double mediana=0;
+ double Pmax=0;
+ int P_mid;
+ int ipeak=0;
+ int poczatek;
+ QVector<int> window_length;
+ QVector<double> PToneset;
+ QVector<double> dPToneset;
+ QVector<double> window_signal;
+ QVector<double> onset_signal;
+ QVector<double> Pt;
+ QVector<double> M;
 
-        window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
+ int p_one_end_window=25;
+ for(int i=0;i<r_peaks.size()-1;i++)
+     {
+    window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
+     }
+ if((qrs_onset_it.at(0)-ecg.begin())>(r_peaks.at(0)-ecg.begin()))
+    {
+     poczatek=0;
     }
-    for(int i=0;i<window_length.size()-1;i++)
+   else
+     poczatek=1;
+
+    for(int i=0;i<window_length.size();i++)
     {
         Rv=0.003;
         for(int j=0;j<window_length.at(i);j++)
         {
-            window_signal.push_back(ecg.at(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i)-1+j));
+        window_signal.push_back(ecg.at(qrs_onset_it.at(i+poczatek)-ecg.begin()-window_length.at(i)+j));
         }
         for(int j=0;j<window_signal.size();j++)
         {
-            mediana+=window_signal.at(j);
+        mediana+=window_signal.at(j);
         }
         mediana/=window_length.at(i);
+
         for(int j=0;j<window_signal.size();j++)
         {
-            window_signal.replace(j,window_signal.at(j)-mediana);
-            Pt.push_back(atan(window_signal.at(j)/Rv));
-            M.push_back(sqrt(pow(Rv,2)+ pow(window_signal.at(j),2)));
+        window_signal.replace(j,window_signal.at(j)-mediana);
+        Pt.push_back(atan(window_signal.at(j)/Rv));
+        M.push_back(sqrt(pow(Rv,2)+ pow(window_signal.at(j),2)));
         }
         mediana=0;
         for(int j=0;j<Pt.size();j++)
         {
+
             if(Pmax<=Pt.at(j))
             {
-                Pmax=Pt.at(j);
-                ipeak=j;
+            Pmax=Pt.at(j);
+            ipeak=j+1;
             }
+
         }
 
-        if (ipeak==0) ipeak=1;                      // Umozliwiają przejscie algorytmu w przypadkach krytycznych by TTDW
-        if (ipeak==M.size()-1) ipeak=M.size()-2;    // Jeszcze będzie poprawiane
-        if((M.at(ipeak-1)<M.at(ipeak))&&(M.at(ipeak)>M.at(ipeak+1)))
+           if(ipeak==1||ipeak==Pt.size())
+           {
+           window_signal.clear();
+           Pt.clear();
+           Pmax=0;
+           M.clear();
+           continue;
+           }
+        if((M.at(ipeak-2)<M.at(ipeak-1))&&(M.at(ipeak-1)>M.at(ipeak)))
         {
-            P_mid=ipeak+(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i));
-            P_middle.push_back(P_mid);
+            P_mid=ipeak+(qrs_onset_it.at(i+poczatek)-ecg.begin()-window_length.at(i));
             Rv=0.005;
-            for(int j=P_mid-p_one_end_window;j<P_mid;j++)
+
+             for(int j=P_mid-p_one_end_window;j<P_mid;j++)
             {
-                onset_signal.push_back(ecg.at(j));
-                mediana+=onset_signal.last();
+            onset_signal.push_back(ecg.at(j));
+            mediana+=onset_signal.last();
             }
             mediana/=onset_signal.size();
             for(int j=0;j<onset_signal.size();j++)
-                onset_signal.replace(j,onset_signal.at(j)-mediana);
+            {
+            onset_signal.replace(j,onset_signal.at(j)-mediana);
+            }
+
+            mediana=0;
             for(int j=0;j<onset_signal.size();j++)
             {
                 PToneset.push_back(atan(onset_signal.at(j)/Rv));
                 if(j==0)
-                    continue;
+                continue;
                 else
                 {
-                    dPToneset.push_back(PToneset.at(j)-PToneset.at(j-1));
-                    if(dPToneset.last()>0.01)
-                    {
-                        P_oneset.push_back(P_mid-p_one_end_window+j-1);
-                        p_onset_it.push_back(ecg.begin()+P_mid-p_one_end_window+j-1);
+                dPToneset.push_back(PToneset.at(j)-PToneset.at(j-1));
+                if(dPToneset.last()>0.07)
+                        {
+                        p_onset_it.push_back(ecg.begin()+P_mid-p_one_end_window+j);
                         break;
-                    }
+                        }
                 }
             }
         }
+
         window_signal.clear();
         onset_signal.clear();
         Pt.clear();
@@ -281,7 +300,6 @@ void waves::set_p_onset(QVector<double>& ecg, vector_it& r_peaks)
         dPToneset.clear();
         Pmax=0;
     }
-
 }
 void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
 {
@@ -290,8 +308,7 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
     double Pmax=0;
     int P_mid;
     int ipeak;
-    QVector<int> P_end;
-    QVector<int> P_middle;
+    int poczatek;
     QVector<int> window_length;
     QVector<double> PTend;
     QVector<double> dPTend;
@@ -300,87 +317,99 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
     QVector<double> Pt;
     QVector<double> M;
 
-    int p_one_end_window=20;
+    int p_one_end_window=25;
     for(int i=0;i<r_peaks.size()-1;i++)
+        {
+       window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
+        }
+    if((qrs_onset_it.at(0)-ecg.begin())>(r_peaks.at(0)-ecg.begin()))
     {
-        window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
+    poczatek=0;
     }
-    for(int i=0;i<window_length.size()-1;i++)
-    {
-        Rv=0.003;
+    else
+    poczatek=1;
 
-        for(int j=0;j<window_length.at(i);j++)
-        {
-            window_signal.push_back(ecg.at(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i)-1+j));
-        }
-        for(int j=0;j<window_signal.size();j++)
-        {
-            mediana+=window_signal.at(j);
-        }
-        mediana/=window_length.at(i);
-        for(int j=0;j<window_signal.size();j++)
-        {
-            window_signal.replace(j,window_signal.at(j)-mediana);
-            Pt.push_back(atan(window_signal.at(j)/Rv));
-            M.push_back(sqrt(pow(Rv,2)+ pow(window_signal.at(j),2)));
-        }
-        mediana=0;
-        for(int j=0;j<Pt.size();j++)
-        {
-            if(Pmax<=Pt.at(j))
-            {
-                Pmax=Pt.at(j);
-                ipeak=j;
-            }
-        }
-        if (ipeak==0) ipeak=1;                          //analogicznie jak w p_onset
-        if (ipeak==M.size()-1) ipeak=M.size()-2;        //
-        if((M.at(ipeak-1)<M.at(ipeak))&&(M.at(ipeak)>M.at(ipeak+1)))
-        {
-            P_mid=ipeak+(qrs_onset_it.at(i+1)-ecg.begin()-window_length.at(i));
-            P_middle.push_back(P_mid);
-            Rv=0.005;
-            for(int j=P_mid;j<P_mid+p_one_end_window;j++)
-            {
-                onset_signal.push_back(ecg.at(j));
-                mediana+=onset_signal.last();
-            }
-            mediana/=onset_signal.size();
+    for(int i=0;i<window_length.size();i++)
+           {
+             Rv=0.003;
+             for(int j=0;j<window_length.at(i);j++)
+             {
+             window_signal.push_back(ecg.at(qrs_onset_it.at(i+poczatek)-ecg.begin()-window_length.at(i)+j));
+             }
+             for(int j=0;j<window_signal.size();j++)
+             {
+             mediana+=window_signal.at(j);
+             }
+             mediana/=window_length.at(i);
+             for(int j=0;j<window_signal.size();j++)
+             {
+             window_signal.replace(j,window_signal.at(j)-mediana);
+             Pt.push_back(atan(window_signal.at(j)/Rv));
+             M.push_back(sqrt(pow(Rv,2)+ pow(window_signal.at(j),2)));
+             }
+             mediana=0;
+             for(int j=0;j<Pt.size();j++)
+             {
+                 if(Pmax<=Pt.at(j))
+                 {
+                 Pmax=Pt.at(j);
+                 ipeak=j+1;
+                 }
+             }
+             if(ipeak==1||ipeak==Pt.size())
+             {
+             window_signal.clear();
+             Pt.clear();
+             Pmax=0;
+             M.clear();
+             continue;
+             }
 
-            for(int j=0;j<onset_signal.size();j++)
-            {
-                onset_signal.replace(j,onset_signal.at(j)-mediana);
-                PTend.push_back(atan(onset_signal.at(j)/Rv));
-            }
-            for(int j=onset_signal.size()-1;j>0;j--)
-            {
-                if(j==(onset_signal.size()-1))
-                    continue;
-                else
-                {
+             if((M.at(ipeak-2)<M.at(ipeak-1))&&(M.at(ipeak-1)>M.at(ipeak)))
+                 {
+                  P_mid=ipeak+(qrs_onset_it.at(i+poczatek)-ecg.begin()-window_length.at(i));
+                  Rv=0.005;
+                  for(int j=P_mid-1;j<P_mid+p_one_end_window-1;j++)
+                  {
+                  onset_signal.push_back(ecg.at(j));
+                  mediana+=onset_signal.last();
+                  }
+                  mediana/=onset_signal.size();
+                  for(int j=0;j<onset_signal.size();j++)
+                  {
+                   onset_signal.replace(j,onset_signal.at(j)-mediana);
+                   PTend.push_back(atan(onset_signal.at(j)/Rv));
+                  }
+                  mediana=0;
+                  for(int j=onset_signal.size();j>0;j--)
+                   {
+                   if(j==(onset_signal.size()))
+                   continue;
+                   else
+                   {
+                   dPTend.push_front(PTend.at(j-1)-PTend.at(j));
+                   }
+                   }
 
-                    dPTend.push_front(PTend.at(j)-PTend.at(j+1));
-
-
-
-                    if(dPTend.first()>0.01)
-                    {
-                        P_end.push_back(P_mid+j);
-
-                        p_end_it.push_back(ecg.begin()+P_mid+j);
-                        break;
-                    }
-                }
-            }}
-        window_signal.clear();
-        onset_signal.clear();
-        Pt.clear();
-        M.clear();
-        PTend.clear();
-        dPTend.clear();
-        Pmax=0;
-    }
+                  for(int j=dPTend.size();j>0;j--)
+                  {
+                   if(dPTend.at(j-1)>0.07)
+                       {
+                       p_end_it.push_back(ecg.begin()+P_mid+j-2);
+                       break;
+                       }
+                  }
+              }
+           window_signal.clear();
+           onset_signal.clear();
+           Pt.clear();
+           M.clear();
+           PTend.clear();
+           dPTend.clear();
+           Pmax=0;
+   }
 }
+
 
 const vector_it & waves::get_qrs_onset()
 {

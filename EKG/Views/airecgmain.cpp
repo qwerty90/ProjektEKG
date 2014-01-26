@@ -2118,7 +2118,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
 
     return plot;
-}
+}  
 
 QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency)
 {
@@ -2393,29 +2393,144 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 void AirEcgMain::drawStInterval(EcgData *data)
 {
-    QLOG_TRACE() << "Drawing StInterval not ready yet.";
+    // draw baselined data
+    QwtPlot *plotST = plotPlot(*(data->ecg_baselined), data->info->frequencyValue);
+    ui->stIntervalArea->setWidget(plotST);
+    ui->stIntervalArea->show();
 
-    ui->tableWidget_2->setRowCount(20);
-    for (int r = 0; r < ui->tableWidget_2->rowCount(); ++r)
+    if (data->STintervals == NULL)
+        return;
+
+    int num = data->STintervals->size();
+
+    ui->stIntervalList->setRowCount(num);
+    ui->stIntervalList->setEditTriggers(QAbstractItemView::NoEditTriggers); // disable list edit
+
+    QVector<QPointF> stOn;
+    QVector<QPointF> stMid;
+    QVector<QPointF> stEnd;
+
+    for (int i = 0; i < num; i++)
     {
-        QTableWidgetItem *newItem = new QTableWidgetItem("SDADAD");
-        ui->tableWidget_2->setItem(r,0 , newItem);
-        newItem = new QTableWidgetItem("DUPA");
-        ui->tableWidget_2->setItem(r, 1, newItem);
-        newItem = new QTableWidgetItem("AA");
-        ui->tableWidget_2->setItem(r, 2, newItem);
-        newItem = new QTableWidgetItem("COS");
-        ui->tableWidget_2->setItem(r, 3, newItem);
-        newItem = new QTableWidgetItem("ASDAD");
-        ui->tableWidget_2->setItem(r, 4, newItem);
+        EcgStDescriptor desc = data->STintervals->at(i);
+
+        int on = desc.STOn - data->ecg_baselined->constBegin();
+        int mid = desc.STMid - data->ecg_baselined->constBegin();
+        int end = desc.STEnd - data->ecg_baselined->constBegin();
+
+        double onTime = (double)on / data->info->frequencyValue * 1000;
+
+        stOn.append(QPointF(onTime, *desc.STOn));
+        stMid.append(QPointF((double)mid / data->info->frequencyValue * 1000, *desc.STMid));
+        stEnd.append(QPointF((double)end / data->info->frequencyValue * 1000, *desc.STEnd));
+
+        QVector<double> x;
+        QVector<double> y;
+        for (QVector<double>::const_iterator k = desc.STOn; k != desc.STEnd; ++k)
+        {
+            int sampleNum = k - data->ecg_baselined->constBegin();
+            x.append((double)sampleNum / data->info->frequencyValue * 1000);
+            y.append(*k);
+        }
+
+        // create curves for ST intervals highlights
+        QwtPlotCurve *st = new QwtPlotCurve();
+        QPen pen(Qt::red);
+        pen.setWidth(2);
+        st->setPen(pen);
+        st->setSamples(x, y);
+        st->setItemAttribute(QwtPlotItem::Legend, false);
+        st->attach(plotST);
+
+        QString position;
+        switch (desc.position)
+        {
+        case ST_POS_NORMAL:
+            position = tr("normal");
+            break;
+        case ST_POS_ELEVATION:
+            position = tr("elevation");
+            break;
+        case ST_POS_DEPRESSION:
+            position = tr("depression");
+            break;
+        }
+
+        QString shape;
+        switch (desc.shape)
+        {
+        case ST_SHAPE_HORIZONTAL:
+            shape = tr("horizontal");
+            break;
+        case ST_SHAPE_DOWNSLOPING:
+            shape = tr("downsloping");
+            break;
+        case ST_SHAPE_UPSLOPING:
+            shape = tr("upsloping");
+            break;
+        case ST_SHAPE_CONCAVE:
+            shape = tr("concave");
+            break;
+        case ST_SHAPE_CONVEX:
+            shape = tr("convex");
+            break;
+        }
+
+        // create STon time string
+        int ms = (int)onTime % 1000;
+        int ss = (int)onTime / 1000 % 60;
+        int mm = (int)onTime / 60000;
+        QString time = QString("%1:%2:%3").arg(mm, 2, 10, QChar('0')).arg(ss, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
+
+        // create list item
+        QTableWidgetItem *newItem = new QTableWidgetItem(QString::number(i + 1));
+        ui->stIntervalList->setItem(i, 0 , newItem);
+        newItem = new QTableWidgetItem(time);
+        ui->stIntervalList->setItem(i, 1, newItem);
+        newItem = new QTableWidgetItem(position);
+        ui->stIntervalList->setItem(i, 2, newItem);
+        newItem = new QTableWidgetItem(shape);
+        ui->stIntervalList->setItem(i, 3, newItem);
+        newItem = new QTableWidgetItem(QString::number(desc.offset));
+        ui->stIntervalList->setItem(i, 4, newItem);
+        newItem = new QTableWidgetItem(QString::number(desc.slope1));
+        ui->stIntervalList->setItem(i, 5, newItem);
+        newItem = new QTableWidgetItem(QString::number(desc.slope2));
+        ui->stIntervalList->setItem(i, 6, newItem);
     }
 
-  //  QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
- //   ui->stIntervalArea->setWidget(plotX);
-  //  ui->stIntervalArea->show();
+    // draw STon points
+    QwtPlotCurve *stOnPoints = new QwtPlotCurve();
+    QwtSymbol *stOnMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::red, QPen(Qt::red), QSize(6, 6));
+    stOnPoints->setSymbol(stOnMarker);
+    stOnPoints->setTitle("STon");
+    stOnPoints->setPen(QColor(Qt::red));
+    stOnPoints->setStyle(QwtPlotCurve::NoCurve);
+    stOnPoints->setSamples(stOn);
+    stOnPoints->attach(plotST);
 
+    // draw STmid points
+    QwtPlotCurve *stMidPoints = new QwtPlotCurve();
+    QColor color(11, 157, 0);
+    QwtSymbol *stMidMarker = new QwtSymbol(QwtSymbol::Ellipse, QBrush(color), QPen(color), QSize(6, 6));
+    stMidPoints->setSymbol(stMidMarker);
+    stMidPoints->setTitle("STmid");
+    stMidPoints->setPen(color);
+    stMidPoints->setStyle(QwtPlotCurve::NoCurve);
+    stMidPoints->setSamples(stMid);
+    stMidPoints->attach(plotST);
 
+    // draw STend points
+    QwtPlotCurve *stEndPoints = new QwtPlotCurve();
+    QwtSymbol *stEndMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::blue, QPen(Qt::blue), QSize(6, 6));
+    stEndPoints->setSymbol(stEndMarker);
+    stEndPoints->setTitle("STend");
+    stEndPoints->setPen(QColor(Qt::blue));
+    stEndPoints->setStyle(QwtPlotCurve::NoCurve);
+    stEndPoints->setSamples(stEnd);
+    stEndPoints->attach(plotST);
 }
+
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
     QwtPlot *plotSleepApnea = plotSleep_Apnea(*(data->ecg_baselined),data->info->frequencyValue );
