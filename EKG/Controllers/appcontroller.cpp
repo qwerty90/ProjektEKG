@@ -44,10 +44,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
 
-    this->connect(view, SIGNAL(ecgBase_CzasUsrednieniaChanged(QString)),this,SLOT(CzasUsrednieniaEdit(QString)));
-    this->connect(view, SIGNAL(ecgBase_Kalman1Changed(QString)),this,SLOT(ecgBase_Kalman1Changed(QString)));
-    this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
-    this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
+    this->connect(view, SIGNAL(ecgBase_WindowSizeChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
     this->connect(view, SIGNAL(ecgBase_ButterworthCoeffSetChanged(int)), this, SLOT(ecgButterChanged(int)));
 
     this->connect(view, SIGNAL(stInterval_detectionWidthChanged(int)),this,SLOT(stInterval_detectionWidthChanged(int)));
@@ -250,33 +247,24 @@ void AppController::runEcgBaseline()
         break;
     case 1:
         QLOG_INFO() << "BASELINE/ Using moving average filter.";
-        if(this->entity->settings->averaging_time!=0)
-        {
-            QLOG_INFO() << "BASELINE/ Using moving average filter with averaging time = "
-                        << QString::number(this->entity->settings->averaging_time) << " .";
-            this->entity->ecg_baselined =
-                    new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                        (int)(this->entity->info->frequencyValue),
-                                         this->entity->settings->averaging_time));
-            this->entity->characteristics =
-                    new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
-                                         this->entity->settings->averaging_time));
-        }
-        else if (this->entity->settings->avgWindowSize!=0)
-        {
-            QLOG_INFO() << "BASELINE/ Using moving average filter with window width = "
-                        << QString::number(this->entity->settings->avgWindowSize) << " .";
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                                                            this->entity->settings->avgWindowSize));
-        }
-        else
-        {
-            QLOG_INFO() << "BASELINE/ Using moving average filter with default window width = 3." ;
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                                                            entity->settings->avgWindowSize));
-        }
-
+//        if(this->entity->settings->averaging_time!=0)
+//        {
+//            QLOG_INFO() << "BASELINE/ Using moving average filter with averaging time = "
+//                        << QString::number(this->entity->settings->averaging_time) << " .";
+//            this->entity->ecg_baselined =
+//                    new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+//                                        (int)(this->entity->info->frequencyValue),
+//                                         this->entity->settings->averaging_time));
+//            this->entity->characteristics =
+//                    new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
+//                                         this->entity->settings->averaging_time));
+//        }
+        QLOG_INFO() << "BASELINE/ Using moving average filter with window width = "
+                    << QString::number(this->entity->settings->avgWindowSize) << " .";
+        this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                                                        this->entity->settings->avgWindowSize));
         break;
+
     case 2: //savitzky-golay
         QLOG_INFO() << "BASELINE/ Using Savitzky-Golay filter.";
         this->entity->ecg_baselined = new QVector<double>(processSGolay(*(this->entity->GetCurrentSignal())));
@@ -808,8 +796,11 @@ void AppController::runSleepApnea()
     this->entity->SleepApnea = new QVector<BeginEndPair>(obiekt.sleep_apnea_output(
                                                              this->entity->Rpeaks_uint));
 
+    //narysować proste na podstawie wartosci treshold z obiekt.gui_output
     this->entity->SleepApnea_plot = new QVector<double>(obiekt.gui_output(
                                                             this->entity->Rpeaks_uint));
+
+    //wykorzystac obiekt.sleep_apnea_plots() do wyrysowania dwóch wykresów!!!
 
     for(int i =0; i< this->entity->SleepApnea->size();i++)
         QLOG_TRACE() << "Sleep Apnea/ "<<
@@ -829,10 +820,6 @@ void AppController::ecgBase_Kalman1Changed(const QString arg1)
 void AppController::ecgBase_Kalman2Changed(const QString arg2)
 {
     this->entity->settings->kalman_arg2 = arg2;
-}
-void AppController::CzasUsrednieniaEdit(const QString arg1)
-{
-    this->entity->settings->averaging_time = arg1.toDouble();
 }
 void AppController::ecgBase_WindowSizeEdit(const QString arg1)
 {

@@ -2556,8 +2556,8 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
-    ui->sleepcnt->setText(QString::number(data->SleepApnea->at(2).first));
-    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea->at(3).first));
+    ui->sleepcnt->setText(QString::number(data->SleepApnea_plot->value(2))+" %");
+    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea_plot->value(3))+" %");
 }
 void AirEcgMain::drawVcgLoop(EcgData* data)
 {
@@ -3006,26 +3006,10 @@ void AirEcgMain::on_kalmanRadioButton_clicked()
 void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
 {
     double time = arg1.toDouble();
-    ui->maWindowSpinBox->setValue(ceil(time * currentEcgData->info->frequencyValue));
+    int windowSize = ceil(time * currentEcgData->info->frequencyValue);
+    ui->windowSizeLabel->setText(QString::number(windowSize));
 
-    emit ecgBase_CzasUsrednieniaChanged(arg1);
-}
-
-void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
-{
-    int size = arg1.toInt();
-    ui->maTimeSpinBox->setValue(float(size / currentEcgData->info->frequencyValue));
-
-    emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
-}
-
-void AirEcgMain::on_Kalman1lineEdit_textEdited(const QString &arg1)
-{
-    emit ecgBase_Kalman1Changed(arg1);
-}
-void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
-{
-    emit ecgBase_Kalman2Changed(arg1);
+    emit ecgBase_WindowSizeChanged(QString::number(windowSize));
 }
 
 void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
@@ -3135,6 +3119,7 @@ void AirEcgMain::initEcgBaselineGui()
 
     ui->ButterworthcomboBox->addItems(coeffList);
 
+    ecgBase_WindowSizeChanged("150");
     on_butterworthRadioButton_clicked();
 }
 

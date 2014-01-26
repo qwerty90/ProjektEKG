@@ -38,3 +38,6 @@ SOURCES += \
     ECG_BASELINE/3rdparty/alglib/solvers.cpp \
     ECG_BASELINE/3rdparty/alglib/specialfunctions.cpp \
     ECG_BASELINE/3rdparty/alglib/statistics.cpp
+
+QMAKE_CXXFLAGS += -fopenmp
+QMAKE_LFLAGS += -fopenmp

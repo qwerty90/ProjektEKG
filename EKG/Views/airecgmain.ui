@@ -444,8 +444,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>86</width>
-                       <height>16</height>
+                       <width>1014</width>
+                       <height>502</height>
                       </rect>
                      </property>
                     </widget>
@@ -628,7 +628,29 @@
                    <item row="0" column="0">
                     <widget class="QLabel" name="label_47">
                      <property name="text">
-                      <string>Averaging time</string>
+                      <string>Averaging time [s]</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QDoubleSpinBox" name="maTimeSpinBox">
+                     <property name="suffix">
+                      <string/>
+                     </property>
+                     <property name="decimals">
+                      <number>3</number>
+                     </property>
+                     <property name="minimum">
+                      <double>0.001000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>10.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.001000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.500000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -640,17 +662,11 @@
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QSpinBox" name="maWindowSpinBox">
-                     <property name="maximum">
-                      <number>999</number>
-                     </property>
-                     <property name="value">
-                      <number>150</number>
+                    <widget class="QLabel" name="windowSizeLabel">
+                     <property name="text">
+                      <string>180</string>
                      </property>
                     </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QDoubleSpinBox" name="maTimeSpinBox"/>
                    </item>
                   </layout>
                  </widget>
@@ -751,8 +767,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1052</width>
+                   <height>385</height>
                   </rect>
                  </property>
                 </widget>
@@ -895,8 +911,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1052</width>
+                   <height>488</height>
                   </rect>
                  </property>
                 </widget>
@@ -2629,7 +2645,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>82</width>
+                       <width>1048</width>
                        <height>344</height>
                       </rect>
                      </property>
@@ -3765,8 +3781,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1052</width>
+                   <height>226</height>
                   </rect>
                  </property>
                 </widget>
@@ -3813,8 +3829,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1052</width>
+                   <height>226</height>
                   </rect>
                  </property>
                 </widget>
