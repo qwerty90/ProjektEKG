@@ -144,7 +144,9 @@ void QT_DISP::Run()
 
 			//wyznaczenie koncow zalamka T przy pomocy metod: paraboli oraz stycznej
 			T_EndP[j]=CalculateTendParabol(&x, &y, highestvelocity, iT_Peak, iP_On);
+QLOG_TRACE() << "QT_DISP/ TEndP value: " << T_EndP[j];
 			T_EndT[j]=CalculateTendTangent(&x, &y, highestvelocity, iT_Peak, iP_On);			
+QLOG_TRACE() << "QT_DISP/ TEndT value: " << T_EndT[j];
 		}
 	EvaluateQTDisp();
 }

@@ -294,7 +294,18 @@ void AppController::runEcgBaseline()
     }            
 
     QLOG_INFO() << "Ecg baseline done.";
+    double min=0;
+    double max=0;
+    for (int i=0; i<this->entity->ecg_baselined->size();i++)
+    {
+        if (this->entity->ecg_baselined->at(i)<min)
+            min = this->entity->ecg_baselined->at(i);
 
+        if (this->entity->ecg_baselined->at(i)>max)
+            max = this->entity->ecg_baselined->at(i);
+    }
+
+    QLOG_TRACE() << "MVC/ min/max values :" <<min<<"//"<<max;
     emit EcgBaseline_done(this->entity);
 
 }
@@ -567,7 +578,7 @@ void AppController::runQtDisp()
     for(int i=0; i<this->entity->Waves->QRS_onset->size();i++)
     {
         qrs_on.push_back((int)this->entity->Waves->QRS_onset->at(i) - (int)point0);
-        QLOG_TRACE() << qrs_on.at(i);
+        //QLOG_TRACE() << qrs_on.at(i);
     }
     for(int i=0; i<this->entity->Waves->QRS_end->size();i++)
     {
@@ -620,7 +631,7 @@ void AppController::runWaves()
         this->entity->Waves->QRS_onset = new iters(obiekt.get_qrs_onset());
         QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_onset->size())
                     <<" QRS_onset points.";
-        this->entity->Waves->QRS_end = new iters(obiekt.get_qrs_onset());
+        this->entity->Waves->QRS_end = new iters(obiekt.get_qrs_begin());
         QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_end->size())
                     <<" QRS_end points.";
 
@@ -641,6 +652,13 @@ void AppController::runWaves()
             this->entity->Waves->Count=this->entity->Waves->PWaveStart->size();
         if (this->entity->Waves->Count>this->entity->Waves->PWaveEnd->size())
             this->entity->Waves->Count=this->entity->Waves->PWaveEnd->size();
+
+        for(int i=0 ; i<this->entity->Waves->Count-1;i++)
+        {
+            QLOG_TRACE() <<"MVC/ qrs difference "
+                        <<((int)(this->entity->Waves->QRS_end->at(i+1)
+                           - this->entity->Waves->QRS_onset->at(i)));
+        }
 
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
