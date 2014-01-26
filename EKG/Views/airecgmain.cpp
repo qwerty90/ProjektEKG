@@ -3065,39 +3065,39 @@ void AirEcgMain::on_RUN_VCG_pushButton_clicked()
     emit this->runVcgLoop();
 }
 
-void AirEcgMain::on_st_interval_detection_width_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_detection_width_valueChanged(int arg1)
 {
-    emit on_st_interval_detection_width_Changed(arg1);
+    emit stInterval_detectionWidthChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_smothing_width_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_smoothing_width_valueChanged(int arg1)
 {
-    emit on_st_interval_smothing_width_Changed(arg1);
+    emit stInterval_smoothingWidthChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_morphology_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_morphology_valueChanged(double arg1)
 {
-    emit on_st_interval_morphology_Changed(arg1);
+    emit stInterval_morphologyChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_level_threshold_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_level_threshold_valueChanged(double arg1)
 {
-    emit on_st_interval_level_threshold_Changed(arg1);
+    emit stInterval_levelThresholdChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_slope_threshold_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_slope_threshold_valueChanged(double arg1)
 {
-    emit on_st_interval_slope_threshold_Changed(arg1);
+    emit stInterval_morphologyChanged(arg1);
 }
 
 void AirEcgMain::on_detectionratesquare_clicked()
 {
-    emit switchDetectionAlgorithmType_ST_INTERVAL(0);
+    emit stInterval_algorithmChanged(1);
 }
 
 void AirEcgMain::on_detectionratelinear_clicked()
 {
-    emit switchDetectionAlgorithmType_ST_INTERVAL(1);
+    emit stInterval_algorithmChanged(0);
 }
 
 void AirEcgMain::on_pushButton_11_clicked()

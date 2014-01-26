@@ -73,12 +73,12 @@ public slots:
 
     void vcg_loop_change(int index);
 
-    void on_st_interval_detection_width_Changed(const QString &arg1);
-    void on_st_interval_smothing_width_Changed(const QString &arg1);
-    void on_st_interval_morphology_Changed(const QString &arg1);
-    void on_st_interval_level_threshold_Changed(const QString &arg1);
-    void on_st_interval_slope_threshold_Changed(const QString &arg1);
-    void switchDetectionAlgorithmType_ST_INTERVAL(int index);
+    void stInterval_detectionWidthChanged(int arg1);
+    void stInterval_smoothingWidthChanged(int arg1);
+    void stInterval_morphologyChanged(double arg1);
+    void stInterval_levelThresholdChanged(double arg1);
+    void stInterval_slopeThresholdChanged(double arg1);
+    void stInterval_algorithmChanged(int index);
 
     /*void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);

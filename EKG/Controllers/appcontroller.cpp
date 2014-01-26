@@ -50,12 +50,12 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
     this->connect(view, SIGNAL(ecgBase_ButterworthCoeffSetChanged(int)), this, SLOT(ecgButterChanged(int)));
 
-    this->connect(view, SIGNAL(on_st_interval_detection_width_Changed(const QString &)),this,SLOT(on_st_interval_detection_width_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_smothing_width_Changed(const QString &)),this,SLOT(on_st_interval_smothing_width_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_morphology_Changed(const QString &)),this,SLOT(on_st_interval_morphology_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_level_threshold_Changed(const QString &)),this,SLOT(on_st_interval_level_threshold_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_slope_threshold_Changed(const QString &)),this,SLOT(on_st_interval_slope_threshold_Changed(const QString &)));
-    this->connect(view, SIGNAL(switchDetectionAlgorithmType_ST_INTERVAL(int)),this,SLOT(switchDetectionAlgorithmType_ST_INTERVAL(int)));
+    this->connect(view, SIGNAL(stInterval_detectionWidthChanged(int)),this,SLOT(stInterval_detectionWidthChanged(int)));
+    this->connect(view, SIGNAL(stInterval_smoothingWidthChanged(int)),this,SLOT(stInterval_smoothingWidthChanged(int)));
+    this->connect(view, SIGNAL(stInterval_morphologyChanged(double)),this,SLOT(stInterval_morphologyChanged(double)));
+    this->connect(view, SIGNAL(stInterval_levelThresholdChanged(double)),this,SLOT(stInterval_levelThresholdChanged(double)));
+    this->connect(view, SIGNAL(stInterval_slopeTthresholdChanged(double)),this,SLOT(stInterval_slopeTthresholdChanged(double)));
+    this->connect(view, SIGNAL(stInterval_algorithmChanged(int)),this,SLOT(stInterval_algorithmChanged(int)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
@@ -842,34 +842,40 @@ void AppController::ecgButterChanged(const int set_number)
 
 //ST INTERVAL
 
-void AppController::on_st_interval_detection_width_Changed(const QString &arg1)
+void AppController::stInterval_detectionWidthChanged(int arg1)
 {
-    this->entity->settings->detect_window = arg1.toDouble();
+    this->entity->settings->detect_window = arg1;
+//    QLOG_INFO() << "detection width" << arg1;
 }
 
-void AppController::on_st_interval_smothing_width_Changed(const QString &arg1)
+void AppController::stInterval_smoothingWidthChanged(int arg1)
 {
-    this->entity->settings->smooth_window = arg1.toDouble();
+    this->entity->settings->smooth_window = arg1;
+//    QLOG_INFO() << "smoothing width" << arg1;
 }
 
-void AppController::on_st_interval_morphology_Changed(const QString &arg1)
+void AppController::stInterval_morphologyChanged(double arg1)
 {
-    this->entity->settings->morph_coeff = arg1.toDouble();
+    this->entity->settings->morph_coeff = arg1;
+//    QLOG_INFO() << "morph" << arg1;
 }
 
-void AppController::on_st_interval_level_threshold_Changed(const QString &arg1)
+void AppController::stInterval_levelThresholdChanged(double arg1)
 {
-    this->entity->settings->level_tresh = arg1.toDouble();
+    this->entity->settings->level_tresh = arg1;
+//    QLOG_INFO() << "level" << arg1;
 }
 
-void AppController::on_st_interval_slope_threshold_Changed(const QString &arg1)
+void AppController::stInterval_slopeThresholdChanged(double arg1)
 {
-    this->entity->settings->slope_tresh = arg1.toDouble();
+    this->entity->settings->slope_tresh = arg1;
+//    QLOG_INFO() << "slope" << arg1;
 }
 
-void AppController::switchDetectionAlgorithmType_ST_INTERVAL(int index)
+void AppController::stInterval_algorithmChanged(int index)
 {
-
+    this->entity->settings->quadratic = (index == 1);
+//    QLOG_INFO() << "algorithm" << index;
 }
 
 /************************************************************/
