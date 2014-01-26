@@ -290,6 +290,8 @@ void AppController::runEcgBaseline()
     QLOG_INFO() << "Ecg baseline done.";
 
     emit EcgBaseline_done(this->entity);
+
+    runVcgLoop();
 }
 
 void AppController::runHRV1()
@@ -498,7 +500,7 @@ void AppController::runVcgLoop()
 {
     QLOG_INFO() << "Start VcgLoop (not ready yet)";
 
-
+    load12lead_db();
 
     emit runVcgLoop_done(this->entity);
     QLOG_INFO() << "VcgLoop done";
@@ -812,4 +814,76 @@ void AppController::deleteWaves(void)
      //   delete this->entity->Waves;
       //  this->entity->Waves = new Waves_struct;
     }
+}
+
+void AppController::load12lead_db(void)
+{
+    QVector<double> *I   = new QVector<double>();
+    QVector<double> *II  = new QVector<double>();
+    QVector<double> *III = new QVector<double>();
+    QVector<double> *AVR = new QVector<double>();
+    QVector<double> *AVL = new QVector<double>();
+    QVector<double> *AVF = new QVector<double>();
+    QVector<double> *V1  = new QVector<double>();
+    QVector<double> *V2  = new QVector<double>();
+    QVector<double> *V3  = new QVector<double>();
+    QVector<double> *V4  = new QVector<double>();
+    QVector<double> *V5  = new QVector<double>();
+    QVector<double> *V6  = new QVector<double>();
+    I->resize(462600);
+    II->resize(462600);
+    III->resize(462600);
+    AVR->resize(462600);
+    AVL->resize(462600);
+    AVF->resize(462600);
+    V1->resize(462600);
+    V2->resize(462600);
+    V3->resize(462600);
+    V4->resize(462600);
+    V5->resize(462600);
+    V6->resize(462600);
+
+    QVector<QString> data;
+   // data.resize(462600*12);
+    int i=0;
+    int j=0;
+
+    QString name = "C:\\SampleData\\12-lead_db\\I01.dat";
+    QFile f(name);
+    f.open(QIODevice::ReadOnly);
+    QDataStream in(&f);
+    in >> data;
+    f.close();
+    QLOG_INFO() << QString::number(data.size()/2) << " Samples loaded";
+    while(j<data.size())
+    {
+  /*      (*I)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*II)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*III)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*AVR)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*AVL)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*AVF)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V1)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V2)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V3)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V4)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V5)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V6)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+*/
+        QLOG_TRACE() <<"v1 sample: " << QString::number((*V1).at(i));
+        i++;
+    }
+
 }

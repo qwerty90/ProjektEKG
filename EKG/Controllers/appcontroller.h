@@ -36,6 +36,7 @@ public:
     void ifWavesExists(void);
     void deleteWaves(void);
 
+    void load12lead_db(void);
 
 
 signals:
