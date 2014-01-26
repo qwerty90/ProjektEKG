@@ -144,7 +144,7 @@ QVector<double> KalmanFilter::syntheticEcgModelVector(const QVector<double> &pha
 //private
 
 QVector<double> KalmanFilter::removeBaseLine(const QVector<double> &ecgData){
-    return processMovAvg(ecgData, 100); //processButter(ecgData, predefinedButterCoefficientSets()[0]);
+    return processMovAvg(ecgData, 150); //processButter(ecgData, predefinedButterCoefficientSets()[0]);
 }
 
 QVector<double> KalmanFilter::addGaussianNoise(QVector<double> &input, double SNR) {

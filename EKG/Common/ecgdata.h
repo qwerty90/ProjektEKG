@@ -13,6 +13,9 @@
 #include "Waves/src/waves.h"
 #include "QRS_CLASS/qrsclass.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
+#include "ECG_BASELINE/src/butter.h"
+//#include "QT_DISP/Evaluation.h"
+#include "QT_DISP/QT_DISP.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
@@ -43,6 +46,7 @@ public:
     //przefiltrowany sygnal ekg - wyjscie modulu ECG_BASELINE
     QVector<double> *ecg_baselined;
     QVector<QPointF> *characteristics;
+    QVector<ButterCoefficients> *butter_coeffs;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
     QVector<QVector<double>::const_iterator> *Rpeaks;
@@ -95,9 +99,10 @@ public:
      double *alfa, *wsp_a, *wsp_b;
 
     //modul HRT
-    double *turbulence_slope, *turbulence_onset;
-    int *vpbs_detected_count;
-    QList<double> *hrt_tachogram;
+    double turbulence_slope, turbulence_onset;
+    double hrt_a , hrt_b;
+    int vpbs_detected_count;
+    QVector<double> *hrt_tachogram;
 
     //modul ATRIAL_FIBR
     double PWaveOccurenceRatio;
@@ -112,6 +117,9 @@ public:
     //modul sleep apnea
     QVector<BeginEndPair> *SleepApnea;
     QVector<double>       *SleepApnea_plot;
+
+    //modul QtDisp (bez TWaves)
+    QVector<Evaluation> *evaluations;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;

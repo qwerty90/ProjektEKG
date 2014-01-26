@@ -118,6 +118,8 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
 
 void AirEcgMain::receivePatientData(EcgData *data)
 {
+    currentEcgData = data;
+
     EcgInfo *info = data->info;
     ui->patientSexLabel_2->setText(info->sex);
     ui->patientAgeLabel_2->setText(QString::number(info->age));
@@ -2131,7 +2133,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
 
     return plot;
-}
+}  
 
 QwtPlot *AirEcgMain::plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency)
 {
@@ -2406,29 +2408,144 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 void AirEcgMain::drawStInterval(EcgData *data)
 {
-    QLOG_TRACE() << "Drawing StInterval not ready yet.";
+    // draw baselined data
+    QwtPlot *plotST = plotPlot(*(data->ecg_baselined), data->info->frequencyValue);
+    ui->stIntervalArea->setWidget(plotST);
+    ui->stIntervalArea->show();
 
-    ui->tableWidget_2->setRowCount(20);
-    for (int r = 0; r < ui->tableWidget_2->rowCount(); ++r)
+    if (data->STintervals == NULL)
+        return;
+
+    int num = data->STintervals->size();
+
+    ui->stIntervalList->setRowCount(num);
+    ui->stIntervalList->setEditTriggers(QAbstractItemView::NoEditTriggers); // disable list edit
+
+    QVector<QPointF> stOn;
+    QVector<QPointF> stMid;
+    QVector<QPointF> stEnd;
+
+    for (int i = 0; i < num; i++)
     {
-        QTableWidgetItem *newItem = new QTableWidgetItem("SDADAD");
-        ui->tableWidget_2->setItem(r,0 , newItem);
-        newItem = new QTableWidgetItem("DUPA");
-        ui->tableWidget_2->setItem(r, 1, newItem);
-        newItem = new QTableWidgetItem("AA");
-        ui->tableWidget_2->setItem(r, 2, newItem);
-        newItem = new QTableWidgetItem("COS");
-        ui->tableWidget_2->setItem(r, 3, newItem);
-        newItem = new QTableWidgetItem("ASDAD");
-        ui->tableWidget_2->setItem(r, 4, newItem);
+        EcgStDescriptor desc = data->STintervals->at(i);
+
+        int on = desc.STOn - data->ecg_baselined->constBegin();
+        int mid = desc.STMid - data->ecg_baselined->constBegin();
+        int end = desc.STEnd - data->ecg_baselined->constBegin();
+
+        double onTime = static_cast<double>(on) / data->info->frequencyValue * 1000;
+
+        stOn.append(QPointF(onTime, *desc.STOn));
+        stMid.append(QPointF(static_cast<double>(mid) / data->info->frequencyValue * 1000, *desc.STMid));
+        stEnd.append(QPointF(static_cast<double>(end) / data->info->frequencyValue * 1000, *desc.STEnd));
+
+        QVector<double> x;
+        QVector<double> y;
+        for (QVector<double>::const_iterator k = desc.STOn; k != desc.STEnd; ++k)
+        {
+            int sampleNum = k - data->ecg_baselined->constBegin();
+            x.append(static_cast<double>(sampleNum) / data->info->frequencyValue * 1000);
+            y.append(*k);
+        }
+
+        // create curves for ST intervals highlights
+        QwtPlotCurve *st = new QwtPlotCurve();
+        QPen pen(Qt::red);
+        pen.setWidth(2);
+        st->setPen(pen);
+        st->setSamples(x, y);
+        st->setItemAttribute(QwtPlotItem::Legend, false);
+        st->attach(plotST);
+
+        QString position;
+        switch (desc.position)
+        {
+        case ST_POS_NORMAL:
+            position = tr("normal");
+            break;
+        case ST_POS_ELEVATION:
+            position = tr("elevation");
+            break;
+        case ST_POS_DEPRESSION:
+            position = tr("depression");
+            break;
+        }
+
+        QString shape;
+        switch (desc.shape)
+        {
+        case ST_SHAPE_HORIZONTAL:
+            shape = tr("horizontal");
+            break;
+        case ST_SHAPE_DOWNSLOPING:
+            shape = tr("downsloping");
+            break;
+        case ST_SHAPE_UPSLOPING:
+            shape = tr("upsloping");
+            break;
+        case ST_SHAPE_CONCAVE:
+            shape = tr("concave");
+            break;
+        case ST_SHAPE_CONVEX:
+            shape = tr("convex");
+            break;
+        }
+
+        // create STon time string
+        int ms = static_cast<int>(onTime) % 1000;
+        int ss = static_cast<int>(onTime) / 1000 % 60;
+        int mm = static_cast<int>(onTime) / 60000;
+        QString time = QString("%1:%2:%3").arg(mm, 2, 10, QChar('0')).arg(ss, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
+
+        // create list item
+        QTableWidgetItem *newItem = new QTableWidgetItem(QString::number(i + 1));
+        ui->stIntervalList->setItem(i, 0 , newItem);
+        newItem = new QTableWidgetItem(time);
+        ui->stIntervalList->setItem(i, 1, newItem);
+        newItem = new QTableWidgetItem(position);
+        ui->stIntervalList->setItem(i, 2, newItem);
+        newItem = new QTableWidgetItem(shape);
+        ui->stIntervalList->setItem(i, 3, newItem);
+        newItem = new QTableWidgetItem(QString::number(desc.offset));
+        ui->stIntervalList->setItem(i, 4, newItem);
+        newItem = new QTableWidgetItem(QString::number(desc.slope1));
+        ui->stIntervalList->setItem(i, 5, newItem);
+        newItem = new QTableWidgetItem(QString::number(desc.slope2));
+        ui->stIntervalList->setItem(i, 6, newItem);
     }
 
-  //  QwtPlot *plotX = plotIntervalPlot(*(data->ecg_baselined_mv), *(data->STbegin_x_probki), *(data->STend_x_probki), 360.0);
- //   ui->stIntervalArea->setWidget(plotX);
-  //  ui->stIntervalArea->show();
+    // draw STon points
+    QwtPlotCurve *stOnPoints = new QwtPlotCurve();
+    QwtSymbol *stOnMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::red, QPen(Qt::red), QSize(6, 6));
+    stOnPoints->setSymbol(stOnMarker);
+    stOnPoints->setTitle("STon");
+    stOnPoints->setPen(QColor(Qt::red));
+    stOnPoints->setStyle(QwtPlotCurve::NoCurve);
+    stOnPoints->setSamples(stOn);
+    stOnPoints->attach(plotST);
 
+    // draw STmid points
+    QwtPlotCurve *stMidPoints = new QwtPlotCurve();
+    QColor color(11, 157, 0);
+    QwtSymbol *stMidMarker = new QwtSymbol(QwtSymbol::Ellipse, QBrush(color), QPen(color), QSize(6, 6));
+    stMidPoints->setSymbol(stMidMarker);
+    stMidPoints->setTitle("STmid");
+    stMidPoints->setPen(color);
+    stMidPoints->setStyle(QwtPlotCurve::NoCurve);
+    stMidPoints->setSamples(stMid);
+    stMidPoints->attach(plotST);
 
+    // draw STend points
+    QwtPlotCurve *stEndPoints = new QwtPlotCurve();
+    QwtSymbol *stEndMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::blue, QPen(Qt::blue), QSize(6, 6));
+    stEndPoints->setSymbol(stEndMarker);
+    stEndPoints->setTitle("STend");
+    stEndPoints->setPen(QColor(Qt::blue));
+    stEndPoints->setStyle(QwtPlotCurve::NoCurve);
+    stEndPoints->setSamples(stEnd);
+    stEndPoints->attach(plotST);
 }
+
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
     QwtPlot *plotSleepApnea = plotSleep_Apnea(*(data->ecg_baselined),data->info->frequencyValue );
@@ -2527,12 +2644,17 @@ void AirEcgMain::drawQrsClass(EcgData *data)
 
 void AirEcgMain::drawHrt(EcgData *data)
 {
-    QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram));
-    ui->scrollAreaHrt->setWidget(hrtTachogram);
-    ui->scrollAreaHrt->show();
-    ui->vpbs_detected_count->setText(QString::number(*(data->vpbs_detected_count), 'f', 0));
-    ui->turbulence_onset_val->setText(QString::number(*(data->turbulence_onset), 'f', 2));
-    ui->turbulence_slope_val->setText(QString::number(*(data->turbulence_slope), 'f', 2));
+    //QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram));  //tu trzeba wymienic liste na wektor
+   // ui->scrollAreaHrt->setWidget(hrtTachogram);
+   // ui->scrollAreaHrt->show();
+    ui->vpbs_detected_count->setText(QString::number((data->vpbs_detected_count), 'f', 0));
+    ui->turbulence_onset_val->setText(QString::number((data->turbulence_onset), 'f', 2));
+    ui->turbulence_slope_val->setText(QString::number((data->turbulence_slope), 'f', 2));
+}
+
+void AirEcgMain::drawQtDisp(EcgData *data)
+{
+    QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
 
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
@@ -2883,11 +3005,17 @@ void AirEcgMain::on_kalmanRadioButton_clicked()
 
 void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
 {
+    double time = arg1.toDouble();
+    ui->maWindowSpinBox->setValue(ceil(time * currentEcgData->info->frequencyValue));
+
     emit ecgBase_CzasUsrednieniaChanged(arg1);
 }
 
 void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
 {
+    int size = arg1.toInt();
+    ui->maTimeSpinBox->setValue(float(size / currentEcgData->info->frequencyValue));
+
     emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
 }
 
@@ -2902,18 +3030,7 @@ void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
 
 void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
 {
-    if(index==0)
-    {
-
-    }
-    else if(index==1)
-    {
-
-    }
-    else if(index==2)
-    {
-
-    }
+    emit ecgBase_ButterworthCoeffSetChanged(index);
 }
 
 void AirEcgMain::on_checkBox_2_clicked(bool checked)
@@ -2969,39 +3086,39 @@ void AirEcgMain::on_RUN_VCG_pushButton_clicked()
     emit this->runVcgLoop();
 }
 
-void AirEcgMain::on_st_interval_detection_width_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_detection_width_valueChanged(int arg1)
 {
-    emit on_st_interval_detection_width_Changed(arg1);
+    emit stInterval_detectionWidthChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_smothing_width_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_smoothing_width_valueChanged(int arg1)
 {
-    emit on_st_interval_smothing_width_Changed(arg1);
+    emit stInterval_smoothingWidthChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_morphology_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_morphology_valueChanged(double arg1)
 {
-    emit on_st_interval_morphology_Changed(arg1);
+    emit stInterval_morphologyChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_level_threshold_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_level_threshold_valueChanged(double arg1)
 {
-    emit on_st_interval_level_threshold_Changed(arg1);
+    emit stInterval_levelThresholdChanged(arg1);
 }
 
-void AirEcgMain::on_st_interval_slope_threshold_textChanged(const QString &arg1)
+void AirEcgMain::on_st_interval_slope_threshold_valueChanged(double arg1)
 {
-    emit on_st_interval_slope_threshold_Changed(arg1);
+    emit stInterval_slopeThresholdChanged(arg1);
 }
 
 void AirEcgMain::on_detectionratesquare_clicked()
 {
-    emit switchDetectionAlgorithmType_ST_INTERVAL(0);
+    emit stInterval_algorithmChanged(1);
 }
 
 void AirEcgMain::on_detectionratelinear_clicked()
 {
-    emit switchDetectionAlgorithmType_ST_INTERVAL(1);
+    emit stInterval_algorithmChanged(0);
 }
 
 void AirEcgMain::on_pushButton_11_clicked()
@@ -3019,4 +3136,9 @@ void AirEcgMain::initEcgBaselineGui()
     ui->ButterworthcomboBox->addItems(coeffList);
 
     on_butterworthRadioButton_clicked();
+}
+
+void AirEcgMain::on_pushButton_16_clicked()
+{
+    emit runQtDisp();
 }

@@ -7,16 +7,27 @@
 
 //------------------------------------------------------------
 
-enum EcgStAlgorithm {
-    ST_LINEAR,
-    ST_QUADRATIC
-};
+typedef QVector<double>::const_iterator EcgSampleIter;
 
 //------------------------------------------------------------
 
 class EcgStAnalyzer
 {
 public:
+    enum AlgorithmType
+    {
+        LINEAR,
+        QUADRATIC
+    };
+
+    enum ErrorType
+    {
+        NO_ERROR,
+        NO_SAMPLES_PROVIDED,
+        INSUFFICIENT_DATA,
+        UNEQUAL_DATA_SIZES
+    };
+
     EcgStAnalyzer();
 
     unsigned int getSmoothSize() const;
@@ -28,8 +39,8 @@ public:
     double getMorphologyCoeff() const;
     void setMorphologyCoeff(double value);
 
-    EcgStAlgorithm getAlgorithm() const;
-    void setAlgorithm(EcgStAlgorithm value);
+    AlgorithmType getAlgorithm() const;
+    void setAlgorithm(AlgorithmType value);
 
     double getLevelThreshold() const;
     void setLevelThreshold(double value);
@@ -37,11 +48,14 @@ public:
     double getSlopeThreshold() const;
     void setSlopeThreshold(double value);
 
-    QList<EcgStDescriptor> analyze(const QVector<double> &ecgSamples,
-                                   const QVector<QVector<double>::const_iterator> &rData,
-                                   const QVector<QVector<double>::const_iterator> &jData,
-                                   const QVector<QVector<double>::const_iterator> &tEndData,
-                                   double sampleFreq);
+    QList<EcgStDescriptor> getResult() const;
+    ErrorType getLastError() const;
+
+    bool analyze(const QVector<double> &ecgSamples,
+                 const QVector<EcgSampleIter> &rData,
+                 const QVector<EcgSampleIter> &jData,
+                 const QVector<EcgSampleIter> &tEndData,
+                 double sampleFreq);
 
     EcgStPosition classifyPosition(double offset);
     EcgStShape classifyShape(double a1, double a2);
@@ -56,7 +70,10 @@ private:
     double levelThreshold;
     double slopeThreshold;
 
-    EcgStAlgorithm algorithm;
+    AlgorithmType algorithm;
+
+    QList<EcgStDescriptor> result;
+    ErrorType lastError;
 };
 
 //------------------------------------------------------------

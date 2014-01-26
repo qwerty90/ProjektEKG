@@ -11,7 +11,9 @@
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
 #include "SIG_EDR/sig_edr.h"
-#include "QT_DISP/QT_DISP.h"
+//#include "QT_DISP/QT_DISP.h"
+//#include "QT_DISP/Evaluation.h"
+#include "HRT/HRTmodule.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
 
 #include <QThread>
@@ -46,13 +48,14 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(ecgBase_Kalman1Changed(QString)),this,SLOT(ecgBase_Kalman1Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_CzestotliwoscProbkowaniaChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
+    this->connect(view, SIGNAL(ecgBase_ButterworthCoeffSetChanged(int)), this, SLOT(ecgButterChanged(int)));
 
-    this->connect(view, SIGNAL(on_st_interval_detection_width_Changed(const QString &)),this,SLOT(on_st_interval_detection_width_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_smothing_width_Changed(const QString &)),this,SLOT(on_st_interval_smothing_width_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_morphology_Changed(const QString &)),this,SLOT(on_st_interval_morphology_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_level_threshold_Changed(const QString &)),this,SLOT(on_st_interval_level_threshold_Changed(const QString &)));
-    this->connect(view, SIGNAL(on_st_interval_slope_threshold_Changed(const QString &)),this,SLOT(on_st_interval_slope_threshold_Changed(const QString &)));
-    this->connect(view, SIGNAL(switchDetectionAlgorithmType_ST_INTERVAL(int)),this,SLOT(switchDetectionAlgorithmType_ST_INTERVAL(int)));
+    this->connect(view, SIGNAL(stInterval_detectionWidthChanged(int)),this,SLOT(stInterval_detectionWidthChanged(int)));
+    this->connect(view, SIGNAL(stInterval_smoothingWidthChanged(int)),this,SLOT(stInterval_smoothingWidthChanged(int)));
+    this->connect(view, SIGNAL(stInterval_morphologyChanged(double)),this,SLOT(stInterval_morphologyChanged(double)));
+    this->connect(view, SIGNAL(stInterval_levelThresholdChanged(double)),this,SLOT(stInterval_levelThresholdChanged(double)));
+    this->connect(view, SIGNAL(stInterval_slopeThresholdChanged(double)),this,SLOT(stInterval_slopeThresholdChanged(double)));
+    this->connect(view, SIGNAL(stInterval_algorithmChanged(int)),this,SLOT(stInterval_algorithmChanged(int)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
@@ -63,6 +66,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runSigEdr())     ,this, SLOT (runSigEdr()));
     this->connect(view, SIGNAL(runVcgLoop())    ,this, SLOT (runVcgLoop()));
     this->connect(view, SIGNAL(runSleepApnea()) ,this, SLOT (runSleepApnea()));
+    this->connect(view, SIGNAL(runQtDisp())     ,this, SLOT (runQtDisp()));
 
     this->connect(view, SIGNAL(run()), this, SLOT(run()));
 
@@ -100,6 +104,9 @@ void AppController::loadData(const QString &directory, const QString &name)
     if(this->entity)
         this->ResetModules();
     this->entity = entry->entity;
+
+    this->entity->butter_coeffs = new QVector<ButterCoefficients>(predefinedButterCoefficientSets());
+        //const QVector<ButterCoefficients> coeff = predefinedButterCoefficientSets();
 
     emit patientData(this->entity);
 }
@@ -234,8 +241,12 @@ void AppController::runEcgBaseline()
     switch (this->entity->settings->EcgBaselineMode)
     {
     case 0: //butterworth
-        QLOG_INFO() << "BASELINE/ Using butterworth filter.";
-        this->entity->ecg_baselined = new QVector<double>(processButter(*(this->entity->GetCurrentSignal()),coeff[0]));
+        QLOG_INFO() << "BASELINE/ Using butterworth filter with coefficiets "
+                       <<((*this->entity->butter_coeffs)[this->entity->settings->coeff_set]).name();
+        this->entity->ecg_baselined =
+                new QVector<double>(processButter(
+                                        *(this->entity->GetCurrentSignal()),
+                                        ((*this->entity->butter_coeffs)[this->entity->settings->coeff_set])));
         break;
     case 1:
         QLOG_INFO() << "BASELINE/ Using moving average filter.";
@@ -243,11 +254,13 @@ void AppController::runEcgBaseline()
         {
             QLOG_INFO() << "BASELINE/ Using moving average filter with averaging time = "
                         << QString::number(this->entity->settings->averaging_time) << " .";
-            this->entity->ecg_baselined = new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
-                                                                            (int)(this->entity->info->frequencyValue),
-                                                                            this->entity->settings->averaging_time));
-            this->entity->characteristics = new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
-                                                                               this->entity->settings->averaging_time));
+            this->entity->ecg_baselined =
+                    new QVector<double>(processMovAvg(*(this->entity->GetCurrentSignal()),
+                                        (int)(this->entity->info->frequencyValue),
+                                         this->entity->settings->averaging_time));
+            this->entity->characteristics =
+                    new QVector<QPointF>(movAvgMagPlot((int)(this->entity->info->frequencyValue),
+                                         this->entity->settings->averaging_time));
         }
         else if (this->entity->settings->avgWindowSize!=0)
         {
@@ -282,8 +295,20 @@ void AppController::runEcgBaseline()
     }            
 
     QLOG_INFO() << "Ecg baseline done.";
+    double min=0;
+    double max=0;
+    for (int i=0; i<this->entity->ecg_baselined->size();i++)
+    {
+        if (this->entity->ecg_baselined->at(i)<min)
+            min = this->entity->ecg_baselined->at(i);
 
+        if (this->entity->ecg_baselined->at(i)>max)
+            max = this->entity->ecg_baselined->at(i);
+    }
+
+    QLOG_TRACE() << "MVC/ min/max values :" <<min<<"//"<<max;
     emit EcgBaseline_done(this->entity);
+
 }
 
 void AppController::runHRV1()
@@ -427,9 +452,9 @@ void AppController::runStInterval()
 
     EcgStAnalyzer analyzer;
     if (this->entity->settings->quadratic)
-    analyzer.setAlgorithm(ST_QUADRATIC);
-        else
-    analyzer.setAlgorithm(ST_LINEAR);
+        analyzer.setAlgorithm(EcgStAnalyzer::QUADRATIC);
+    else
+        analyzer.setAlgorithm(EcgStAnalyzer::LINEAR);
 
     analyzer.setDetectionSize(this->entity->settings->detect_window);
     analyzer.setSmoothSize(this->entity->settings->smooth_window);
@@ -444,15 +469,55 @@ void AppController::runStInterval()
         return;
     }
 
-    QList<EcgStDescriptor> result;
+    bool res = analyzer.analyze(*(this->entity->ecg_baselined),
+                                *(this->entity->Rpeaks),
+                                *(this->entity->Waves->QRS_end),
+                                *(this->entity->Waves->T_end),
+                                static_cast<double>(this->entity->info->frequencyValue));
+    if (!res)
+    {
+        EcgStAnalyzer::ErrorType error = analyzer.getLastError();
+        QLOG_FATAL() << "ST_INTERVAL analyzer error: " << error;
+    }
 
-    result = analyzer.analyze(*(this->entity->ecg_baselined),
-                              *(this->entity->Rpeaks),
-                              *(this->entity->Waves->QRS_end),
-                              *(this->entity->Waves->T_end),
-                              (double)this->entity->info->frequencyValue);
+    this->entity->STintervals = new QList<EcgStDescriptor>(analyzer.getResult());
 
-    this->entity->STintervals = new QList<EcgStDescriptor>(result);
+    // !!! Ponizej znajduje sie generowanie przykladowych danych dla zestawu 100.dat,
+    // !!! dzieki czemu mozna przetestowac rysowanie ST
+//    runEcgBaseline();
+
+//    int stOn[] = { 95, 387, 677, 963, 1244 };
+//    int stEnd[] = { 184, 445, 761, 1047, 1308 };
+//    EcgStPosition pos[] = {
+//        ST_POS_DEPRESSION,
+//        ST_POS_NORMAL,
+//        ST_POS_NORMAL,
+//        ST_POS_NORMAL,
+//        ST_POS_NORMAL
+//    };
+//    EcgStShape shape[] = {
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL,
+//        ST_SHAPE_HORIZONTAL
+//    };
+
+//    this->entity->STintervals = new QList<EcgStDescriptor>();
+//    for (int i = 0; i < 5; i++)
+//    {
+//        EcgStDescriptor desc;
+//        desc.STOn = this->entity->ecg_baselined->constBegin() + (stOn[i] - 1);
+//        desc.STEnd = this->entity->ecg_baselined->constBegin() + (stEnd[i] - 1);
+//        desc.STMid = desc.STOn + (stEnd[i] - stOn[i]) / 2;
+//        desc.offset = 666.6;
+//        desc.slope1 = 69.0;
+//        desc.slope2 = 96.0;
+//        desc.position = pos[i];
+//        desc.shape = shape[i];
+
+//        this->entity->STintervals->append(desc);
+//    }
 
     emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
@@ -492,10 +557,60 @@ void AppController::runVcgLoop()
 {
     QLOG_INFO() << "Start VcgLoop (not ready yet)";
 
-
+    load12lead_db();
 
     emit runVcgLoop_done(this->entity);
     QLOG_INFO() << "VcgLoop done";
+}
+
+void AppController::runQtDisp()
+{
+    QLOG_INFO() <<"QT_DISP started.";
+
+    ifWavesExists();
+    QT_DISP obiekt;
+
+    vector<int> qrs_on;
+    vector<int> qrs_end;
+    vector<int> Pwave_start;
+
+    vector<Evaluation> output;
+    vector<double> T_end;
+
+    QVector<double>::iterator point0 = this->entity->ecg_baselined->begin();
+
+    for(int i=0; i<this->entity->Waves->QRS_onset->size();i++)
+    {
+        qrs_on.push_back(this->entity->Waves->QRS_onset->at(i) - point0);
+        //QLOG_TRACE() << qrs_on.at(i);
+    }
+    for(int i=0; i<this->entity->Waves->QRS_end->size();i++)
+    {
+        qrs_end.push_back(this->entity->Waves->QRS_end->at(i) - point0);
+    }
+    for(int i=0; i<this->entity->Waves->PWaveStart->size();i++)
+    {
+        Pwave_start.push_back(this->entity->Waves->PWaveStart->at(i) - point0);
+    }
+
+    obiekt.getInput((*this->entity->ecg_baselined).toStdVector(),
+                    qrs_on,qrs_end,Pwave_start,(double)this->entity->info->frequencyValue);
+    obiekt.Run();
+    QLOG_TRACE() <<"MVC/ QT_DISP calculated.";
+    obiekt.setOutput(output,T_end);
+
+
+    iters tmp_it;
+    for(int i=0 ; i<T_end.size();i++)
+        tmp_it.append(&((*this->entity->ecg_baselined)[ T_end.at(i) ]));
+
+    this->entity->Waves->T_end = new iters (tmp_it);
+
+    this->entity->evaluations = new QVector<Evaluation>(QVector<Evaluation>::fromStdVector(output));
+
+    emit this->QtDisp_done(this->entity);
+    QLOG_INFO() << "QT_DISP done.";
+
 }
 
 void AppController::runWaves()
@@ -520,7 +635,7 @@ void AppController::runWaves()
         this->entity->Waves->QRS_onset = new iters(obiekt.get_qrs_onset());
         QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_onset->size())
                     <<" QRS_onset points.";
-        this->entity->Waves->QRS_end = new iters(obiekt.get_qrs_onset());
+        this->entity->Waves->QRS_end = new iters(obiekt.get_qrs_begin());
         QLOG_INFO() << "Waves/ calculated "<<QString::number(this->entity->Waves->QRS_end->size())
                     <<" QRS_end points.";
 
@@ -541,6 +656,13 @@ void AppController::runWaves()
             this->entity->Waves->Count=this->entity->Waves->PWaveStart->size();
         if (this->entity->Waves->Count>this->entity->Waves->PWaveEnd->size())
             this->entity->Waves->Count=this->entity->Waves->PWaveEnd->size();
+
+        for(int i=0 ; i<this->entity->Waves->Count-1;i++)
+        {
+            QLOG_TRACE() <<"MVC/ qrs difference "
+                        <<((this->entity->Waves->QRS_end->at(i+1)
+                           - this->entity->Waves->QRS_onset->at(i)));
+        }
 
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
@@ -658,6 +780,24 @@ runWaves();
 
 }
 
+void AppController::runHRT()
+{
+    QLOG_INFO() << "HRT started.";
+    ifRpeaksExists();
+
+    HRT::HRTmodule obiekt;
+    obiekt.calculateHRT(this->entity->Rpeaks_uint,(int)this->entity->info->frequencyValue);
+
+    this->entity->hrt_tachogram = new QVector<double>(obiekt.get_tachogram()); //zwraca vektor reprezentujacy tachogram (25 elementow)
+    this->entity->vpbs_detected_count = obiekt.get_VEBcount();//zwraca liczbę znalezionych i zaakceptowanych VEB'ow
+    this->entity->turbulence_slope=	obiekt.get_TS();
+    this->entity->turbulence_onset= obiekt.get_TO();
+    this->entity->hrt_a	= obiekt.get_a();// zwraca wspolczynnik kierunkowy prostej
+    this->entity->hrt_b	= obiekt.get_b();// ax+b - do wyrysowania na tachogramie
+
+    QLOG_INFO() << "HRT done.";
+}
+
 void AppController::runSleepApnea()
 {
     QLOG_INFO()<< "Sleep apnea started.";
@@ -698,37 +838,47 @@ void AppController::ecgBase_WindowSizeEdit(const QString arg1)
 {
     this->entity->settings->avgWindowSize = arg1.toInt();
 }
+void AppController::ecgButterChanged(const int set_number)
+{
+    this->entity->settings->coeff_set = set_number;
+}
 
 //ST INTERVAL
 
-void AppController::on_st_interval_detection_width_Changed(const QString &arg1)
+void AppController::stInterval_detectionWidthChanged(int arg1)
 {
-    this->entity->settings->detect_window = arg1.toDouble();
+    this->entity->settings->detect_window = arg1;
+//    QLOG_INFO() << "detection width" << arg1;
 }
 
-void AppController::on_st_interval_smothing_width_Changed(const QString &arg1)
+void AppController::stInterval_smoothingWidthChanged(int arg1)
 {
-    this->entity->settings->smooth_window = arg1.toDouble();
+    this->entity->settings->smooth_window = arg1;
+//    QLOG_INFO() << "smoothing width" << arg1;
 }
 
-void AppController::on_st_interval_morphology_Changed(const QString &arg1)
+void AppController::stInterval_morphologyChanged(double arg1)
 {
-    this->entity->settings->morph_coeff = arg1.toDouble();
+    this->entity->settings->morph_coeff = arg1;
+//    QLOG_INFO() << "morph" << arg1;
 }
 
-void AppController::on_st_interval_level_threshold_Changed(const QString &arg1)
+void AppController::stInterval_levelThresholdChanged(double arg1)
 {
-    this->entity->settings->level_tresh = arg1.toDouble();
+    this->entity->settings->level_tresh = arg1;
+//    QLOG_INFO() << "level" << arg1;
 }
 
-void AppController::on_st_interval_slope_threshold_Changed(const QString &arg1)
+void AppController::stInterval_slopeThresholdChanged(double arg1)
 {
-    this->entity->settings->slope_tresh = arg1.toDouble();
+    this->entity->settings->slope_tresh = arg1;
+//    QLOG_INFO() << "slope" << arg1;
 }
 
-void AppController::switchDetectionAlgorithmType_ST_INTERVAL(int index)
+void AppController::stInterval_algorithmChanged(int index)
 {
-
+    this->entity->settings->quadratic = (index == 1);
+//    QLOG_INFO() << "algorithm" << index;
 }
 
 /************************************************************/
@@ -785,4 +935,76 @@ void AppController::deleteWaves(void)
      //   delete this->entity->Waves;
       //  this->entity->Waves = new Waves_struct;
     }
+}
+
+void AppController::load12lead_db(void)
+{
+    QVector<double> *I   = new QVector<double>();
+    QVector<double> *II  = new QVector<double>();
+    QVector<double> *III = new QVector<double>();
+    QVector<double> *AVR = new QVector<double>();
+    QVector<double> *AVL = new QVector<double>();
+    QVector<double> *AVF = new QVector<double>();
+    QVector<double> *V1  = new QVector<double>();
+    QVector<double> *V2  = new QVector<double>();
+    QVector<double> *V3  = new QVector<double>();
+    QVector<double> *V4  = new QVector<double>();
+    QVector<double> *V5  = new QVector<double>();
+    QVector<double> *V6  = new QVector<double>();
+    I->resize(462600);
+    II->resize(462600);
+    III->resize(462600);
+    AVR->resize(462600);
+    AVL->resize(462600);
+    AVF->resize(462600);
+    V1->resize(462600);
+    V2->resize(462600);
+    V3->resize(462600);
+    V4->resize(462600);
+    V5->resize(462600);
+    V6->resize(462600);
+
+    QVector<QString> data;
+   // data.resize(462600*12);
+    int i=0;
+    int j=0;
+
+    QString name = "C:\\SampleData\\12-lead_db\\I01.dat";
+    QFile f(name);
+    f.open(QIODevice::ReadOnly);
+    QDataStream in(&f);
+    in >> data;
+    f.close();
+    QLOG_INFO() << QString::number(data.size()/2) << " Samples loaded";
+    while(j<data.size())
+    {
+  /*      (*I)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*II)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*III)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*AVR)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*AVL)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*AVF)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V1)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V2)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V3)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V4)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V5)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+        (*V6)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
+        j++;
+*/
+        QLOG_TRACE() <<"v1 sample: " << QString::number((*V1).at(i));
+        i++;
+    }
+
 }

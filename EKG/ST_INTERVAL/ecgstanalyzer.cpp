@@ -15,7 +15,7 @@ namespace EcgStDefaults
 const int SMOOTH_SIZE           = 4;
 const int DETECTION_SIZE        = 30;
 const double MORPHOLOGY_COEFF   = 6.0;
-const EcgStAlgorithm ALGORITHM  = ST_LINEAR;
+const EcgStAnalyzer::AlgorithmType ALGORITHM = EcgStAnalyzer::LINEAR;
 
 const double LEVEL_THRESHOLD    = 0.15;
 const double SLOPE_THRESHOLD    = 35.0;
@@ -80,14 +80,14 @@ void EcgStAnalyzer::setMorphologyCoeff(double value)
 
 //------------------------------------------------------------
 
-EcgStAlgorithm EcgStAnalyzer::getAlgorithm() const
+EcgStAnalyzer::AlgorithmType EcgStAnalyzer::getAlgorithm() const
 {
     return algorithm;
 }
 
 //------------------------------------------------------------
 
-void EcgStAnalyzer::setAlgorithm(EcgStAlgorithm value)
+void EcgStAnalyzer::setAlgorithm(AlgorithmType value)
 {
     algorithm = value;
 }
@@ -122,41 +122,68 @@ void EcgStAnalyzer::setSlopeThreshold(double value)
 
 //------------------------------------------------------------
 
-QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
-                                              const QVector<QVector<double>::const_iterator> &rData,
-                                              const QVector<QVector<double>::const_iterator> &jData,
-                                              const QVector<QVector<double>::const_iterator> &tEndData,
-                                              double sampleFreq)
+QList<EcgStDescriptor> EcgStAnalyzer::getResult() const
 {
-    QList<EcgStDescriptor> result;
+    return result;
+}
+
+//------------------------------------------------------------
+
+EcgStAnalyzer::ErrorType EcgStAnalyzer::getLastError() const
+{
+    return lastError;
+}
+
+//------------------------------------------------------------
+
+bool EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
+                            const QVector<EcgSampleIter> &rData,
+                            const QVector<EcgSampleIter> &jData,
+                            const QVector<EcgSampleIter> &tEndData,
+                            double sampleFreq)
+{
+    result.clear();
 
     int num = rData.size();
     int snum = ecgSamples.size();
 
-    if (num < 2 || snum == 0)
-        return result;
+    if (snum == 0)
+    {
+        lastError = NO_SAMPLES_PROVIDED;
+        return false;
+    }
+    if (num < 2)
+    {
+        lastError = INSUFFICIENT_DATA;
+        return false;
+    }
+    if (rData.size() != jData.size() || rData.size() != tEndData.size())
+    {
+        lastError = UNEQUAL_DATA_SIZES;
+        return false;
+    }
 
     int p = smoothSize;
     int w = detectionSize;
     double lamdba = morphologyCoeff;
 
-    QVector<QVector<double>::const_iterator> stOn(num);
-    QVector<QVector<double>::const_iterator> stEnd(num);
+    QVector<EcgSampleIter> stOn(num);
+    QVector<EcgSampleIter> stEnd(num);
 
     int i;
 
     // detect STend points
     for (i = 0; i < num; i++)
     {
-        QVector<double>::const_iterator ka = jData[i];
-        QVector<double>::const_iterator kb = tEndData[i];
+        EcgSampleIter ka = jData[i];
+        EcgSampleIter kb = tEndData[i];
 
         QVector<double> aVal(kb - ka + 1);
         QVector<double>::iterator aIter = aVal.begin();
 
-        for (QVector<double>::const_iterator k = ka; k <= kb; ++k)
+        for (EcgSampleIter k = ka; k <= kb; ++k)
         {
-            QVector<double>::const_iterator ke = std::max(ecgSamples.constBegin(), std::min(k + p, ecgSamples.end() - 1));
+            EcgSampleIter ke = std::max(ecgSamples.constBegin(), std::min(k + p, ecgSamples.end() - 1));
             int nsr = ke - k + p + 1;
 //            QVector<double> wnd = data.ecgSamples.mid(k - p - 1, nsr);
             double sk = EcgUtils::sum(ecgSamples, k - (p + 1), nsr) / nsr;
@@ -166,7 +193,7 @@ QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
             for (int j = 0; j < sqr.size(); j++) {
                 double smp = *(k + (j - 1)) - sk;
 
-                if (algorithm == ST_QUADRATIC)
+                if (algorithm == QUADRATIC)
                     sqr[j] = smp * smp;
                 else
                     sqr[j] = smp;
@@ -193,7 +220,7 @@ QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
     QVector<int> rr = EcgUtils::diff(rData);
     QVector<double> hr(num);
     for (i = 0; i < num - 1; i++)
-        hr[i] = 60.0 / ((double) rr[i] / sampleFreq);
+        hr[i] = 60.0 / (static_cast<double>(rr[i]) / sampleFreq);
     hr[num - 1] = hr[num - 2];
 
     for (i = 0; i < num; i++)
@@ -211,7 +238,7 @@ QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
         else
             x = 0.55;
 
-        QVector<double>::const_iterator test = rData[i] + ((int) round(x * rt));
+        EcgSampleIter test = rData[i] + static_cast<int>(round(x * rt));
         stOn[i] = std::min(jData[i] + 1, test);
     }
 
@@ -222,12 +249,12 @@ QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
 
         desc.STOn = stOn[i];
         desc.STEnd = stEnd[i];
-        desc.STMid = desc.STOn + (int) round((desc.STEnd - desc.STOn) / 2.0);
+        desc.STMid = desc.STOn + static_cast<int>(round((desc.STEnd - desc.STOn) / 2.0));
 
         desc.offset = *desc.STMid;
 
-        QVector<double>::const_iterator x1 = desc.STOn;
-        QVector<double>::const_iterator x2 = desc.STMid;
+        EcgSampleIter x1 = desc.STOn;
+        EcgSampleIter x2 = desc.STMid;
         double y1 = *x1;
         double y2 = *x2;
         double d1 = (y1 - y2) / ((x1 - x2) / sampleFreq);
@@ -245,7 +272,8 @@ QList<EcgStDescriptor> EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
         result.push_back(desc);
     }
 
-    return result;
+    lastError = NO_ERROR;
+    return true;
 }
 
 //------------------------------------------------------------

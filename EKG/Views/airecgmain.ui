@@ -402,8 +402,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>506</height>
+                       <width>86</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -444,8 +444,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>506</height>
+                       <width>86</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -485,32 +485,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>373</height>
-                      </rect>
-                     </property>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-                <widget class="QWidget" name="tab_8">
-                 <attribute name="title">
-                  <string>charakterystyka amplitudowa</string>
-                 </attribute>
-                 <layout class="QVBoxLayout" name="verticalLayout_55">
-                  <item>
-                   <widget class="QScrollArea" name="baselinedArea_2">
-                    <property name="widgetResizable">
-                     <bool>true</bool>
-                    </property>
-                    <widget class="QWidget" name="baselinedAreaContent_3">
-                     <property name="geometry">
-                      <rect>
-                       <x>0</x>
-                       <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>1014</width>
+                       <height>363</height>
                       </rect>
                      </property>
                     </widget>
@@ -663,13 +639,6 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QSpinBox" name="maTimeSpinBox">
-                     <property name="maximum">
-                      <number>999</number>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="1" column="1">
                     <widget class="QSpinBox" name="maWindowSpinBox">
                      <property name="maximum">
@@ -679,6 +648,9 @@
                       <number>150</number>
                      </property>
                     </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QDoubleSpinBox" name="maTimeSpinBox"/>
                    </item>
                   </layout>
                  </widget>
@@ -779,8 +751,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>407</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -923,8 +895,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>499</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -1171,8 +1143,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>86</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1195,8 +1167,12 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
+<<<<<<< .mine
                            <width>98</width>
-                           <height>28</height>
+=======
+                           <width>71</width>
+>>>>>>> .theirs
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1282,8 +1258,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>71</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1337,8 +1313,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>71</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1404,8 +1380,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
-                            <height>28</height>
+                            <width>76</width>
+                            <height>16</height>
                            </rect>
                           </property>
                          </widget>
@@ -1452,8 +1428,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
-                            <height>28</height>
+                            <width>76</width>
+                            <height>16</height>
                            </rect>
                           </property>
                          </widget>
@@ -1620,8 +1596,12 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
+<<<<<<< .mine
                             <width>98</width>
-                            <height>141</height>
+=======
+                            <width>180</width>
+>>>>>>> .theirs
+                            <height>144</height>
                            </rect>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1641,8 +1621,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>98</width>
-                                <height>89</height>
+                                <width>145</width>
+                                <height>84</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -1659,8 +1639,8 @@
                                    <rect>
                                     <x>0</x>
                                     <y>0</y>
-                                    <width>98</width>
-                                    <height>73</height>
+                                    <width>116</width>
+                                    <height>76</height>
                                    </rect>
                                   </property>
                                   <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -2259,8 +2239,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>71</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2469,8 +2449,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>86</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2497,8 +2477,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -2622,7 +2602,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -2649,38 +2629,48 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>348</height>
+                       <width>82</width>
+                       <height>344</height>
                       </rect>
                      </property>
                     </widget>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QTableWidget" name="tableWidget_2">
+                   <widget class="QTableWidget" name="stIntervalList">
                     <column>
                      <property name="text">
-                      <string>Lp.</string>
+                      <string>No.</string>
                      </property>
                     </column>
                     <column>
                      <property name="text">
-                      <string>ST interval start</string>
+                      <string>Start</string>
                      </property>
                     </column>
                     <column>
                      <property name="text">
-                      <string>ST level</string>
+                      <string>Position</string>
                      </property>
                     </column>
                     <column>
                      <property name="text">
-                      <string>position </string>
+                      <string>Shape</string>
                      </property>
                     </column>
                     <column>
                      <property name="text">
-                      <string>shape </string>
+                      <string>Offset</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Slope 1</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Slope 2</string>
                      </property>
                     </column>
                    </widget>
@@ -2706,7 +2696,7 @@
                    <item>
                     <widget class="QRadioButton" name="detectionratelinear">
                      <property name="text">
-                      <string>linear</string>
+                      <string>Linear</string>
                      </property>
                      <property name="checked">
                       <bool>true</bool>
@@ -2716,7 +2706,7 @@
                    <item>
                     <widget class="QRadioButton" name="detectionratesquare">
                      <property name="text">
-                      <string>quadratic</string>
+                      <string>Quadratic</string>
                      </property>
                     </widget>
                    </item>
@@ -2735,46 +2725,46 @@
                    <item row="0" column="0">
                     <widget class="QLabel" name="st_interval_detection">
                      <property name="text">
-                      <string>detection window width</string>
+                      <string>Detection window width</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_13">
+                     <property name="text">
+                      <string>Smoothing window width</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QLineEdit" name="st_interval_detection_width">
-                     <property name="maximumSize">
-                      <size>
-                       <width>25</width>
-                       <height>16777215</height>
-                      </size>
+                    <widget class="QSpinBox" name="st_interval_detection_width">
+                     <property name="minimum">
+                      <number>1</number>
                      </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::RightToLeft</enum>
+                     <property name="maximum">
+                      <number>9999</number>
                      </property>
-                     <property name="text">
-                      <string>30</string>
+                     <property name="singleStep">
+                      <number>5</number>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_13">
-                     <property name="text">
-                      <string>smoothing window width</string>
+                     <property name="value">
+                      <number>30</number>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QLineEdit" name="st_interval_smothing_width">
-                     <property name="maximumSize">
-                      <size>
-                       <width>25</width>
-                       <height>16777215</height>
-                      </size>
+                   <item row="2" column="1">
+                    <widget class="QSpinBox" name="st_interval_smoothing_width">
+                     <property name="minimum">
+                      <number>1</number>
                      </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::RightToLeft</enum>
+                     <property name="maximum">
+                      <number>9999</number>
                      </property>
-                     <property name="text">
-                      <string>4</string>
+                     <property name="singleStep">
+                      <number>5</number>
+                     </property>
+                     <property name="value">
+                      <number>4</number>
                      </property>
                     </widget>
                    </item>
@@ -2784,7 +2774,7 @@
                 <item>
                  <widget class="QGroupBox" name="groupBox_8">
                   <property name="title">
-                   <string/>
+                   <string>Morphology</string>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
@@ -2795,15 +2785,21 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="st_interval_morphology">
-                     <property name="maximumSize">
-                      <size>
-                       <width>25</width>
-                       <height>16777215</height>
-                      </size>
+                    <widget class="QDoubleSpinBox" name="st_interval_morphology">
+                     <property name="locale">
+                      <locale language="English" country="UnitedStates"/>
                      </property>
-                     <property name="text">
-                      <string>6</string>
+                     <property name="minimum">
+                      <double>0.000000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>100.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.100000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>6.000000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -2813,7 +2809,7 @@
                 <item>
                  <widget class="QGroupBox" name="groupBox_4">
                   <property name="title">
-                   <string/>
+                   <string>Thresholds</string>
                   </property>
                   <layout class="QFormLayout" name="formLayout_2">
                    <property name="fieldGrowthPolicy">
@@ -2822,40 +2818,46 @@
                    <item row="0" column="0">
                     <widget class="QLabel" name="label_4">
                      <property name="text">
-                      <string>abnormal ST level threshold</string>
+                      <string>Abnormal ST level threshold</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_22">
+                     <property name="text">
+                      <string>Abnormal ST slope threshold</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QLineEdit" name="st_interval_level_threshold">
-                     <property name="maximumSize">
-                      <size>
-                       <width>50</width>
-                       <height>16777215</height>
-                      </size>
+                    <widget class="QDoubleSpinBox" name="st_interval_level_threshold">
+                     <property name="locale">
+                      <locale language="English" country="UnitedStates"/>
                      </property>
-                     <property name="text">
-                      <string>0.15</string>
+                     <property name="suffix">
+                      <string> mV</string>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_22">
-                     <property name="text">
-                      <string>abnormal ST slope threshold</string>
+                     <property name="singleStep">
+                      <double>0.050000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.150000000000000</double>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QLineEdit" name="st_interval_slope_threshold">
-                     <property name="maximumSize">
-                      <size>
-                       <width>50</width>
-                       <height>16777215</height>
-                      </size>
+                   <item row="2" column="1">
+                    <widget class="QDoubleSpinBox" name="st_interval_slope_threshold">
+                     <property name="locale">
+                      <locale language="English" country="UnitedStates"/>
                      </property>
-                     <property name="text">
-                      <string>35</string>
+                     <property name="suffix">
+                      <string>°</string>
+                     </property>
+                     <property name="maximum">
+                      <double>90.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>35.000000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -2922,8 +2924,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2939,8 +2941,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2960,8 +2962,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -2977,8 +2979,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>35</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -3170,8 +3172,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>212</height>
+                   <width>86</width>
+                   <height>194</height>
                   </rect>
                  </property>
                 </widget>
@@ -3206,8 +3208,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>211</height>
+                   <width>86</width>
+                   <height>194</height>
                   </rect>
                  </property>
                 </widget>
@@ -3544,8 +3546,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>98</width>
-                     <height>28</height>
+                     <width>22</width>
+                     <height>16</height>
                     </rect>
                    </property>
                   </widget>
@@ -3594,8 +3596,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -3763,8 +3765,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>232</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -3811,8 +3813,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>231</height>
+                   <width>71</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>

@@ -31,6 +31,10 @@ private Q_SLOTS:
     void testDataB105();
     void testDataB112();
 
+    void testNoSamples();
+    void testInsufficientData();
+    void testUnequalDataSizes();
+
 private:
     EcgStData data;
     EcgStAnalyzer analyzer;
@@ -57,7 +61,7 @@ TestEcgStInterval::TestEcgStInterval()
     analyzer.setSmoothSize(4);
     analyzer.setDetectionSize(30);
     analyzer.setMorphologyCoeff(6.0);
-    analyzer.setAlgorithm(ST_LINEAR);
+    analyzer.setAlgorithm(EcgStAnalyzer::LINEAR);
     analyzer.setLevelThreshold(0.15);
     analyzer.setSlopeThreshold(35.0);
 }
@@ -160,17 +164,67 @@ void TestEcgStInterval::testDataB112()
 
 //------------------------------------------------------------
 
+void TestEcgStInterval::testNoSamples()
+{
+    QCOMPARE(analyzer.analyze(QVector<double>(),
+                              QVector<EcgSampleIter>(),
+                              QVector<EcgSampleIter>(),
+                              QVector<EcgSampleIter>(), 360.0), false);
+
+    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::NO_SAMPLES_PROVIDED);
+}
+
+//------------------------------------------------------------
+
+void TestEcgStInterval::testInsufficientData()
+{
+    QVector<double> data;
+    data.append(1);
+    data.append(2);
+    data.append(3);
+
+    QVector<EcgSampleIter> iter;
+    iter.append(data.constBegin());
+
+    QCOMPARE(analyzer.analyze(data, iter, iter, iter, 360.0), false);
+    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::INSUFFICIENT_DATA);
+}
+
+//------------------------------------------------------------
+
+void TestEcgStInterval::testUnequalDataSizes()
+{
+    QVector<double> data;
+    data.append(1);
+    data.append(2);
+    data.append(3);
+
+    QVector<EcgSampleIter> iter;
+    iter.append(data.constBegin());
+
+    QVector<EcgSampleIter> iter2;
+    iter.append(data.constBegin());
+    iter.append(data.constBegin() + 1);
+
+    QCOMPARE(analyzer.analyze(data, iter, iter2, iter, 360.0), false);
+    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::UNEQUAL_DATA_SIZES);
+
+    QCOMPARE(analyzer.analyze(data, iter, iter, iter2, 360.0), false);
+    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::UNEQUAL_DATA_SIZES);
+}
+
+//------------------------------------------------------------
+
 void TestEcgStInterval::runTest(const QString &fileName, int num,
                                 int stOn[], int stEnd[],
                                 EcgStPosition pos[], EcgStShape shape[])
 {
     QVERIFY2(loadTestData(fileName), "Failed to load test data");
 
-    QList<EcgStDescriptor> res = analyzer.analyze(data.ecgSamples,
-                                                  data.rData,
-                                                  data.jData,
-                                                  data.tEndData,
-                                                  360.0);
+    QVERIFY(analyzer.analyze(data.ecgSamples, data.rData, data.jData, data.tEndData, 360.0));
+    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::NO_ERROR);
+
+    QList<EcgStDescriptor> res = analyzer.getResult();
     QCOMPARE(res.size(), num);
 
     for (int i = 0; i < num; i++)

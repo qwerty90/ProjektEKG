@@ -1,5 +1,6 @@
 // medyczne.cpp : Defines the entry point for the console application.
 #include "QT_DISP.h"
+#include "QsLog/QsLog.h"
 using namespace std;
 
 QT_DISP::QT_DISP()
@@ -22,17 +23,19 @@ void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vect
 	P_On = in_P_On;
 	samplingFrequency = in_samplingFrequency;
 
-	/*heartBeats = QRS_On.size() - 1;
-	channels = signals2.size() - 1;
+    //heartBeats = QRS_On.size() - 1;
+    heartBeats = P_On.size() - 1;
+
+	/*channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
 	T_EndT.resize(channels);
-	for(int i = 0; i < channels; ++i)
-	{
-		T_Peak[i].resize(heartBeats);
-		T_EndT[i].resize(heartBeats);
-		T_EndP[i].resize(heartBeats);
-	}*/
+	*/
+	T_Peak.resize(heartBeats);
+	T_EndT.resize(heartBeats);
+	T_EndP.resize(heartBeats);
+	QTT.resize(heartBeats);
+	QTP.resize(heartBeats);
 }
 
 void QT_DISP::getInput(string path)
@@ -57,7 +60,7 @@ void QT_DISP::getInput(string path)
 
 		QRS_On = vector <int>(heartBeats + 1, 0);
 		QRS_End = vector <int>(heartBeats + 1, 0);
-		P_On = vector <int>(heartBeats, 0);
+		P_On = vector <int>(heartBeats-2, 0);
 
 		for(int i = 0; i < heartBeats + 1; ++i)
 		{
@@ -67,14 +70,15 @@ void QT_DISP::getInput(string path)
 		{
 			file >> QRS_End[i];
 		}
-		for(int i = 0; i < heartBeats; ++i)
+		for(int i = 0; i < heartBeats-2; ++i)
 		{
 			file >> P_On[i];
-		}
-
+		};
 		T_Peak.resize(heartBeats);
 		T_EndT.resize(heartBeats);
 		T_EndP.resize(heartBeats);
+		QTT.resize(heartBeats);
+		QTP.resize(heartBeats);
 
 		file.close();
 	}
@@ -113,71 +117,91 @@ void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <double> T_E
 void QT_DISP::Run()
 {
         for(int j = 0; j < heartBeats; ++j)
-        {
-            //vector <double> x (signals2.begin() + QRS_On[j], signals2.begin() + QRS_On[j + 1]);
-            vector <double> y (signals2.begin() + QRS_On[j], signals2.begin() + QRS_On[j + 1]);
-			vector <double> x;
-
-			x.resize(QRS_On[j+1]-QRS_On[j]);
-			int iterator = 0;
-			for (int i=QRS_On[j]; i<QRS_On[j+1];i++)
+        {			
+            int iQRS_On = QRS_On[j] - QRS_On[j];
+			int	iQRS_End = QRS_End[j] - QRS_On[j];
+			int	iP_On = P_On[j] - QRS_On[j];	
+			if(P_On[j] > QRS_On[j + 1])
 			{
-				x[iterator] = i/samplingFrequency;
-				iterator++;
+				iP_On = QRS_On[j + 1] - QRS_On[j] - 60;
+				P_On.insert(P_On.begin() + j, 0.0);
+			}
+            
+			vector <double> *y = new vector <double> (signals2.begin() + QRS_On[j], signals2.begin() + QRS_On[j + 1]);
+			vector <double> *x = new vector <double> (QRS_On[j + 1]-QRS_On[j], 0);
+			int iter = 0;
+			for (int i = QRS_On[j]; i < QRS_On[j + 1]; i++, iter++)
+			{
+				x->at(iter) = i/samplingFrequency;
 			}
 
-            int iQRS_On = QRS_On[j] - QRS_On[j];
-            int iQRS_End = QRS_End[j] - QRS_On[j];
-            int iP_On = P_On[j] - QRS_On[j];
-
-			//filtrowanie
-			Filtering(&y, iQRS_End, iP_On);
-			Filtering(&y, iQRS_End, iP_On);
-			Filtering(&y, iQRS_End, iP_On);
-			Filtering(&y, iQRS_End, iP_On);
+			//filtracja
+			Filtering(y, iQRS_End, iP_On);
+			Filtering(y, iQRS_End, iP_On);
+			Filtering(y, iQRS_End, iP_On);
+			Filtering(y, iQRS_End, iP_On);
 
 			//odnalezienie potrzebnych do wyszukania konca zalamka miejsc dodatkowych
 			int iT_Peak = FindTPeak(y,iQRS_End,iP_On); 
-			T_Peak[j] = iT_Peak;
-
-			int highestvelocity = HighestVelocity(&x, &y, iT_Peak,  iP_On);
+			T_Peak[j] = iT_Peak * QRS_On[j];
+            QLOG_TRACE() << "QT_DISP/ TPeak " <<iT_Peak;
+			int highestvelocity = HighestVelocity(x, y, iT_Peak,  iP_On);
 
 			//wyznaczenie koncow zalamka T przy pomocy metod: paraboli oraz stycznej
-			T_EndP[j]=CalculateTendParabol(&x, &y, highestvelocity, iT_Peak, iP_On);
-			T_EndT[j]=CalculateTendTangent(&x, &y, highestvelocity, iT_Peak, iP_On);			
+			T_EndP[j]=CalculateTendParabol(x, y, highestvelocity, iT_Peak, iP_On);
+            QLOG_TRACE() << "QT_DISP/ TEndP " <<T_EndP[j];
+			T_EndT[j]=CalculateTendTangent(x, y, highestvelocity, iT_Peak, iP_On);
+            QLOG_TRACE() << "QT_DISP/ TEndT " <<T_EndT[j];
+
+			//i obliczenie d³ugoœci odcinka QT
+			CalculateQT(x->at(0), j);
+
+			//i ocena tego odcinka
+			EvaluateQTDisp(QTT[j], QTP[j]);
+			
+			delete x;
+			delete y;
 		}
-	EvaluateQTDisp();
+}
+
+void QT_DISP::CalculateQT(double QRS_OnTime, int number_T_End_QT)
+{
+	QTP[number_T_End_QT] = T_EndP[number_T_End_QT] - QRS_OnTime;
+	QTT[number_T_End_QT] = T_EndT[number_T_End_QT] - QRS_OnTime;
 }
 
 void QT_DISP::Filtering(vector <double> *y, int QRS_End, int P_On)
 {
-	vector <double> wynik(y->begin() + QRS_End, y->begin() + P_On);
-	vector <double> yTemp(y->begin() + QRS_End, y->begin() + P_On);
+	vector <double> *wynik = new vector <double>(y->begin() + QRS_End, y->begin() + P_On);
+	vector <double> *yTemp = new vector <double>(y->begin() + QRS_End, y->begin() + P_On);
 
-	wynik[0] = (yTemp[0]+yTemp[1])/2;
-	wynik[1] = (yTemp[0]+yTemp[1]+yTemp[2])/3;         
-	for (unsigned int i=5; i< wynik.size(); i++)
+	wynik->at(0) = (yTemp->at(0)+yTemp->at(1))/2;
+	wynik->at(1) = (yTemp->at(0)+yTemp->at(1)+yTemp->at(2))/3;         
+	for (unsigned int i=5; i< wynik->size(); i++)
 	{
-		wynik[i-3] =  (yTemp[i]  + yTemp[i-1] + yTemp[i-2] + yTemp[i-3] +yTemp[i-4]+yTemp[i-5])/6;
+		wynik->at(i-3) =  (yTemp->at(i)  + yTemp->at(i-1) + yTemp->at(i-2) + yTemp->at(i-3) +yTemp->at(i-4)+yTemp->at(i-5))/6;
 	}
-    wynik[wynik.size() -3] = (yTemp[yTemp.size()-1]+yTemp[yTemp.size()-2]+yTemp[yTemp.size()-3]+yTemp[yTemp.size()-4])/4;
-	wynik[wynik.size() -2] = (yTemp[yTemp.size()-1]+yTemp[yTemp.size()-2]+yTemp[yTemp.size()-3])/3;
-	wynik[wynik.size() -1] = (yTemp[yTemp.size()-1]+yTemp[yTemp.size()-2])/2;
+    wynik->at(wynik->size() -3) = (yTemp->at(yTemp->size()-1)+yTemp->at(yTemp->size()-2)+yTemp->at(yTemp->size()-3)+yTemp->at(yTemp->size()-4))/4;
+	wynik->at(wynik->size() -2) = (yTemp->at(yTemp->size()-1)+yTemp->at(yTemp->size()-2)+yTemp->at(yTemp->size()-3))/3;
+	wynik->at(wynik->size() -1) = (yTemp->at(yTemp->size()-1)+yTemp->at(yTemp->size()-2))/2;
 
 	y->erase(y->begin() + QRS_End, y->begin() + P_On);
-	y->insert(y->begin() + QRS_End, wynik.begin(), wynik.end());
+	y->insert(y->begin() + QRS_End, wynik->begin(), wynik->end());
+
+	delete wynik;
+	delete yTemp;
 }
 
-int QT_DISP::FindTPeak(vector<double> y, int QRS_End, int P_On)
+int QT_DISP::FindTPeak(vector<double> *y, int QRS_End, int P_On)
 {
 	double maxValue = 0;
 	int maxPlace = 0;
 
 	for(int i = QRS_End; i < (P_On - 20); i++)
 	{
-		if (maxValue < y[i])
+		if (maxValue < y->at(i))
 		{
-			maxValue = y[i];
+			maxValue = y->at(i);
 			maxPlace = i;
 		}
 	}
@@ -219,7 +243,7 @@ double QT_DISP::CalculateTendTangent(vector <double> *x, vector <double> *y, int
 	double point0OfTangent;
 	double distancePeakTangent = (y->at(T_Peak) - b)/a - x->at(T_Peak); 
 
-	point0OfTangent = (950 - b) / a;		//!!!!!!!!!!!!!!!!!!!!!!!!!!! isoline is set to const 950 for now!!!!!!!!!!!!
+	point0OfTangent = (0 - b) / a;		// isoline is set to const 0 for now
 
 	if(x->at(P_Onset) < point0OfTangent + distancePeakTangent)
 		return x->at(P_Onset);
@@ -296,67 +320,64 @@ double QT_DISP::CalculateTendParabol(vector <double> *x, vector <double> *y, int
 		b = bBest;
 		c = cBest;
 
+		if(aBest == 0)
+			return 0;
 		if(x->at(P_Onset) < -bBest/(2*aBest))
 			return x->at(P_Onset);
 		else
 			return -bBest/(2*aBest);
 }
 
-void QT_DISP::EvaluateQTDisp()
+void QT_DISP::EvaluateQTDisp(double QTT, double QTP)
 {
-		heartAction = (60 * samplingFrequency * QRS_On.size() / signals2.size() ) ;
+	double RR = 60/heartAction;
+	double gapQT_T = 1000*(QTT);
+	double gapQT_P = 1000*(QTP);
 
-		for(int j =0; j< T_EndP.size(); j++)
+	int EvaluatedValue;
+
+	for (int k = 0; k<8;k++)
 		{
-			double RR = 60/heartAction;
-			double gapQT_T = 1000*(T_EndT[j]-QRS_On[j]/samplingFrequency);
-			double gapQT_P = 1000*(T_EndP[j]-QRS_On[j]/samplingFrequency);
-
-			int EvaluatedValue;
-
-			for (int k = 0; k<8;k++)
-			{
-				switch(k)
-				{
-					case 0:
-						EvaluatedValue = EvaluateBazzet(gapQT_T, RR);
-						break;
+		switch(k)
+		{
+			case 0:
+			EvaluatedValue = EvaluateBazzet(gapQT_T, RR);
+			break;
     
-					case 1:
-						EvaluatedValue = EvaluateFrideric(gapQT_T, RR);
-						break;
-   					case 2:
-						EvaluatedValue = EvaluateHodges(gapQT_T, heartAction);
-						break;
+			case 1:
+			EvaluatedValue = EvaluateFrideric(gapQT_T, RR);
+			break;
+   				case 2:
+			EvaluatedValue = EvaluateHodges(gapQT_T, heartAction);
+			break;
     
-					case 3:
-						EvaluatedValue = EvaluateFramingham(gapQT_T, RR);
-						break;
+			case 3:
+			EvaluatedValue = EvaluateFramingham(gapQT_T, RR);
+			break;
 
-					case 4:
-						EvaluatedValue = EvaluateBazzet(gapQT_P, RR);
-						break;
+			case 4:
+			EvaluatedValue = EvaluateBazzet(gapQT_P, RR);
+			break;
     
-					case 5:
-						EvaluatedValue = EvaluateFrideric(gapQT_P, RR);
-						break;
-   					case 6:
-						EvaluatedValue = EvaluateHodges(gapQT_P, heartAction);
-						break;
+			case 5:
+			EvaluatedValue = EvaluateFrideric(gapQT_P, RR);
+			break;
+   				case 6:
+			EvaluatedValue = EvaluateHodges(gapQT_P, heartAction);
+			break;
     
-					case 7:
-						EvaluatedValue = EvaluateFramingham(gapQT_P, RR);
-						break;
-				}
-
-				if (EvaluatedValue == 0)
-					evaluations[k].numberOfCorrectQT++;
-				else if (EvaluatedValue == 1)
-					evaluations[k].numberOfTooLowQT++;
-				else
-					evaluations[k].numberOfTooHighQT++;
-			}
+			case 7:
+			EvaluatedValue = EvaluateFramingham(gapQT_P, RR);
+			break;
 		}
+
+		if (EvaluatedValue == 0)
+		evaluations[k].numberOfCorrectQT++;
+		else if (EvaluatedValue == 1)
+		evaluations[k].numberOfTooLowQT++;
+		else
+		evaluations[k].numberOfTooHighQT++;
+	}
 }
 
 int QT_DISP::EvaluateBazzet(double gapQT, double RR)
