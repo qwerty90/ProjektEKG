@@ -2999,20 +2999,6 @@ void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
     emit ecgBase_WindowSizeChanged(QString::number(windowSize));
 }
 
-void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
-{
-
-}
-
-void AirEcgMain::on_Kalman1lineEdit_textEdited(const QString &arg1)
-{
-    emit ecgBase_Kalman1Changed(arg1);
-}
-void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
-{
-    emit ecgBase_Kalman2Changed(arg1);
-}
-
 void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
 {
     emit ecgBase_ButterworthCoeffSetChanged(index);

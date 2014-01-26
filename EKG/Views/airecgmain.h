@@ -221,12 +221,6 @@ private slots:
 
     void on_maTimeSpinBox_valueChanged(const QString &arg1);
 
-    void on_maWindowSpinBox_valueChanged(const QString &arg1);
-
-    void on_Kalman1lineEdit_textEdited(const QString &arg1);
-
-    void on_Kalman2lineEdit_textEdited(const QString &arg1);
-
     void on_ButterworthcomboBox_currentIndexChanged(int index);
 
     void on_Falkowa_radiobutton_clicked();

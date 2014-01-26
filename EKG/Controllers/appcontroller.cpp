@@ -44,9 +44,6 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
 
-    this->connect(view, SIGNAL(ecgBase_CzasUsrednieniaChanged(QString)),this,SLOT(CzasUsrednieniaEdit(QString)));
-    this->connect(view, SIGNAL(ecgBase_Kalman1Changed(QString)),this,SLOT(ecgBase_Kalman1Changed(QString)));
-    this->connect(view, SIGNAL(ecgBase_Kalman2Changed(QString)),this,SLOT(ecgBase_Kalman2Changed(QString)));
     this->connect(view, SIGNAL(ecgBase_WindowSizeChanged(QString)),this,SLOT(ecgBase_WindowSizeEdit(QString)));
     this->connect(view, SIGNAL(ecgBase_ButterworthCoeffSetChanged(int)), this, SLOT(ecgButterChanged(int)));
 
@@ -820,10 +817,6 @@ void AppController::ecgBase_Kalman1Changed(const QString arg1)
 void AppController::ecgBase_Kalman2Changed(const QString arg2)
 {
     this->entity->settings->kalman_arg2 = arg2;
-}
-void AppController::CzasUsrednieniaEdit(const QString arg1)
-{
-    this->entity->settings->averaging_time = arg1.toDouble();
 }
 void AppController::ecgBase_WindowSizeEdit(const QString arg1)
 {
