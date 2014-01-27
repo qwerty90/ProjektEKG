@@ -32,16 +32,7 @@ class AirEcgMain : public QMainWindow
 
     EcgData *currentEcgData;
 
-    //void drawEcgBaseline(EcgData* data);
-    //void drawRPeaks(EcgData* data);
-    //void drawHrv1(EcgData* data);
-    void drawHrv2(EcgData* data);
-    void drawHrvDfa(EcgData* data);
-    void drawTwa(EcgData* data);
-    //void drawWaves(EcgData* data);
-    //void drawQrsClass(EcgData* data);
 
-    //void drawSleep_Apnea(EcgData* data);
 
 
 
@@ -197,13 +188,6 @@ private slots:
     void on_pushButton_5_clicked();
 
     void on_pushButton_6_clicked();
-
-    void on_pushButton_7_clicked();
-
-    void on_pushButton_8_clicked();
-
-    void on_pushButton_9_clicked();
-
     void on_pushButton_10_clicked();
 
     void on_pushButton_12_clicked();
