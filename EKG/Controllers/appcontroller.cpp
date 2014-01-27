@@ -298,6 +298,8 @@ void AppController::runEcgBaseline()
     QLOG_TRACE() << "MVC/ min/max values :" <<min<<"//"<<max;
     emit EcgBaseline_done(this->entity);
 
+    // runVcgLoop(); //tam jest bezwzgledna sciezka - nie odpali sie wam!
+
 }
 
 void AppController::runHRV1()
@@ -944,71 +946,68 @@ void AppController::load12lead_db(void)
 {
     QVector<double> *I   = new QVector<double>();
     QVector<double> *II  = new QVector<double>();
-    QVector<double> *III = new QVector<double>();
-    QVector<double> *AVR = new QVector<double>();
-    QVector<double> *AVL = new QVector<double>();
-    QVector<double> *AVF = new QVector<double>();
     QVector<double> *V1  = new QVector<double>();
     QVector<double> *V2  = new QVector<double>();
     QVector<double> *V3  = new QVector<double>();
     QVector<double> *V4  = new QVector<double>();
     QVector<double> *V5  = new QVector<double>();
     QVector<double> *V6  = new QVector<double>();
-    I->resize(462600);
-    II->resize(462600);
-    III->resize(462600);
-    AVR->resize(462600);
-    AVL->resize(462600);
-    AVF->resize(462600);
-    V1->resize(462600);
-    V2->resize(462600);
-    V3->resize(462600);
-    V4->resize(462600);
-    V5->resize(462600);
-    V6->resize(462600);
 
-    QVector<QString> data;
-   // data.resize(462600*12);
+    /*I->reserve(462600);
+    II->reserve(462600);
+    V1->reserve(462600);
+    V2->reserve(462600);
+    V3->reserve(462600);
+    V4->reserve(462600);
+    V5->reserve(462600);
+    V6->reserve(462600);*/
+
+    //QVector<QString> data;
+    //QVector<QString>::iterator iter_line=data.begin();
+    QStringList line;
+    QStringList::iterator iter_column;
+
     int i=0;
-    int j=0;
+    QString name = "C:\\SampleData\\12-lead_db\\samples.txt";
 
-    QString name = "C:\\SampleData\\12-lead_db\\I01.dat";
     QFile f(name);
-    f.open(QIODevice::ReadOnly);
-    QDataStream in(&f);
-    in >> data;
-    f.close();
-    QLOG_INFO() << QString::number(data.size()/2) << " Samples loaded";
-    while(j<data.size())
+    if (f.open(QIODevice::ReadOnly))
     {
-  /*
-        (*I)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
-        j++;
-        (*II)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-        (*III)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-        (*AVR)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
-        j++;
-        (*AVL)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-        (*AVF)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-        (*V1)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
-        j++;
-        (*V2)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-        (*V3)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-        (*V4)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
-        j++;
-        (*V5)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-        (*V6)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
-        j++;
-*/
-        QLOG_TRACE() <<"v1 sample: " << QString::number((*V1).at(i));
-        i++;
+        QLOG_TRACE() <<"Otwarto plik.";
+        QTextStream in(&f);
+        in >> name;
+
+        while (!in.atEnd())
+        {
+            line=(name).split(",",QString::SkipEmptyParts);
+            iter_column=line.begin();
+            I->append((*iter_column).toDouble());
+            iter_column++;
+            II->append((*iter_column).toDouble());
+            iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;
+            V1->append((*iter_column).toDouble());
+            QLOG_TRACE() <<"v1 sample: " << (*iter_column).toDouble();
+            iter_column++;
+            V2->append((*iter_column).toDouble());
+            iter_column++;
+            V3->append((*iter_column).toDouble());
+            iter_column++;
+            V4->append((*iter_column).toDouble());
+            iter_column++;
+            V5->append((*iter_column).toDouble());
+            iter_column++;
+            V6->append((*iter_column).toDouble());
+
+            line.clear();
+            in>>name;
+            i++;
+        }
+
+        f.close();
     }
+    else
+        QLOG_TRACE() <<"Nie otwarto pliku.";
+
+    QLOG_INFO() <<"VCG_LOOP/ " << i << " Samples loaded";
 
 }
