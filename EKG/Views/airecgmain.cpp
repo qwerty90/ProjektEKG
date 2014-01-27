@@ -100,9 +100,6 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
    // ui->pushButton_3_2->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
     ui->pushButton_6->setEnabled(true);
-    //ui->pushButton_7->setEnabled(true);
-    //ui->pushButton_8->setEnabled(true);
-    ui->pushButton_9->setEnabled(true);
     ui->pushButton_10->setEnabled(true);
     ui->pushButton_12->setEnabled(true);
    ui->rpeaksGroupBox_2->setEnabled(true);
@@ -252,124 +249,6 @@ void AirEcgMain::qrcclasslabel_changed(QString value)
     ui->QRSClassesToolBox->setItemText(currentIndex,value);
 }
 
-QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
-
-    QLOG_ERROR()<< "Executing wrong plot";
-
-    QVector<int> yData = QVector<int>::fromList(y);
-    QVector<double> yDataFin = QVector<double>(yData.size());
-    QVector<double> sampleNo = QVector<double>(yData.size());
-
-
-    float max=yData.first();
-    float min=yData.first();
-
-    double tos=1/freq;
-
-    for (int i=0;i<yData.size();++i)
-    {
-        sampleNo[i]=(i)*tos;
-        yDataFin[i]=yData[i]/200.0-5.0;
-        if (max<yData[i]) max=yData[i];
-        if (min>yData[i]&&min>0) min=yData[i];
-    }
-    max=max/200-5.0;
-    min=min/200-5.0;
-
-    QwtPlot *plot = new QwtPlot();
-
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, min, max,0.5 );
-
-    plot->setAxisScale( QwtPlot::xBottom , 0.0,4000.0,1);// sampleNo.last());
-
-    QList<double> ticks;
-    for(int i=0; i<100;i++)
-    {
-        ticks.append(i);
-    }
-
-    /* wstawianie lini pionowych
-    QwtPlotMarker *mX = new QwtPlotMarker();
-    mX->setLabel( QString::fromLatin1( "label" ) );
-    mX->setLabelAlignment( Qt::AlignLeft | Qt::AlignBottom );
-    mX->setLabelOrientation( Qt::Vertical );
-    mX->setLineStyle( QwtPlotMarker::VLine );
-    mX->setLinePen( QPen( Qt::black, 0, Qt::DashDotLine ) );
-    mX->setXValue( 2.0);
-    mX->attach( plot );
-    */
-
-    /* linia laczaca 2pkty
-    QwtPlotCurve *curve2 = new QwtPlotCurve();
-    curve2->setPen(QPen( Qt::blue, 3));
-    curve2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    QwtSymbol *symbol = new QwtSymbol( QwtSymbol::Ellipse,
-                                      QBrush( Qt::yellow ), QPen( Qt::red, 2 ), QSize( 8, 8 ) );
-    curve2->setSymbol( symbol );
-    QPolygonF points;
-    points << QPointF( 0.0, 4.4 ) << QPointF( 1.0, 3.0 );
-    curve2->setSamples( points );
-    curve2->attach( plot );
-    */
-
-    /* 3d example
-        double pi = 3.14;
-        double dr = 0.01;
-        double d_angl = 0.0025;
-        double r_max = 0.5;
-        QVector<QwtPoint3D> *vector = new QVector<QwtPoint3D>;
-        QwtPlotSpectroCurve *curve = new QwtPlotSpectroCurve;
-
-
-        curve->setColorRange(QwtInterval(0, r_max));
-        for(double r = dr; r < r_max; r += dr) {
-         for(double angl = 0; angl < 2*pi; angl += d_angl) {
-          vector->append(QwtPoint3D(4+0.5*r*sin(angl), 4+r*sin(angl), r));
-         }
-        }
-        curve->setSamples(*vector);
-    */
-
-    QwtText xaxis("Time [ss]");
-    QwtText yaxis("Voltage [mV]");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setBlue(0);
-    kolor.setRed(255);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *curve = new QwtPlotCurve();
-
-    curve->setPen(QPen( Qt::blue, 1));
-    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    curve->setSamples(sampleNo,yDataFin);
-    curve->attach( plot );
-
-    plot->canvas()->setFrameStyle( QFrame::Box | QFrame::Plain );
-    plot->canvas()->setLineWidth( 1 );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    zoom->setZoomBase(plot->canvas()->rect());
-    zoom->setZoomStack(zoom->zoomStack(), 100);
-
-    return plot;
-}
-
 class TempScaleDraw: public QwtScaleDraw
 {
 public:
@@ -500,12 +379,6 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
 
     if(no == 1 || no == 2)
     {
-        /*QwtPlotCurve* curve = new QwtPlotCurve();
-        curve->setPen(QPen(Qt::black, 1));
-        curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-        curve->setSamples(pDataX,yData1 );
-        curve->attach(plot);*/
-
         QwtPlotCurve *curve1 = new QwtPlotCurve();
         QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
         fitter->setFitMode(QwtSplineCurveFitter::Spline);
@@ -522,12 +395,6 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
 
     if(no == 0 || no == 2)
     {
-        /*QwtPlotCurve* curve2 = new QwtPlotCurve();
-        curve2->setPen(QPen(Qt::black, 1));
-        curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-        curve2->setSamples(pDataX, yData2);
-        curve2->attach(plot);*/
-
         QwtPlotCurve *curve3 = new QwtPlotCurve();
         QwtSplineCurveFitter *fitter = new QwtSplineCurveFitter();
         fitter->setFitMode(QwtSplineCurveFitter::Spline);
@@ -882,75 +749,6 @@ QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, double a, double b)
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotLogPlot(QList<double> &x,QList<double> &y,int rodzaj){
-    QVector<double> xData = QVector<double>::fromList(x);
-    QVector<double> yData = QVector<double>::fromList(y);
-
-    int maxy=yData.first();
-    int miny=yData.first();
-    int maxx=xData.first();
-    int minx=xData.first();
-
-    for (int i=0;i<yData.size();++i)
-    {
-        if (maxy<yData[i]) maxy=yData[i];
-        if (miny>yData[i]) miny=yData[i];
-
-        if (maxx<xData[i]) maxx=xData[i];
-        if (minx>xData[i]) minx=xData[i];
-    }
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
-    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setBlue(0);
-    kolor.setRed(255);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
-    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    curve->setSamples(xData,yData);
-    curve->attach( plot );
-
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-
-    if (rodzaj == 1) {
-        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
-    } else if (rodzaj == 2){
-        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
-    } else if (rodzaj == 3){
-        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
-        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
-    } else {
-        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
-    }
-
-    return plot;
-}
 // hrv1
 QwtPlot* AirEcgMain::plotPointsPlotDoubleToDouble(QList<double> &x, QList<double> &y){
     QVector<double> yData = QVector<double>::fromList(y);
@@ -1050,14 +848,9 @@ QwtPlot* AirEcgMain::plotPointsPlotDoubleToDouble(QList<double> &x, QList<double
     return plot;
 }
 
-
-//funkcja przyjmuje jako parametry, wartosci RR i ich wystepienia, wspolrzedne
-//rownomiernego rozmieszczenia danych sprobkowanych z funkcji interpolujacej
-//oraz wartosci w tych wspolrzednych, sa to punkty wykorzystywane potem do FFT
 QwtPlot* AirEcgMain::plotPoints(QList<double> &x, QList<double> &y, QList<double> fftSamplesX,
                        QList<double> fftSamplesY, QList<double> interpolateX, QList<double> interpolateY)
 {
-    // wszystkie QListy musza byc przetworzone na QVectory
     QVector<double> xData = QVector<double>::fromList(x);
     QVector<double> yData = QVector<double>::fromList(y);
     QVector<double> fftXData = QVector<double>::fromList(fftSamplesX);
@@ -1067,7 +860,6 @@ QwtPlot* AirEcgMain::plotPoints(QList<double> &x, QList<double> &y, QList<double
 
     QVector<double> yDataFin = QVector<double>(yData.size());
     QVector<double> sampleNo = QVector<double>(yData.size());
-
 
     // ograniczenia na X
     double maxX=xData.first();
@@ -1092,7 +884,6 @@ QwtPlot* AirEcgMain::plotPoints(QList<double> &x, QList<double> &y, QList<double
         if (minY>yData[i]) minY=yData[i];
     }
 
-
     QwtPlot *plot = new QwtPlot();
     plot->setCanvasBackground( Qt::white );
     plot->setAxisScale( QwtPlot::yLeft, minY, maxY );
@@ -1108,7 +899,6 @@ QwtPlot* AirEcgMain::plotPoints(QList<double> &x, QList<double> &y, QList<double
     yaxis.setFont(QFont("Arial", 8));
     plot->setAxisTitle( QwtPlot::yLeft, yaxis );
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
 
     // ustawianie siatki
     QwtPlotGrid *grid = new QwtPlotGrid();
@@ -1183,146 +973,6 @@ QwtPlot* AirEcgMain::plotPoints(QList<double> &x, QList<double> &y, QList<double
 }
 
 
-QwtPlot* AirEcgMain::plotLogPlotF(QList<double> &x,QList<double> &y,int rodzaj){
-    QVector<double> xData = QVector<double>::fromList(x);
-    QVector<double> yData = QVector<double>::fromList(y);
-
-    double maxy=yData.first();
-    double miny=yData.first();
-    double maxx=xData.first();
-    double minx=xData.first();
-
-    for (int i=0;i<yData.size();++i)
-    {
-        if (maxy<yData[i]) maxy=yData[i];
-        if (miny>yData[i]) miny=yData[i];
-
-        if (maxx<xData[i]) maxx=xData[i];
-        if (minx>xData[i]) minx=xData[i];
-    }
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
-    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
-
-    //labels
-    QwtText xaxis("Time [Hz]");
-    QwtText yaxis("Power");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setBlue(0);
-    kolor.setRed(255);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
-    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    curve->setSamples(xData,yData);
-    curve->attach( plot );
-
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-
-    if (rodzaj == 1) {
-        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
-    } else if (rodzaj == 2){
-        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
-    } else if (rodzaj == 3){
-        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
-        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
-    } else {
-        //plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
-    }
-
-    return plot;
-}
-// koniec hrv1
-
-QwtPlot* AirEcgMain::plotBarChart(QList<unsigned int> &x, QList<int> &y){
-    QVector<unsigned int> xData = QVector<unsigned int>::fromList(x);
-    QVector<int> yData = QVector<int>::fromList(y);
-    QVector<double> xDataFin = QVector<double>(xData.size());
-    QVector<double> yDataFin = QVector<double>(yData.size());
-
-    int maxx=xData.first();
-    int minx=xData.first();
-    int maxy=yData.first();
-    int miny=yData.first();
-
-    for (int i=0;i<yData.size();++i)
-    {
-        xDataFin[i] = xData[i];
-        yDataFin[i] = yData[i];
-        if (maxx<xData[i]) maxx=xData[i];
-        if (minx>xData[i]) minx=xData[i];
-        if (maxy<yData[i]) maxy=yData[i];
-        if (miny>yData[i]) miny=yData[i];
-    }
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
-    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setRed(255);
-    kolor.setGreen(0);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *points = new QwtPlotCurve();
-    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::blue, QPen( Qt::blue ), QSize( 3, 3 ) );
-    points->setSymbol(marker);
-    points->setStyle( QwtPlotCurve::Sticks );
-    points->setSamples(xDataFin, yDataFin);
-    points->attach( plot );
-
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-    return plot;
-}
 //R Peaks
 QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterator> &p, const QVector<double> &yData, float freq){
     QVector<double> yDataFin = QVector<double>(yData.size());
@@ -1413,656 +1063,6 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     return plot;
 }
 
-QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq){
-    //QVector<int> yData = QVector<int>::fromList(y);
-    QVector<double> yDataFin = QVector<double>(yData.size());
-    QVector<double> sampleNo = QVector<double>(yData.size());
-
-    int max=yData.first();
-    int min=yData.first();
-
-    double tos=1/freq;
-
-    for (int i=0;i<yData.size();++i)
-    {
-        sampleNo[i]=(i)*tos;
-        yDataFin[i]=yData[i];
-        if (max<yData[i]) max=yData[i];
-        if (min>yData[i]) min=yData[i];
-    }
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
-
-    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
-    plot->axisAutoScale(QwtPlot::xBottom);
-    QwtText xaxis("Time [mm:ss:zzz]");
-    QwtText yaxis("Voltage [mV]");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setBlue(0);
-    kolor.setRed(255);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
-    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    curve->setSamples(sampleNo,yDataFin);
-    curve->attach( plot );
-
-    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
-    QVector<unsigned int> pData = QVector<unsigned int>(p.size());
-    for (int i=0;i<p.size();i++)
-    {
-        pData[i]=((unsigned int)p.at(i));
-        //QLOG_TRACE() << QString::number( p.at(i));
-    }
-
-    QVector<double> pDataX = QVector<double>(pData.size());
-    QVector<double> pDataY = QVector<double>(pData.size());
-
-    for (int i=0;i<pData.size();++i)
-    {
-        pDataX[i]=pData[i]*tos;
-        pDataY[i]=yData[pData[i]];
-    }
-
-    QwtPlotCurve *points = new QwtPlotCurve();
-    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
-    points->setSymbol(marker);
-    points->setPen( QColor( Qt::red ) );
-    points->setStyle( QwtPlotCurve::NoCurve );
-    points->setSamples(pDataX,pDataY);
-    points->attach( plot );
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-    return plot;
-}
-QwtPlot* AirEcgMain::plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, double &sd1, double &sd2){
-    QVector<int> yData = QVector<int>::fromList(y);
-    QVector<unsigned int> xData = QVector<unsigned int>::fromList(x);
-    QVector<double> yDataFin = QVector<double>(yData.size());
-    QVector<double> xDataFin = QVector<double>(xData.size());
-
-    int maxy=yData.first();
-    int miny=yData.first();
-    int maxx=xData.first();
-    int minx=xData.first();
-
-    for (int i=0;i<yData.size();++i)
-    {
-        yDataFin[i]=yData[i];
-        xDataFin[i]=xData[i];
-
-        if (maxy<yData[i]) maxy=yData[i];
-        if (miny>yData[i]) miny=yData[i];
-
-        if (maxx<xData[i]) maxx=xData[i];
-        if (minx>xData[i]) minx=xData[i];
-    }
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
-    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setRed(255);
-    kolor.setGreen(0);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    // Punkty glowne
-    QwtPlotCurve *points = new QwtPlotCurve();
-    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::blue, QPen( Qt::blue ), QSize( 4, 4 ) );
-    points->setSymbol(marker);
-    points->setStyle( QwtPlotCurve::NoCurve );
-    points->setSamples(xDataFin,yDataFin);
-    points->attach( plot );
-
-    // Glowne proste
-    int sum = 0;
-    for (int i=0; i<xData.size(); i++)
-        sum += xData[i];
-    sum += yData.last();
-    double mean = sum / (xData.size()+1);
-
-    QVector<double> xSamples1 = QVector<double>(2);
-    QVector<double> ySamples1 = QVector<double>(2);
-    QVector<double> xSamples2 = QVector<double>(2);
-    QVector<double> ySamples2 = QVector<double>(2);
-
-    xSamples1[0] = 0;
-    ySamples1[0] = 0;
-    xSamples1[1] = maxx;
-    ySamples1[1] = maxx;
-
-    QwtPlotCurve *curve1 = new QwtPlotCurve();
-    curve1->setPen(QPen( Qt::black, 1));
-    curve1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    curve1->setSamples(xSamples1, ySamples1);
-    curve1->attach( plot );
-
-    xSamples2[0] = 0;
-    ySamples2[0] = 2*mean;
-    xSamples2[1] = maxx;
-    ySamples2[1] = -maxx + 2*mean;
-
-    QwtPlotCurve *curve2 = new QwtPlotCurve();
-    curve2->setPen(QPen( Qt::black, 1));
-    curve2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    curve2->setSamples(xSamples2, ySamples2);
-    curve2->attach( plot );
-
-    // Elipsa
-    int dokladnosc = 628;
-    double interwal = 6.28 / dokladnosc;
-    QVector<double> elipsaxTemp = QVector<double>(dokladnosc+1);
-    QVector<double> elipsayTemp = QVector<double>(dokladnosc+1);
-
-    for (double i=0.0; i<=6.28; i+=0.01)
-    {
-        elipsaxTemp.append(sd2*cos(i));
-        elipsayTemp.append(sd1*cos(i-3.14/2));
-    }
-
-    QVector<double> elipsax = QVector<double>(dokladnosc+1);
-    QVector<double> elipsay = QVector<double>(dokladnosc+1);
-
-    for (int i=0; i<elipsaxTemp.size(); i++)
-    {
-        elipsax.append(elipsaxTemp[i]*cos(3.14/4) - elipsayTemp[i]*sin(3.14/4) + mean);
-        elipsay.append(elipsaxTemp[i]*sin(3.14/4) + elipsayTemp[i]*cos(3.14/4) + mean);
-    }
-
-    QwtPlotCurve *curveElipse = new QwtPlotCurve();
-    curveElipse->setPen(QPen( Qt::black, 1));
-    curveElipse->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    curveElipse->setSamples(elipsax, elipsay);
-    curveElipse->attach( plot );
-
-    // Odcinki SD1, SD2
-    QVector<double> sd1xSamples = QVector<double>(2);
-    QVector<double> sd1ySamples = QVector<double>(2);
-    QVector<double> sd2xSamples = QVector<double>(2);
-    QVector<double> sd2ySamples = QVector<double>(2);
-
-    sd1xSamples[0] = mean - sd1/sqrt(2);
-    sd1ySamples[0] = mean + sd1/sqrt(2);
-    sd1xSamples[1] = mean;
-    sd1ySamples[1] = mean;
-    sd2xSamples[0] = mean + sd2/sqrt(2);
-    sd2ySamples[0] = mean + sd2/sqrt(2);
-    sd2xSamples[1] = mean;
-    sd2ySamples[1] = mean;
-
-    QwtPlotCurve *curveSd1 = new QwtPlotCurve();
-    curveSd1->setPen(QPen( Qt::green, 3));
-    curveSd1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    curveSd1->setSamples(sd1xSamples, sd1ySamples);
-    curveSd1->attach( plot );
-
-    QwtPlotCurve *curveSd2 = new QwtPlotCurve();
-    curveSd2->setPen(QPen( Qt::red, 3));
-    curveSd2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    curveSd2->setSamples(sd2xSamples, sd2ySamples);
-    curveSd2->attach( plot );
-
-    // Reszta
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    //magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-    return plot;
-}
-
-QwtPlot* AirEcgMain::plotTWAPlot(const QVector<double> &yData, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq){
-
-    QVector<double> yDataFin = QVector<double>();
-    QVector<double> sampleNo = QVector<double>();
-
-    int max=yData.first();
-    int min=yData.first();
-
-    double tos=1/freq;
-
-    int maxSize = yData.size();
-
-    for (int i=0;i<maxSize;++i)
-    {
-        sampleNo.append(i);
-        yDataFin.append(yData[i]);
-        if (max<yData[i]) max=yData[i];
-        if (min>yData[i]) min=yData[i];
-    }
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setBlue(0);
-    kolor.setRed(255);
-    kolor.setGreen(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-
-    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
-
-    QVector<double> posDataX = QVector<double>();
-    QVector<double> posDataY = QVector<double>();
-    QVector<double> negDataX = QVector<double>();
-    QVector<double> negDataY = QVector<double>();
-
-    for (int i=0;i<TWA_positive.length();i++) {
-        posDataX.append(TWA_positive.at(i));
-        posDataY.append(yData[TWA_positive.at(i)]);
-    }
-    for (int i=0;i<TWA_negative.length();i++) {
-        negDataX.append(TWA_negative.at(i));
-        negDataY.append(yData[TWA_negative.at(i)]);
-    }
-
-    for (int i=0; i<sampleNo.size(); ++i){
-        sampleNo[i]=sampleNo[i]*tos;
-    }
-
-    for (int i=0; i<posDataX.size(); ++i){
-        posDataX[i]=posDataX[i]*tos;
-    }
-
-    for (int i=0; i<negDataX.size(); ++i){
-        negDataX[i]=negDataX[i]*tos;
-    }
-    QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
-    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    plot->setAxisScale( QwtPlot::yLeft, min, max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
-
-    curve->setSamples(sampleNo,yDataFin);
-    curve->attach( plot );
-
-    QwtPlotCurve *posPoints = new QwtPlotCurve();
-    QwtSymbol *posMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
-    posPoints->setSymbol(posMarker);
-    posPoints->setPen( QColor( Qt::red ) );
-    posPoints->setStyle( QwtPlotCurve::NoCurve );
-    posPoints->setSamples(posDataX,posDataY);
-    posPoints->attach( plot );
-
-
-    QwtPlotCurve *negPoints = new QwtPlotCurve();
-    QwtSymbol *negMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 5, 5 ) );
-    negPoints->setSymbol(negMarker);
-    negPoints->setPen( QColor( Qt::green ) );
-    negPoints->setStyle( QwtPlotCurve::NoCurve );
-    negPoints->setSamples(negDataX,negDataY);
-    negPoints->attach( plot );
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
-    plot->axisAutoScale(QwtPlot::xBottom);
-    QwtText xaxis("Time [mm:ss:zzz]");
-    QwtText yaxis("Voltage [mV]");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-    return plot;
-}
-
-QwtPlot* AirEcgMain::plotTWAPlot2(QList<unsigned int> &TWA_positive, QList<double> &TWA_positive_value, QList<unsigned int> &TWA_negative, QList<double> &TWA_negative_value) {
-
-    QVector<double> yDataFin = QVector<double>();
-    QVector<double> sampleNo = QVector<double>();
-    int max;
-    int min;
-    if (TWA_positive.length()!=0) {
-        TWA_positive_value.at(0);
-        TWA_positive_value.at(0);
-    } else {
-        TWA_negative_value.at(0);
-        TWA_negative_value.at(0);
-    }
-
-    QVector<double> posDataX = QVector<double>();
-    QVector<double> posDataY = QVector<double>();
-    QVector<double> negDataX = QVector<double>();
-    QVector<double> negDataY = QVector<double>();
-
-    int pos=0,neg=0,i=0;
-    while(!(TWA_positive.length()==pos && TWA_negative.length()==neg)) {
-        if (pos!=TWA_positive.length() && neg !=TWA_negative.length()) {
-            if (TWA_positive.at(pos)<TWA_negative.at(neg)) {
-                sampleNo.append(i);
-                yDataFin.append(TWA_positive_value.at(pos));
-                posDataX.append(i);
-                posDataY.append(TWA_positive_value.at(pos));
-                if (max < TWA_positive_value.at(pos))
-                    max = TWA_positive_value.at(pos);
-                else if (min > TWA_positive_value.at(pos))
-                    min = TWA_positive_value.at(pos);
-                pos++;
-            } else {
-                sampleNo.append(i);
-                yDataFin.append(TWA_negative_value.at(neg));
-                negDataX.append(i);
-                negDataY.append(TWA_negative_value.at(neg));
-                if (max < TWA_negative_value.at(neg))
-                    max = TWA_negative_value.at(neg);
-                else if (min > TWA_negative_value.at(neg))
-                    min = TWA_negative_value.at(neg);
-                neg++;
-            }
-            i++;
-        } else if (pos==TWA_positive.length() && neg!=TWA_negative.length()) {
-            if (neg!=TWA_negative.length()-1) {
-                sampleNo.append(i);
-                yDataFin.append(TWA_negative_value.at(neg));
-                negDataX.append(i);
-                negDataY.append(TWA_negative_value.at(neg));
-                if (max < TWA_negative_value.at(neg))
-                    max = TWA_negative_value.at(neg);
-                else if (min > TWA_negative_value.at(neg))
-                    min = TWA_negative_value.at(neg);
-            }
-            neg++;
-            i++;
-        } else if (neg==TWA_negative.length() && pos!=TWA_positive.length()) {
-            if (pos!=TWA_positive.length()-1) {
-                sampleNo.append(i);
-                yDataFin.append(TWA_positive_value.at(pos));
-                posDataX.append(i);
-                posDataY.append(TWA_positive_value.at(pos));
-                if (max < TWA_positive_value.at(pos))
-                    max = TWA_positive_value.at(pos);
-                else if (min > TWA_positive_value.at(pos))
-                    min = TWA_positive_value.at(pos);
-            }
-            pos++;
-            i++;
-        } else {
-            break;
-        }
-    }
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    //plot->setAxisScale( QwtPlot::yLeft, min, max );
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setBlue(0);
-    kolor.setRed(255);
-    kolor.setGreen(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
-    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    curve->setSamples(sampleNo,yDataFin);
-    curve->attach( plot );
-
-    QwtPlotCurve *posPoints = new QwtPlotCurve();
-    QwtSymbol *posMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
-    posPoints->setSymbol(posMarker);
-    posPoints->setPen( QColor( Qt::red ) );
-    posPoints->setStyle( QwtPlotCurve::NoCurve );
-    posPoints->setSamples(posDataX,posDataY);
-    posPoints->attach( plot );
-
-
-    QwtPlotCurve *negPoints = new QwtPlotCurve();
-    QwtSymbol *negMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 5, 5 ) );
-    negPoints->setSymbol(negMarker);
-    negPoints->setPen( QColor( Qt::green ) );
-    negPoints->setStyle( QwtPlotCurve::NoCurve );
-    negPoints->setSamples(negDataX,negDataY);
-    negPoints->attach( plot );
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-
-
-    return plot;
-}
-
-//Dwa wykresy dla DFA
-QwtPlot* AirEcgMain::plotPlotdfa(QList<double> &y1, QList<double> &y2){
-    QVector<double> y1Data = QVector<double>::fromList(y1);
-       QVector<double> y2Data = QVector<double>::fromList(y2);
-    QVector<double> y1DataFin = QVector<double>();
-        QVector<double> y2DataFin = QVector<double>();
-    QVector<double> sampleNo = QVector<double>();
-
-    double max1=y1Data.first();
-    double min1=y1Data.first();
-    double max2=y2Data.first();
-    double min2=y2Data.first();
-
-    for (int i=0;i<y1Data.size();++i)
-    {
-        sampleNo.append(i);
-        y1DataFin.append(y1Data[i]);
-        if (max1<y1Data[i]) max1=y1Data[i];
-        if (min1>y1Data[i]) min1=y1Data[i];
-    }
-
-    for (int i=0;i<y2Data.size();++i)
-    {
-        sampleNo.append(i);
-        y2DataFin.append(y2Data[i]);
-        if (max2<y2Data[i]) max2=y2Data[i];
-        if (min2>y2Data[i]) min2=y2Data[i];
-    }
-
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, std::min(min1, min2), std::max(max1, max2));
-    plot->setAxisScale( QwtPlot::xBottom , 0, std::max(y1Data.size(), y2Data.size()));
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setBlue(0);
-    kolor.setRed(255);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *curve1 = new QwtPlotCurve();
-    curve1->setPen(QPen( Qt::blue, 1));
-    curve1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    curve1->setSamples(sampleNo,y1DataFin);
-    curve1->attach( plot );
-
-    QwtPlotCurve *curve2 = new QwtPlotCurve();
-    curve2->setPen(QPen( Qt::red, 2));
-    curve2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    curve2->setSamples(sampleNo,y2DataFin);
-    curve2->attach( plot );
-
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-    return plot;
-}
-
-QwtPlot* AirEcgMain::plotPointsPlotDFA(QList<double> &x, QList<double> &y , double &wsp_a, double &wsp_b){
-
-
-    QVector<double> yData = QVector<double>::fromList(y);
-    QVector<double> xData = QVector<double>::fromList(x);
-    QVector<double> yDataFin = QVector<double>(yData.size());
-    QVector<double> xDataFin = QVector<double>(xData.size());
-
-    double maxy=yData.first();
-    double miny=yData.first();
-    double maxx=xData.first();
-    double minx=xData.first();
-
-    for (int i=0;i<yData.size();++i)
-    {
-        yDataFin[i]=yData[i];
-        xDataFin[i]=xData[i];
-
-        if (maxy<yData[i]) maxy=yData[i];
-        if (miny>yData[i]) miny=yData[i];
-
-        if (maxx<xData[i]) maxx=xData[i];
-        if (minx>xData[i]) minx=xData[i];
-    }
-
-    QVector<double> xSamples1 = QVector<double>(2);
-    QVector<double> ySamples1 = QVector<double>(2);
-
-
-    xSamples1[0] = minx;
-    ySamples1[0] = wsp_a*minx+wsp_b;
-    xSamples1[1] = maxx;
-    ySamples1[1] = wsp_a*maxx+wsp_b;
-
-
-    QwtPlot *plot = new QwtPlot();
-    plot->setCanvasBackground( Qt::white );
-    plot->setAxisScale( QwtPlot::yLeft, std::min(miny, ySamples1[0]), std::max(maxy, ySamples1[1]));
-    plot->setAxisScale( QwtPlot::xBottom , std::min(minx, xSamples1[0]), std::max(maxx, xSamples1[1]));
-
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    QPen *pen = new QPen;
-
-    QColor kolor = QColor();
-    kolor.setAlpha(127);
-    kolor.setRed(255);
-    kolor.setGreen(0);
-    kolor.setBlue(0);
-    pen->setColor(kolor);
-    grid->setPen( *pen );
-    grid->attach( plot );
-
-    QwtPlotCurve *curve1 = new QwtPlotCurve();
-    curve1->setPen(QPen( Qt::black, 1));
-    curve1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    curve1->setSamples(xSamples1, ySamples1);
-    curve1->attach( plot );
-
-
-
-    // Punkty główne
-    QwtPlotCurve *points = new QwtPlotCurve();
-    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::blue, QPen( Qt::blue ), QSize( 4, 4 ) );
-    points->setSymbol(marker);
-    points->setStyle( QwtPlotCurve::NoCurve );
-    points->setSamples(xDataFin,yDataFin);
-    points->attach( plot );
-    //
-
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
-    return plot;
-}
 QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency)
 {
    // QVector<int> yData = (QVector<int>)(ecgSignal);
@@ -2480,30 +1480,6 @@ void AirEcgMain::drawSigEdr(EcgData *data)
 
 }
 
-void AirEcgMain::drawHrv2(EcgData *data)
-{
-    /*
-    QwtPlot *plotHistogram = plotBarChart(*(data->histogram_x), *(data->histogram_y));
-    ui->scrollAreaHistogram->setWidget(plotHistogram);
-    ui->scrollAreaHistogram->show();
-
-    ui->triangularIndex->setText("Triangular index = " % QString::number(*(data->triangularIndex), 'f', 2));
-    ui->TINN->setText("  TINN = " % QString::number(*(data->TINN), 'f', 2));
-
-   //TMP
- //   QwtPlot *plotFT = plotPointsPlot(*(data->fft_x), *(data->fft_y));
-//    ui->scrollAreaFT->setWidget(plotFT);
-  //  ui->scrollAreaFT->show();
-
-    // HRV2: poincare
-    QwtPlot *plotPoincare = plotPoincarePlot(*(data->poincare_x), *(data->poincare_y), *(data->SD1), *(data->SD2));
-    ui->scrollAreaPoincare->setWidget(plotPoincare);
-    ui->scrollAreaPoincare->show();
-    ui->SD1->setText("SD1 = " % QString::number(*(data->SD1), 'f', 2));
-    ui->SD2->setText("  SD2 = " % QString::number(*(data->SD2), 'f', 2));
-*/
-}
-
 void AirEcgMain::drawStInterval(EcgData *data)
 {
     // draw baselined data
@@ -2701,56 +1677,6 @@ void AirEcgMain::drawVcgLoop(EcgData* data)
 
 }
 
-void AirEcgMain::drawHrvDfa(EcgData *data)
-{
-    /*
-//    //DFA
-    QwtPlot *plotFluctuaction =plotPointsPlotDFA(*(data->trend_y), *(data->trend_x), *(data->wsp_a), *(data->wsp_b));
-    ui->scrollAreaFlu->setWidget(plotFluctuaction);
-    ui->scrollAreaFlu->show();
-
-    QwtPlot *plotTrend=plotPlotdfa(*(data->trend_z),*(data->trend_v));
-    ui->scrollAreaTrend->setWidget(plotTrend);
-    ui->scrollAreaTrend->show();
-
-       ui->window_min->setText("window_min = " % QString::number(*(data->window_min), 'd', 0));
-       ui->window_max->setText("window_max = " % QString::number(*(data->window_max), 'd', 0));
-       ui->alfa2->setText("alfa = " % QString::number(*(data->alfa), 'f', 2));
-       ui->window_plot->setText("box_plot = " % QString::number(*(data->window_plot), 'd', 0));
-       ui->boxes2->setText("Boxes: " % QString::number(*(data->boxes), 'd', 0));
-       */
-}
-
-void AirEcgMain::drawTwa(EcgData *data)
-{
-    QwtPlot *plotTWA = plotTWAPlot(*(data->ecg_baselined),*(data->TWA_positive),*(data->TWA_negative),data->info->frequencyValue);
-    ui->scrollAreaTwave->setWidget(plotTWA);
-    ui->scrollAreaTwave->show();
-    QwtPlot *plotTWA2 = plotTWAPlot2(*(data->TWA_positive), *(data->TWA_positive_value), *(data->TWA_negative), *(data->TWA_negative_value));
-    ui->scrollAreaTwave_2->setWidget(plotTWA2);
-    ui->scrollAreaTwave_2->show();
-
-    if (*(data->twa_num)>0) {
-        ui->twa_result->setText("Positive");
-        ui->twa_num->setText(QString::number(*(data->twa_num),'d',0));
-    } else {
-        ui->twa_result->setText("Negative");
-        ui->twa_num->setText("0");
-    }
-    ui->twa_value->setText(QString::number(*(data->twa_highest_val),'f',4));
-}
-
-void AirEcgMain::drawWaves(EcgData *data)
-{
-    QLOG_FATAL() << "GUI/ drawWaves not done yet.";
-
-    QwtPlot *wavesPlot = plotWavesPlot(*(data->ecg_baselined), *(data->Waves), data->info->frequencyValue );
-
-    ui->scrollAreaWaves->setWidget(wavesPlot);
-    ui->scrollAreaWaves->show();
-
-}
-
 void AirEcgMain::drawQrsClass(EcgData *data)
 {
     //this->resetQrsToolbox(data);
@@ -2770,7 +1696,16 @@ void AirEcgMain::drawQtDisp(EcgData *data)
 {
     QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
+void AirEcgMain::drawWaves(EcgData *data)
+{
+    QLOG_FATAL() << "GUI/ drawWaves not done yet.";
 
+    QwtPlot *wavesPlot = plotWavesPlot(*(data->ecg_baselined), *(data->Waves), data->info->frequencyValue );
+
+    ui->scrollAreaWaves->setWidget(wavesPlot);
+    ui->scrollAreaWaves->show();
+
+}
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
@@ -2971,24 +1906,6 @@ void AirEcgMain::on_pushButton_5_clicked()
 void AirEcgMain::on_pushButton_6_clicked()
 {
     emit this->runHRV1();
-}
-
-void AirEcgMain::on_pushButton_7_clicked()
-{
-    this->hash = "HRV2";
-    emit this->runSingle(this->hash);
-}
-
-void AirEcgMain::on_pushButton_8_clicked()
-{
-    this->hash = "HRV_DFA";
-    emit this->runSingle(this->hash);
-}
-
-void AirEcgMain::on_pushButton_9_clicked()
-{
-    this->hash = "T_WAVE_ALT";
-    emit this->runSingle(this->hash);
 }
 
 void AirEcgMain::on_pushButton_10_clicked()
@@ -3246,3 +2163,1041 @@ void AirEcgMain::on_pushButton_18_clicked()
 {
     emit runHRT();
 }
+
+/*
+QwtPlot* AirEcgMain::plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq){
+    //QVector<int> yData = QVector<int>::fromList(y);
+    QVector<double> yDataFin = QVector<double>(yData.size());
+    QVector<double> sampleNo = QVector<double>(yData.size());
+
+    int max=yData.first();
+    int min=yData.first();
+
+    double tos=1/freq;
+
+    for (int i=0;i<yData.size();++i)
+    {
+        sampleNo[i]=(i)*tos;
+        yDataFin[i]=yData[i];
+        if (max<yData[i]) max=yData[i];
+        if (min>yData[i]) min=yData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, min-1, 1+max );
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
+
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
+    QwtText yaxis("Voltage [mV]");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve->setSamples(sampleNo,yDataFin);
+    curve->attach( plot );
+
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+    QVector<unsigned int> pData = QVector<unsigned int>(p.size());
+    for (int i=0;i<p.size();i++)
+    {
+        pData[i]=((unsigned int)p.at(i));
+        //QLOG_TRACE() << QString::number( p.at(i));
+    }
+
+    QVector<double> pDataX = QVector<double>(pData.size());
+    QVector<double> pDataY = QVector<double>(pData.size());
+
+    for (int i=0;i<pData.size();++i)
+    {
+        pDataX[i]=pData[i]*tos;
+        pDataY[i]=yData[pData[i]];
+    }
+
+    QwtPlotCurve *points = new QwtPlotCurve();
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
+    points->setSymbol(marker);
+    points->setPen( QColor( Qt::red ) );
+    points->setStyle( QwtPlotCurve::NoCurve );
+    points->setSamples(pDataX,pDataY);
+    points->attach( plot );
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    return plot;
+}
+QwtPlot* AirEcgMain::plotPoincarePlot(QList<unsigned int> &x, QList<int> &y, double &sd1, double &sd2){
+    QVector<int> yData = QVector<int>::fromList(y);
+    QVector<unsigned int> xData = QVector<unsigned int>::fromList(x);
+    QVector<double> yDataFin = QVector<double>(yData.size());
+    QVector<double> xDataFin = QVector<double>(xData.size());
+
+    int maxy=yData.first();
+    int miny=yData.first();
+    int maxx=xData.first();
+    int minx=xData.first();
+
+    for (int i=0;i<yData.size();++i)
+    {
+        yDataFin[i]=yData[i];
+        xDataFin[i]=xData[i];
+
+        if (maxy<yData[i]) maxy=yData[i];
+        if (miny>yData[i]) miny=yData[i];
+
+        if (maxx<xData[i]) maxx=xData[i];
+        if (minx>xData[i]) minx=xData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
+    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setRed(255);
+    kolor.setGreen(0);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    // Punkty glowne
+    QwtPlotCurve *points = new QwtPlotCurve();
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::blue, QPen( Qt::blue ), QSize( 4, 4 ) );
+    points->setSymbol(marker);
+    points->setStyle( QwtPlotCurve::NoCurve );
+    points->setSamples(xDataFin,yDataFin);
+    points->attach( plot );
+
+    // Glowne proste
+    int sum = 0;
+    for (int i=0; i<xData.size(); i++)
+        sum += xData[i];
+    sum += yData.last();
+    double mean = sum / (xData.size()+1);
+
+    QVector<double> xSamples1 = QVector<double>(2);
+    QVector<double> ySamples1 = QVector<double>(2);
+    QVector<double> xSamples2 = QVector<double>(2);
+    QVector<double> ySamples2 = QVector<double>(2);
+
+    xSamples1[0] = 0;
+    ySamples1[0] = 0;
+    xSamples1[1] = maxx;
+    ySamples1[1] = maxx;
+
+    QwtPlotCurve *curve1 = new QwtPlotCurve();
+    curve1->setPen(QPen( Qt::black, 1));
+    curve1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve1->setSamples(xSamples1, ySamples1);
+    curve1->attach( plot );
+
+    xSamples2[0] = 0;
+    ySamples2[0] = 2*mean;
+    xSamples2[1] = maxx;
+    ySamples2[1] = -maxx + 2*mean;
+
+    QwtPlotCurve *curve2 = new QwtPlotCurve();
+    curve2->setPen(QPen( Qt::black, 1));
+    curve2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve2->setSamples(xSamples2, ySamples2);
+    curve2->attach( plot );
+
+    // Elipsa
+    int dokladnosc = 628;
+    double interwal = 6.28 / dokladnosc;
+    QVector<double> elipsaxTemp = QVector<double>(dokladnosc+1);
+    QVector<double> elipsayTemp = QVector<double>(dokladnosc+1);
+
+    for (double i=0.0; i<=6.28; i+=0.01)
+    {
+        elipsaxTemp.append(sd2*cos(i));
+        elipsayTemp.append(sd1*cos(i-3.14/2));
+    }
+
+    QVector<double> elipsax = QVector<double>(dokladnosc+1);
+    QVector<double> elipsay = QVector<double>(dokladnosc+1);
+
+    for (int i=0; i<elipsaxTemp.size(); i++)
+    {
+        elipsax.append(elipsaxTemp[i]*cos(3.14/4) - elipsayTemp[i]*sin(3.14/4) + mean);
+        elipsay.append(elipsaxTemp[i]*sin(3.14/4) + elipsayTemp[i]*cos(3.14/4) + mean);
+    }
+
+    QwtPlotCurve *curveElipse = new QwtPlotCurve();
+    curveElipse->setPen(QPen( Qt::black, 1));
+    curveElipse->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curveElipse->setSamples(elipsax, elipsay);
+    curveElipse->attach( plot );
+
+    // Odcinki SD1, SD2
+    QVector<double> sd1xSamples = QVector<double>(2);
+    QVector<double> sd1ySamples = QVector<double>(2);
+    QVector<double> sd2xSamples = QVector<double>(2);
+    QVector<double> sd2ySamples = QVector<double>(2);
+
+    sd1xSamples[0] = mean - sd1/sqrt(2);
+    sd1ySamples[0] = mean + sd1/sqrt(2);
+    sd1xSamples[1] = mean;
+    sd1ySamples[1] = mean;
+    sd2xSamples[0] = mean + sd2/sqrt(2);
+    sd2ySamples[0] = mean + sd2/sqrt(2);
+    sd2xSamples[1] = mean;
+    sd2ySamples[1] = mean;
+
+    QwtPlotCurve *curveSd1 = new QwtPlotCurve();
+    curveSd1->setPen(QPen( Qt::green, 3));
+    curveSd1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curveSd1->setSamples(sd1xSamples, sd1ySamples);
+    curveSd1->attach( plot );
+
+    QwtPlotCurve *curveSd2 = new QwtPlotCurve();
+    curveSd2->setPen(QPen( Qt::red, 3));
+    curveSd2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curveSd2->setSamples(sd2xSamples, sd2ySamples);
+    curveSd2->attach( plot );
+
+    // Reszta
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    //magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    return plot;
+}
+QwtPlot* AirEcgMain::plotTWAPlot(const QVector<double> &yData, QList<unsigned int> &TWA_positive, QList<unsigned int> &TWA_negative, float freq){
+
+    QVector<double> yDataFin = QVector<double>();
+    QVector<double> sampleNo = QVector<double>();
+
+    int max=yData.first();
+    int min=yData.first();
+
+    double tos=1/freq;
+
+    int maxSize = yData.size();
+
+    for (int i=0;i<maxSize;++i)
+    {
+        sampleNo.append(i);
+        yDataFin.append(yData[i]);
+        if (max<yData[i]) max=yData[i];
+        if (min>yData[i]) min=yData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setGreen(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+
+    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
+
+    QVector<double> posDataX = QVector<double>();
+    QVector<double> posDataY = QVector<double>();
+    QVector<double> negDataX = QVector<double>();
+    QVector<double> negDataY = QVector<double>();
+
+    for (int i=0;i<TWA_positive.length();i++) {
+        posDataX.append(TWA_positive.at(i));
+        posDataY.append(yData[TWA_positive.at(i)]);
+    }
+    for (int i=0;i<TWA_negative.length();i++) {
+        negDataX.append(TWA_negative.at(i));
+        negDataY.append(yData[TWA_negative.at(i)]);
+    }
+
+    for (int i=0; i<sampleNo.size(); ++i){
+        sampleNo[i]=sampleNo[i]*tos;
+    }
+
+    for (int i=0; i<posDataX.size(); ++i){
+        posDataX[i]=posDataX[i]*tos;
+    }
+
+    for (int i=0; i<negDataX.size(); ++i){
+        negDataX[i]=negDataX[i]*tos;
+    }
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    plot->setAxisScale( QwtPlot::yLeft, min, max );
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
+
+    curve->setSamples(sampleNo,yDataFin);
+    curve->attach( plot );
+
+    QwtPlotCurve *posPoints = new QwtPlotCurve();
+    QwtSymbol *posMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
+    posPoints->setSymbol(posMarker);
+    posPoints->setPen( QColor( Qt::red ) );
+    posPoints->setStyle( QwtPlotCurve::NoCurve );
+    posPoints->setSamples(posDataX,posDataY);
+    posPoints->attach( plot );
+
+
+    QwtPlotCurve *negPoints = new QwtPlotCurve();
+    QwtSymbol *negMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 5, 5 ) );
+    negPoints->setSymbol(negMarker);
+    negPoints->setPen( QColor( Qt::green ) );
+    negPoints->setStyle( QwtPlotCurve::NoCurve );
+    negPoints->setSamples(negDataX,negDataY);
+    negPoints->attach( plot );
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
+    QwtText yaxis("Voltage [mV]");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    return plot;
+}
+
+QwtPlot* AirEcgMain::plotTWAPlot2(QList<unsigned int> &TWA_positive, QList<double> &TWA_positive_value, QList<unsigned int> &TWA_negative, QList<double> &TWA_negative_value) {
+
+    QVector<double> yDataFin = QVector<double>();
+    QVector<double> sampleNo = QVector<double>();
+    int max;
+    int min;
+    if (TWA_positive.length()!=0) {
+        TWA_positive_value.at(0);
+        TWA_positive_value.at(0);
+    } else {
+        TWA_negative_value.at(0);
+        TWA_negative_value.at(0);
+    }
+
+    QVector<double> posDataX = QVector<double>();
+    QVector<double> posDataY = QVector<double>();
+    QVector<double> negDataX = QVector<double>();
+    QVector<double> negDataY = QVector<double>();
+
+    int pos=0,neg=0,i=0;
+    while(!(TWA_positive.length()==pos && TWA_negative.length()==neg)) {
+        if (pos!=TWA_positive.length() && neg !=TWA_negative.length()) {
+            if (TWA_positive.at(pos)<TWA_negative.at(neg)) {
+                sampleNo.append(i);
+                yDataFin.append(TWA_positive_value.at(pos));
+                posDataX.append(i);
+                posDataY.append(TWA_positive_value.at(pos));
+                if (max < TWA_positive_value.at(pos))
+                    max = TWA_positive_value.at(pos);
+                else if (min > TWA_positive_value.at(pos))
+                    min = TWA_positive_value.at(pos);
+                pos++;
+            } else {
+                sampleNo.append(i);
+                yDataFin.append(TWA_negative_value.at(neg));
+                negDataX.append(i);
+                negDataY.append(TWA_negative_value.at(neg));
+                if (max < TWA_negative_value.at(neg))
+                    max = TWA_negative_value.at(neg);
+                else if (min > TWA_negative_value.at(neg))
+                    min = TWA_negative_value.at(neg);
+                neg++;
+            }
+            i++;
+        } else if (pos==TWA_positive.length() && neg!=TWA_negative.length()) {
+            if (neg!=TWA_negative.length()-1) {
+                sampleNo.append(i);
+                yDataFin.append(TWA_negative_value.at(neg));
+                negDataX.append(i);
+                negDataY.append(TWA_negative_value.at(neg));
+                if (max < TWA_negative_value.at(neg))
+                    max = TWA_negative_value.at(neg);
+                else if (min > TWA_negative_value.at(neg))
+                    min = TWA_negative_value.at(neg);
+            }
+            neg++;
+            i++;
+        } else if (neg==TWA_negative.length() && pos!=TWA_positive.length()) {
+            if (pos!=TWA_positive.length()-1) {
+                sampleNo.append(i);
+                yDataFin.append(TWA_positive_value.at(pos));
+                posDataX.append(i);
+                posDataY.append(TWA_positive_value.at(pos));
+                if (max < TWA_positive_value.at(pos))
+                    max = TWA_positive_value.at(pos);
+                else if (min > TWA_positive_value.at(pos))
+                    min = TWA_positive_value.at(pos);
+            }
+            pos++;
+            i++;
+        } else {
+            break;
+        }
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    //plot->setAxisScale( QwtPlot::yLeft, min, max );
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setGreen(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve->setSamples(sampleNo,yDataFin);
+    curve->attach( plot );
+
+    QwtPlotCurve *posPoints = new QwtPlotCurve();
+    QwtSymbol *posMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
+    posPoints->setSymbol(posMarker);
+    posPoints->setPen( QColor( Qt::red ) );
+    posPoints->setStyle( QwtPlotCurve::NoCurve );
+    posPoints->setSamples(posDataX,posDataY);
+    posPoints->attach( plot );
+
+
+    QwtPlotCurve *negPoints = new QwtPlotCurve();
+    QwtSymbol *negMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 5, 5 ) );
+    negPoints->setSymbol(negMarker);
+    negPoints->setPen( QColor( Qt::green ) );
+    negPoints->setStyle( QwtPlotCurve::NoCurve );
+    negPoints->setSamples(negDataX,negDataY);
+    negPoints->attach( plot );
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+
+
+    return plot;
+}
+
+//Dwa wykresy dla DFA
+QwtPlot* AirEcgMain::plotPlotdfa(QList<double> &y1, QList<double> &y2){
+    QVector<double> y1Data = QVector<double>::fromList(y1);
+       QVector<double> y2Data = QVector<double>::fromList(y2);
+    QVector<double> y1DataFin = QVector<double>();
+        QVector<double> y2DataFin = QVector<double>();
+    QVector<double> sampleNo = QVector<double>();
+
+    double max1=y1Data.first();
+    double min1=y1Data.first();
+    double max2=y2Data.first();
+    double min2=y2Data.first();
+
+    for (int i=0;i<y1Data.size();++i)
+    {
+        sampleNo.append(i);
+        y1DataFin.append(y1Data[i]);
+        if (max1<y1Data[i]) max1=y1Data[i];
+        if (min1>y1Data[i]) min1=y1Data[i];
+    }
+
+    for (int i=0;i<y2Data.size();++i)
+    {
+        sampleNo.append(i);
+        y2DataFin.append(y2Data[i]);
+        if (max2<y2Data[i]) max2=y2Data[i];
+        if (min2>y2Data[i]) min2=y2Data[i];
+    }
+
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, std::min(min1, min2), std::max(max1, max2));
+    plot->setAxisScale( QwtPlot::xBottom , 0, std::max(y1Data.size(), y2Data.size()));
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve1 = new QwtPlotCurve();
+    curve1->setPen(QPen( Qt::blue, 1));
+    curve1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve1->setSamples(sampleNo,y1DataFin);
+    curve1->attach( plot );
+
+    QwtPlotCurve *curve2 = new QwtPlotCurve();
+    curve2->setPen(QPen( Qt::red, 2));
+    curve2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve2->setSamples(sampleNo,y2DataFin);
+    curve2->attach( plot );
+
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    return plot;
+}
+
+QwtPlot* AirEcgMain::plotPointsPlotDFA(QList<double> &x, QList<double> &y , double &wsp_a, double &wsp_b){
+
+
+    QVector<double> yData = QVector<double>::fromList(y);
+    QVector<double> xData = QVector<double>::fromList(x);
+    QVector<double> yDataFin = QVector<double>(yData.size());
+    QVector<double> xDataFin = QVector<double>(xData.size());
+
+    double maxy=yData.first();
+    double miny=yData.first();
+    double maxx=xData.first();
+    double minx=xData.first();
+
+    for (int i=0;i<yData.size();++i)
+    {
+        yDataFin[i]=yData[i];
+        xDataFin[i]=xData[i];
+
+        if (maxy<yData[i]) maxy=yData[i];
+        if (miny>yData[i]) miny=yData[i];
+
+        if (maxx<xData[i]) maxx=xData[i];
+        if (minx>xData[i]) minx=xData[i];
+    }
+
+    QVector<double> xSamples1 = QVector<double>(2);
+    QVector<double> ySamples1 = QVector<double>(2);
+
+
+    xSamples1[0] = minx;
+    ySamples1[0] = wsp_a*minx+wsp_b;
+    xSamples1[1] = maxx;
+    ySamples1[1] = wsp_a*maxx+wsp_b;
+
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, std::min(miny, ySamples1[0]), std::max(maxy, ySamples1[1]));
+    plot->setAxisScale( QwtPlot::xBottom , std::min(minx, xSamples1[0]), std::max(maxx, xSamples1[1]));
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setRed(255);
+    kolor.setGreen(0);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve1 = new QwtPlotCurve();
+    curve1->setPen(QPen( Qt::black, 1));
+    curve1->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve1->setSamples(xSamples1, ySamples1);
+    curve1->attach( plot );
+
+
+
+    // Punkty główne
+    QwtPlotCurve *points = new QwtPlotCurve();
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::blue, QPen( Qt::blue ), QSize( 4, 4 ) );
+    points->setSymbol(marker);
+    points->setStyle( QwtPlotCurve::NoCurve );
+    points->setSamples(xDataFin,yDataFin);
+    points->attach( plot );
+    //
+
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    return plot;
+}
+*/
+/*
+QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
+
+    QLOG_ERROR()<< "Executing wrong plot";
+
+    QVector<int> yData = QVector<int>::fromList(y);
+    QVector<double> yDataFin = QVector<double>(yData.size());
+    QVector<double> sampleNo = QVector<double>(yData.size());
+
+
+    float max=yData.first();
+    float min=yData.first();
+
+    double tos=1/freq;
+
+    for (int i=0;i<yData.size();++i)
+    {
+        sampleNo[i]=(i)*tos;
+        yDataFin[i]=yData[i]/200.0-5.0;
+        if (max<yData[i]) max=yData[i];
+        if (min>yData[i]&&min>0) min=yData[i];
+    }
+    max=max/200-5.0;
+    min=min/200-5.0;
+
+    QwtPlot *plot = new QwtPlot();
+
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, min, max,0.5 );
+
+    plot->setAxisScale( QwtPlot::xBottom , 0.0,4000.0,1);// sampleNo.last());
+
+    QList<double> ticks;
+    for(int i=0; i<100;i++)
+    {
+        ticks.append(i);
+    }
+
+    // wstawianie lini pionowych
+    QwtPlotMarker *mX = new QwtPlotMarker();
+    mX->setLabel( QString::fromLatin1( "label" ) );
+    mX->setLabelAlignment( Qt::AlignLeft | Qt::AlignBottom );
+    mX->setLabelOrientation( Qt::Vertical );
+    mX->setLineStyle( QwtPlotMarker::VLine );
+    mX->setLinePen( QPen( Qt::black, 0, Qt::DashDotLine ) );
+    mX->setXValue( 2.0);
+    mX->attach( plot );
+
+
+    // 3d example
+        double pi = 3.14;
+        double dr = 0.01;
+        double d_angl = 0.0025;
+        double r_max = 0.5;
+        QVector<QwtPoint3D> *vector = new QVector<QwtPoint3D>;
+        QwtPlotSpectroCurve *curve = new QwtPlotSpectroCurve;
+
+
+        curve->setColorRange(QwtInterval(0, r_max));
+        for(double r = dr; r < r_max; r += dr) {
+         for(double angl = 0; angl < 2*pi; angl += d_angl) {
+          vector->append(QwtPoint3D(4+0.5*r*sin(angl), 4+r*sin(angl), r));
+         }
+        }
+        curve->setSamples(*vector);
+
+
+    QwtText xaxis("Time [ss]");
+    QwtText yaxis("Voltage [mV]");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve = new QwtPlotCurve();
+
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve->setSamples(sampleNo,yDataFin);
+    curve->attach( plot );
+
+    plot->canvas()->setFrameStyle( QFrame::Box | QFrame::Plain );
+    plot->canvas()->setLineWidth( 1 );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    zoom->setZoomBase(plot->canvas()->rect());
+    zoom->setZoomStack(zoom->zoomStack(), 100);
+
+    return plot;
+}
+*/
+/*
+QwtPlot* AirEcgMain::plotLogPlot(QList<double> &x,QList<double> &y,int rodzaj){
+    QVector<double> xData = QVector<double>::fromList(x);
+    QVector<double> yData = QVector<double>::fromList(y);
+
+    int maxy=yData.first();
+    int miny=yData.first();
+    int maxx=xData.first();
+    int minx=xData.first();
+
+    for (int i=0;i<yData.size();++i)
+    {
+        if (maxy<yData[i]) maxy=yData[i];
+        if (miny>yData[i]) miny=yData[i];
+
+        if (maxx<xData[i]) maxx=xData[i];
+        if (minx>xData[i]) minx=xData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
+    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve->setSamples(xData,yData);
+    curve->attach( plot );
+
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+
+    if (rodzaj == 1) {
+        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
+    } else if (rodzaj == 2){
+        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
+    } else if (rodzaj == 3){
+        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
+        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
+    } else {
+        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
+    }
+
+    return plot;
+}
+*/
+/*
+QwtPlot* AirEcgMain::plotLogPlotF(QList<double> &x,QList<double> &y,int rodzaj){
+    QVector<double> xData = QVector<double>::fromList(x);
+    QVector<double> yData = QVector<double>::fromList(y);
+
+    double maxy=yData.first();
+    double miny=yData.first();
+    double maxx=xData.first();
+    double minx=xData.first();
+
+    for (int i=0;i<yData.size();++i)
+    {
+        if (maxy<yData[i]) maxy=yData[i];
+        if (miny>yData[i]) miny=yData[i];
+
+        if (maxx<xData[i]) maxx=xData[i];
+        if (minx>xData[i]) minx=xData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
+    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
+
+    //labels
+    QwtText xaxis("Time [Hz]");
+    QwtText yaxis("Power");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setBlue(0);
+    kolor.setRed(255);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setPen(QPen( Qt::blue, 1));
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+
+    curve->setSamples(xData,yData);
+    curve->attach( plot );
+
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+
+    if (rodzaj == 1) {
+        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
+    } else if (rodzaj == 2){
+        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
+    } else if (rodzaj == 3){
+        plot->setAxisScaleEngine( QwtPlot::yLeft, new QwtLog10ScaleEngine );
+        plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
+    } else {
+        //plot->setAxisScaleEngine( QwtPlot::xBottom, new QwtLog10ScaleEngine );
+    }
+
+    return plot;
+}
+QwtPlot* AirEcgMain::plotBarChart(QList<unsigned int> &x, QList<int> &y){
+    QVector<unsigned int> xData = QVector<unsigned int>::fromList(x);
+    QVector<int> yData = QVector<int>::fromList(y);
+    QVector<double> xDataFin = QVector<double>(xData.size());
+    QVector<double> yDataFin = QVector<double>(yData.size());
+
+    int maxx=xData.first();
+    int minx=xData.first();
+    int maxy=yData.first();
+    int miny=yData.first();
+
+    for (int i=0;i<yData.size();++i)
+    {
+        xDataFin[i] = xData[i];
+        yDataFin[i] = yData[i];
+        if (maxx<xData[i]) maxx=xData[i];
+        if (minx>xData[i]) minx=xData[i];
+        if (maxy<yData[i]) maxy=yData[i];
+        if (miny>yData[i]) miny=yData[i];
+    }
+
+    QwtPlot *plot = new QwtPlot();
+    plot->setCanvasBackground( Qt::white );
+    plot->setAxisScale( QwtPlot::xBottom , minx, maxx);
+    plot->setAxisScale( QwtPlot::yLeft, miny, maxy );
+
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    QPen *pen = new QPen;
+
+    QColor kolor = QColor();
+    kolor.setAlpha(127);
+    kolor.setRed(255);
+    kolor.setGreen(0);
+    kolor.setBlue(0);
+    pen->setColor(kolor);
+    grid->setPen( *pen );
+    grid->attach( plot );
+
+    QwtPlotCurve *points = new QwtPlotCurve();
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::blue, QPen( Qt::blue ), QSize( 3, 3 ) );
+    points->setSymbol(marker);
+    points->setStyle( QwtPlotCurve::Sticks );
+    points->setSamples(xDataFin, yDataFin);
+    points->attach( plot );
+
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
+        Qt::RightButton, Qt::ControlModifier );
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
+        Qt::RightButton );
+
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
+    return plot;
+}
+
+*/
+/*
+void AirEcgMain::drawHrvDfa(EcgData *data)
+{
+
+//    //DFA
+    QwtPlot *plotFluctuaction =plotPointsPlotDFA(*(data->trend_y), *(data->trend_x), *(data->wsp_a), *(data->wsp_b));
+    ui->scrollAreaFlu->setWidget(plotFluctuaction);
+    ui->scrollAreaFlu->show();
+
+    QwtPlot *plotTrend=plotPlotdfa(*(data->trend_z),*(data->trend_v));
+    ui->scrollAreaTrend->setWidget(plotTrend);
+    ui->scrollAreaTrend->show();
+
+       ui->window_min->setText("window_min = " % QString::number(*(data->window_min), 'd', 0));
+       ui->window_max->setText("window_max = " % QString::number(*(data->window_max), 'd', 0));
+       ui->alfa2->setText("alfa = " % QString::number(*(data->alfa), 'f', 2));
+       ui->window_plot->setText("box_plot = " % QString::number(*(data->window_plot), 'd', 0));
+       ui->boxes2->setText("Boxes: " % QString::number(*(data->boxes), 'd', 0));
+
+}
+*/
+/*
+void AirEcgMain::drawTwa(EcgData *data)
+{
+    QwtPlot *plotTWA = plotTWAPlot(*(data->ecg_baselined),*(data->TWA_positive),*(data->TWA_negative),data->info->frequencyValue);
+    ui->scrollAreaTwave->setWidget(plotTWA);
+    ui->scrollAreaTwave->show();
+    QwtPlot *plotTWA2 = plotTWAPlot2(*(data->TWA_positive), *(data->TWA_positive_value), *(data->TWA_negative), *(data->TWA_negative_value));
+    ui->scrollAreaTwave_2->setWidget(plotTWA2);
+    ui->scrollAreaTwave_2->show();
+
+    if (*(data->twa_num)>0) {
+        ui->twa_result->setText("Positive");
+        ui->twa_num->setText(QString::number(*(data->twa_num),'d',0));
+    } else {
+        ui->twa_result->setText("Negative");
+        ui->twa_num->setText("0");
+    }
+    ui->twa_value->setText(QString::number(*(data->twa_highest_val),'f',4));
+}
+
+
+*/
+/*
+void AirEcgMain::drawHrv2(EcgData *data)
+{
+
+    QwtPlot *plotHistogram = plotBarChart(*(data->histogram_x), *(data->histogram_y));
+    ui->scrollAreaHistogram->setWidget(plotHistogram);
+    ui->scrollAreaHistogram->show();
+
+    ui->triangularIndex->setText("Triangular index = " % QString::number(*(data->triangularIndex), 'f', 2));
+    ui->TINN->setText("  TINN = " % QString::number(*(data->TINN), 'f', 2));
+
+   //TMP
+ //   QwtPlot *plotFT = plotPointsPlot(*(data->fft_x), *(data->fft_y));
+//    ui->scrollAreaFT->setWidget(plotFT);
+  //  ui->scrollAreaFT->show();
+
+    // HRV2: poincare
+    QwtPlot *plotPoincare = plotPoincarePlot(*(data->poincare_x), *(data->poincare_y), *(data->SD1), *(data->SD2));
+    ui->scrollAreaPoincare->setWidget(plotPoincare);
+    ui->scrollAreaPoincare->show();
+    ui->SD1->setText("SD1 = " % QString::number(*(data->SD1), 'f', 2));
+    ui->SD2->setText("  SD2 = " % QString::number(*(data->SD2), 'f', 2));
+
+}
+*/
