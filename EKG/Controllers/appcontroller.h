@@ -54,6 +54,7 @@ signals:
     void runVcgLoop_done(EcgData *data);
     void SleepApnea_done(EcgData *data);
     void QtDisp_done(EcgData *data);
+    void HRT_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);

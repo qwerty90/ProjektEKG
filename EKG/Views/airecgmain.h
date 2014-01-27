@@ -43,7 +43,7 @@ class AirEcgMain : public QMainWindow
 
     //void drawSleep_Apnea(EcgData* data);
 
-    void drawHrt(EcgData *data);
+
 
     void resetQrsToolbox(EcgData* data);
     //void populareQRSClassBox(QRSClass currentClass, int type);
@@ -55,7 +55,7 @@ public:
     QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
     QwtPlot* plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
-    QwtPlot* plotHrt(QList<double>& y);
+    QwtPlot* plotHrt(QVector<double>& yData, QPointF S1, QPointF S2);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
     QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
@@ -108,6 +108,7 @@ signals:
     void runSleepApnea();
     void runVcgLoop();
     void runQtDisp();
+    void runHRT();
 
     void qrsClassChanged(int index, int type);
     //void qrsClustererChanged(ClustererType type);
@@ -149,6 +150,7 @@ public slots:
     void drawVcgLoop(EcgData* data);
     void drawSleep_Apnea(EcgData *data);
     void drawQtDisp(EcgData *data);
+    void drawHrt(EcgData *data);
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -266,6 +268,8 @@ private slots:
     void initEcgBaselineGui();
 
     void on_pushButton_16_clicked();
+
+    void on_pushButton_18_clicked();
 
 private:
     Ui::AirEcgMain *ui;

@@ -64,7 +64,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runVcgLoop())    ,this, SLOT (runVcgLoop()));
     this->connect(view, SIGNAL(runSleepApnea()) ,this, SLOT (runSleepApnea()));
     this->connect(view, SIGNAL(runQtDisp())     ,this, SLOT (runQtDisp()));
-
+    this->connect(view, SIGNAL(runHRT())     ,this, SLOT (runHRT()));
     this->connect(view, SIGNAL(run()), this, SLOT(run()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
@@ -77,6 +77,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
     this->connect(this, SIGNAL(runVcgLoop_done(EcgData*)) ,view, SLOT(drawVcgLoop(EcgData*)))   ;
     this->connect(this, SIGNAL(SleepApnea_done(EcgData*)) ,view, SLOT(drawSleep_Apnea(EcgData*)));
+    this->connect(this, SIGNAL(HRT_done(EcgData*)) ,view, SLOT(drawHrt(EcgData*)));
 
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
     this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
@@ -783,6 +784,8 @@ void AppController::runHRT()
     this->entity->hrt_a	= obiekt.get_a();// zwraca wspolczynnik kierunkowy prostej
     this->entity->hrt_b	= obiekt.get_b();// ax+b - do wyrysowania na tachogramie
 
+        emit this->HRT_done(this->entity);
+
     QLOG_INFO() << "HRT done.";
 }
 
@@ -965,7 +968,8 @@ void AppController::load12lead_db(void)
     QLOG_INFO() << QString::number(data.size()/2) << " Samples loaded";
     while(j<data.size())
     {
-  /*      (*I)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
+  /*
+        (*I)[i]=((double)data.at(j)*0.00327)-107.0;//*gain-offset
         j++;
         (*II)[i] =((double)(data.at(j))*0.00327)-107.0;//*gain-offset
         j++;

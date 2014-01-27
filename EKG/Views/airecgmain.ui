@@ -344,7 +344,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -354,7 +354,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -402,8 +402,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>86</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -444,8 +444,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1014</width>
-                       <height>502</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -485,8 +485,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1014</width>
-                       <height>363</height>
+                       <width>988</width>
+                       <height>373</height>
                       </rect>
                      </property>
                     </widget>
@@ -767,8 +767,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>385</height>
+                   <width>1030</width>
+                   <height>407</height>
                   </rect>
                  </property>
                 </widget>
@@ -911,8 +911,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>488</height>
+                   <width>1030</width>
+                   <height>499</height>
                   </rect>
                  </property>
                 </widget>
@@ -1159,8 +1159,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>86</width>
-                           <height>16</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1183,12 +1183,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-<<<<<<< .mine
                            <width>98</width>
-=======
-                           <width>71</width>
->>>>>>> .theirs
-                           <height>16</height>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1274,8 +1270,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>16</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1329,8 +1325,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>16</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1396,8 +1392,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>76</width>
-                            <height>16</height>
+                            <width>98</width>
+                            <height>28</height>
                            </rect>
                           </property>
                          </widget>
@@ -1444,8 +1440,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>76</width>
-                            <height>16</height>
+                            <width>98</width>
+                            <height>28</height>
                            </rect>
                           </property>
                          </widget>
@@ -1562,7 +1558,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -1612,12 +1608,8 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-<<<<<<< .mine
                             <width>98</width>
-=======
-                            <width>180</width>
->>>>>>> .theirs
-                            <height>144</height>
+                            <height>141</height>
                            </rect>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1637,8 +1629,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>145</width>
-                                <height>84</height>
+                                <width>98</width>
+                                <height>89</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -1655,8 +1647,8 @@
                                    <rect>
                                     <x>0</x>
                                     <y>0</y>
-                                    <width>116</width>
-                                    <height>76</height>
+                                    <width>98</width>
+                                    <height>73</height>
                                    </rect>
                                   </property>
                                   <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -2255,8 +2247,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>71</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>369</height>
                       </rect>
                      </property>
                     </widget>
@@ -2465,8 +2457,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>86</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2493,8 +2485,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>451</height>
                   </rect>
                  </property>
                 </widget>
@@ -2645,8 +2637,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1048</width>
-                       <height>344</height>
+                       <width>1026</width>
+                       <height>348</height>
                       </rect>
                      </property>
                     </widget>
@@ -2940,8 +2932,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2957,8 +2949,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2978,8 +2970,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2995,8 +2987,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>35</width>
-                       <height>16</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3188,8 +3180,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>86</width>
-                   <height>194</height>
+                   <width>98</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -3224,8 +3216,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>86</width>
-                   <height>194</height>
+                   <width>98</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -3562,8 +3554,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>22</width>
-                     <height>16</height>
+                     <width>98</width>
+                     <height>28</height>
                     </rect>
                    </property>
                   </widget>
@@ -3612,8 +3604,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>71</width>
-                   <height>16</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3781,8 +3773,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>226</height>
+                   <width>1030</width>
+                   <height>232</height>
                   </rect>
                  </property>
                 </widget>
@@ -3793,7 +3785,7 @@
                 <item>
                  <widget class="QLabel" name="label_20">
                   <property name="text">
-                   <string>ilościowa ocena bezdechu w dziedzinie czasu = </string>
+                   <string>Apnea assessment in the time domain = </string>
                   </property>
                  </widget>
                 </item>
@@ -3829,8 +3821,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1052</width>
-                   <height>226</height>
+                   <width>1030</width>
+                   <height>231</height>
                   </rect>
                  </property>
                 </widget>
@@ -3841,7 +3833,7 @@
                 <item>
                  <widget class="QLabel" name="label_27">
                   <property name="text">
-                   <string>ilościowa ocena bezdechu w dziedzinie częstotliwości = </string>
+                   <string>Apnea assessment in the frequency domain = </string>
                   </property>
                  </widget>
                 </item>
