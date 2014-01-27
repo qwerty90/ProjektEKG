@@ -651,7 +651,7 @@ QVector<double> KalmanFilter::findPeaks(const QVector<double> &input, double rrP
     performPreliminaryIndexation(input, rPeaks, windowLength, (absMax > absMin));
     filterOutFakePeaks(rPeaks, windowLength);
 
-    debugPrintRPeaks(rPeaks);
+    //debugPrintRPeaks(rPeaks);
     return rPeaks;
 }
 
@@ -766,7 +766,7 @@ void KalmanFilter::calculateFirstBin(QVector<double>& ecgMean, QVector<double>& 
 void KalmanFilter::smoothenEcgParameters(QVector<double> &ecgMean, QVector<double> &ecgSD, QVector<double> &ecgMeanPhase) {
     auto predicate = [](double value){return (value==-1);};
     QVector<int> indexes = BLUtils::find(ecgSD, predicate);
-    qDebug() << "indexes = " << indexes;
+ //   qDebug() << "indexes = " << indexes;
     for(int i = 0 ;i < indexes.size(); i++) {
         if(indexes[i] == 0) {
             ecgMeanPhase[indexes[i]] = -PI;
