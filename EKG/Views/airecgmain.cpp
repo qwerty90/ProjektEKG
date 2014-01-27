@@ -2113,27 +2113,12 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     //zoom->setZoomBase( false );
     plot->canvas()->setGeometry(0,0,ecgSignal.size()*dt,0);
 
-    // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
-    //QVector<QVector<double>::const_iterator> * PWaveStart;
-    //QVector<QVector<double>::const_iterator> * PWaveEnd;
-    //QVector<QVector<double>::const_iterator> * QRS_onset;
-    //QVector<QVector<double>::const_iterator> * QRS_end;
-    //QVector<QVector<double>::const_iterator> * T_end;
+    QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
 
     QVector<unsigned int> P_onsetData;
     QVector<unsigned int> P_endData;
     QVector<unsigned int> Qrs_onsetData;
     QVector<unsigned int> Qrs_endData;
-   // QVector<unsigned int> T_endData;
-                QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
-    for(unsigned int i = 0; i < ecgFrames.Count; i++)
-    {
-        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
-        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
-        Qrs_onsetData.append(ecgFrames.QRS_onset->at(i)-ecgFrames.QRS_onset->first());
-        Qrs_endData.append(ecgFrames.QRS_end->at(i)-ecgFrames.QRS_end->first());
-        //T_endData.append(ecgFrames[i]->T_end);
-    }
 
     QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
     QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
@@ -2147,27 +2132,25 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     QVector<double> Qrs_endDataX = QVector<double>(ecgFrames.Count);
     QVector<double> Qrs_endDataY = QVector<double>(ecgFrames.Count);
 
-   // QVector<double> T_endDataX = QVector<double>(ecgFrames.Count);
-   // QVector<double> T_endDataY = QVector<double>(ecgFrames.Count);
-
-
-    for (int i=0; i < ecgFrames.Count;++i)
+    for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
+        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgSignal.begin());
         P_onsetDataX[i]=P_onsetData[i]*dt*1000;
         P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
 
+        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgSignal.begin());
         P_endDataX[i]=P_endData[i]*dt*1000;
         P_endDataY[i]=ecgSignal[P_endData[i]];
 
+        Qrs_onsetData.append(ecgFrames.QRS_onset->at(i)-ecgSignal.begin());
         Qrs_onsetDataX[i]=Qrs_onsetData[i]*dt*1000;
         Qrs_onsetDataY[i]=ecgSignal[Qrs_onsetData[i]];
 
+        Qrs_endData.append(ecgFrames.QRS_end->at(i)-ecgSignal.begin());
         Qrs_endDataX[i]=Qrs_endData[i]*dt*1000;
         Qrs_endDataY[i]=ecgSignal[Qrs_endData[i]];
-
-      //  T_endDataX[i]=T_endData[i]*dt*1000;
-      //  T_endDataY[i]=ecgSignal[T_endData[i]];
     }
+
 
     if(ui->p_onset->isChecked() || ui->wave_all->isChecked())
     {
@@ -2216,19 +2199,6 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         Qrs_endPoints->setSamples(Qrs_endDataX,Qrs_endDataY);
         Qrs_endPoints->attach( plot );
     }
-
-#if 0
-    if(ui->t_en->isChecked())
-    {
-    QwtPlotCurve *T_endPoints = new QwtPlotCurve();
-    QwtSymbol *T_endMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::black, QPen( Qt::black ), QSize( 5, 5 ) );
-    T_endPoints->setSymbol(T_endMarker);
-    T_endPoints->setTitle("T_end");
-    T_endPoints->setPen( QColor( Qt::black ) );
-    T_endPoints->setStyle( QwtPlotCurve::NoCurve );
-    T_endPoints->setSamples(T_endDataX,T_endDataY);
-    T_endPoints->attach( plot );
-#endif
 
     QwtLegend* legend = new QwtLegend();
     legend->setItemMode(QwtLegend::ReadOnlyItem);
