@@ -53,6 +53,7 @@ public:
     ~AirEcgMain();
     QwtPlot* plotPlot(QList<int> &y, float freq);
     QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
+    QwtPlot* plotPlotRR(const QVector<double>& yData,const QVector<double>& xData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
     QwtPlot* plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
     QwtPlot* plotHrt(QVector<double>& yData, QPointF S1, QPointF S2);
