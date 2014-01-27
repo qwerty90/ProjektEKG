@@ -21,14 +21,18 @@ public:
     int window_median;   //window for median filter (set 60 !!!)
 
     //OUTPUT FOR GUI
+        //data for plots
+        //QVector[0]: time in samples
+        //QVector[1]: Hilbert amplitude
+        //QVector[2]: Hilbert freqency
+        QVector<QVector<double>> sleep_apnea_plots(QVector<unsigned int> tab_R_peaks);
         //vector of pairs:(begin and end sample of apnea detection)
-        QVector<BeginEndPair> sleep_apnea_output(QVector<unsigned int> tab_R_peaks);//tab_R_peaks MUST BE CONNECTED WITH OUTPUT OF RPEAKS MODULE!!
+        QVector<BeginEndPair> sleep_apnea_output(QVector<unsigned int> tab_R_peaks);
         //Qvector[0]: Treshold value of max_amplitude [s]
         //Qvector[1]: Treshold value of min_frequency [Hz]
         //Qvector[2]: Apnea assessment in the time domain [%]
         //Qvector[3]: Apnea assessment in the frequency domain [%]
-        QVector<double> gui_output(QVector<unsigned int> tab_R_peaks);//tab_R_peaks MUST BE CONNECTED WITH OUTPUT OF RPEAKS MODULE!!
-
+        QVector<double> gui_output(QVector<unsigned int> tab_R_peaks);
 private:
     //basic functions
     QVector<QVector<double>> RR_intervals(QVector<unsigned int> tab_R_peaks);//tab_R_peaks MUST BE CONNECTED WITH OUTPUT OF RPEAKS MODULE!!

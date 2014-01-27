@@ -54,6 +54,7 @@ signals:
     void runVcgLoop_done(EcgData *data);
     void SleepApnea_done(EcgData *data);
     void QtDisp_done(EcgData *data);
+    void HRT_done(EcgData *data);
 
 public slots:
     void loadData(const QString &directory, const QString &name);
@@ -67,7 +68,6 @@ public slots:
 
     void ecgBase_Kalman1Changed(const QString arg1);
     void ecgBase_Kalman2Changed(const QString arg2);
-    void CzasUsrednieniaEdit   (const QString arg1);
     void ecgBase_WindowSizeEdit(const QString arg1);
     void ecgButterChanged      (const int set_number);
 

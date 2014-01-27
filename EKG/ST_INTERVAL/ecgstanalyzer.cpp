@@ -220,7 +220,7 @@ bool EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
     QVector<int> rr = EcgUtils::diff(rData);
     QVector<double> hr(num);
     for (i = 0; i < num - 1; i++)
-        hr[i] = 60.0 / ((double) rr[i] / sampleFreq);
+        hr[i] = 60.0 / (static_cast<double>(rr[i]) / sampleFreq);
     hr[num - 1] = hr[num - 2];
 
     for (i = 0; i < num; i++)
@@ -238,7 +238,7 @@ bool EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
         else
             x = 0.55;
 
-        EcgSampleIter test = rData[i] + ((int) round(x * rt));
+        EcgSampleIter test = rData[i] + static_cast<int>(round(x * rt));
         stOn[i] = std::min(jData[i] + 1, test);
     }
 
@@ -249,7 +249,7 @@ bool EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
 
         desc.STOn = stOn[i];
         desc.STEnd = stEnd[i];
-        desc.STMid = desc.STOn + (int) round((desc.STEnd - desc.STOn) / 2.0);
+        desc.STMid = desc.STOn + static_cast<int>(round((desc.STEnd - desc.STOn) / 2.0));
 
         desc.offset = *desc.STMid;
 

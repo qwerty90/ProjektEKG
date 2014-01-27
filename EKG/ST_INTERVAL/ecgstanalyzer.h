@@ -14,12 +14,14 @@ typedef QVector<double>::const_iterator EcgSampleIter;
 class EcgStAnalyzer
 {
 public:
-    enum AlgorithmType {
+    enum AlgorithmType
+    {
         LINEAR,
         QUADRATIC
     };
 
-    enum ErrorType {
+    enum ErrorType
+    {
         NO_ERROR,
         NO_SAMPLES_PROVIDED,
         INSUFFICIENT_DATA,

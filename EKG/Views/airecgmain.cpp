@@ -109,6 +109,7 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->baselineGroupBox->setEnabled(true);
     ui->tabWidget_5->setEnabled(true);
     ui->tabHrv->setEnabled(true);
+    ui->pushButton_18->setEnabled(true);
 
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
@@ -369,9 +370,18 @@ QwtPlot* AirEcgMain::plotPlot(QList<int> &y,float freq){
     return plot;
 }
 
+class TempScaleDraw: public QwtScaleDraw
+{
+public:
+    TempScaleDraw()
+    {
+        setTickLength( QwtScaleDiv::MajorTick, 10 );
+        setTickLength( QwtScaleDiv::MinorTick, 10 );
+        setTickLength( QwtScaleDiv::MediumTick, 10 );
 
-
-
+        setSpacing( 5 );
+    }
+};
 QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 {
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -404,10 +414,15 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+
     grid->attach(plot);
 
     QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 1));
+    curve->setPen(QPen(Qt::blue, 2));
     curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
@@ -424,7 +439,6 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
 
     QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
     magnifier->setAxisEnabled(QwtPlot::yLeft, false);
-
     return plot;
 }
 
@@ -478,6 +492,10 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
 
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
     grid->attach(plot);
 
     if(no == 1 || no == 2)
@@ -495,7 +513,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
         curve1->setRenderHint(QwtPlotItem::RenderAntialiased, true);
         curve1->setTitle("SIG EDR Rpeak");
         curve1->setStyle(QwtPlotCurve::Lines);
-        curve1->setPen(QPen(Qt::blue, 1));
+        curve1->setPen(QPen(Qt::blue, 2));
         curve1->setCurveAttribute(QwtPlotCurve::Fitted, true);
         curve1->attach(plot);
         fitter->setSplineSize(60000);
@@ -517,7 +535,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
         curve3->setRenderHint(QwtPlotItem::RenderAntialiased, true);
         curve3->setTitle("SIG EDR Wavse");
         curve3->setStyle(QwtPlotCurve::Lines);
-        curve3->setPen(QPen(Qt::red, 1));
+        curve3->setPen(QPen(Qt::green, 2));
         curve3->setCurveAttribute(QwtPlotCurve::Fitted, true);
         curve3->attach(plot);
         fitter->setSplineSize(60000);
@@ -581,10 +599,14 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
 
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
     grid->attach(plot);
 
     QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 1));
+    curve->setPen(QPen(Qt::blue, 2));
     curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve->setSamples(xData, yData);
     curve->attach(plot);
@@ -616,7 +638,7 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData, float freq)
 
     for (int i = 0; i < yData.size(); ++i)
     {
-        sampleNo[i] = i*tos;
+        sampleNo[i] = i*tos*1000;
         max = qMax(max, yData[i]);
         min = qMin(min, yData[i]);
     }
@@ -638,13 +660,30 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData, float freq)
 
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
     grid->attach(plot);
 
     QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 1));
+    curve->setPen(QPen(Qt::blue, 2));
     curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
 
     return plot;
 }
@@ -660,7 +699,7 @@ QwtPlot* AirEcgMain::plotSleep_Apneafrequence(const QVector<double>& yData, floa
 
     for (int i = 0; i < yData.size(); ++i)
     {
-        sampleNo[i] = i*tos;
+        sampleNo[i] = i*tos*1000;
         max = qMax(max, yData[i]);
         min = qMin(min, yData[i]);
     }
@@ -681,20 +720,36 @@ QwtPlot* AirEcgMain::plotSleep_Apneafrequence(const QVector<double>& yData, floa
 
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
     grid->attach(plot);
 
     QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 1));
+    curve->setPen(QPen(Qt::blue, 2));
     curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
 
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
     return plot;
 }
-QwtPlot* AirEcgMain::plotHrt(QList<double>& y)
+QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, QPointF S1, QPointF S2)
 {
-    QVector<double> yData = y.toVector();
-    QVector<double> sampleNo = QVector<double>(y.size());
+    QVector<double> sampleNo = QVector<double>(yData.size());
 
     double max = yData.first();
     double min = yData.first();
@@ -734,7 +789,6 @@ QwtPlot* AirEcgMain::plotHrt(QList<double>& y)
                                       QBrush( Qt::yellow ), QPen( Qt::red, 2 ), QSize( 8, 8 ) );
     curve2->setSymbol( symbol );
     QPolygonF points;
-    QPointF S1(0.0,0.3),S2(1.0,0.1);
     points << S1 << S2;
     curve2->setSamples( points );
     curve2->attach( plot );
@@ -746,7 +800,7 @@ QwtPlot* AirEcgMain::plotHrt(QList<double>& y)
     mY->setLabelOrientation( Qt::Horizontal );
     mY->setLineStyle( QwtPlotMarker::HLine );
     mY->setLinePen( QPen( Qt::black, 0, Qt::DashDotLine ) );
-    mY->setYValue( 1.0);
+    mY->setYValue( yData[3]);
     mY->attach( plot );
 
 
@@ -874,7 +928,8 @@ QwtPlot* AirEcgMain::plotPointsPlotDoubleToDouble(QList<double> &x, QList<double
     grid->attach( plot );
 
     QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
+    curve->setPen(QPen( Qt::blue, 2));
+
     curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
     curve->setSamples(sampleNo,yDataFin);
@@ -990,11 +1045,15 @@ QwtPlot* AirEcgMain::plotPoints(QList<double> &x, QList<double> &y, QList<double
     kolor.setBlue(0);
     pen->setColor(kolor);
     grid->setPen( *pen );
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
     grid->attach( plot );
     //********************
 
     QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
+    curve->setPen(QPen( Qt::blue, 2));
     curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
     curve->setSamples(sampleNo,yDataFin);
@@ -1232,10 +1291,14 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
     kolor.setBlue(0);
     pen->setColor(kolor);
     grid->setPen( *pen );
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
     grid->attach( plot );
 
     QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
+    curve->setPen(QPen( Qt::blue, 2));
     curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
     curve->setSamples(sampleNo,yDataFin);
@@ -1254,9 +1317,9 @@ QwtPlot* AirEcgMain::plotPointsPlot(const QVector<QVector<double>::const_iterato
 
 
     QwtPlotCurve *points = new QwtPlotCurve();
-    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 10, 10 ) );
     points->setSymbol(marker);
-    points->setPen( QColor( Qt::red ) );
+    points->setPen( QColor( Qt::green ) );
     points->setStyle( QwtPlotCurve::NoCurve );
     points->setSamples(pDataX,pDataY);
     points->attach( plot );
@@ -1959,20 +2022,21 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     kolor.setBlue(0);
     pen->setColor(kolor);
     grid->setPen( *pen );
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
     grid->attach( plot );
 
     QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setPen(QPen( Qt::blue, 1));
+    curve->setPen(QPen( Qt::blue, 2));
     curve->setTitle("Signal");
     curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
     curve->setSamples(sampleNo,yDataFin);
     curve->attach( plot );
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
     plot->canvas()->setGeometry(0,0,ecgSignal.size()*dt,0);
-    zoom->setZoomBase(plot->canvas()->rect());
 
     // MARKERY do zaznaczania r_peaks lub innych punktow charakterystycznych
     //QVector<QVector<double>::const_iterator> * PWaveStart;
@@ -1989,18 +2053,18 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
                 QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
     for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
-    //    P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
-    //    P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
+        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgFrames.PWaveEnd->first());
+        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgFrames.PWaveStart->first());
         Qrs_onsetData.append(ecgFrames.QRS_onset->at(i)-ecgFrames.QRS_onset->first());
         Qrs_endData.append(ecgFrames.QRS_end->at(i)-ecgFrames.QRS_end->first());
         //T_endData.append(ecgFrames[i]->T_end);
     }
 
-   // QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
-  //  QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
+    QVector<double> P_onsetDataX = QVector<double>(ecgFrames.Count);
+    QVector<double> P_onsetDataY = QVector<double>(ecgFrames.Count);
 
-  //  QVector<double> P_endDataX = QVector<double>(ecgFrames.Count);
-   // QVector<double> P_endDataY = QVector<double>(ecgFrames.Count);
+    QVector<double> P_endDataX = QVector<double>(ecgFrames.Count);
+    QVector<double> P_endDataY = QVector<double>(ecgFrames.Count);
 
     QVector<double> Qrs_onsetDataX = QVector<double>(ecgFrames.Count);
     QVector<double> Qrs_onsetDataY = QVector<double>(ecgFrames.Count);
@@ -2014,11 +2078,11 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
 
     for (int i=0; i < ecgFrames.Count;++i)
     {
-      //  P_onsetDataX[i]=P_onsetData[i]*dt*1000;
-     //   P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
+        P_onsetDataX[i]=P_onsetData[i]*dt*1000;
+        P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
 
-     //   P_endDataX[i]=P_endData[i]*dt*1000;
-     //   P_endDataY[i]=ecgSignal[P_endData[i]];
+        P_endDataX[i]=P_endData[i]*dt*1000;
+        P_endDataY[i]=ecgSignal[P_endData[i]];
 
         Qrs_onsetDataX[i]=Qrs_onsetData[i]*dt*1000;
         Qrs_onsetDataY[i]=ecgSignal[Qrs_onsetData[i]];
@@ -2029,11 +2093,11 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
       //  T_endDataX[i]=T_endData[i]*dt*1000;
       //  T_endDataY[i]=ecgSignal[T_endData[i]];
     }
-/*
+
     if(ui->p_onset->isChecked() || ui->wave_all->isChecked())
     {
         QwtPlotCurve *P_onsetPoints = new QwtPlotCurve();
-        QwtSymbol *P_onsetMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 5, 5 ) );
+        QwtSymbol *P_onsetMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 10, 10 ) );
         P_onsetPoints->setSymbol(P_onsetMarker);
         P_onsetPoints->setTitle("P_onset");
         P_onsetPoints->setPen( QColor( Qt::green ) );
@@ -2045,7 +2109,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     if(ui->p_end->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *P_endPoints = new QwtPlotCurve();
-        QwtSymbol *P_endMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::cyan, QPen( Qt::cyan ), QSize( 5, 5 ) );
+        QwtSymbol *P_endMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::cyan, QPen( Qt::cyan ), QSize( 10, 10 ) );
         P_endPoints->setSymbol(P_endMarker);
         P_endPoints->setTitle("P_end");
         P_endPoints->setPen( QColor( Qt::cyan ) );
@@ -2053,11 +2117,11 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         P_endPoints->setSamples(P_endDataX,P_endDataY);
         P_endPoints->attach( plot );
     }
-*/
-   // if(ui->qrs_onset->isChecked()|| ui->wave_all->isChecked())
+
+    if(ui->qrs_onset->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *Qrs_onsetPoints = new QwtPlotCurve();
-        QwtSymbol *Qrs_onsetMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::red, QPen( Qt::red ), QSize( 5, 5 ) );
+        QwtSymbol *Qrs_onsetMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::darkYellow, QPen( Qt::darkYellow ), QSize( 10, 10 ) );
         Qrs_onsetPoints->setSymbol(Qrs_onsetMarker);
         Qrs_onsetPoints->setTitle("QRS_onset");
         Qrs_onsetPoints->setPen( QColor( Qt::red ) );
@@ -2066,10 +2130,10 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
         Qrs_onsetPoints->attach( plot );
     }
 
-   // if(ui->qrs_end->isChecked()|| ui->wave_all->isChecked())
+    if(ui->qrs_end->isChecked()|| ui->wave_all->isChecked())
     {
         QwtPlotCurve *Qrs_endPoints = new QwtPlotCurve();
-        QwtSymbol *Qrs_endMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::magenta, QPen( Qt::magenta ), QSize( 5, 5 ) );
+        QwtSymbol *Qrs_endMarker = new QwtSymbol( QwtSymbol::Ellipse, Qt::magenta, QPen( Qt::magenta ), QSize( 10, 10) );
         Qrs_endPoints->setSymbol(Qrs_endMarker);
         Qrs_endPoints->setTitle("QRS_end");
         Qrs_endPoints->setPen( QColor( Qt::magenta ) );
@@ -2096,19 +2160,6 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     plot->insertLegend(legend, QwtPlot::BottomLegend);
     //
 
-    QwtPlotZoomer* zoomer = new QwtPlotZoomer( plot->canvas() );
-    zoomer->setRubberBandPen( QColor( Qt::black ) );
-    zoomer->setTrackerPen( QColor( Qt::black ) );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
-    panner->setMouseButton( Qt::MidButton );
-    panner->setOrientations(Qt::Horizontal);
-    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
-    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
     plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
     plot->axisAutoScale(QwtPlot::xBottom);
     QwtText xaxis("Time [mm:ss:zzz]");
@@ -2118,7 +2169,17 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
 
     plot->setAxisTitle( QwtPlot::yLeft, yaxis );
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
 
+    QwtPlotPanner *panner = new QwtPlotPanner( plot->canvas() );
+    panner->setMouseButton( Qt::MidButton );
+    panner->setOrientations(Qt::Horizontal);
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(plot->canvas() );
+    magnifier->setAxisEnabled(QwtPlot::yLeft,false);
     return plot;
 }  
 
@@ -2420,18 +2481,18 @@ void AirEcgMain::drawStInterval(EcgData *data)
         int mid = desc.STMid - data->ecg_baselined->constBegin();
         int end = desc.STEnd - data->ecg_baselined->constBegin();
 
-        double onTime = (double)on / data->info->frequencyValue * 1000;
+        double onTime = static_cast<double>(on) / data->info->frequencyValue * 1000;
 
         stOn.append(QPointF(onTime, *desc.STOn));
-        stMid.append(QPointF((double)mid / data->info->frequencyValue * 1000, *desc.STMid));
-        stEnd.append(QPointF((double)end / data->info->frequencyValue * 1000, *desc.STEnd));
+        stMid.append(QPointF(static_cast<double>(mid) / data->info->frequencyValue * 1000, *desc.STMid));
+        stEnd.append(QPointF(static_cast<double>(end) / data->info->frequencyValue * 1000, *desc.STEnd));
 
         QVector<double> x;
         QVector<double> y;
         for (QVector<double>::const_iterator k = desc.STOn; k != desc.STEnd; ++k)
         {
             int sampleNum = k - data->ecg_baselined->constBegin();
-            x.append((double)sampleNum / data->info->frequencyValue * 1000);
+            x.append(static_cast<double>(sampleNum) / data->info->frequencyValue * 1000);
             y.append(*k);
         }
 
@@ -2479,9 +2540,9 @@ void AirEcgMain::drawStInterval(EcgData *data)
         }
 
         // create STon time string
-        int ms = (int)onTime % 1000;
-        int ss = (int)onTime / 1000 % 60;
-        int mm = (int)onTime / 60000;
+        int ms = static_cast<int>(onTime) % 1000;
+        int ss = static_cast<int>(onTime) / 1000 % 60;
+        int mm = static_cast<int>(onTime) / 60000;
         QString time = QString("%1:%2:%3").arg(mm, 2, 10, QChar('0')).arg(ss, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
 
         // create list item
@@ -2535,7 +2596,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
 
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
-    QwtPlot *plotSleepApnea = plotSleep_Apnea(*(data->ecg_baselined),data->info->frequencyValue );
+    QwtPlot *plotSleepApnea = plotSleep_Apnea(*((data->SleepApnea_plot)),data->info->frequencyValue );
     ui->sleepArea1->setWidget(plotSleepApnea);
     ui->sleepArea1->show();
 
@@ -2543,8 +2604,8 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
-    ui->sleepcnt->setText(QString::number(data->SleepApnea->at(2).first));
-    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea->at(3).first));
+    ui->sleepcnt->setText(QString::number(data->SleepApnea_plot->value(2))+" %");
+    ui->sleepcntfrequence->setText(QString::number(data->SleepApnea_plot->value(3))+" %");
 }
 void AirEcgMain::drawVcgLoop(EcgData* data)
 {
@@ -2631,9 +2692,9 @@ void AirEcgMain::drawQrsClass(EcgData *data)
 
 void AirEcgMain::drawHrt(EcgData *data)
 {
-    //QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram));  //tu trzeba wymienic liste na wektor
-   // ui->scrollAreaHrt->setWidget(hrtTachogram);
-   // ui->scrollAreaHrt->show();
+    QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram),QPointF(0.0,0.3),QPointF(1.0,0.1)); //Co to za pkt tu maja byc?
+    ui->scrollAreaHrt->setWidget(hrtTachogram);
+    ui->scrollAreaHrt->show();
     ui->vpbs_detected_count->setText(QString::number((data->vpbs_detected_count), 'f', 0));
     ui->turbulence_onset_val->setText(QString::number((data->turbulence_onset), 'f', 2));
     ui->turbulence_slope_val->setText(QString::number((data->turbulence_slope), 'f', 2));
@@ -2993,26 +3054,10 @@ void AirEcgMain::on_kalmanRadioButton_clicked()
 void AirEcgMain::on_maTimeSpinBox_valueChanged(const QString &arg1)
 {
     double time = arg1.toDouble();
-    ui->maWindowSpinBox->setValue(ceil(time * currentEcgData->info->frequencyValue));
+    int windowSize = ceil(time * currentEcgData->info->frequencyValue);
+    ui->windowSizeLabel->setText(QString::number(windowSize));
 
-    emit ecgBase_CzasUsrednieniaChanged(arg1);
-}
-
-void AirEcgMain::on_maWindowSpinBox_valueChanged(const QString &arg1)
-{
-    int size = arg1.toInt();
-    ui->maTimeSpinBox->setValue(float(size / currentEcgData->info->frequencyValue));
-
-    emit ecgBase_CzestotliwoscProbkowaniaChanged(arg1);
-}
-
-void AirEcgMain::on_Kalman1lineEdit_textEdited(const QString &arg1)
-{
-    emit ecgBase_Kalman1Changed(arg1);
-}
-void AirEcgMain::on_Kalman2lineEdit_textEdited(const QString &arg1)
-{
-    emit ecgBase_Kalman2Changed(arg1);
+    emit ecgBase_WindowSizeChanged(QString::number(windowSize));
 }
 
 void AirEcgMain::on_ButterworthcomboBox_currentIndexChanged(int index)
@@ -3122,10 +3167,16 @@ void AirEcgMain::initEcgBaselineGui()
 
     ui->ButterworthcomboBox->addItems(coeffList);
 
+    ecgBase_WindowSizeChanged("150");
     on_butterworthRadioButton_clicked();
 }
 
 void AirEcgMain::on_pushButton_16_clicked()
 {
     emit runQtDisp();
+}
+
+void AirEcgMain::on_pushButton_18_clicked()
+{
+    emit runHRT();
 }
