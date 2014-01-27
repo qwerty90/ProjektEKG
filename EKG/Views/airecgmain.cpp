@@ -2672,6 +2672,22 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stEndPoints->setStyle(QwtPlotCurve::NoCurve);
     stEndPoints->setSamples(stEnd);
     stEndPoints->attach(plotST);
+
+//    QVector<QPointF> tEnd;
+//    foreach (QVector<double>::const_iterator iter, *data->Waves->T_end)
+//    {
+//        qDebug() << (iter - data->ecg_baselined->constBegin());
+//        tEnd.append(QPointF(static_cast<double>(iter - data->ecg_baselined->constBegin()) / data->info->frequencyValue * 1000, *iter));
+//    }
+
+//    QwtPlotCurve *tEndPoints = new QwtPlotCurve();
+//    QwtSymbol *tEndMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::magenta, QPen(Qt::magenta), QSize(6, 6));
+//    tEndPoints->setSymbol(tEndMarker);
+//    tEndPoints->setTitle("tEnd");
+//    tEndPoints->setPen(QColor(Qt::magenta));
+//    tEndPoints->setStyle(QwtPlotCurve::NoCurve);
+//    tEndPoints->setSamples(tEnd);
+//    tEndPoints->attach(plotST);
 }
 
 void AirEcgMain::drawSleep_Apnea(EcgData* data)

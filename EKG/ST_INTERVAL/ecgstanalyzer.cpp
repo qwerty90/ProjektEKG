@@ -4,7 +4,6 @@
 #include <cmath>
 #include <algorithm>
 #include <QtAlgorithms>
-#include <QDebug>
 
 //------------------------------------------------------------
 
@@ -347,10 +346,6 @@ void EcgStAnalyzer::prepareData(const QVector<double> &ecgSamples,
     rUnique.erase(std::unique(rUnique.begin(), rUnique.end()),
                   rUnique.end());
 
-    qDebug() << "RPEAKS" << rVec.size() << rUnique.size();
-    qDebug() << "QRS_END" << jVec.size();
-    qDebug() << "T_END" << tEndVec.size();
-
     for (int i = 0; i < rUnique.size(); i++)
     {
         EcgSampleIter cr = rUnique[i];
@@ -392,7 +387,5 @@ void EcgStAnalyzer::prepareData(const QVector<double> &ecgSamples,
             tEndData.append(ft);
         }
     }
-
-    qDebug() << "RESULT" << rData.size();
 }
 
