@@ -451,7 +451,7 @@ void AppController::runStInterval()
     analyzer.setSlopeThreshold(this->entity->settings->slope_tresh);
     analyzer.setMorphologyCoeff(this->entity->settings->morph_coeff);
 
-    ifWavesExists();
+    ifTWaveExists();
     if (this->entity->Waves->T_end == NULL)
     {
         QLOG_FATAL() << "ST_INTERVAL/ no Twave_end for me!";
@@ -646,37 +646,6 @@ void AppController::runWaves()
         if (this->entity->Waves->Count>this->entity->Waves->PWaveEnd->size())
             this->entity->Waves->Count=this->entity->Waves->PWaveEnd->size();
 
-        /*for(int i=0 ; i<this->entity->Waves->Count-1;i++)
-        {
-            QLOG_TRACE() <<"MVC/ qrs difference "
-                        <<((this->entity->Waves->QRS_end->at(i+1)
-                           - this->entity->Waves->QRS_onset->at(i)));
-        }*/
-
-        /*
-        QFile waves_out("waves_out.txt");
-        waves_out.open(QIODevice::WriteOnly | QIODevice::Text);
-        QTextStream stream(&waves_out);
-        stream <<("kolejne probki ecg baselined \n");
-        for(int i=0;i<this->entity->ecg_baselined->size();i++)
-            stream << QString::number(this->entity->ecg_baselined->at(i)) <<"\n";
-
-
-        stream << ("Numery probek qrs_onset qrs_end PWaveStart \n");
-        for(int i=0;i<this->entity->Waves->Count;i++)
-        {
-            stream << QString::number(this->entity->Waves->QRS_onset->at(i) - this->entity->ecg_baselined->begin() ) <<" ";
-            stream << QString::number(this->entity->Waves->QRS_end->at(i) - this->entity->ecg_baselined->begin() ) <<" ";
-            stream << QString::number(this->entity->Waves->PWaveStart->at(i) - this->entity->ecg_baselined->begin() ) <<"\n";
-        }
-        stream << ("Numery probek qrs_End");
-        for(int i=0;i<this->entity->Waves->QRS_end->size();i++)
-            stream << QString::number(this->entity->Waves->QRS_end->at(i) - this->entity->ecg_baselined->begin() ) <<"\n";
-        stream << ("Numery probek PWaveStart");
-        for(int i=0;i<this->entity->Waves->PWaveStart->size();i++)
-            stream << QString::number(this->entity->Waves->PWaveStart->at(i) - this->entity->ecg_baselined->begin() ) <<"\n";
-
-        waves_out.close();*/
     emit this->Waves_done(this->entity);
     QLOG_INFO() << "Waves done.";
 }
@@ -915,12 +884,16 @@ void AppController::ifWavesExists()
     if (this->entity->Waves->Count==0)
         runWaves();
 }
+void AppController::ifTWaveExists()
+{
+    if (this->entity->Waves->T_end==NULL)
+        runQtDisp();
+}
 
 void AppController::deleteWaves(void)
 {
     if (this->entity->Waves!=NULL)
     {
-            QLOG_INFO() << "MVC/ delete Waves only";
         if (this->entity->Waves->PWaveEnd!=NULL && !(this->entity->Waves->PWaveEnd->isEmpty()))
         {
             this->entity->Waves->PWaveEnd->clear();

@@ -34,6 +34,7 @@ public:
     void ifEcgBaselineExists(void);
     void ifRpeaksExists(void);
     void ifWavesExists(void);
+    void ifTWaveExists(void);
     void deleteWaves(void);
 
     void load12lead_db(void);
