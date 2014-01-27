@@ -71,7 +71,7 @@ sig_edr::sig_edr(const QVector<double> &signal_one,
             {
                 while (*iterator != *(QRSendIterators_one[QRS_iter]))
                 {
-                    QRS_Clas << signal_one[*iterator];
+                    QRS_Clas << *iterator;
                     iterator++;
                 }
                 QRS_Clas << *iterator;
@@ -98,7 +98,7 @@ sig_edr::sig_edr(const QVector<double> &signal_one,
             {
                 while (*iterator != *(QRSendIterators_two[QRS_iter]))
                 {
-                    QRS_Clas << signal_one[*iterator];
+                    QRS_Clas << *iterator;
                     iterator++;
                 }
                 QRS_Clas << *iterator;
@@ -179,7 +179,7 @@ void sig_edr::new_Waves_signal(const vector_it &QRSonsetIterators_one,
             {
                 while (*iterator != *(QRSendIterators_one[QRS_iter]))
                 {
-                    QRS_Clas << signal_one[*iterator];
+                    QRS_Clas << *iterator;
                     iterator++;
                 }
                 QRS_Clas << *iterator;
@@ -206,7 +206,7 @@ void sig_edr::new_Waves_signal(const vector_it &QRSonsetIterators_one,
             {
                 while (*iterator != *(QRSendIterators_two[QRS_iter]))
                 {
-                    QRS_Clas << signal_one[*iterator];
+                    QRS_Clas << *iterator;
                     iterator++;
                 }
                 QRS_Clas << *iterator;
