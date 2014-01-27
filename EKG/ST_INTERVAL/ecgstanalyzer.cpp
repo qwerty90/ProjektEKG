@@ -3,6 +3,8 @@
 
 #include <cmath>
 #include <algorithm>
+#include <QtAlgorithms>
+#include <QDebug>
 
 //------------------------------------------------------------
 
@@ -137,29 +139,28 @@ EcgStAnalyzer::ErrorType EcgStAnalyzer::getLastError() const
 //------------------------------------------------------------
 
 bool EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
-                            const QVector<EcgSampleIter> &rData,
-                            const QVector<EcgSampleIter> &jData,
-                            const QVector<EcgSampleIter> &tEndData,
+                            const QVector<EcgSampleIter> &rVec,
+                            const QVector<EcgSampleIter> &jVec,
+                            const QVector<EcgSampleIter> &tEndVec,
                             double sampleFreq)
 {
     result.clear();
+    prepareData(ecgSamples, rVec, jVec, tEndVec);
 
     int num = rData.size();
     int snum = ecgSamples.size();
 
+    // check if any ECG samples are present
     if (snum == 0)
     {
         lastError = NO_SAMPLES_PROVIDED;
         return false;
     }
+
+    // check if there are at least 2 Rpeaks
     if (num < 2)
     {
         lastError = INSUFFICIENT_DATA;
-        return false;
-    }
-    if (rData.size() != jData.size() || rData.size() != tEndData.size())
-    {
-        lastError = UNEQUAL_DATA_SIZES;
         return false;
     }
 
@@ -272,6 +273,9 @@ bool EcgStAnalyzer::analyze(const QVector<double> &ecgSamples,
         result.push_back(desc);
     }
 
+    // cleanup
+    clearData();
+
     lastError = NO_ERROR;
     return true;
 }
@@ -317,5 +321,78 @@ void EcgStAnalyzer::classifyInterval(EcgStDescriptor &desc)
 {
     desc.position = classifyPosition(desc.offset);
     desc.shape = classifyShape(desc.slope1, desc.slope2);
+}
+
+//------------------------------------------------------------
+
+void EcgStAnalyzer::clearData()
+{
+    rData.clear();
+    jData.clear();
+    tEndData.clear();
+}
+
+//------------------------------------------------------------
+
+void EcgStAnalyzer::prepareData(const QVector<double> &ecgSamples,
+                                const QVector<EcgSampleIter> &rVec,
+                                const QVector<EcgSampleIter> &jVec,
+                                const QVector<EcgSampleIter> &tEndVec)
+{
+    clearData();
+
+    // sort Rpeaks and get only unique points
+    QVector<EcgSampleIter> rUnique = rVec;
+    qSort(rUnique);
+    rUnique.erase(std::unique(rUnique.begin(), rUnique.end()),
+                  rUnique.end());
+
+    qDebug() << "RPEAKS" << rVec.size() << rUnique.size();
+    qDebug() << "QRS_END" << jVec.size();
+    qDebug() << "T_END" << tEndVec.size();
+
+    for (int i = 0; i < rUnique.size(); i++)
+    {
+        EcgSampleIter cr = rUnique[i];
+        EcgSampleIter nr = (i < rUnique.size() - 1) ? rUnique[i + 1] : ecgSamples.end() + 1;
+
+        // find matching QRSend
+        bool found = false;
+        EcgSampleIter fj = ecgSamples.begin();
+        foreach (EcgSampleIter cj, jVec)
+        {
+            if (cj > cr && cj < nr)
+            {
+                fj = cj;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+            continue;
+
+        // find matching Tend
+        found = false;
+        EcgSampleIter ft = ecgSamples.begin();
+        foreach (EcgSampleIter ct, tEndVec)
+        {
+            if (ct > cr && ct < nr && ct >= fj)
+            {
+                ft = ct;
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            rData.append(cr);
+            jData.append(fj);
+            tEndData.append(ft);
+        }
+    }
+
+    qDebug() << "RESULT" << rData.size();
 }
 

@@ -32,8 +32,9 @@ private Q_SLOTS:
     void testDataB112();
 
     void testNoSamples();
-    void testInsufficientData();
-    void testUnequalDataSizes();
+    void testIncompleteJData();
+    void testIncompleteTEndData();
+    void testIncorrectJPosition();
 
 private:
     EcgStData data;
@@ -41,7 +42,8 @@ private:
 
     void runTest(const QString &fileName, int num,
                  int stOn[], int stEnd[],
-                 EcgStPosition pos[], EcgStShape shape[]);
+                 EcgStPosition pos[], EcgStShape shape[],
+                 int remJ = -1, int remT = -1);
 
     bool loadTestData(const QString &fileName);
 
@@ -176,50 +178,83 @@ void TestEcgStInterval::testNoSamples()
 
 //------------------------------------------------------------
 
-void TestEcgStInterval::testInsufficientData()
+void TestEcgStInterval::testIncompleteJData()
 {
-    QVector<double> data;
-    data.append(1);
-    data.append(2);
-    data.append(3);
+    int stOn[] = { 95, 387, 677, 1244 };
+    int stEnd[] = { 184, 445, 761, 1308 };
+    EcgStPosition pos[] = {
+        ST_POS_DEPRESSION,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL
+    };
+    EcgStShape shape[] = {
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL
+    };
 
-    QVector<EcgSampleIter> iter;
-    iter.append(data.constBegin());
-
-    QCOMPARE(analyzer.analyze(data, iter, iter, iter, 360.0), false);
-    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::INSUFFICIENT_DATA);
+    runTest("data/b100.m", 4, stOn, stEnd, pos, shape, 3);
 }
 
 //------------------------------------------------------------
 
-void TestEcgStInterval::testUnequalDataSizes()
+void TestEcgStInterval::testIncompleteTEndData()
 {
-    QVector<double> data;
-    data.append(1);
-    data.append(2);
-    data.append(3);
+    int stOn[] = { 95, 677, 963, 1244 };
+    int stEnd[] = { 184, 761, 1047, 1308 };
+    EcgStPosition pos[] = {
+        ST_POS_DEPRESSION,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL
+    };
+    EcgStShape shape[] = {
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL
+    };
 
-    QVector<EcgSampleIter> iter;
-    iter.append(data.constBegin());
+    runTest("data/b100.m", 4, stOn, stEnd, pos, shape, -1, 1);
+}
 
-    QVector<EcgSampleIter> iter2;
-    iter.append(data.constBegin());
-    iter.append(data.constBegin() + 1);
+//------------------------------------------------------------
 
-    QCOMPARE(analyzer.analyze(data, iter, iter2, iter, 360.0), false);
-    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::UNEQUAL_DATA_SIZES);
+void TestEcgStInterval::testIncorrectJPosition()
+{
+    int stOn[] = { 95, 387, 963, 1244 };
+    int stEnd[] = { 184, 445, 1047, 1308 };
+    EcgStPosition pos[] = {
+        ST_POS_DEPRESSION,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL
+    };
+    EcgStShape shape[] = {
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL
+    };
 
-    QCOMPARE(analyzer.analyze(data, iter, iter, iter2, 360.0), false);
-    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::UNEQUAL_DATA_SIZES);
+    runTest("data/b100_err.m", 4, stOn, stEnd, pos, shape);
 }
 
 //------------------------------------------------------------
 
 void TestEcgStInterval::runTest(const QString &fileName, int num,
                                 int stOn[], int stEnd[],
-                                EcgStPosition pos[], EcgStShape shape[])
+                                EcgStPosition pos[], EcgStShape shape[],
+                                int remJ, int remT)
 {
     QVERIFY2(loadTestData(fileName), "Failed to load test data");
+
+    if (remJ > 0)
+        data.jData.remove(remJ);
+    if (remT > 0)
+        data.rData.remove(remT);
 
     QVERIFY(analyzer.analyze(data.ecgSamples, data.rData, data.jData, data.tEndData, 360.0));
     QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::NO_ERROR);

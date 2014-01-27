@@ -24,8 +24,7 @@ public:
     {
         NO_ERROR,
         NO_SAMPLES_PROVIDED,
-        INSUFFICIENT_DATA,
-        UNEQUAL_DATA_SIZES
+        INSUFFICIENT_DATA
     };
 
     EcgStAnalyzer();
@@ -52,9 +51,9 @@ public:
     ErrorType getLastError() const;
 
     bool analyze(const QVector<double> &ecgSamples,
-                 const QVector<EcgSampleIter> &rData,
-                 const QVector<EcgSampleIter> &jData,
-                 const QVector<EcgSampleIter> &tEndData,
+                 const QVector<EcgSampleIter> &rVec,
+                 const QVector<EcgSampleIter> &jVec,
+                 const QVector<EcgSampleIter> &tEndVec,
                  double sampleFreq);
 
     EcgStPosition classifyPosition(double offset);
@@ -74,6 +73,16 @@ private:
 
     QList<EcgStDescriptor> result;
     ErrorType lastError;
+
+    QVector<EcgSampleIter> rData;
+    QVector<EcgSampleIter> jData;
+    QVector<EcgSampleIter> tEndData;
+
+    void clearData();
+    void prepareData(const QVector<double> &ecgSamples,
+                     const QVector<EcgSampleIter> &rVec,
+                     const QVector<EcgSampleIter> &jVec,
+                     const QVector<EcgSampleIter> &tEndVec);
 };
 
 //------------------------------------------------------------
