@@ -2,7 +2,6 @@
 #include "ui_airecgmain.h"
 #include "about.h"
 #include "filebrowser.h"
-#include "notready.h"
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
@@ -1694,6 +1693,9 @@ void AirEcgMain::drawHrt(EcgData *data)
 
 void AirEcgMain::drawQtDisp(EcgData *data)
 {
+    QwtPlot *plotQtDisp = plotPointsPlot(*(data->Waves->T_end),*(data->ecg_baselined),data->info->frequencyValue);
+    ui->scrollArea_9->setWidget(plotQtDisp);
+    ui->scrollArea_9->show();
     QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
 void AirEcgMain::drawWaves(EcgData *data)

@@ -77,6 +77,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
     this->connect(this, SIGNAL(runVcgLoop_done(EcgData*)) ,view, SLOT(drawVcgLoop(EcgData*)))   ;
     this->connect(this, SIGNAL(SleepApnea_done(EcgData*)) ,view, SLOT(drawSleep_Apnea(EcgData*)));
+    this->connect(this, SIGNAL(QtDisp_done(EcgData*)) ,view, SLOT(drawQtDisp(EcgData*)));
     this->connect(this, SIGNAL(HRT_done(EcgData*)) ,view, SLOT(drawHrt(EcgData*)));
 
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
