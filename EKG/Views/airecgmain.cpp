@@ -808,7 +808,7 @@ QwtPlot* AirEcgMain::plotSleep_Apneafrequence(const QVector<double>& yData, floa
 
     return plot;
 }
-QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, QPointF S1, QPointF S2)
+QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, double a, double b)
 {
     QVector<double> sampleNo = QVector<double>(yData.size());
 
@@ -825,9 +825,9 @@ QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, QPointF S1, QPointF S2)
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 1, 20,1);
+    plot->setAxisScale( QwtPlot::xBottom , 1, 24,1);
 
-    QwtText xaxis("# RR interval");
+    QwtText xaxis("HRT");
     QwtText yaxis("Time [ms]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -842,6 +842,20 @@ QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, QPointF S1, QPointF S2)
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
 
+    QVector<double> prosta_x = QVector<double>(2);
+    QVector<double> prosta_y = QVector<double>(2);
+    prosta_x[0] = 0;
+    prosta_x[1] = 24;
+
+    prosta_y[0] = b;
+    prosta_y[1] = a*24  + b ;
+
+    QwtPlotCurve* curve2 = new QwtPlotCurve();
+    curve2->setPen(QPen(Qt::black, 1));
+    curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve2->setSamples(prosta_x, prosta_y);
+    curve2->attach(plot);
+/*
     // linia laczaca 2pkty
     QwtPlotCurve *curve2 = new QwtPlotCurve();
     curve2->setPen(QPen( Qt::blue, 3));
@@ -853,7 +867,7 @@ QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, QPointF S1, QPointF S2)
     points << S1 << S2;
     curve2->setSamples( points );
     curve2->attach( plot );
-
+*/
     // wstawianie lini poziomej
     QwtPlotMarker *mY = new QwtPlotMarker();
     mY->setLabel( QString::fromLatin1( "label" ) );
@@ -2758,7 +2772,7 @@ void AirEcgMain::drawQrsClass(EcgData *data)
 
 void AirEcgMain::drawHrt(EcgData *data)
 {
-    QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram),QPointF(0.0,0.3),QPointF(1.0,0.1)); //Co to za pkt tu maja byc?
+    QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram),data->hrt_a,data->hrt_b);
     ui->scrollAreaHrt->setWidget(hrtTachogram);
     ui->scrollAreaHrt->show();
     ui->vpbs_detected_count->setText(QString::number((data->vpbs_detected_count), 'f', 0));

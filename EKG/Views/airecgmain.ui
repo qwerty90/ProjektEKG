@@ -354,7 +354,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>4</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">

@@ -56,7 +56,7 @@ public:
     QwtPlot* plotPlotRR(const QVector<double>& yData,const QVector<double>& xData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
     QwtPlot* plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
-    QwtPlot* plotHrt(QVector<double>& yData, QPointF S1, QPointF S2);
+    QwtPlot* plotHrt(QVector<double>& yData, double a, double b);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
     QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
