@@ -344,7 +344,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -354,7 +354,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>1</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -1020,7 +1020,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="hrv_statistical">
                  <attribute name="title">
@@ -1142,7 +1142,7 @@
                      <enum>QTabWidget::East</enum>
                     </property>
                     <property name="currentIndex">
-                     <number>1</number>
+                     <number>0</number>
                     </property>
                     <widget class="QWidget" name="tab_12">
                      <attribute name="title">
@@ -1159,8 +1159,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>964</width>
+                           <height>431</height>
                           </rect>
                          </property>
                         </widget>
@@ -1183,8 +1183,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>964</width>
+                           <height>410</height>
                           </rect>
                          </property>
                         </widget>
@@ -2247,8 +2247,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>988</width>
-                       <height>369</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>

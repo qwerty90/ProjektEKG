@@ -626,7 +626,68 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
 
     return plot;
 }
+//RR
+QwtPlot* AirEcgMain::plotPlotRR(const QVector<double>& yData,const QVector<double>& xData)
+{
+    double maxy = 0;
+    double miny = 9999999;
 
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
+    }
+    double maxx = 0;
+    double minx = 9999999;
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
+
+    QwtText xaxis("Frequence [Hz]");
+    QwtText yaxis("Power");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+    grid->attach(plot);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 2));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(xData, yData);
+    curve->attach(plot);
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,xData.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
 QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData, float freq)
 {
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -2376,12 +2437,17 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->RR50Ratio->setText("RR50 Ratio = " %QString::number((data-> RR50Ratio), 'c', 2) + " %");
     ui->SDANN->setText("SDANN = " %QString::number((data->SDANN), 'f', 2) + " ms");
     ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
-    ui->SDSD->setText("SDSD");
+    ui->SDSD->setText("SDSD = " %QString::number((data->SDSD), 'f', 2) + " ms");
 
     QLOG_DEBUG() << "GUI/HRV1 1";
 
+    //RR
+    QwtPlot *plotRR = plotPlotRR(*(data->RR_y),*(data->RR_x));
+    ui->scrollAreaRR->setWidget(plotRR);
+    ui->scrollAreaRR->show();
+
     //Fourier    
-    QwtPlot *plotFT = plotPlot(*(data->fft_y),*(data->fft_x)); //to ma byc lista czy vector?
+    QwtPlot *plotFT = plotPlot(*(data->fft_y),*(data->fft_x));
     ui->scrollAreaFT->setWidget(plotFT);
     ui->scrollAreaFT->show();
     QLOG_DEBUG() << "GUI/HRV1 2";

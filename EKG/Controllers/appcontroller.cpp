@@ -315,6 +315,16 @@ void AppController::runHRV1()
         this->entity->fft_y->clear();
         this->entity->fft_y=NULL;
     }
+    if (this->entity->RR_x != NULL)
+    {
+        this->entity->RR_x->clear();
+        this->entity->RR_x=NULL;
+    }
+    if (this->entity->RR_y != NULL)
+    {
+        this->entity->RR_y->clear();
+        this->entity->RR_y=NULL;
+    }
 
     QVector<int> *wektor = new QVector<int>(this->entity->Rpeaks_uint.size());
 
@@ -346,11 +356,16 @@ void AppController::runHRV1()
     this->entity->VLF = results_freq.VLF;
     this->entity->LFHF = results_freq.LFHF;
 
+    this->entity->RR_x = new QVector<double>(*(results_freq.rrXData));
+    this->entity->RR_y = new QVector<double>(*(results_freq.rrYData));
+
     QLOG_INFO() << "HRV1 frequency done.";
 
     emit this->HRV1_done(this->entity);
     results_freq.xData->clear();
     results_freq.yData->clear();
+    results_freq.rrXData->clear();
+    results_freq.rrYData->clear();
     QLOG_TRACE() << "HRV1 statistical drawn.";
 }
 

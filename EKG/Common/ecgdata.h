@@ -66,8 +66,8 @@ public:
     // HRV1
     //dane statystyczne
     double Mean, SDNN, RMSSD, RR50, RR50Ratio, SDANN, SDANNindex, SDSD;
-    QList<double> *RR_x;
-    QList<double> *RR_y;
+    QVector<double> *RR_x;
+    QVector<double> *RR_y;
 
     //HRV1dane czestotliwosciowe
     double TP, HF, LF, VLF, ULF, LFHF;
