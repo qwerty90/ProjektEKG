@@ -37,7 +37,7 @@ public:
     void ifTWaveExists(void);
     void deleteWaves(void);
 
-    void load12lead_db(void);
+    void load12lead_db(VCG_input &input);
 
 
 signals:

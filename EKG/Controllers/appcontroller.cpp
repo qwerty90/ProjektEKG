@@ -563,7 +563,17 @@ void AppController::runVcgLoop()
 {
     QLOG_INFO() << "Start VcgLoop (not ready yet)";
 
-    load12lead_db();
+
+    this->entity->VCG_raw->I  = new QVector<double>;
+    this->entity->VCG_raw->II = new QVector<double>;
+    this->entity->VCG_raw->V1 = new QVector<double>;
+    this->entity->VCG_raw->V2 = new QVector<double>;
+    this->entity->VCG_raw->V3 = new QVector<double>;
+    this->entity->VCG_raw->V4 = new QVector<double>;
+    this->entity->VCG_raw->V5 = new QVector<double>;
+    this->entity->VCG_raw->V6 = new QVector<double>;
+
+    load12lead_db(*(this->entity->VCG_raw));
 
     emit runVcgLoop_done(this->entity);
     QLOG_INFO() << "VcgLoop done";
@@ -579,6 +589,8 @@ void AppController::runQtDisp()
     vector<int> qrs_on;
     vector<int> qrs_end;
     vector<int> Pwave_start;
+
+    vector<double> baselined = (*this->entity->ecg_baselined).toStdVector();
 
     vector<Evaluation> output;
     vector<double> T_end;
@@ -599,8 +611,8 @@ void AppController::runQtDisp()
         Pwave_start.push_back(this->entity->Waves->PWaveStart->at(i) - point0);
     }
 
-    obiekt.getInput((*this->entity->ecg_baselined).toStdVector(),
-                    qrs_on,qrs_end,Pwave_start,(double)this->entity->info->frequencyValue);
+    obiekt.getInput(baselined, qrs_on, qrs_end, Pwave_start,
+                    (double)this->entity->info->frequencyValue);
     obiekt.Run();
     QLOG_TRACE() <<"MVC/ QT_DISP calculated.";
     obiekt.setOutput(output,T_end);
@@ -608,7 +620,7 @@ void AppController::runQtDisp()
 
     iters tmp_it;
     for(int i=0 ; i<T_end.size();i++)
-        tmp_it.append(&((*this->entity->ecg_baselined)[ T_end.at(i) ]));
+        tmp_it.append(&((*this->entity->ecg_baselined)[(int) floor(T_end.at(i)*this->entity->info->frequencyValue)]));
 
     this->entity->Waves->T_end = new iters (tmp_it);
 
@@ -942,28 +954,9 @@ void AppController::deleteWaves(void)
     }
 }
 
-void AppController::load12lead_db(void)
+void AppController::load12lead_db(VCG_input &input)
 {
-    QVector<double> *I   = new QVector<double>();
-    QVector<double> *II  = new QVector<double>();
-    QVector<double> *V1  = new QVector<double>();
-    QVector<double> *V2  = new QVector<double>();
-    QVector<double> *V3  = new QVector<double>();
-    QVector<double> *V4  = new QVector<double>();
-    QVector<double> *V5  = new QVector<double>();
-    QVector<double> *V6  = new QVector<double>();
 
-    /*I->reserve(462600);
-    II->reserve(462600);
-    V1->reserve(462600);
-    V2->reserve(462600);
-    V3->reserve(462600);
-    V4->reserve(462600);
-    V5->reserve(462600);
-    V6->reserve(462600);*/
-
-    //QVector<QString> data;
-    //QVector<QString>::iterator iter_line=data.begin();
     QStringList line;
     QStringList::iterator iter_column;
 
@@ -973,7 +966,7 @@ void AppController::load12lead_db(void)
     QFile f(name);
     if (f.open(QIODevice::ReadOnly))
     {
-        QLOG_TRACE() <<"Otwarto plik.";
+        QLOG_TRACE() <<"VCG_LOOP/ Otwarto plik.";
         QTextStream in(&f);
         in >> name;
 
@@ -981,22 +974,22 @@ void AppController::load12lead_db(void)
         {
             line=(name).split(",",QString::SkipEmptyParts);
             iter_column=line.begin();
-            I->append((*iter_column).toDouble());
+            input.I->append((*iter_column).toDouble());
             iter_column++;
-            II->append((*iter_column).toDouble());
+            input.II->append((*iter_column).toDouble());
             iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;
-            V1->append((*iter_column).toDouble());
+            input.V1->append((*iter_column).toDouble());
             QLOG_TRACE() <<"v1 sample: " << (*iter_column).toDouble();
             iter_column++;
-            V2->append((*iter_column).toDouble());
+            input.V2->append((*iter_column).toDouble());
             iter_column++;
-            V3->append((*iter_column).toDouble());
+            input.V3->append((*iter_column).toDouble());
             iter_column++;
-            V4->append((*iter_column).toDouble());
+            input.V4->append((*iter_column).toDouble());
             iter_column++;
-            V5->append((*iter_column).toDouble());
+            input.V5->append((*iter_column).toDouble());
             iter_column++;
-            V6->append((*iter_column).toDouble());
+            input.V6->append((*iter_column).toDouble());
 
             line.clear();
             in>>name;
@@ -1006,7 +999,7 @@ void AppController::load12lead_db(void)
         f.close();
     }
     else
-        QLOG_TRACE() <<"Nie otwarto pliku.";
+        QLOG_TRACE() <<"VCG_LOOP/ Nie otwarto pliku.";
 
     QLOG_INFO() <<"VCG_LOOP/ " << i << " Samples loaded";
 
