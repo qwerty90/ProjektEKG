@@ -29,6 +29,17 @@ struct Waves_struct
 
     int Count;
 };
+struct VCG_input
+{
+    QVector<double> *I  ;
+    QVector<double> *II ;
+    QVector<double> *V1 ;
+    QVector<double> *V2 ;
+    QVector<double> *V3 ;
+    QVector<double> *V4 ;
+    QVector<double> *V5 ;
+    QVector<double> *V6 ;
+};
 
 class EcgData : public QObject
 {
@@ -120,6 +131,9 @@ public:
 
     //modul QtDisp (bez TWaves)
     QVector<Evaluation> *evaluations;
+
+    //modul VCG_LOOP
+    VCG_input *VCG_raw;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;
