@@ -11,10 +11,9 @@
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
 #include "SIG_EDR/sig_edr.h"
-//#include "QT_DISP/QT_DISP.h"
-//#include "QT_DISP/Evaluation.h"
 #include "HRT/HRTmodule.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
+#include "VCG_T_LOOP/vcg_t_loop.h"
 
 #include <QThread>
 
@@ -39,7 +38,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(switchEcgBaseline(int)), this, SLOT(switchEcgBaseline(int)));
     this->connect(view, SIGNAL(switchRPeaks(unsigned char)), this, SLOT(switchRPeaks(unsigned char)));
     this->connect(view, SIGNAL(switchWaves_p_onset(bool)), this, SLOT(switchWaves_p_onset( bool)));
-    this->connect(view, SIGNAL(switchTWA(unsigned char)), this, SLOT(switchTWA(unsigned char)));
+   // this->connect(view, SIGNAL(switchTWA(unsigned char)), this, SLOT(switchTWA(unsigned char)));
 
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
@@ -65,9 +64,9 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runVcgLoop())    ,this, SLOT (runVcgLoop()));
     this->connect(view, SIGNAL(runSleepApnea()) ,this, SLOT (runSleepApnea()));
     this->connect(view, SIGNAL(runQtDisp())     ,this, SLOT (runQtDisp()));
-    this->connect(view, SIGNAL(runHRT())     ,this, SLOT (runHRT()));
-    this->connect(view, SIGNAL(runQrsClass())     ,this, SLOT (runQrsClass()));
-    this->connect(view, SIGNAL(run()), this, SLOT(run()));
+    this->connect(view, SIGNAL(runHRT())        ,this, SLOT (runHRT()));
+    this->connect(view, SIGNAL(run())           ,this, SLOT (run()));
+    this->connect(view, SIGNAL(runQrsClass())   ,this, SLOT (runQrsClass()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
     this->connect(this, SIGNAL( AtrialFibr_done(EcgData*)),view, SLOT(drawAtrialFibr(EcgData*)));
@@ -79,9 +78,10 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
     this->connect(this, SIGNAL(runVcgLoop_done(EcgData*)) ,view, SLOT(drawVcgLoop(EcgData*)))   ;
     this->connect(this, SIGNAL(SleepApnea_done(EcgData*)) ,view, SLOT(drawSleep_Apnea(EcgData*)));
-    this->connect(this, SIGNAL(QtDisp_done(EcgData*)) ,view, SLOT(drawQtDisp(EcgData*)));
-    this->connect(this, SIGNAL(HRT_done(EcgData*)) ,view, SLOT(drawHrt(EcgData*)));
-    this->connect(this, SIGNAL(busy(bool)) ,view, SLOT(busy(bool)));
+    this->connect(this, SIGNAL(QtDisp_done(EcgData*))     ,view, SLOT(drawQtDisp(EcgData*)))    ;
+    this->connect(this, SIGNAL(HRT_done(EcgData*))        ,view, SLOT(drawHrt(EcgData*)))       ;
+    this->connect(this, SIGNAL(busy(bool))                ,view, SLOT(busy(bool)))              ;
+    this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
 
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
     this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
@@ -203,25 +203,19 @@ void AppController::ResetModules()
         this->entity->Rpeaks_uint.clear();
         QLOG_INFO() << "MVC/ Rpeaks uint removed.";
     }
-    if (this->entity->fft_x != NULL)
-    {
-        this->entity->fft_x->clear();
-        this->entity->fft_x=NULL;
-        QLOG_INFO() <<"MVC/ HRV1-x removed.";
-    }
-    if (this->entity->fft_y != NULL)
-    {
-        this->entity->fft_y->clear();
-        this->entity->fft_y=NULL;
-        QLOG_INFO() <<"MVC/ HRV1-y removed.";
-    }
     if (this->entity->hrt_tachogram!=NULL)
     {
         this->entity->hrt_tachogram->clear();
+        this->entity->hrt_tachogram=NULL;
         QLOG_INFO() <<"MVC/ HRT removed.";
     }
+    if (this->entity->TWaveStart!=NULL)
+    {
+        this->entity->TWaveStart->clear();
+        this->entity->TWaveStart=NULL;
+    }
 
-
+    deleteHRV1();
     deleteWaves();
     deleteApnea();
 
@@ -292,21 +286,11 @@ void AppController::runEcgBaseline()
     }            
 
     QLOG_INFO() << "Ecg baseline done.";
-    double min=0;
-    double max=0;
-    for (int i=0; i<this->entity->ecg_baselined->size();i++)
-    {
-        if (this->entity->ecg_baselined->at(i)<min)
-            min = this->entity->ecg_baselined->at(i);
 
-        if (this->entity->ecg_baselined->at(i)>max)
-            max = this->entity->ecg_baselined->at(i);
-    }
-
-    QLOG_TRACE() << "MVC/ min/max values :" <<min<<"//"<<max;
     emit EcgBaseline_done(this->entity);
     emit busy(false);
-    // runVcgLoop(); //tam jest bezwzgledna sciezka - nie odpali sie wam!
+
+        // runVcgLoop();  <- nie odpalajcie tego!
 
 }
 
@@ -315,26 +299,15 @@ void AppController::runHRV1()
     QLOG_INFO() << "HRV1 started.";
     ifRpeaksExists();
 
-    if (this->entity->fft_x != NULL)
+    if ( (this->entity->fft_x != NULL)
+         &(this->entity->fft_y != NULL)
+         &(this->entity->RR_x != NULL)
+         &(this->entity->RR_y != NULL) )
     {
-        this->entity->fft_x->clear();
-        this->entity->fft_x=NULL;
+        QLOG_INFO() << "MVC/ HRV1 already exists.";
+        return;
     }
-    if (this->entity->fft_y != NULL)
-    {
-        this->entity->fft_y->clear();
-        this->entity->fft_y=NULL;
-    }
-    if (this->entity->RR_x != NULL)
-    {
-        this->entity->RR_x->clear();
-        this->entity->RR_x=NULL;
-    }
-    if (this->entity->RR_y != NULL)
-    {
-        this->entity->RR_y->clear();
-        this->entity->RR_y=NULL;
-    }
+
 
     QVector<int> *wektor = new QVector<int>(this->entity->Rpeaks_uint.size());
 
@@ -391,9 +364,14 @@ void AppController::runAtrialFibr()
         return;
     }
 
+    QString sig_name;
+    this->entity->settings->signalIndex?sig_name=this->entity->info->secondaryName
+                                        :sig_name=this->entity->info->primaryName;
+
     AtrialFibrApi obiekt(*(this->entity->ecg_baselined),
                          *(this->entity->Rpeaks) ,
-                         *(this->entity->Waves->PWaveStart) )   ;
+                         *(this->entity->Waves->PWaveStart),
+                         sig_name)   ;
 
     this->entity->PWaveOccurenceRatio= obiekt.GetPWaveAbsenceRatio();
     this->entity->RRIntDivergence    = obiekt.GetRRIntDivergence();
@@ -496,42 +474,22 @@ void AppController::runStInterval()
 
     this->entity->STintervals = new QList<EcgStDescriptor>(analyzer.getResult());
 
-    // !!! Ponizej znajduje sie generowanie przykladowych danych dla zestawu 100.dat,
-    // !!! dzieki czemu mozna przetestowac rysowanie ST
-//    runEcgBaseline();
-
-//    int stOn[] = { 95, 387, 677, 963, 1244 };
-//    int stEnd[] = { 184, 445, 761, 1047, 1308 };
-//    EcgStPosition pos[] = {
-//        ST_POS_DEPRESSION,
-//        ST_POS_NORMAL,
-//        ST_POS_NORMAL,
-//        ST_POS_NORMAL,
-//        ST_POS_NORMAL
-//    };
-//    EcgStShape shape[] = {
-//        ST_SHAPE_HORIZONTAL,
-//        ST_SHAPE_HORIZONTAL,
-//        ST_SHAPE_HORIZONTAL,
-//        ST_SHAPE_HORIZONTAL,
-//        ST_SHAPE_HORIZONTAL
-//    };
-
-//    this->entity->STintervals = new QList<EcgStDescriptor>();
-//    for (int i = 0; i < 5; i++)
-//    {
-//        EcgStDescriptor desc;
-//        desc.STOn = this->entity->ecg_baselined->constBegin() + (stOn[i] - 1);
-//        desc.STEnd = this->entity->ecg_baselined->constBegin() + (stEnd[i] - 1);
-//        desc.STMid = desc.STOn + (stEnd[i] - stOn[i]) / 2;
-//        desc.offset = 666.6;
-//        desc.slope1 = 69.0;
-//        desc.slope2 = 96.0;
-//        desc.position = pos[i];
-//        desc.shape = shape[i];
-
-//        this->entity->STintervals->append(desc);
-//    }
+    QLOG_INFO() << this->entity->STintervals->size() << "StIntervals calculated.";
+    //wyznaczanie TwaveStart
+    if (this->entity->TWaveStart!=NULL)
+    {
+        this->entity->TWaveStart->clear();
+        this->entity->TWaveStart=NULL;
+    }
+    this->entity->TWaveStart = new iters;
+    QList<EcgStDescriptor>::iterator it = this->entity->STintervals->begin();
+    while(it!=this->entity->STintervals->end())
+    {
+        QLOG_TRACE() << *((*it).STEnd);
+        this->entity->TWaveStart->append((*it).STEnd);
+        it++;
+    }
+    QLOG_INFO() << "StInterval calculated"<<this->entity->TWaveStart->size()<<"ST interval ends.";
 
     emit StInterval_done(this->entity);
     QLOG_INFO() << "StInterval done";
@@ -571,7 +529,6 @@ void AppController::runVcgLoop()
 {
     QLOG_INFO() << "Start VcgLoop (not ready yet)";
 
-
     this->entity->VCG_raw->I  = new QVector<double>;
     this->entity->VCG_raw->II = new QVector<double>;
     this->entity->VCG_raw->V1 = new QVector<double>;
@@ -583,8 +540,54 @@ void AppController::runVcgLoop()
 
     load12lead_db(*(this->entity->VCG_raw));
 
+    QVector<double> *tmp;
+
+    if(this->entity->settings->signalIndex==0)
+    {
+        tmp = new QVector<double>(*this->entity->primary);
+        this->entity->primary = new QVector<double>(*this->entity->VCG_raw->V1);
+    }
+    else
+    {
+        tmp = new QVector<double>(*this->entity->secondary);
+        this->entity->secondary = new QVector<double>(*this->entity->VCG_raw->V1);
+    }
+
+    runStInterval();
+
+    VCG_T_LOOP obiekt(*this->entity->VCG_raw->V1,
+                      *this->entity->VCG_raw->V2,
+                      *this->entity->VCG_raw->V3,
+                      *this->entity->VCG_raw->V4,
+                      *this->entity->VCG_raw->V5,
+                      *this->entity->VCG_raw->V6,
+                      *this->entity->VCG_raw->I,
+                      *this->entity->VCG_raw->II,
+                      *this->entity->Waves->QRS_onset,
+                      *this->entity->TWaveStart,
+                      *this->entity->Waves->T_end);
+    QLOG_TRACE() <<"VCG run execute";
+    obiekt.Run();
+QLOG_TRACE() <<"VCG ran";
+    this->entity->X  = new QVector<double> (obiekt.getX());
+    this->entity->Y  = new QVector<double> (obiekt.getY());
+    this->entity->Z  = new QVector<double> (obiekt.getZ());
+    this->entity->MA = new QVector<double> (obiekt.getMA());
+    this->entity->RMMV=new QVector<double> (obiekt.getRMMV());
+    this->entity->DEA= new QVector<double> (obiekt.getDEA());
+QLOG_TRACE() <<"results";
+    if(this->entity->settings->signalIndex==0)
+    {
+        this->entity->primary = new QVector<double>(*tmp);
+    }
+    else
+    {
+        this->entity->secondary = new QVector<double>(*tmp);
+    }
+QLOG_TRACE() <<"previous signals loaded.";
     emit runVcgLoop_done(this->entity);
-    QLOG_INFO() << "VcgLoop done";
+    QLOG_INFO() << "VcgLoop done";            
+
 }
 
 void AppController::runQtDisp()
@@ -621,14 +624,16 @@ void AppController::runQtDisp()
 
     obiekt.getInput(baselined, qrs_on, qrs_end, Pwave_start,
                     (double)this->entity->info->frequencyValue);
-    obiekt.Run();
-    QLOG_TRACE() <<"MVC/ QT_DISP calculated.";
+    QLOG_INFO() << "MVC/ QT_DISP reslly started.";
+    obiekt.Run();    
     obiekt.setOutput(output,T_end);
 
 
     this->entity->Waves->T_end = new iters;
     for(int i=0 ; i<T_end.size();i++)
         this->entity->Waves->T_end->append(&((*this->entity->ecg_baselined)[(int) floor(T_end.at(i)*this->entity->info->frequencyValue)]));
+
+    QLOG_TRACE() <<"MVC/ QT_DISP calculated"<<this->entity->Waves->T_end->size()<<" TWave end-points.";
 
     this->entity->evaluations = new QVector<Evaluation>(QVector<Evaluation>::fromStdVector(output));
 
@@ -830,7 +835,8 @@ void AppController::runSleepApnea()
     ifRpeaksExists();    
     if ( (this->entity->SleepApnea!=NULL)
          & (this->entity->SleepApnea_plot!=NULL)
-         & (this->entity->SleepApnea_wykresy!=NULL) )
+         & (this->entity->SleepApneaamp!=NULL)
+         & (this->entity->SleepApneafreq!=NULL))
     {
         QLOG_INFO() << "MVC/ Sleep Apnea already exists.";
         return;
@@ -846,8 +852,15 @@ void AppController::runSleepApnea()
     this->entity->SleepApnea_plot = new QVector<double>(obiekt.gui_output(
                                                             this->entity->Rpeaks_uint));
 
-    this->entity->SleepApnea_wykresy=new QVector<QVector<double>>(obiekt.sleep_apnea_plots(
-                                                                      this->entity->Rpeaks_uint));
+    QVector<QVector<double>> *tmp = new QVector<QVector<double>>(obiekt.sleep_apnea_plots(
+                                                                    this->entity->Rpeaks_uint));
+    this->entity->SleepApneaamp = new QVector<double>(tmp->at(1));
+    this->entity->SleepApneafreq= new QVector<double>(tmp->at(2));
+
+    for(int i =0; i<tmp->size();i++)
+    {
+        tmp[i].clear();
+    }
 
     //wykorzystac obiekt.sleep_apnea_plots() do wyrysowania dwóch wykresów!!!
 
@@ -941,6 +954,11 @@ void AppController::ifTWaveExists()
     if (this->entity->Waves->T_end==NULL)
         runQtDisp();
 }
+void AppController::ifTWaveStartExists()
+{
+    if (this->entity->TWaveStart==NULL)
+        runStInterval();
+}
 
 void AppController::deleteWaves(void)
 {
@@ -980,21 +998,62 @@ void AppController::deleteWaves(void)
 void AppController::deleteApnea()
 {
     if (this->entity->SleepApnea!=NULL)
-        this->entity->SleepApnea->clear();
-    if (this->entity->SleepApnea_plot!=NULL)
-        this->entity->SleepApnea_plot->clear();
-    if (this->entity->SleepApnea_wykresy!=NULL)
     {
-        (*this->entity->SleepApnea_wykresy)[0].clear();
-        (*this->entity->SleepApnea_wykresy)[1].clear();
-        (*this->entity->SleepApnea_wykresy)[2].clear();
+        this->entity->SleepApnea->clear();
+        this->entity->SleepApnea=NULL;
+    }
+    if (this->entity->SleepApnea_plot!=NULL)
+    {
+        this->entity->SleepApnea_plot->clear();
+        this->entity->SleepApnea_plot=NULL;
+    }
+    if (this->entity->SleepApneaamp!=NULL)
+    {
+        this->entity->SleepApneaamp->clear();
+        this->entity->SleepApneaamp=NULL;
+    }
+    if (this->entity->SleepApneafreq!=NULL)
+    {
+        this->entity->SleepApneafreq->clear();
+        this->entity->SleepApneafreq=NULL;
+    }
+
         QLOG_INFO() << "MVC/ Sleep Apnea deleted";
+
+}
+
+void AppController::deleteHRV1(void)
+{
+    if (this->entity->fft_x != NULL)
+    {
+        this->entity->fft_x->clear();
+        this->entity->fft_x=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-x removed.";
+    }
+    if (this->entity->fft_y != NULL)
+    {
+        this->entity->fft_y->clear();
+        this->entity->fft_y=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-y removed.";
+    }
+    if (this->entity->RR_x != NULL)
+    {
+        this->entity->RR_x->clear();
+        this->entity->RR_x=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-RR_x removed.";
+    }
+    if (this->entity->RR_x != NULL)
+    {
+        this->entity->RR_x->clear();
+        this->entity->RR_x=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-RR_y removed.";
     }
 }
 
 void AppController::load12lead_db(VCG_input &input)
 {
 
+    QLOG_TRACE() << "loading started.";
     QStringList line;
     QStringList::iterator iter_column;
 

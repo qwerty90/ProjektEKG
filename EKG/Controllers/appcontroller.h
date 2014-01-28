@@ -35,8 +35,10 @@ public:
     void ifRpeaksExists(void);
     void ifWavesExists(void);
     void ifTWaveExists(void);
+    void ifTWaveStartExists();
     void deleteWaves(void);
     void deleteApnea(void);
+    void deleteHRV1(void);
 
     void load12lead_db(VCG_input &input);
 

@@ -42,6 +42,8 @@ public:
 
     virtual void rescale();
 
+    void moveToHPosition(double x, bool center = false);
+
 protected:
     virtual ScrollBar *scrollBar( Qt::Orientation );
     virtual void updateScrollBars();

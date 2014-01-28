@@ -14,7 +14,6 @@
 #include "QRS_CLASS/qrsclass.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
 #include "ECG_BASELINE/src/butter.h"
-//#include "QT_DISP/Evaluation.h"
 #include "QT_DISP/QT_DISP.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
@@ -73,6 +72,7 @@ public:
 
     // modul ST_INTERVAL
     QList<EcgStDescriptor> *STintervals;
+    QVector<QVector<double>::const_iterator> *TWaveStart;
 
     // HRV1
     //dane statystyczne
@@ -104,13 +104,20 @@ public:
     //modul sleep apnea
     QVector<BeginEndPair>    *SleepApnea;
     QVector<double>          *SleepApnea_plot;
-    QVector<QVector<double>> *SleepApnea_wykresy;
+    QVector<double>          *SleepApneaamp;
+    QVector<double>          *SleepApneafreq;
 
     //modul QtDisp (bez TWaves)
     QVector<Evaluation> *evaluations;
 
     //modul VCG_LOOP
     VCG_input *VCG_raw;
+    QVector<double> *X;
+    QVector<double> *Y;
+    QVector<double> *Z;
+    QVector<double> *MA;
+    QVector<double> *RMMV;
+    QVector<double> *DEA;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;

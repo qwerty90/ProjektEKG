@@ -29,8 +29,10 @@ EcgData::EcgData(QObject *parent) :
     this->fft_y=NULL;
     this->SleepApnea=NULL;
     this->SleepApnea_plot=NULL;
-    this->SleepApnea_wykresy=NULL;
+    this->SleepApneaamp=NULL;
+    this->SleepApneafreq=NULL;
     this->hrt_tachogram=NULL;
+    this->TWaveStart=NULL;
     //hrv2
     //twa
     //dfa
@@ -67,8 +69,10 @@ EcgData::EcgData(QString id)
     this->fft_y=NULL;
     this->SleepApnea=NULL;
     this->SleepApnea_plot=NULL;
-    this->SleepApnea_wykresy=NULL;
+    this->SleepApneaamp=NULL;
+    this->SleepApneafreq=NULL;
     this->hrt_tachogram=NULL;
+    this->TWaveStart=NULL;
 
     this->RecordId = id;
     this->settings = new EcgSettings();
@@ -78,12 +82,12 @@ QVector<double>* EcgData::GetCurrentSignal()
 {
     if(this->settings->signalIndex == 0)
     {
-        QLOG_INFO() << "Primary signal will be processed.";
+        QLOG_INFO() << "MVC/ "<< this->info->primaryName << " signal will be processed.";
         return this->primary;
     }
     else
     {
-        QLOG_INFO() << "Secondary signal will be processed.";
+        QLOG_INFO() << "MVC/ "<< this->info->secondaryName << " signal will be processed.";
         return this->secondary;
     }
 }
