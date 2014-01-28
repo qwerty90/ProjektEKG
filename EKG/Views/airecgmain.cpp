@@ -68,7 +68,7 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
     ui->QRSSampleDataGroupBox->setVisible(false);
     ui->progressBar->setVisible(false);
-
+    ui->busy_label->setVisible(false);
     initEcgBaselineGui();
 }
 
@@ -84,12 +84,12 @@ void AirEcgMain::on_actionO_programie_triggered()
 }
 void AirEcgMain::on_actionWczytaj_triggered()
 {
-    ui->progressBar->setVisible(true);
+    emit this->busy(true);
     fileBrowser dialogFileBrowser;
     this->connect(&dialogFileBrowser, SIGNAL(fbLoadEntity(QString,QString)), this, SLOT(fbLoadData(QString,QString)));
     dialogFileBrowser.setModal(true);
     dialogFileBrowser.exec();
-    ui->progressBar->setVisible(false);
+    emit this->busy(false);
 }
 
 void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
@@ -1407,6 +1407,7 @@ void AirEcgMain::drawRPeaks(EcgData *data)
     //QwtPlot *plotVI = plotPointsPlot_uint((data->Rpeaks_uint),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
+    emit busy(false);
 }
 
 void AirEcgMain::drawHrv1(EcgData *data)
@@ -1708,6 +1709,12 @@ void AirEcgMain::drawWaves(EcgData *data)
     ui->scrollAreaWaves->show();
 
 }
+void AirEcgMain::busy(bool state)
+{
+    ui->progressBar->setVisible(state);
+    ui->busy_label->setVisible(state);
+}
+
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
@@ -1892,6 +1899,7 @@ void AirEcgMain::drawWaves(EcgData *data)
 
 void AirEcgMain::on_pushButton_2_clicked()
 {
+    busy(true);
     emit this->runEcgBaseline();
 }
 
