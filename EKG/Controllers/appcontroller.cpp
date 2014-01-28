@@ -137,8 +137,7 @@ void AppController::switchWaves_p_onset(bool check)
 
 void AppController::switchTWA(unsigned char type)
 {
-    if(this->entity)
-        this->entity->TWA_mode = type;
+    QLOG_FATAL()<<"MVC/ Unused slot.";
 }
 
 void AppController::run()
@@ -214,6 +213,11 @@ void AppController::ResetModules()
         this->entity->fft_y->clear();
         this->entity->fft_y=NULL;
         QLOG_INFO() <<"MVC/ HRV1-y removed.";
+    }
+    if (this->entity->hrt_tachogram!=NULL)
+    {
+        this->entity->hrt_tachogram->clear();
+        QLOG_INFO() <<"MVC/ HRT removed.";
     }
 
 

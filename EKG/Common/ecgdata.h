@@ -49,7 +49,7 @@ public:
     QString RecordId;
 
     // czasy
-    QVector<double> *times;
+    //QVector<double> *times;
     //wartosci liczbowe z dwoch elektrod
     QVector<double> *primary;
     QVector<double> *secondary;
@@ -84,30 +84,6 @@ public:
     double TP, HF, LF, VLF, ULF, LFHF;
     QVector<double> *fft_x;
     QVector<double> *fft_y;
-
-    //do interpolacji
-    QList<double> fftSamplesX;
-    QList<double> fftSamplesY;
-    QList<double> interpolantX;
-    QList<double> interpolantY;
-
-    //dane histogramu, dane wykresu Poincare - wyjscie modulu HRV2
-    QList<unsigned int> *histogram_x, *poincare_x;
-    QList<int> *histogram_y, *poincare_y;
-    double *triangularIndex, *TINN, *SD1, *SD2;
-
-    //wartosc TWA
-    QList<double> *TWA_positive_value;
-    QList<unsigned int> *TWA_positive;
-    QList<double> *TWA_negative_value;
-    QList<unsigned int> *TWA_negative;
-    unsigned int *twa_num; double *twa_highest_val; unsigned char TWA_mode;
-
-    //zmienne dla modulu DFA
-     QList<double> *trend_y, *trend_z;
-     QList<double> *trend_x, *trend_v;
-     int *window_min, *window_max,  *boxes, *window_plot;
-     double *alfa, *wsp_a, *wsp_b;
 
     //modul HRT
     double turbulence_slope, turbulence_onset;
