@@ -1,0 +1,6 @@
+HEADERS += \
+QT_DISP/Evaluation.h \
+QT_DISP/QT_DISP.h
+
+SOURCES += \
+QT_DISP/QT_DISP.cpp

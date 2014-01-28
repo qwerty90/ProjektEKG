@@ -34,8 +34,11 @@ public:
     void ifEcgBaselineExists(void);
     void ifRpeaksExists(void);
     void ifWavesExists(void);
+    void ifTWaveExists(void);
     void deleteWaves(void);
+    void deleteApnea(void);
 
+    void load12lead_db(VCG_input &input);
 
 
 signals:
@@ -51,7 +54,10 @@ signals:
     void SigEdr_done(EcgData *data);
     void QrsClass_done(EcgData *data);
     void runVcgLoop_done(EcgData *data);
-
+    void SleepApnea_done(EcgData *data);
+    void QtDisp_done(EcgData *data);
+    void HRT_done(EcgData *data);
+    void busy(bool);
 public slots:
     void loadData(const QString &directory, const QString &name);
     void switchSignal(int index);
@@ -64,17 +70,17 @@ public slots:
 
     void ecgBase_Kalman1Changed(const QString arg1);
     void ecgBase_Kalman2Changed(const QString arg2);
-    void CzasUsrednieniaEdit   (const QString arg1);
     void ecgBase_WindowSizeEdit(const QString arg1);
+    void ecgButterChanged      (const int set_number);
 
     void vcg_loop_change(int index);
 
-    void on_st_interval_detection_width_Changed(const QString &arg1);
-    void on_st_interval_smothing_width_Changed(const QString &arg1);
-    void on_st_interval_morphology_Changed(const QString &arg1);
-    void on_st_interval_level_threshold_Changed(const QString &arg1);
-    void on_st_interval_slope_threshold_Changed(const QString &arg1);
-    void switchDetectionAlgorithmType_ST_INTERVAL(int index);
+    void stInterval_detectionWidthChanged(int arg1);
+    void stInterval_smoothingWidthChanged(int arg1);
+    void stInterval_morphologyChanged(double arg1);
+    void stInterval_levelThresholdChanged(double arg1);
+    void stInterval_slopeThresholdChanged(double arg1);
+    void stInterval_algorithmChanged(int index);
 
     /*void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
@@ -93,7 +99,10 @@ public slots:
     void runQrsClass();
     void runWaves();
     void runSigEdr();
- void runVcgLoop();
+    void runHRT();
+    void runSleepApnea();
+    void runVcgLoop();
+    void runQtDisp();
 
 };
 

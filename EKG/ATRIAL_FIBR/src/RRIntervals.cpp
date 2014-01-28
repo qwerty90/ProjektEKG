@@ -13,16 +13,18 @@ namespace AtrialFibr {
 const static double longintervalpercentage = 1.15;
 const static double shortintervalpercentage = 0.85;
 
-QVector<double>
-RRIntervalMethod::countRRInvervals(const QVector<double> &RRtime) {
-  QVector<double> RRIntervals;
+QVector<int> RRIntervalMethod::countRRInvervals(
+    const QVector<QVector<double>::const_iterator> &RRtime) {
+  QVector<int> RRIntervals;
   transform(begin(RRtime) + 1, end(RRtime), begin(RRtime),
-            back_inserter(RRIntervals), minus<double>());
+            back_inserter(RRIntervals),
+            [](QVector<double>::const_iterator a,
+               QVector<double>::const_iterator b) { return a - b; });
   return RRIntervals;
 }
 
 QVector<classification>
-RRIntervalMethod::classifyIntervals(const QVector<double> &RRIntervals) {
+RRIntervalMethod::classifyIntervals(const QVector<int> &RRIntervals) {
   QVector<classification> classifiedIntervals;
   for (const auto &interval : RRIntervals) {
     if (interval >= longintervalpercentage * averageInterval) {
@@ -36,8 +38,7 @@ RRIntervalMethod::classifyIntervals(const QVector<double> &RRIntervals) {
   return classifiedIntervals;
 }
 
-void
-RRIntervalMethod::countAverageInterval(const QVector<double> &RRIntervals) {
+void RRIntervalMethod::countAverageInterval(const QVector<int> &RRIntervals) {
   averageInterval = mean(RRIntervals);
 }
 
@@ -71,12 +72,7 @@ void RRIntervalMethod::normalizeMarkovTable() {
   }
 }
 void RRIntervalMethod::RunRRMethod(const QVector<CIterators> &RPeaksIterators) {
-  QVector<double> RPeaks;
-  for (QVector<CIterators>::const_iterator iter = RPeaksIterators.begin();
-       iter < RPeaksIterators.end(); ++iter) {
-    RPeaks.push_back(**iter);
-  }
-  QVector<double> RRIntervals = countRRInvervals(RPeaks);
+  QVector<int> RRIntervals = countRRInvervals(RPeaksIterators);
   countAverageInterval(RRIntervals);
   countTransitions(classifyIntervals(RRIntervals));
   normalizeMarkovTable();
@@ -136,14 +132,16 @@ double JKdivergence(const Matrix3_3 &transitionsMatrix,
                     const Matrix3_3 &patternMatrix) {
   Matrix3_3 M;
   const auto nonZeroPatternMatrix = addConstant(patternMatrix, 0.00000001);
-  const auto nonZeroTransitionsMatrix = addConstant(transitionsMatrix, 0.00000001);
+  const auto nonZeroTransitionsMatrix =
+      addConstant(transitionsMatrix, 0.00000001);
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; ++j) {
-      M[i][j] = 0.5 * (nonZeroPatternMatrix[i][j] + nonZeroTransitionsMatrix[i][j]);
+      M[i][j] =
+          0.5 * (nonZeroPatternMatrix[i][j] + nonZeroTransitionsMatrix[i][j]);
     }
   }
-  return 0.5 *
-         (KLdivergence(M, nonZeroPatternMatrix) + KLdivergence(M, nonZeroTransitionsMatrix));
+  return 0.5 * (KLdivergence(M, nonZeroPatternMatrix) +
+                KLdivergence(M, nonZeroTransitionsMatrix));
 }
 }
 }

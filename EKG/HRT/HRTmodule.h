@@ -14,19 +14,19 @@ namespace HRT{
 class HRTmodule
 {
 private:
-    vector<int> 			R_peaks;
-	int 					frequency;
-	int 					n_R;
-	int						totalVEBcount;
-	double					TO;
-	double					TS;	
-	double 					TS_B;
-	//vector<double> 			tacho;
+	vector<unsigned int> 		R_peaks;
+	double 				frequency;
+	unsigned int			n_R;
+	int				totalVEBcount;
+	double				TO;
+	double				TS;	
+	double 				TS_B;
+	//vector<double> 		tacho;
 	QVector<double> 		tacho;
 	vector<double> 			VEBlist; 	//po findVEB
 	vector<double> 			VEBlist2; 	//po filterVEB
-	vector<vector<double>> 	RRlist;		//po createRRlist
-	vector<vector<double>> 	HRT_RR;		//po filterRR
+	vector<vector<double>> 		RRlist;		//po createRRlist
+	vector<vector<double>> 		HRT_RR;		//po filterRR
 	
 	static	const int				n_R_l=7;    //zakres poszukiwan dolna granica
 	static	const int				n_R_u=20;   // i gorna
@@ -36,10 +36,10 @@ private:
 	
 	vector<double> 			findVEB();
 	vector<double> 			filterVEB();
-	vector<vector<double>> 	createRRlist();
-	vector<vector<double>> 	filterRR();
-	void 					GlobalAverage();// wylicza {TO,TS,TS_B}
-	vector<double>			tachogram();
+	vector<vector<double>> 		createRRlist();
+	vector<vector<double>> 		filterRR();
+	void 				GlobalAverage();// wylicza {TO,TS,TS_B}
+    QVector<double>			tachogram();
 
 public:
 

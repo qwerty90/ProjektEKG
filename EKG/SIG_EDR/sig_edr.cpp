@@ -49,70 +49,72 @@ sig_edr::sig_edr(const QVector<double> &signal_one,
 //konstruktor przypisujacy otrzymane sygnaly EKG z dwoch elektrod,
 //iteratory QRSonset i QRSend do odpowiednich pol w obiekcie
 sig_edr::sig_edr(const QVector<double> &signal_one,
-                 const QVector<double>::const_iterator &QRSonsetIterators_one,
-                 const QVector<double>::const_iterator &QRSendIterators_one,
+                 const vector_it &QRSonsetIterators_one,
+                 const vector_it &QRSendIterators_one,
                  const QVector<double> &signal_two,
-                 const QVector<double>::const_iterator &QRSonsetIterators_two,
-                 const QVector<double>::const_iterator &QRSendIterators_two
+                 const vector_it &QRSonsetIterators_two,
+                 const vector_it &QRSendIterators_two
                 ): signal_one(signal_one), signal_two(signal_two)
 {
     QVector<double>::const_iterator iterator    = signal_one.begin();
-    QVector<double>::const_iterator QRSonset    = QRSonsetIterators_one;
-    QVector<double>::const_iterator QRSend      = QRSendIterators_one;
+    unsigned int QRS_size   = QRSonsetIterators_one.size() - 1;
+    unsigned int QRS_iter   = 0;
     QVector<double> QRS_Clas;
 
     EDRsignal_Waves.clear();
 
-    while(iterator != signal_one.end())
+    if(!QRSonsetIterators_one.isEmpty() && !QRSendIterators_one.isEmpty() && !QRSonsetIterators_two.isEmpty() && !QRSendIterators_two.isEmpty())
     {
-        if(iterator == QRSonset)
+        while(QRS_iter != QRS_size)
         {
-            while (iterator != QRSend)
+            if(*iterator == *(QRSonsetIterators_one[QRS_iter]))
             {
+                while (*iterator != *(QRSendIterators_one[QRS_iter]))
+                {
+                    QRS_Clas << *iterator;
+                    iterator++;
+                }
                 QRS_Clas << *iterator;
                 iterator++;
+                QRS_iter++;
+
+                Integrals_one << integral(QRS_Clas);
+                QRS_Clas.clear();
             }
-            QRS_Clas << *iterator;
-            iterator++;
-            QRSonset++;
-            QRSend++;
-
-            Integrals_one << integral(QRS_Clas);
-            QRS_Clas.clear();
-        }
-        else
-        {
-            iterator++;
-        }
-    }
-
-    iterator    = signal_two.begin();
-    QRSonset    = QRSonsetIterators_two;
-    QRSend      = QRSendIterators_two;
-
-    while(iterator != signal_two.end())
-    {
-        if(iterator == QRSonset)
-        {
-            while (iterator != QRSend)
+            else
             {
-                QRS_Clas << *iterator;
                 iterator++;
             }
-            QRS_Clas << *iterator;
-            iterator++;
-            QRSonset++;
-            QRSend++;
+        }
 
-            Integrals_two << integral(QRS_Clas);
-            QRS_Clas.clear();
-        }
-        else
+        iterator    = signal_two.begin();
+
+        QRS_size   = QRSonsetIterators_two.size() - 1;
+        QRS_iter   = 0;
+
+        while(QRS_iter != QRS_size)
         {
-            iterator++;
+            if(*iterator == *(QRSonsetIterators_two[QRS_iter]))
+            {
+                while (*iterator != *(QRSendIterators_two[QRS_iter]))
+                {
+                    QRS_Clas << *iterator;
+                    iterator++;
+                }
+                QRS_Clas << *iterator;
+                iterator++;
+                QRS_iter++;
+
+                Integrals_two << integral(QRS_Clas);
+                QRS_Clas.clear();
+            }
+            else
+            {
+                iterator++;
+            }
         }
+        calculate_signal_from_QRS(Integrals_one, Integrals_two);
     }
-    calculate_signal_from_QRS(Integrals_one, Integrals_two);
 }
 
 //funkcja wczytujaca dane i obliczajaca sygnal EDR z wykorzystaniem modulu RPEAKS
@@ -156,79 +158,71 @@ void sig_edr::new_RPeaks_signal(int signal_num ,
 
 //funkcja wczytujaca dane i obliczajaca sygnal EDR z wykorzystaniem modulu WAVES
 //przyjmuje iteratory kolejnych punktow QRSonset i QRSend z obu sygnalow
-void sig_edr::new_Waves_signal(const QVector<double>::const_iterator &QRSonsetIterators_one,
-                               const QVector<double>::const_iterator &QRSendIterators_one,
-                               const QVector<double>::const_iterator &QRSonsetIterators_two,
-                               const QVector<double>::const_iterator &QRSendIterators_two
+void sig_edr::new_Waves_signal(const vector_it &QRSonsetIterators_one,
+                               const vector_it &QRSendIterators_one,
+                               const vector_it &QRSonsetIterators_two,
+                               const vector_it &QRSendIterators_two
                                )
 {
     QVector<double>::const_iterator iterator    = signal_one.begin();
-    QVector<double>::const_iterator QRSonset    = QRSonsetIterators_one;
-    QVector<double>::const_iterator QRSend      = QRSendIterators_one;
+    unsigned int QRS_size   = QRSonsetIterators_one.size() - 1;
+    unsigned int QRS_iter   = 0;
     QVector<double> QRS_Clas;
 
-    //przetwarzanie pierwszego sygnalu
-
-    Integrals_one.clear();//czyszczenie starych sygnalow
-    Integrals_two.clear();
     EDRsignal_Waves.clear();
 
-    while(iterator != signal_one.end())//przechodzimy przez caly sygnal EKG
+    if(!QRSonsetIterators_one.isEmpty() && !QRSendIterators_one.isEmpty() && !QRSonsetIterators_two.isEmpty() && !QRSendIterators_two.isEmpty())
     {
-        if(iterator == QRSonset)//jezeli natrafimy na poczatek komlpeksu QRS
+        while(QRS_iter != QRS_size)
         {
-            while (iterator != QRSend)//to az do jego konca
+            if(*iterator == *(QRSonsetIterators_one[QRS_iter]))
             {
-                QRS_Clas << *iterator;//przepisujemy wartosci sygnalu do QRS_Clas
-                iterator++;
-            }
-            QRS_Clas << *iterator;
-            iterator++;
-            QRSonset++;
-            QRSend++;
-
-            //liczymy calke z kompleksu QRS i zapisujemy jej wartosc do Integrals_one
-            Integrals_one << integral(QRS_Clas);
-            QRS_Clas.clear();
-        }
-        else//jezeli nie natrafilismy na poczatek kompleksu QRS to idziemy dalej
-        {
-            iterator++;
-        }
-    }
-
-    //przetwarzanie drugiego sygnalu
-    //analogiczne jak przetwarzanie pierwszego
-
-    iterator    = signal_two.begin();
-    QRSonset    = QRSonsetIterators_two;
-    QRSend      = QRSendIterators_two;
-
-    while(iterator != signal_two.end())
-    {
-        if(iterator == QRSonset)
-        {
-            while (iterator != QRSend)
-            {
+                while (*iterator != *(QRSendIterators_one[QRS_iter]))
+                {
+                    QRS_Clas << *iterator;
+                    iterator++;
+                }
                 QRS_Clas << *iterator;
                 iterator++;
-            }
-            QRS_Clas << *iterator;
-            iterator++;
-            QRSonset++;
-            QRSend++;
+                QRS_iter++;
 
-            Integrals_two << integral(QRS_Clas);
-            QRS_Clas.clear();
+                Integrals_one << integral(QRS_Clas);
+                QRS_Clas.clear();
+            }
+            else
+            {
+                iterator++;
+            }
         }
-        else
+
+        iterator    = signal_two.begin();
+
+        QRS_size   = QRSonsetIterators_two.size() - 1;
+        QRS_iter   = 0;
+
+        while(QRS_iter != QRS_size)
         {
-            iterator++;
+            if(*iterator == *(QRSonsetIterators_two[QRS_iter]))
+            {
+                while (*iterator != *(QRSendIterators_two[QRS_iter]))
+                {
+                    QRS_Clas << *iterator;
+                    iterator++;
+                }
+                QRS_Clas << *iterator;
+                iterator++;
+                QRS_iter++;
+
+                Integrals_two << integral(QRS_Clas);
+                QRS_Clas.clear();
+            }
+            else
+            {
+                iterator++;
+            }
         }
+        calculate_signal_from_QRS(Integrals_one, Integrals_two);
     }
-    //na koncu liczymy wartosci sygnalu EDR na podstawie
-    //obliczonych wartosci calek kompleksow QRS z obu sygnalow
-    calculate_signal_from_QRS(Integrals_one, Integrals_two);
 }
 
 //funkcja zwracajaca sygnal EDR jako QVector

@@ -30,18 +30,11 @@ class AirEcgMain : public QMainWindow
     QSignalMapper* baselineSignalMapper;
     QString hash;
 
-    //void drawEcgBaseline(EcgData* data);
-    //void drawRPeaks(EcgData* data);
-    //void drawHrv1(EcgData* data);
-    void drawHrv2(EcgData* data);
-    void drawHrvDfa(EcgData* data);
-    void drawTwa(EcgData* data);
-    //void drawWaves(EcgData* data);
-    //void drawQrsClass(EcgData* data);
+    EcgData *currentEcgData;
 
-    void drawSleep_Apnea(EcgData* data);
 
-    void drawHrt(EcgData *data);
+
+
 
     void resetQrsToolbox(EcgData* data);
     //void populareQRSClassBox(QRSClass currentClass, int type);
@@ -51,9 +44,10 @@ public:
     ~AirEcgMain();
     QwtPlot* plotPlot(QList<int> &y, float freq);
     QwtPlot* plotPlot(const QVector<double> &xData, const QVector<double> &yData);
+    QwtPlot* plotPlotRR(const QVector<double>& yData,const QVector<double>& xData);
     QwtPlot* plotPlot(const QVector<double> &yData, float freq);
-    QwtPlot* plotPlot_SIG_EDR(const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
-    QwtPlot* plotHrt(QList<double>& y);
+    QwtPlot* plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no);
+    QwtPlot* plotHrt(QVector<double>& yData, double a, double b);
     QwtPlot* plotLogPlot(QList<double> &x, QList<double> &y, int rodzaj);
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
     QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
@@ -103,8 +97,10 @@ signals:
     void runWaves();
     void runSigEdr();
     void runQrsClass();
-
+    void runSleepApnea();
     void runVcgLoop();
+    void runQtDisp();
+    void runHRT();
 
     void qrsClassChanged(int index, int type);
     //void qrsClustererChanged(ClustererType type);
@@ -116,16 +112,17 @@ signals:
     void qrsKClustersNumberChanged(int noClusters);
 
     void ecgBase_CzasUsrednieniaChanged(const QString &arg1);
-    void ecgBase_CzestotliwoscProbkowaniaChanged(const QString &arg1);
+    void ecgBase_WindowSizeChanged(const QString &arg1);
     void ecgBase_Kalman1Changed(const QString &arg1);
     void ecgBase_Kalman2Changed(const QString &arg1);
+    void ecgBase_ButterworthCoeffSetChanged(int set);
 
-    void on_st_interval_detection_width_Changed(const QString &arg1);
-    void on_st_interval_smothing_width_Changed(const QString &arg1);
-    void on_st_interval_morphology_Changed(const QString &arg1);
-    void on_st_interval_level_threshold_Changed(const QString &arg1);
-    void on_st_interval_slope_threshold_Changed(const QString &arg1);
-    void switchDetectionAlgorithmType_ST_INTERVAL(int index);
+    void stInterval_detectionWidthChanged(int arg1);
+    void stInterval_smoothingWidthChanged(int arg1);
+    void stInterval_morphologyChanged(double arg1);
+    void stInterval_levelThresholdChanged(double arg1);
+    void stInterval_slopeThresholdChanged(double arg1);
+    void stInterval_algorithmChanged(int index);
 
 public slots:
     void receivePatientData(EcgData *data);
@@ -143,6 +140,13 @@ public slots:
     void drawQrsClass(EcgData *data);
     void drawSigEdr(EcgData *data);
     void drawVcgLoop(EcgData* data);
+    void drawSleep_Apnea(EcgData *data);
+    void drawQtDisp(EcgData *data);
+    void drawHrt(EcgData *data);
+
+    //busy
+    void busy(bool);
+
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -188,13 +192,6 @@ private slots:
     void on_pushButton_5_clicked();
 
     void on_pushButton_6_clicked();
-
-    void on_pushButton_7_clicked();
-
-    void on_pushButton_8_clicked();
-
-    void on_pushButton_9_clicked();
-
     void on_pushButton_10_clicked();
 
     void on_pushButton_12_clicked();
@@ -213,13 +210,7 @@ private slots:
 
     //void on_radioButton_5_clicked();
 
-    void on_CzasUsrednienialineEdit_textEdited(const QString &arg1);
-
-    void on_CzestotliwoscProbkowanialineEdit_textEdited(const QString &arg1);
-
-    void on_Kalman1lineEdit_textEdited(const QString &arg1);
-
-    void on_Kalman2lineEdit_textEdited(const QString &arg1);
+    void on_maTimeSpinBox_valueChanged(const QString &arg1);
 
     void on_ButterworthcomboBox_currentIndexChanged(int index);
 
@@ -247,19 +238,28 @@ private slots:
 
     void on_RUN_VCG_pushButton_clicked();
 
-    void on_st_interval_detection_width_textChanged(const QString &arg1);
+    void on_st_interval_detection_width_valueChanged(int arg1);
 
-    void on_st_interval_smothing_width_textChanged(const QString &arg1);
+    void on_st_interval_smoothing_width_valueChanged(int arg1);
 
-    void on_st_interval_morphology_textChanged(const QString &arg1);
+    void on_st_interval_morphology_valueChanged(double arg1);
 
-    void on_st_interval_level_threshold_textChanged(const QString &arg1);
+    void on_st_interval_level_threshold_valueChanged(double arg1);
 
-    void on_st_interval_slope_threshold_textChanged(const QString &arg1);
+    void on_st_interval_slope_threshold_valueChanged(double arg1);
 
     void on_detectionratesquare_clicked();
 
     void on_detectionratelinear_clicked();
+
+    void on_pushButton_11_clicked();
+
+    void initEcgBaselineGui();
+    void initStIntervalGui();
+
+    void on_pushButton_16_clicked();
+
+    void on_pushButton_18_clicked();
 
 private:
     Ui::AirEcgMain *ui;

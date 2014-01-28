@@ -27,7 +27,7 @@ ScrollBar::ScrollBar( double minBase, double maxBase,
 void ScrollBar::init()
 {
     d_inverted = orientation() == Qt::Vertical;
-    d_baseTicks = 1000000;
+    d_baseTicks = 1000;
     d_minBase = 0.0;
     d_maxBase = 1.0;
     moveSlider( d_minBase, d_maxBase );

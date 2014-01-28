@@ -5,8 +5,6 @@ SOURCES += \
     Views/airecgmain.cpp \
     Views/about.cpp \
     Views/filebrowser.cpp \
-    Views/processing.cpp \
-    Views/notready.cpp\
     Views/scrollzoomer.cpp\
     Views/scrollbar.cpp
 
@@ -14,17 +12,14 @@ HEADERS += \
     Views/airecgmain.h \
     Views/about.h \
     Views/filebrowser.h \
-    Views/processing.h \
-    Views/notready.h \
     Views/scrollzoomer.h\
-    Views/scrollbar.h
+    Views/scrollbar.h \
+    Views/time_scal.h
 
 FORMS    += \
     Views/airecgmain.ui \
     Views/about.ui \
-    Views/filebrowser.ui \
-    Views/processing.ui \
-    Views/notready.ui
+    Views/filebrowser.ui
 
 RESOURCES += \
     Views/resources.qrc

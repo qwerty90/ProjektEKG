@@ -12,6 +12,10 @@
 #include "QsLog/QsLog.h"
 #include "Waves/src/waves.h"
 #include "QRS_CLASS/qrsclass.h"
+#include "SLEEP_APNEA/src/sleep_apnea.h"
+#include "ECG_BASELINE/src/butter.h"
+//#include "QT_DISP/Evaluation.h"
+#include "QT_DISP/QT_DISP.h"
 
 #include "../ST_INTERVAL/ecgstdescriptor.h"
 
@@ -25,6 +29,17 @@ struct Waves_struct
 
     int Count;
 };
+struct VCG_input
+{
+    QVector<double> *I  ;
+    QVector<double> *II ;
+    QVector<double> *V1 ;
+    QVector<double> *V2 ;
+    QVector<double> *V3 ;
+    QVector<double> *V4 ;
+    QVector<double> *V5 ;
+    QVector<double> *V6 ;
+};
 
 class EcgData : public QObject
 {
@@ -33,6 +48,8 @@ public:
 
     QString RecordId;
 
+    // czasy
+    //QVector<double> *times;
     //wartosci liczbowe z dwoch elektrod
     QVector<double> *primary;
     QVector<double> *secondary;
@@ -40,6 +57,7 @@ public:
     //przefiltrowany sygnal ekg - wyjscie modulu ECG_BASELINE
     QVector<double> *ecg_baselined;
     QVector<QPointF> *characteristics;
+    QVector<ButterCoefficients> *butter_coeffs;
 
     //numery probek zalamkow R - wyjscie modulu R_PEAKS
     QVector<QVector<double>::const_iterator> *Rpeaks;
@@ -47,11 +65,8 @@ public:
     //QVector<int>          Rpeaks_int ;//po raz trzeci - wygrałem!!!
 
     //punkty charakterystyczne - wyjscie modulu WAVES
-    // EcgFrame zawiera punkty charakterystyczne: QRS_onset, QRS_end, T_end, P_onset, P_end
-        //na razie wrzuce osobno PWaveStart, ale docelowo ladniej by bylo miec to w jednej klasie jak wyzej
     Waves_struct *Waves;
     //QVector<QVector<double>::const_iterator> *PWaveStart;
-
 
     //Wykryte klasy zespolu QRS - wyjscie modulu QRS_CLASS
     QVector<QRSClass>* classes;
@@ -62,42 +77,19 @@ public:
     // HRV1
     //dane statystyczne
     double Mean, SDNN, RMSSD, RR50, RR50Ratio, SDANN, SDANNindex, SDSD;
-    QList<double> *RR_x;
-    QList<double> *RR_y;
+    QVector<double> *RR_x;
+    QVector<double> *RR_y;
 
-    //do interpolacji
-    QList<double> fftSamplesX;
-    QList<double> fftSamplesY;
-    QList<double> interpolantX;
-    QList<double> interpolantY;
-
-    //dane czestotliwosciowe
+    //HRV1dane czestotliwosciowe
     double TP, HF, LF, VLF, ULF, LFHF;
     QVector<double> *fft_x;
     QVector<double> *fft_y;
 
-    //dane histogramu, dane wykresu Poincare - wyjscie modulu HRV2
-    QList<unsigned int> *histogram_x, *poincare_x;
-    QList<int> *histogram_y, *poincare_y;
-    double *triangularIndex, *TINN, *SD1, *SD2;
-
-    //wartosc TWA
-    QList<double> *TWA_positive_value;
-    QList<unsigned int> *TWA_positive;
-    QList<double> *TWA_negative_value;
-    QList<unsigned int> *TWA_negative;
-    unsigned int *twa_num; double *twa_highest_val; unsigned char TWA_mode;
-
-    //zmienne dla modulu DFA
-     QList<double> *trend_y, *trend_z;
-     QList<double> *trend_x, *trend_v;
-     int *window_min, *window_max,  *boxes, *window_plot;
-     double *alfa, *wsp_a, *wsp_b;
-
     //modul HRT
-    double *turbulence_slope, *turbulence_onset;
-    int *vpbs_detected_count;
-    QList<double> *hrt_tachogram;
+    double turbulence_slope, turbulence_onset;
+    double hrt_a , hrt_b;
+    int vpbs_detected_count;
+    QVector<double> *hrt_tachogram;
 
     //modul ATRIAL_FIBR
     double PWaveOccurenceRatio;
@@ -108,6 +100,17 @@ public:
     //modul SigEdr
     QVector<double> *SigEdr_r;
     QVector<double> *SigEdr_q;
+
+    //modul sleep apnea
+    QVector<BeginEndPair>    *SleepApnea;
+    QVector<double>          *SleepApnea_plot;
+    QVector<QVector<double>> *SleepApnea_wykresy;
+
+    //modul QtDisp (bez TWaves)
+    QVector<Evaluation> *evaluations;
+
+    //modul VCG_LOOP
+    VCG_input *VCG_raw;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;

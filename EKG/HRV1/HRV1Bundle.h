@@ -20,6 +20,10 @@ struct HRV1BundleFrequency
     QVector<double>* xData;
     QVector<double>* yData;
 
+    //Spline interpolant (RR function)
+    QVector<double>* rrXData;
+    QVector<double>* rrYData;
+
 	//frequency analysys parameters 
 	//NOT YET WORKING
 	double TP;

@@ -46,7 +46,9 @@ private:
     QVector<double> forwardFilter();
     QVector<double> backwardSmoothen();
     void copyToY(EMatrix& Y,const QVector<double>& phase, const QVector<double>& signal);
-    void setEksInitParameters(const QVector<double>& modelParams, const QVector<double> &rPeaks, const QVector<double> &signal, const QVector<double>& phase, const EcgParams &signalParams);
+    void setEksInitParameters(const QVector<double>& modelParams, const QVector<double> &rPeaks,
+                              const QVector<double> &signal, const QVector<double>& phase,
+                              const EcgParams &signalParams);
     void constructEksMatrices(const EcgParams& signalParams);
     EMatrix3 create3dMatrix(int rows, int cols, int slices);
     EVector updateObservations(const EVector&, const EVector&);
@@ -63,7 +65,8 @@ private:
 
     //calculate ecg parameters related
     EcgParams calculateEcgParameters(const QVector<double> &signal, QVector<double> &phase, int bins);
-    void calculateFirstBin(QVector<double>& ecgMean, QVector<double>& ecgSD, QVector<double>& ecgMeanPhase, const QVector<double> &signal, const QVector<double> &phase);
+    void calculateFirstBin(QVector<double>& ecgMean, QVector<double>& ecgSD, QVector<double>& ecgMeanPhase, const QVector<double> &signal,
+                           const QVector<double> &phase);
     void smoothenEcgParameters(QVector<double>&ecgMean, QVector<double>&ecgSD, QVector<double>&ecgMeanPhase);
     void alignBaselineToZero(QVector<double>& ecgMean);
     void debugPrintEcgParameters(const QVector<double>&, const QVector<double>&, const QVector<double>&);

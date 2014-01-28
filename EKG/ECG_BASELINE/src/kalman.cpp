@@ -52,11 +52,12 @@ void fitFunc(const real_1d_array &c, const real_1d_array &x, double &func, void*
     func = KalmanFilter::syntheticEcgModelPoint(x[0], c);
 }
 
-KalmanFilter::KalmanFilter(): SNR(10.0), theta(0.0), bins(250), samplingFrequency(500), rrPeriod(samplingFrequency), gamma(1.0) {
+KalmanFilter::KalmanFilter(): SNR(10.0), samplingFrequency(500), rrPeriod(samplingFrequency), theta(0.0), gamma(1.0), bins(250) {
 
 }
 
-KalmanFilter::KalmanFilter(double _samplingFrequency): SNR(10.0), theta(0.0), bins(250), samplingFrequency(_samplingFrequency), rrPeriod(_samplingFrequency), gamma(1.0) {
+KalmanFilter::KalmanFilter(double _samplingFrequency): SNR(10.0), samplingFrequency(_samplingFrequency), rrPeriod(_samplingFrequency),
+    theta(0.0), gamma(1.0), bins(250) {
 
 }
 
@@ -74,7 +75,7 @@ QVector<double> KalmanFilter::processKalman(const QVector<double> &ecgData) {
     EcgParams ecgParameters = calculateEcgParameters(preprocessedInput, phaseVector, bins);
     std::tie(ecgMean, ecgSD, ecgMeanPhase) = ecgParameters;
 
-    QVector<double> pointsToOptimize = getEquidistPoints(20, 240, 15);
+    QVector<double> pointsToOptimize = getEquidistPoints(20, 240, 20);
     QVector<double> peaks = findPeaks(ecgData, 250);
     pointsToOptimize.append(peaks.indexOf(1,0));
 
@@ -144,7 +145,7 @@ QVector<double> KalmanFilter::syntheticEcgModelVector(const QVector<double> &pha
 //private
 
 QVector<double> KalmanFilter::removeBaseLine(const QVector<double> &ecgData){
-    return processMovAvg(ecgData, 100); //processButter(ecgData, predefinedButterCoefficientSets()[0]);
+    return processMovAvg(ecgData, 150); //processButter(ecgData, predefinedButterCoefficientSets()[0]);
 }
 
 QVector<double> KalmanFilter::addGaussianNoise(QVector<double> &input, double SNR) {
@@ -650,7 +651,7 @@ QVector<double> KalmanFilter::findPeaks(const QVector<double> &input, double rrP
     performPreliminaryIndexation(input, rPeaks, windowLength, (absMax > absMin));
     filterOutFakePeaks(rPeaks, windowLength);
 
-    debugPrintRPeaks(rPeaks);
+    //debugPrintRPeaks(rPeaks);
     return rPeaks;
 }
 
@@ -765,7 +766,7 @@ void KalmanFilter::calculateFirstBin(QVector<double>& ecgMean, QVector<double>& 
 void KalmanFilter::smoothenEcgParameters(QVector<double> &ecgMean, QVector<double> &ecgSD, QVector<double> &ecgMeanPhase) {
     auto predicate = [](double value){return (value==-1);};
     QVector<int> indexes = BLUtils::find(ecgSD, predicate);
-    qDebug() << "indexes = " << indexes;
+ //   qDebug() << "indexes = " << indexes;
     for(int i = 0 ;i < indexes.size(); i++) {
         if(indexes[i] == 0) {
             ecgMeanPhase[indexes[i]] = -PI;

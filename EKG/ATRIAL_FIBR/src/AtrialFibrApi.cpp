@@ -1,9 +1,10 @@
 #include "AtrialFibrApi.h"
 
 AtrialFibrApi::AtrialFibrApi(
-        const QVector<double> &signal,
-        const QVector<QVector<double>::const_iterator> &RPeaksIterators,
-        const QVector<QVector<double>::const_iterator> &pWaveStarts)
+    const QVector<double> &signal,
+    const QVector<QVector<double>::const_iterator> &RPeaksIterators,
+    const QVector<QVector<double>::const_iterator> &pWaveStarts,
+    const QString &)
     : pWaveStarts(pWaveStarts), endOfSignal(signal.end()), entropyResult(0.0),
       divergenceResult(0.0), pWaveOccurenceRatioResult(0.0) {
   rrmethod.RunRRMethod(RPeaksIterators);
@@ -14,27 +15,22 @@ AtrialFibrApi::AtrialFibrApi(
   divergenceResult = JKdivergence(rrmethod.getMarkovTable(), patternMatrix);
   entropyResult = entropy(rrmethod.getMarkovTable());
 }
-double AtrialFibrApi::GetRRIntEntropy() const {
-  return entropyResult;
+double AtrialFibrApi::GetRRIntEntropy() const { return entropyResult; }
+
+double AtrialFibrApi::GetRRIntDivergence() const { return divergenceResult; }
+
+double AtrialFibrApi::GetPWaveAbsenceRatio() const {
+  return 1 - pWaveOccurenceRatioResult;
 }
 
-double AtrialFibrApi::GetRRIntDivergence() const {
-  return divergenceResult;
-}
-
-double AtrialFibrApi::GetPWaveOccurenceRatio() const {
-  return pWaveOccurenceRatioResult;
-}
-
-static const double divergenceFactor = 1;
-static const double entropyFactor = 1;
-static const double pWaveOccFactor = 1;
-static const double AtrialFibrThreshold = 2;
+static const double divergenceFactor = 0.25;
+static const double entropyFactor = 0.25;
+static const double pWaveOccFactor = 0.5;
+static const double AtrialFibrThreshold = 0.7;
 
 bool AtrialFibrApi::isAtrialFibr() const {
-  if (GetRRIntDivergence() * divergenceFactor + GetRRIntEntropy() * entropyFactor +
-          GetPWaveOccurenceRatio() * pWaveOccFactor >
-      AtrialFibrThreshold)
-    return true;
-  return false;
+  return GetRRIntDivergence() * divergenceFactor +
+             GetRRIntEntropy() * entropyFactor +
+             GetPWaveAbsenceRatio() * pWaveOccFactor >
+         AtrialFibrThreshold;
 }

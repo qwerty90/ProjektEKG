@@ -14,6 +14,9 @@
 #include <vector>
 #include <cmath>
 
+typedef QVector<double>::const_iterator it;
+typedef QVector<it> vector_it;
+
 class sig_edr{
 
 const QVector<double> signal_one; //sygnal EKG z pierwszej elektrody
@@ -51,11 +54,11 @@ public:
     //konstruktor przypisujacy otrzymane sygnaly EKG z dwoch elektrod,
     //iteratory QRSonset i QRSend do odpowiednich pol w obiekcie
     sig_edr(const QVector<double> &signal_one,
-            const QVector<double>::const_iterator &QRSonsetIterators_one,
-            const QVector<double>::const_iterator &QRSendIterators_one,
+            const vector_it &QRSonsetIterators_one,
+            const vector_it &QRSendIterators_one,
             const QVector<double> &signal_two,
-            const QVector<double>::const_iterator &QRSonsetIterators_two,
-            const QVector<double>::const_iterator &QRSendIterators_two
+            const vector_it &QRSonsetIterators_two,
+            const vector_it &QRSendIterators_two
             );
 
     //funkcja wczytujaca dane i obliczajaca sygnal EDR z wykorzystaniem modulu RPEAKS
@@ -66,10 +69,10 @@ public:
 
     //funkcja wczytujaca dane i obliczajaca sygnal EDR z wykorzystaniem modulu WAVES
     //przyjmuje iteratory kolejnych punktow QRSonset i QRSend z obu sygnalow
-    void new_Waves_signal(const QVector<double>::const_iterator &QRSonsetIterators_one,
-                          const QVector<double>::const_iterator &QRSendIterators_one,
-                          const QVector<double>::const_iterator &QRSonsetIterators_two,
-                          const QVector<double>::const_iterator &QRSendIterators_two
+    void new_Waves_signal(const vector_it &QRSonsetIterators_one,
+                          const vector_it &QRSendIterators_one,
+                          const vector_it &QRSonsetIterators_two,
+                          const vector_it &QRSendIterators_two
                           );
 
     //funkcja zwracajaca sygnal EDR jako QVector

@@ -4,34 +4,40 @@ using namespace std;
 
 QT_DISP::QT_DISP()
 {
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Bazzet"));
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Frideric"));
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Hodges"));
-	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Framigham"));
-	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Bazzet"));
-	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Frideric"));
-	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Hodges"));
 	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Framigham"));
+	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Hodges"));
+	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Frideric"));
+	evaluations.insert(evaluations.begin(), Evaluation("Parabol - Bazzet"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Framigham"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Hodges"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Frideric"));
+	evaluations.insert(evaluations.begin(), Evaluation("Tangent - Bazzet"));
 }
 
-void QT_DISP::getInput(vector<vector<double>> in_signals, vector <vector <int>> in_QRS_On, vector <vector <int>> in_QRS_End, vector <vector <int>> in_P_On)
+void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vector <int> in_QRS_End, vector <int> in_P_On, double in_samplingFrequency)
 {
-	signals = in_signals;
+	signals2 = in_signals2;
 	QRS_On = in_QRS_On;
 	QRS_End = in_QRS_End;
+    if(QRS_On[QRS_On.size() - 1] > QRS_End[QRS_End.size() - 1])
+    {
+        QRS_On.erase(QRS_On.begin() + QRS_On.size() - 1);
+    }
 	P_On = in_P_On;
+	samplingFrequency = in_samplingFrequency;
 
 	heartBeats = QRS_On.size() - 1;
-	channels = signals.size() - 1;
+
+	/*channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
 	T_EndT.resize(channels);
-	for(int i = 0; i < channels; ++i)
-	{
-		T_Peak[i].resize(heartBeats);
-		T_EndT[i].resize(heartBeats);
-		T_EndP[i].resize(heartBeats);
-	}
+	*/
+	T_Peak.resize(heartBeats);
+	T_EndT.resize(heartBeats);
+	T_EndP.resize(heartBeats);
+	QTT.resize(heartBeats);
+	QTP.resize(heartBeats);
 }
 
 void QT_DISP::getInput(string path)
@@ -43,63 +49,70 @@ void QT_DISP::getInput(string path)
 	{
 		int count;
 		file >> count;
+		file >> samplingFrequency;
 		
-		vector <double> time(count, 0.0);
-		vector <double> channel0(count, 0.0);
+		signals2 = vector <double>(count, 0.0);
 		
 		for(int i = 0; i < count; ++i)
 		{
-			file >> time[i];
+			file >> signals2[i];
 		}
-		for(int i = 0; i < count; ++i)
-		{
-			file >> channel0[i];
-		}
-
-		signals.push_back(time);
-		signals.push_back(channel0);
 	
-		file >> heartBeats;
+		int QRS_On_len, QRS_End_len, P_On_len;
 
-		vector <int> QRS_OnCH0(heartBeats + 1, 0);
-		vector <int> QRS_EndCH0(heartBeats + 1, 0);
-		vector <int> P_OnCH0(heartBeats, 0);
-
-		for(int i = 0; i < heartBeats + 1; ++i)
+		file >> QRS_On_len;
+		QRS_On = vector <int>(QRS_On_len, 0);
+		heartBeats = QRS_On.size() - 1;
+		for(int i = 0; i < QRS_On_len; ++i)
 		{
-			file >> QRS_OnCH0[i];
-		}
-		for(int i = 0; i < heartBeats + 1; ++i)
-		{
-			file >> QRS_EndCH0[i];
-		}
-		for(int i = 0; i < heartBeats; ++i)
-		{
-			file >> P_OnCH0[i];
+			file >> QRS_On[i];
 		}
 
-		QRS_On.push_back(QRS_OnCH0);
-		QRS_End.push_back(QRS_EndCH0);
-		P_On.push_back(P_OnCH0);
-
-		channels = signals.size() - 1;
-		T_Peak.resize(channels);
-		T_EndP.resize(channels);
-		T_EndT.resize(channels);
-		for(int i = 0; i < channels; ++i)
+		file >> QRS_End_len;
+		QRS_End = vector <int>(QRS_End_len, 0);
+		for(int i = 0; i < QRS_End_len; ++i)
 		{
-			T_Peak[i].resize(heartBeats);
-			T_EndT[i].resize(heartBeats);
-			T_EndP[i].resize(heartBeats);
+			file >> QRS_End[i];
 		}
+
+		file >> P_On_len;
+		P_On = vector <int>(P_On_len, 0);
+		for(int i = 0; i < P_On_len; ++i)
+		{
+			file >> P_On[i];
+		};
+		T_Peak.resize(heartBeats);
+		T_EndT.resize(heartBeats);
+		T_EndP.resize(heartBeats);
+		QTT.resize(heartBeats);
+		QTP.resize(heartBeats);
 
 		file.close();
 	}
 }
 	
-// Funkcja wyjsciowa - kazde z wyjsc ulozone w wektor wektorow (zewnetrzny - kanal, wewnetrzny - numer cyklu sercowego)
-// 
-void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <vector <double>> T_End)
+// Funkcja wyjsciowa - konce zalamka T
+vector <double> QT_DISP::returnTEnd()
+{
+	return T_EndP;
+}
+
+
+//zwraca dana ewaluacje
+//0 - Bazzet Tangent
+//1 - Frideric Tangent
+//2 - Hodges Tangent
+//3 - Framingham Tangent
+//4 - Bazzet Parabol
+//5 - Frideric Parabol
+//6 - Hodges Parabol
+//7 - Framingham Parabol
+Evaluation QT_DISP::returnEvaluations(int number)
+{
+	return evaluations[number];
+}
+
+void QT_DISP::setOutput(vector <Evaluation> &out_evaluations, vector <double> &T_End)
 {
 
 	//out_evaluations = evaluations;
@@ -110,66 +123,98 @@ void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <vector <dou
 
 void QT_DISP::Run()
 {
-	for(int i = 0; i < channels;  ++i)
-    {
         for(int j = 0; j < heartBeats; ++j)
-        {
-            vector <double> x (signals[0].begin() + QRS_On[i][j], signals[0].begin() + QRS_On[i][j + 1]);
-            vector <double> y (signals[i+1].begin() + QRS_On[i][j], signals[i+1].begin() + QRS_On[i][j + 1]);
+        {			
+            //cout << j << endl;
+            int iQRS_On = QRS_On[j] - QRS_On[j];
+			int	iQRS_End = QRS_End[j] - QRS_On[j];
+			int	iP_On = P_On[j] - QRS_On[j];	
+			if(P_On[j] > QRS_On[j + 1])
+			{
+				iP_On = iQRS_End + (int) (0.2 * (QRS_On[j + 1] - QRS_End[j]));
+				P_On.insert(P_On.begin() + j, 0.0);
+			}
+			if(iQRS_End < 0)
+			{
+				continue;
+			}
+            
+			vector <double> *y = new vector <double> (signals2.begin() + QRS_On[j], signals2.begin() + QRS_On[j + 1]);
+			vector <double> *x = new vector <double> (QRS_On[j + 1]-QRS_On[j], 0);
+			int iter = 0;
+			for (int i = QRS_On[j]; i < QRS_On[j + 1]; i++, iter++)
+			{
+				x->at(iter) = i/samplingFrequency;
+			}
 
-            int iQRS_On = QRS_On[i][j] - QRS_On[i][j];
-            int iQRS_End = QRS_End[i][j] - QRS_On[i][j];
-            int iP_On = P_On[i][j] - QRS_On[i][j];
-
-			//filtrowanie
-			Filtering(&y, iQRS_End, iP_On);
-			Filtering(&y, iQRS_End, iP_On);
-			Filtering(&y, iQRS_End, iP_On);
-			Filtering(&y, iQRS_End, iP_On);
+			//filtracja
+			Filtering(y, iQRS_End, iP_On);
+			Filtering(y, iQRS_End, iP_On);
+			Filtering(y, iQRS_End, iP_On);
+			Filtering(y, iQRS_End, iP_On);
 
 			//odnalezienie potrzebnych do wyszukania konca zalamka miejsc dodatkowych
 			int iT_Peak = FindTPeak(y,iQRS_End,iP_On); 
-			T_Peak[i][j] = iT_Peak;
-
-			int highestvelocity = HighestVelocity(&x, &y, iT_Peak,  iP_On);
+			T_Peak[j] = iT_Peak + QRS_On[j];
+			int highestvelocity = HighestVelocity(x, y, iT_Peak,  iP_On);
 
 			//wyznaczenie koncow zalamka T przy pomocy metod: paraboli oraz stycznej
-			T_EndP[i][j]=CalculateTendParabol(&x, &y, highestvelocity, iT_Peak, iP_On);
-			T_EndT[i][j]=CalculateTendTangent(&x, &y, highestvelocity, iT_Peak, iP_On);			
+			T_EndP[j]=CalculateTendParabol(x, y, highestvelocity, iT_Peak, iP_On);
+			T_EndT[j]=CalculateTendTangent(x, y, highestvelocity, iT_Peak, iP_On);
+
+            //i obliczenie dlugosci odcinka QT
+			CalculateQT(x->at(0), j);
+
+			//i ocena tego odcinka
+			EvaluateQTDisp(QTT[j], QTP[j]);
+			
+			delete x;
+			delete y;
 		}
-	}
-	EvaluateQTDisp();
+}
+
+void QT_DISP::CalculateQT(double QRS_OnTime, int number_T_End_QT)
+{
+	QTP[number_T_End_QT] = T_EndP[number_T_End_QT] - QRS_OnTime;
+	QTT[number_T_End_QT] = T_EndT[number_T_End_QT] - QRS_OnTime;
 }
 
 void QT_DISP::Filtering(vector <double> *y, int QRS_End, int P_On)
 {
-	vector <double> wynik(y->begin() + QRS_End, y->begin() + P_On);
-	vector <double> yTemp(y->begin() + QRS_End, y->begin() + P_On);
-
-	wynik[0] = (yTemp[0]+yTemp[1])/2;
-	wynik[1] = (yTemp[0]+yTemp[1]+yTemp[2])/3;         
-	for (unsigned int i=5; i< wynik.size(); i++)
+	if(P_On - QRS_End < 4)
 	{
-		wynik[i-3] =  (yTemp[i]  + yTemp[i-1] + yTemp[i-2] + yTemp[i-3] +yTemp[i-4]+yTemp[i-5])/6;
+		P_On += (4 - (P_On - QRS_End));
 	}
-    wynik[wynik.size() -3] = (yTemp[yTemp.size()-1]+yTemp[yTemp.size()-2]+yTemp[yTemp.size()-3]+yTemp[yTemp.size()-4])/4;
-	wynik[wynik.size() -2] = (yTemp[yTemp.size()-1]+yTemp[yTemp.size()-2]+yTemp[yTemp.size()-3])/3;
-	wynik[wynik.size() -1] = (yTemp[yTemp.size()-1]+yTemp[yTemp.size()-2])/2;
+	vector <double> *wynik = new vector <double>(y->begin() + QRS_End, y->begin() + P_On);
+	vector <double> *yTemp = new vector <double>(y->begin() + QRS_End, y->begin() + P_On);
+
+	wynik->at(0) = (yTemp->at(0)+yTemp->at(1))/2;
+	wynik->at(1) = (yTemp->at(0)+yTemp->at(1)+yTemp->at(2))/3;         
+	for (unsigned int i=5; i< wynik->size(); i++)
+	{
+		wynik->at(i-3) =  (yTemp->at(i)  + yTemp->at(i-1) + yTemp->at(i-2) + yTemp->at(i-3) +yTemp->at(i-4)+yTemp->at(i-5))/6;
+	}
+    wynik->at(wynik->size() -3) = (yTemp->at(yTemp->size()-1)+yTemp->at(yTemp->size()-2)+yTemp->at(yTemp->size()-3)+yTemp->at(yTemp->size()-4))/4;
+	wynik->at(wynik->size() -2) = (yTemp->at(yTemp->size()-1)+yTemp->at(yTemp->size()-2)+yTemp->at(yTemp->size()-3))/3;
+	wynik->at(wynik->size() -1) = (yTemp->at(yTemp->size()-1)+yTemp->at(yTemp->size()-2))/2;
 
 	y->erase(y->begin() + QRS_End, y->begin() + P_On);
-	y->insert(y->begin() + QRS_End, wynik.begin(), wynik.end());
+	y->insert(y->begin() + QRS_End, wynik->begin(), wynik->end());
+
+	delete wynik;
+	delete yTemp;
 }
 
-int QT_DISP::FindTPeak(vector<double> y, int QRS_End, int P_On)
+int QT_DISP::FindTPeak(vector<double> *y, int QRS_End, int P_On)
 {
 	double maxValue = 0;
 	int maxPlace = 0;
 
-	for(int i = QRS_End; i<P_On;i++)
+	for(int i = QRS_End; i < (P_On - (0.1 * (P_On - QRS_End))); i++)
 	{
-		if (maxValue < y[i])
+		if (maxValue < y->at(i))
 		{
-			maxValue = y[i];
+			maxValue = y->at(i);
 			maxPlace = i;
 		}
 	}
@@ -182,7 +227,7 @@ int QT_DISP::HighestVelocity(vector <double> *x, vector <double> *y, int TPeak, 
 	double highestValue=0;
 	int highestPlace=0;
 
-	for (int i = TPeak; i < P_On; i++)
+	for (int i = TPeak; i < (P_On - (0.1 * (P_On - TPeak))); i++)
 	{
 		if( (y->at(i+1) - y->at(i)) / (x->at(i+1) - x->at(i)) < highestValue)
 		{
@@ -211,7 +256,7 @@ double QT_DISP::CalculateTendTangent(vector <double> *x, vector <double> *y, int
 	double point0OfTangent;
 	double distancePeakTangent = (y->at(T_Peak) - b)/a - x->at(T_Peak); 
 
-	point0OfTangent = (950 - b) / a;		//!!!!!!!!!!!!!!!!!!!!!!!!!!! isoline is set to const 950 for now!!!!!!!!!!!!
+	point0OfTangent = (0 - b) / a;		// isoline is set to const 0 for now
 
 	if(x->at(P_Onset) < point0OfTangent + distancePeakTangent)
 		return x->at(P_Onset);
@@ -288,79 +333,63 @@ double QT_DISP::CalculateTendParabol(vector <double> *x, vector <double> *y, int
 		b = bBest;
 		c = cBest;
 
+		if(aBest == 0)
+			return 0;
 		if(x->at(P_Onset) < -bBest/(2*aBest))
 			return x->at(P_Onset);
 		else
 			return -bBest/(2*aBest);
 }
 
-void QT_DISP::EvaluateQTDisp()
+void QT_DISP::EvaluateQTDisp(double QTT, double QTP)
 {
+	double RR = 60/heartAction;
+	double gapQT_T = 1000*(QTT);
+	double gapQT_P = 1000*(QTP);
 
-	heartAction.resize(QRS_On.size());
-	for (int i=0; i<QRS_On.size();i++)
-	{
-		double test1 = QRS_On[i].size();
-		double test2 = QRS_On[i][0];
-		double test3 = QRS_On[i][QRS_On[i].size()-1];
+	int EvaluatedValue;
 
-		heartAction[i]=(60 * (QRS_On[i].size() / ((-signals[i][0] + signals[i][signals[i].size()-1]))) ) ;
-	}
-
-	for (int i =0; i< T_EndP.size(); i++)
-	{
-		for(int j =0; j< T_EndP[i].size(); j++)
+	for (int k = 0; k<8;k++)
 		{
-			double RR = 60/heartAction[i];
-			double gapQT_T = T_EndT[i][j]-QRS_On[i][j];
-			double gapQT_P = T_EndP[i][j]-QRS_On[i][j];
-
-			int EvaluatedValue;
-
-			for (int k = 0; k<8;k++)
-			{
-				switch(k)
-				{
-					case 0:
-						EvaluatedValue = EvaluateBazzet(gapQT_T, RR);
-						break;
+		switch(k)
+		{
+			case 0:
+			EvaluatedValue = EvaluateBazzet(gapQT_T, RR);
+			break;
     
-					case 1:
-						EvaluatedValue = EvaluateFrideric(gapQT_T, RR);
-						break;
-   					case 2:
-						EvaluatedValue = EvaluateHodges(gapQT_T, heartAction[i]);
-						break;
+			case 1:
+			EvaluatedValue = EvaluateFrideric(gapQT_T, RR);
+			break;
+   				case 2:
+			EvaluatedValue = EvaluateHodges(gapQT_T, heartAction);
+			break;
     
-					case 3:
-						EvaluatedValue = EvaluateFramingham(gapQT_T, RR);
-						break;
+			case 3:
+			EvaluatedValue = EvaluateFramingham(gapQT_T, RR);
+			break;
 
-					case 4:
-						EvaluatedValue = EvaluateBazzet(gapQT_P, RR);
-						break;
+			case 4:
+			EvaluatedValue = EvaluateBazzet(gapQT_P, RR);
+			break;
     
-					case 5:
-						EvaluatedValue = EvaluateFrideric(gapQT_P, RR);
-						break;
-   					case 6:
-						EvaluatedValue = EvaluateHodges(gapQT_P, heartAction[i]);
-						break;
+			case 5:
+			EvaluatedValue = EvaluateFrideric(gapQT_P, RR);
+			break;
+   				case 6:
+			EvaluatedValue = EvaluateHodges(gapQT_P, heartAction);
+			break;
     
-					case 7:
-						EvaluatedValue = EvaluateFramingham(gapQT_P, RR);
-						break;
-				}
-
-				if (EvaluatedValue == 0)
-					evaluations[k].numberOfCorrectQT++;
-				else if (EvaluatedValue == 1)
-					evaluations[k].numberOfTooLowQT++;
-				else
-					evaluations[k].numberOfTooHighQT++;
-			}
+			case 7:
+			EvaluatedValue = EvaluateFramingham(gapQT_P, RR);
+			break;
 		}
 
+		if (EvaluatedValue == 0)
+		evaluations[k].numberOfCorrectQT++;
+		else if (EvaluatedValue == 1)
+		evaluations[k].numberOfTooLowQT++;
+		else
+		evaluations[k].numberOfTooHighQT++;
 	}
 }
 
@@ -370,7 +399,7 @@ int QT_DISP::EvaluateBazzet(double gapQT, double RR)
 	double BazzetValue =  gapQT/sqrt(RR);
 
 	//interpretacja wyniku ze wzoru Bazzeta : wynik poprawny (405-452 ms)
-	//0 - w porz鉅ku, 1 - za ma這, 2 - za du穎
+    //0 - w porzadku, 1 - za malo, 2 - za duzo
 	
 	int BazzetState = 0;
 
@@ -391,7 +420,7 @@ int QT_DISP::EvaluateFrideric(double gapQT, double RR)
 {
 	double FridericValue =  gapQT/pow(RR, 1/3);
 	//interpretacja wyniku ze wzoru Friderica : wynik poprawny (386-432 ms)
-	//0 - w porz鉅ku, 1 - za ma這, 2 - za du穎
+    //0 - w porzadku, 1 - za ma這, 2 - za du穎
 
 	int FridericState = 0;
 
@@ -415,7 +444,7 @@ int QT_DISP::EvaluateHodges(double gapQT, double heartAction)
 	double HodgesValue =  gapQT + 1.75 * (heartAction - 60); 
 
 	//interpretacja wyniku ze wzoru Hodges : wynik poprawny (390-432 ms)
-	//0 - w porz鉅ku, 1 - za ma這, 2 - za du穎
+    //0 - w porzadku, 1 - za ma這, 2 - za duzo
 	
 	int HodgesState = 0;
 
@@ -437,7 +466,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 	double FraminghamValue =  gapQT + 0.154* (1 - RR); 
 
 	//interpretacja wyniku ze wzoru Framingham : wynik poprawny (388-432 ms)
-	//0 - w porz鉅ku, 1 - za ma這, 2 - za du穎
+    //0 - w porzadku, 1 - za ma這, 2 - za duzo
 
 	int FraminghamState = 0;
 
@@ -459,7 +488,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 //	
 //{
 //
-//    int channels = signals.size() - 1;
+//    int channels = signals2.size() - 1;
 //    
 //	//ponizej, zakomentowany znajduje sie sposob zadeklarowania wektorow potrzebnych do przeslania danych : sama skladnia oraz rozmiary, jakie beda nam potrzebne
 //	/*
@@ -510,15 +539,15 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
  //   {
  //       for(int j = 0; j < qrs_on.size() - 1; ++j)
  //       {
- //           vector <double> x (signals[0].begin() + qrs_on[i][j], signals[0].begin() + qrs_on[i][j + 1]);
- //           vector <double> y (signals[i+1].begin() + qrs_on[i][j], signals[i+1].begin() + qrs_on[i][j + 1]);
+ //           vector <double> x (signals2[0].begin() + qrs_on[i][j], signals2[0].begin() + qrs_on[i][j + 1]);
+ //           vector <double> y (signals2[i+1].begin() + qrs_on[i][j], signals2[i+1].begin() + qrs_on[i][j + 1]);
 
  //           int iqrs_on = qrs_on[i][j];
  //           int iqrs_end = qrs_end[i][j];
  //           int ip_on = p_on [i][j];
 
-	//		vector <double> xqrsend_pon (signals[0].begin() +iqrs_end, signals[0].begin() + ip_on);
-	//		vector <double> yqrsend_pon (signals[i+1].begin() + iqrs_end, signals[i+1].begin() + ip_on);
+	//		vector <double> xqrsend_pon (signals2[0].begin() +iqrs_end, signals2[0].begin() + ip_on);
+	//		vector <double> yqrsend_pon (signals2[i+1].begin() + iqrs_end, signals2[i+1].begin() + ip_on);
 
 
 	//		filtering(xqrsend_pon,yqrsend_pon);
@@ -753,7 +782,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 //	*HodgesValue =  gapQT + 1.75 * (heartAction - 60); 
 //
 //	//interpretacja wyniku ze wzoru Hodges : wynik poprawny (390-432 ms)
-//	//0 - w porz鉅ku, 1 - za ma這, 2 - za du穎
+//	//0 - w porzadku, 1 - za malo, 2 - za duzo
 //	
 //	if (*HodgesValue < 390)
 //	{
@@ -769,7 +798,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 //	*FraminghamValue =  gapQT + 0.154* (1 - RR); 
 //
 //	//interpretacja wyniku ze wzoru Framingham : wynik poprawny (388-432 ms)
-//	//0 - w porz鉅ku, 1 - za ma這, 2 - za du穎
+//	//0 - w porzadku, 1 - za ma這, 2 - za du穎
 //
 //	if (*FraminghamValue < 388)
 //	{
