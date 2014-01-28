@@ -19,6 +19,10 @@ void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vect
 	signals2 = in_signals2;
 	QRS_On = in_QRS_On;
 	QRS_End = in_QRS_End;
+    if(QRS_On[QRS_On.size() - 1] > QRS_End[QRS_End.size() - 1])
+    {
+        QRS_On.erase(QRS_On.begin() + QRS_On.size() - 1);
+    }
 	P_On = in_P_On;
 	samplingFrequency = in_samplingFrequency;
 
