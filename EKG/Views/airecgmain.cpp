@@ -1685,7 +1685,7 @@ void AirEcgMain::stItemSelected(int row, int column)
         return;
 
     if (stIntervalZoomer != NULL)
-        stIntervalZoomer->moveToHPosition(onTime);
+        stIntervalZoomer->moveToHPosition(onTime, true);
 }
 
 void AirEcgMain::nextStAbnormality()
