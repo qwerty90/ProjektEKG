@@ -344,7 +344,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -402,8 +402,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -444,8 +444,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>506</height>
                       </rect>
                      </property>
                     </widget>
@@ -628,7 +628,29 @@
                    <item row="0" column="0">
                     <widget class="QLabel" name="label_47">
                      <property name="text">
-                      <string>Averaging time</string>
+                      <string>Averaging time [s]</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QDoubleSpinBox" name="maTimeSpinBox">
+                     <property name="suffix">
+                      <string/>
+                     </property>
+                     <property name="decimals">
+                      <number>3</number>
+                     </property>
+                     <property name="minimum">
+                      <double>0.001000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>10.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.001000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.500000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -639,20 +661,10 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QSpinBox" name="maTimeSpinBox">
-                     <property name="maximum">
-                      <number>999</number>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="1" column="1">
-                    <widget class="QSpinBox" name="maWindowSpinBox">
-                     <property name="maximum">
-                      <number>999</number>
-                     </property>
-                     <property name="value">
-                      <number>150</number>
+                    <widget class="QLabel" name="windowSizeLabel">
+                     <property name="text">
+                      <string>180</string>
                      </property>
                     </widget>
                    </item>
@@ -755,8 +767,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>407</height>
                   </rect>
                  </property>
                 </widget>
@@ -899,8 +911,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>499</height>
                   </rect>
                  </property>
                 </widget>
@@ -1008,7 +1020,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="hrv_statistical">
                  <attribute name="title">
@@ -1130,7 +1142,7 @@
                      <enum>QTabWidget::East</enum>
                     </property>
                     <property name="currentIndex">
-                     <number>1</number>
+                     <number>0</number>
                     </property>
                     <widget class="QWidget" name="tab_12">
                      <attribute name="title">
@@ -1147,8 +1159,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>964</width>
+                           <height>431</height>
                           </rect>
                          </property>
                         </widget>
@@ -1171,8 +1183,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -1230,273 +1242,6 @@
                   </item>
                  </layout>
                 </widget>
-                <widget class="QWidget" name="hrv_geometrical">
-                 <attribute name="title">
-                  <string>Geometrical Parameters</string>
-                 </attribute>
-                 <layout class="QHBoxLayout" name="horizontalLayout_21">
-                  <item>
-                   <widget class="QTabWidget" name="tabGeo">
-                    <property name="tabPosition">
-                     <enum>QTabWidget::East</enum>
-                    </property>
-                    <property name="currentIndex">
-                     <number>0</number>
-                    </property>
-                    <widget class="QWidget" name="tab_6">
-                     <attribute name="title">
-                      <string>Histogram</string>
-                     </attribute>
-                     <layout class="QVBoxLayout" name="verticalLayout_9">
-                      <item>
-                       <widget class="QScrollArea" name="scrollAreaHistogram">
-                        <property name="widgetResizable">
-                         <bool>true</bool>
-                        </property>
-                        <widget class="QWidget" name="scrollAreaWidgetContents_3">
-                         <property name="geometry">
-                          <rect>
-                           <x>0</x>
-                           <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
-                          </rect>
-                         </property>
-                        </widget>
-                       </widget>
-                      </item>
-                      <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_10">
-                        <item>
-                         <widget class="QLabel" name="triangularIndex">
-                          <property name="text">
-                           <string>Triangular index = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="TINN">
-                          <property name="text">
-                           <string>TINN = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_2">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
-                     </layout>
-                    </widget>
-                    <widget class="QWidget" name="tab_7">
-                     <attribute name="title">
-                      <string>Poincare plot</string>
-                     </attribute>
-                     <layout class="QVBoxLayout" name="verticalLayout_8">
-                      <item>
-                       <widget class="QScrollArea" name="scrollAreaPoincare">
-                        <property name="widgetResizable">
-                         <bool>true</bool>
-                        </property>
-                        <widget class="QWidget" name="scrollAreaWidgetContents_4">
-                         <property name="geometry">
-                          <rect>
-                           <x>0</x>
-                           <y>0</y>
-                           <width>63</width>
-                           <height>16</height>
-                          </rect>
-                         </property>
-                        </widget>
-                       </widget>
-                      </item>
-                      <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_9">
-                        <item>
-                         <widget class="QLabel" name="SD1">
-                          <property name="text">
-                           <string>SD1 = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="SD2">
-                          <property name="text">
-                           <string>SD2 = undefined</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
-                     </layout>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-                <widget class="QWidget" name="hrv_dfa">
-                 <attribute name="title">
-                  <string>DFA Analysis</string>
-                 </attribute>
-                 <layout class="QVBoxLayout" name="verticalLayout">
-                  <item>
-                   <widget class="QFrame" name="tabGeo_2">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_2">
-                     <item>
-                      <layout class="QVBoxLayout" name="verticalLayout_40">
-                       <item>
-                        <widget class="QScrollArea" name="scrollAreaFlu">
-                         <property name="widgetResizable">
-                          <bool>true</bool>
-                         </property>
-                         <widget class="QWidget" name="scrollAreaWidgetContents_10">
-                          <property name="geometry">
-                           <rect>
-                            <x>0</x>
-                            <y>0</y>
-                            <width>43</width>
-                            <height>16</height>
-                           </rect>
-                          </property>
-                         </widget>
-                        </widget>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_15">
-                         <item>
-                          <widget class="QLabel" name="alfa2">
-                           <property name="text">
-                            <string>alfa = 0.0</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="boxes2">
-                           <property name="text">
-                            <string>boxes = 0.0</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_3">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <widget class="QScrollArea" name="scrollAreaTrend">
-                         <property name="widgetResizable">
-                          <bool>true</bool>
-                         </property>
-                         <widget class="QWidget" name="scrollAreaWidgetContents_7">
-                          <property name="geometry">
-                           <rect>
-                            <x>0</x>
-                            <y>0</y>
-                            <width>43</width>
-                            <height>16</height>
-                           </rect>
-                          </property>
-                         </widget>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_22">
-                       <item>
-                        <widget class="QLabel" name="window_min">
-                         <property name="text">
-                          <string>box_min = 0.0</string>
-                         </property>
-                         <property name="textFormat">
-                          <enum>Qt::AutoText</enum>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_14">
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="window_max">
-                         <property name="text">
-                          <string>box_max = 0.0</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_16">
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="window_plot">
-                         <property name="text">
-                          <string>box_plot = 0.0</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_4">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
                </widget>
               </item>
               <item>
@@ -1546,7 +1291,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -1596,7 +1341,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>161</width>
+                            <width>98</width>
                             <height>141</height>
                            </rect>
                           </property>
@@ -1617,7 +1362,7 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>126</width>
+                                <width>98</width>
                                 <height>89</height>
                                </rect>
                               </property>
@@ -1635,7 +1380,7 @@
                                    <rect>
                                     <x>0</x>
                                     <y>0</y>
-                                    <width>89</width>
+                                    <width>98</width>
                                     <height>73</height>
                                    </rect>
                                   </property>
@@ -1643,16 +1388,7 @@
                                    <property name="spacing">
                                     <number>0</number>
                                    </property>
-                                   <property name="leftMargin">
-                                    <number>0</number>
-                                   </property>
-                                   <property name="topMargin">
-                                    <number>0</number>
-                                   </property>
-                                   <property name="rightMargin">
-                                    <number>0</number>
-                                   </property>
-                                   <property name="bottomMargin">
+                                   <property name="margin">
                                     <number>0</number>
                                    </property>
                                    <item>
@@ -1669,8 +1405,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>100</width>
-                                <height>30</height>
+                                <width>98</width>
+                                <height>28</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -1737,16 +1473,7 @@
                           <enum>QFrame::Raised</enum>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="1,1">
-                          <property name="leftMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="topMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="rightMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="bottomMargin">
+                          <property name="margin">
                            <number>0</number>
                           </property>
                           <item>
@@ -2222,260 +1949,6 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="twave">
-             <attribute name="title">
-              <string>T Wave</string>
-             </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout_67">
-              <item>
-               <widget class="QTabWidget" name="tabWidget">
-                <property name="tabPosition">
-                 <enum>QTabWidget::East</enum>
-                </property>
-                <property name="tabShape">
-                 <enum>QTabWidget::Rounded</enum>
-                </property>
-                <property name="currentIndex">
-                 <number>0</number>
-                </property>
-                <widget class="QWidget" name="Twave_tabWidget">
-                 <attribute name="title">
-                  <string>ECG Signal</string>
-                 </attribute>
-                 <layout class="QVBoxLayout" name="verticalLayout_56">
-                  <item>
-                   <widget class="QScrollArea" name="scrollAreaTwave">
-                    <property name="widgetResizable">
-                     <bool>true</bool>
-                    </property>
-                    <widget class="QWidget" name="scrollAreaWidgetContents_5">
-                     <property name="geometry">
-                      <rect>
-                       <x>0</x>
-                       <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
-                      </rect>
-                     </property>
-                    </widget>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_53">
-                    <item>
-                     <widget class="QGroupBox" name="groupBox_6">
-                      <property name="title">
-                       <string/>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_52">
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_49">
-                         <item>
-                          <widget class="QLabel" name="label">
-                           <property name="text">
-                            <string>Result:</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_13">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="twa_result">
-                           <property name="text">
-                            <string>-</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_50">
-                         <item>
-                          <widget class="QLabel" name="label_3">
-                           <property name="text">
-                            <string>Number of detected T wave alternans: </string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_12">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="twa_num">
-                           <property name="text">
-                            <string>0</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_51">
-                         <item>
-                          <widget class="QLabel" name="label_2">
-                           <property name="text">
-                            <string>Highest Valt value:</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_11">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="twa_value">
-                           <property name="text">
-                            <string>0</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QGroupBox" name="groupBox">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>120</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="title">
-                       <string>Mode</string>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_54">
-                       <item>
-                        <widget class="QCheckBox" name="checkBox">
-                         <property name="text">
-                          <string>Moving window</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_15">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_52">
-                    <item>
-                     <widget class="QPushButton" name="pushButton_9">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>100</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="text">
-                       <string>Run T_WAVE_ALT</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_14">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-                <widget class="QWidget" name="tab_9">
-                 <attribute name="title">
-                  <string>Amplitude</string>
-                 </attribute>
-                 <layout class="QVBoxLayout" name="verticalLayout_57">
-                  <item>
-                   <widget class="QScrollArea" name="scrollAreaTwave_2">
-                    <property name="widgetResizable">
-                     <bool>true</bool>
-                    </property>
-                    <widget class="QWidget" name="scrollAreaWidgetContents_6">
-                     <property name="geometry">
-                      <rect>
-                       <x>0</x>
-                       <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
-                      </rect>
-                     </property>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </widget>
-              </item>
-             </layout>
-            </widget>
             <widget class="QWidget" name="hrt">
              <attribute name="title">
               <string>HRT Analysis</string>
@@ -2491,8 +1964,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>451</height>
                   </rect>
                  </property>
                 </widget>
@@ -2664,12 +2137,12 @@
                     </column>
                     <column>
                      <property name="text">
-                      <string>Position </string>
+                      <string>Position</string>
                      </property>
                     </column>
                     <column>
                      <property name="text">
-                      <string>Shape </string>
+                      <string>Shape</string>
                      </property>
                     </column>
                     <column>
@@ -2743,42 +2216,42 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QLineEdit" name="st_interval_detection_width">
-                     <property name="maximumSize">
-                      <size>
-                       <width>25</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::RightToLeft</enum>
-                     </property>
-                     <property name="text">
-                      <string>30</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
+                   <item row="2" column="0">
                     <widget class="QLabel" name="label_13">
                      <property name="text">
                       <string>Smoothing window width</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QLineEdit" name="st_interval_smothing_width">
-                     <property name="maximumSize">
-                      <size>
-                       <width>25</width>
-                       <height>16777215</height>
-                      </size>
+                   <item row="0" column="1">
+                    <widget class="QSpinBox" name="st_interval_detection_width">
+                     <property name="minimum">
+                      <number>1</number>
                      </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::RightToLeft</enum>
+                     <property name="maximum">
+                      <number>9999</number>
                      </property>
-                     <property name="text">
-                      <string>4</string>
+                     <property name="singleStep">
+                      <number>5</number>
+                     </property>
+                     <property name="value">
+                      <number>30</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QSpinBox" name="st_interval_smoothing_width">
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>9999</number>
+                     </property>
+                     <property name="singleStep">
+                      <number>5</number>
+                     </property>
+                     <property name="value">
+                      <number>4</number>
                      </property>
                     </widget>
                    </item>
@@ -2799,15 +2272,21 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="st_interval_morphology">
-                     <property name="maximumSize">
-                      <size>
-                       <width>25</width>
-                       <height>16777215</height>
-                      </size>
+                    <widget class="QDoubleSpinBox" name="st_interval_morphology">
+                     <property name="locale">
+                      <locale language="English" country="UnitedStates"/>
                      </property>
-                     <property name="text">
-                      <string>6</string>
+                     <property name="minimum">
+                      <double>0.000000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>100.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.100000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>6.000000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -2830,36 +2309,42 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QLineEdit" name="st_interval_level_threshold">
-                     <property name="maximumSize">
-                      <size>
-                       <width>50</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>0.15</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
+                   <item row="2" column="0">
                     <widget class="QLabel" name="label_22">
                      <property name="text">
                       <string>Abnormal ST slope threshold</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QLineEdit" name="st_interval_slope_threshold">
-                     <property name="maximumSize">
-                      <size>
-                       <width>50</width>
-                       <height>16777215</height>
-                      </size>
+                   <item row="0" column="1">
+                    <widget class="QDoubleSpinBox" name="st_interval_level_threshold">
+                     <property name="locale">
+                      <locale language="English" country="UnitedStates"/>
                      </property>
-                     <property name="text">
-                      <string>35</string>
+                     <property name="suffix">
+                      <string> mV</string>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.050000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.150000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QDoubleSpinBox" name="st_interval_slope_threshold">
+                     <property name="locale">
+                      <locale language="English" country="UnitedStates"/>
+                     </property>
+                     <property name="suffix">
+                      <string>°</string>
+                     </property>
+                     <property name="maximum">
+                      <double>90.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>35.000000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -2906,7 +2391,6 @@
                </layout>
               </item>
              </layout>
-             <zorder>groupBox_5</zorder>
             </widget>
             <widget class="QWidget" name="vcg_loop">
              <attribute name="title">
@@ -2927,8 +2411,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2944,8 +2428,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2965,8 +2449,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -2982,8 +2466,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>508</width>
-                       <height>228</height>
+                       <width>98</width>
+                       <height>28</height>
                       </rect>
                      </property>
                     </widget>
@@ -3175,8 +2659,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>212</height>
+                   <width>98</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -3211,8 +2695,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>211</height>
+                   <width>98</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -3368,7 +2852,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_9">
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="atrial_fibr">
              <attribute name="title">
@@ -3382,83 +2866,9 @@
                   <item>
                    <widget class="QGroupBox" name="groupBox_14">
                     <property name="title">
-                     <string>GroupBox</string>
+                     <string/>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_6">
-                     <item row="0" column="2">
-                      <widget class="QLabel" name="af_matrix21">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_56">
-                       <property name="text">
-                        <string>AF_MATRIX = </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLabel" name="af_matrix12">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="3">
-                      <widget class="QLabel" name="af_matrix31">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <widget class="QLabel" name="af_matrix22">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="3">
-                      <widget class="QLabel" name="af_matrix32">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="af_matrix13">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="2">
-                      <widget class="QLabel" name="af_matrix23">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="3">
-                      <widget class="QLabel" name="af_matrix33">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="af_matrix11">
-                       <property name="text">
-                        <string>0.0</string>
-                       </property>
-                       <property name="textFormat">
-                        <enum>Qt::AutoText</enum>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                    <layout class="QGridLayout" name="gridLayout_6"/>
                    </widget>
                   </item>
                   <item>
@@ -3549,8 +2959,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>18</width>
-                     <height>16</height>
+                     <width>894</width>
+                     <height>497</height>
                     </rect>
                    </property>
                   </widget>
@@ -3599,8 +3009,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3768,8 +3178,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>232</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3780,7 +3190,7 @@
                 <item>
                  <widget class="QLabel" name="label_20">
                   <property name="text">
-                   <string>ilościowa ocena bezdechu w dziedzinie czasu = </string>
+                   <string>Apnea assessment in the time domain = </string>
                   </property>
                  </widget>
                 </item>
@@ -3816,8 +3226,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>231</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -3828,7 +3238,7 @@
                 <item>
                  <widget class="QLabel" name="label_27">
                   <property name="text">
-                   <string>ilościowa ocena bezdechu w dziedzinie częstotliwości = </string>
+                   <string>Apnea assessment in the frequency domain = </string>
                   </property>
                  </widget>
                 </item>
@@ -3906,6 +3316,13 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="busy_label">
+          <property name="text">
+           <string>Busy</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QProgressBar" name="progressBar">

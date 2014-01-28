@@ -31,13 +31,19 @@ private Q_SLOTS:
     void testDataB105();
     void testDataB112();
 
+    void testNoSamples();
+    void testIncompleteJData();
+    void testIncompleteTEndData();
+    void testIncorrectJPosition();
+
 private:
     EcgStData data;
     EcgStAnalyzer analyzer;
 
     void runTest(const QString &fileName, int num,
                  int stOn[], int stEnd[],
-                 EcgStPosition pos[], EcgStShape shape[]);
+                 EcgStPosition pos[], EcgStShape shape[],
+                 int remJ = -1, int remT = -1);
 
     bool loadTestData(const QString &fileName);
 
@@ -57,7 +63,7 @@ TestEcgStInterval::TestEcgStInterval()
     analyzer.setSmoothSize(4);
     analyzer.setDetectionSize(30);
     analyzer.setMorphologyCoeff(6.0);
-    analyzer.setAlgorithm(ST_LINEAR);
+    analyzer.setAlgorithm(EcgStAnalyzer::LINEAR);
     analyzer.setLevelThreshold(0.15);
     analyzer.setSlopeThreshold(35.0);
 }
@@ -160,17 +166,100 @@ void TestEcgStInterval::testDataB112()
 
 //------------------------------------------------------------
 
+void TestEcgStInterval::testNoSamples()
+{
+    QCOMPARE(analyzer.analyze(QVector<double>(),
+                              QVector<EcgSampleIter>(),
+                              QVector<EcgSampleIter>(),
+                              QVector<EcgSampleIter>(), 360.0), false);
+
+    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::NO_SAMPLES_PROVIDED);
+}
+
+//------------------------------------------------------------
+
+void TestEcgStInterval::testIncompleteJData()
+{
+    int stOn[] = { 95, 387, 677, 1244 };
+    int stEnd[] = { 184, 445, 761, 1308 };
+    EcgStPosition pos[] = {
+        ST_POS_DEPRESSION,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL
+    };
+    EcgStShape shape[] = {
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL
+    };
+
+    runTest("data/b100.m", 4, stOn, stEnd, pos, shape, 3);
+}
+
+//------------------------------------------------------------
+
+void TestEcgStInterval::testIncompleteTEndData()
+{
+    int stOn[] = { 95, 677, 963, 1244 };
+    int stEnd[] = { 184, 761, 1047, 1308 };
+    EcgStPosition pos[] = {
+        ST_POS_DEPRESSION,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL
+    };
+    EcgStShape shape[] = {
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL
+    };
+
+    runTest("data/b100.m", 4, stOn, stEnd, pos, shape, -1, 1);
+}
+
+//------------------------------------------------------------
+
+void TestEcgStInterval::testIncorrectJPosition()
+{
+    int stOn[] = { 95, 387, 963, 1244 };
+    int stEnd[] = { 184, 445, 1047, 1308 };
+    EcgStPosition pos[] = {
+        ST_POS_DEPRESSION,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL,
+        ST_POS_NORMAL
+    };
+    EcgStShape shape[] = {
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL,
+        ST_SHAPE_HORIZONTAL
+    };
+
+    runTest("data/b100_err.m", 4, stOn, stEnd, pos, shape);
+}
+
+//------------------------------------------------------------
+
 void TestEcgStInterval::runTest(const QString &fileName, int num,
                                 int stOn[], int stEnd[],
-                                EcgStPosition pos[], EcgStShape shape[])
+                                EcgStPosition pos[], EcgStShape shape[],
+                                int remJ, int remT)
 {
     QVERIFY2(loadTestData(fileName), "Failed to load test data");
 
-    QList<EcgStDescriptor> res = analyzer.analyze(data.ecgSamples,
-                                                  data.rData,
-                                                  data.jData,
-                                                  data.tEndData,
-                                                  360.0);
+    if (remJ > 0)
+        data.jData.remove(remJ);
+    if (remT > 0)
+        data.rData.remove(remT);
+
+    QVERIFY(analyzer.analyze(data.ecgSamples, data.rData, data.jData, data.tEndData, 360.0));
+    QCOMPARE(analyzer.getLastError(), EcgStAnalyzer::NO_ERROR);
+
+    QList<EcgStDescriptor> res = analyzer.getResult();
     QCOMPARE(res.size(), num);
 
     for (int i = 0; i < num; i++)
