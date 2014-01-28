@@ -1637,7 +1637,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
 
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
-    QwtPlot *plotSleepApnea = plotSleep_Apnea(*((data->SleepApnea_plot)),data->info->frequencyValue );
+    QwtPlot *plotSleepApnea = plotSleep_Apnea(*((data->ecg_baselined)),data->info->frequencyValue );
     ui->sleepArea1->setWidget(plotSleepApnea);
     ui->sleepArea1->show();
 
@@ -1952,11 +1952,8 @@ void AirEcgMain::on_comboBox_currentIndexChanged(int index)
 
     if(index == 0)
     {
-        /*emit qrsClustererChanged(KMeansClusterer);
-        emit qrsMaxIterationsChanged(ui->qrsSetKMaxIterSpinBox->value());
-        emit qrsParallelExecutionChanged(ui->qrsSetKMeansParallelCheckBox->isEnabled());
-        emit qrsKClustersNumberChanged(ui->qrsSetKClusterNumSpinBox->value());
-        */
+        emit qrsClustererChanged(KMeansClusterer);
+        emit qrsMaxIterationsChanged(ui->qrsSetKMaxIterSpinBox->value());        
     }
     else
     {
@@ -2001,7 +1998,7 @@ void AirEcgMain::on_qrsSetKMaxIterSpinBox_valueChanged(int arg1)
 {
     emit qrsMaxIterationsChanged(arg1);
 }
-
+/*
 void AirEcgMain::on_qrsSetKClusterNumSpinBox_valueChanged(int arg1)
 {
     emit qrsKClustersNumberChanged(arg1);
@@ -2011,7 +2008,7 @@ void AirEcgMain::on_qrsSetKMeansParallelCheckBox_toggled(bool checked)
 {
     emit qrsParallelExecutionChanged(checked);
 }
-
+*/
 void AirEcgMain::on_radioButton_clicked()
 {
     emit this->switchSignal(0);

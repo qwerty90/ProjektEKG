@@ -180,11 +180,11 @@ private slots:
     void on_qrsSettingsGMeansParallelCheckBox_toggled(bool checked);
 
     void on_qrsSetKMaxIterSpinBox_valueChanged(int arg1);
-
+/*
     void on_qrsSetKClusterNumSpinBox_valueChanged(int arg1);
 
     void on_qrsSetKMeansParallelCheckBox_toggled(bool checked);
-
+*/
     void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
