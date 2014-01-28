@@ -344,7 +344,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -1964,8 +1964,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>451</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -2089,7 +2089,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -2434,8 +2434,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
@@ -2451,8 +2451,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
@@ -2472,8 +2472,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
@@ -2489,8 +2489,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>228</height>
                       </rect>
                      </property>
                     </widget>
@@ -3434,9 +3434,16 @@
     <addaction name="separator"/>
     <addaction name="actionRUN_ALL"/>
    </widget>
+   <widget class="QMenu" name="menuReset">
+    <property name="title">
+     <string>Reset</string>
+    </property>
+    <addaction name="actionData_reset"/>
+   </widget>
    <addaction name="menuMenu"/>
    <addaction name="menuRUN"/>
    <addaction name="menuAbout"/>
+   <addaction name="menuReset"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionO_programie">
@@ -3497,6 +3504,11 @@
   <action name="actionRUN_ALL">
    <property name="text">
     <string>RUN ALL</string>
+   </property>
+  </action>
+  <action name="actionData_reset">
+   <property name="text">
+    <string>Data reset</string>
    </property>
   </action>
  </widget>
