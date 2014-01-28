@@ -1,2 +1,56 @@
 \section{Moduł SLEEP\_APNEA}
 \subsection{Badania literaturowe}
+Bezdech senny, okresowe zaprzestanie oddychania podczas snu, jest często nierozpoznawalną wadą dróg oddechowych występującą u milionów ludzi na całym świecie, powodującą zwiększenie zachorowalności oraz śmiertelności. Za bezdech senny uważa się przerwy w wentylacji płuc dłuższe niż 10 sekund lub spłycenie oddechu poniżej 50\%.
+
+Obecna technologia wykrywania bezdechu sennego wymaga monitorowania pacjenta podczas snu w specjalnie wyposażonych laboratoriach. Ze względu na koszty i niedogodności związane z badaniem polisomnograficznym,  dużo tańszym i łatwiejszym sposobem jest wdrażanie technik wykrywania dolegliwości za pomocą algorytmów specjalnych algorytmów. W ostatnich kilku latach, niektóre badania skupiały się na rozwijaniu automatycznych narzędzi do detekcji bezdechu sennego, na podstawie analizy sygnału EKG z różnymi technikami przetwarzania sygnału i rozpoznawania dolegliwości [1]. Niektóre badania stosowały funkcje wyodrębniania z sygnału EKG informacji jak HRV (zmienność rytmu zatokowego), amplitudy zespołu QRS, obszary pików R. Uzyskane wyniki pozwoliły stworzyć różne stopnie klasyfikacji między osobami zdrowymi, a cierpiącymi na bezdech senny.  Spośród różnych metod klasyfikacji można wyróżnić transformatę Fouriera, transformatę Hilberta oraz analizę czasowo-częstotliwościową. Bardzo popularną metodą jest wykorzystywanie sieci neuronowych[2], klasyfikacja na podstawie sąsiedztw – algorytm KNN (algorytm k-najbliższych sąsiadów), klasyfikacja przy pomocy SVM (maszyna wektorów nośnych) oraz Naive Bayes(naiwny klasyfikator bayesowski)[3].
+
+Algorytmy wykorzystujące sieci neuronowe oraz metody klasyfikacji opisane wyżej, cechują się dużym skomplikowaniem. By stworzyć poprawne kryterium klasyfikacji potrzebna jest duża ilość cech, które mogą wskazać czy badana osoba cierpi na bezdech senny czy nie. Implementacja tak złożonego i rozbudowanego algorytmu pochłonęłaby zbyt dużo czasu. Ze względów czasowych oraz technicznych zdecydowano się skorzystać z algorytmu opisanego w dokumencie [4].  Metoda ta cechuje się stosunkowo łatwą i zrozumiałą implementacją. Dodatkowo osiąga zadowalające efekty - twórcy publikacji uzyskali około 90\% skuteczności w wykrywaniu dolegliwości.
+Autorzy metody zauważyli, że bezdech senny zmienia dynamikę pracy serca. U ludzi chorych, w okresach długotrwałego bezdechu sennego, tętno zwykle pokazuje cykliczne wzrosty i spadki związane z fazą bezdechu i wznowienia oddychania. Cykle, które mają tendencje do drgań przy częstotliwości między 0,01 i 0,04 Hz, są charakterystyczne dla osób cierpiących na bezdech senny i nie występują u zdrowych pacjentów.
+
+\subsection{Koncepcja proponowanego rozwiązania}
+Na podstawie algorytmu opisanego w dokumencie [4] powstała koncepcja rozwiązania problemu wykrycia bezdechu senngo:
+\begin{enumerate}
+ \item \textbf{Obliczenie interwałów RR}
+ 
+ Danymi wejściowymi, które były podstawą rozważań, były piki typu R. By przejść do kolejnego etapu wyznaczania bezdechu sennego należało wyznaczyć tzw. interwały RR, a więc odległości pomiędzy kolejnymi pikami R.
+ \item \textbf{Zastosowanie filtru uśredniającego interwały RR}
+ 
+ Wyznaczony sygnał okazał się mocno zaszumiony. Dalsza praca na nieczytelnym, zaszumionym sygnale wiązałaby się ze stopniowym narastaniem błędów w każdym kolejnym kroku algorytmu. By uniknąć tego niepożądanego efektu zastosowany został filtr uśredniający.
+ \item \textbf{Przeprókowanie sygnału na częstotliwość 1Hz}
+ 
+ Początkowo, uzyskany sygnał był próbkowany nierównomiernie. Uniemożliwiało to dalsze poprawne rozważania m.in. zadowalające wyznaczenie transformaty Hilberta, a w konsekwencji błedne działanie modułu. Dlatego sygnał został przepróbkowany na częstotliwość jednego hertza, tak by próbki występowały w odstępach sekundowych.
+ \item \textbf{Filtracja dolno i górno-przepustowa}
+ 
+ W celu eliminacji nagłych, nienaturalnie dużych skoków amplitudy oraz wstępnej normalizacji przepróbkowanego sygnału, dokonano filtracji dolno i górno przpustowej. Sygnał po wykonaniu wszystkich poprzednich kroków był gotowy do zastosowania transformaty Hilberta.
+ \item \textbf{Zastosowanie transformaty Hilberta oraz wyznaczenie sygnału amplitudowego i częstotliwościowego}
+ 
+ Sygnał poddany został transformacie Hilberta, którą dla funkcji g(t) przedstawia równanie:
+ \begin{equation}
+ \widehat{g}(t) = \frac{1}{\pi}\int\limits_{-\infty}^{\infty} \frac{g(\tau)}{t-\tau} d\tau
+ \end{equation}
+ Jest to splot funkcji g(t) z funkcją:
+ \begin{equation}
+ h(t) = \frac{1}{\pi t}
+ \end{equation}
+ 
+ W każdym punkcie sygnału wyznaczane jest widmo amplitudowa i częstotliwościowe Hiberta, z których to bezpośrednio wyznaczone zostanie występowanie bezdechu sennego.
+ \item \textbf{Filtracja uśredniająca oraz normalizacja sygnału amplitudowego}
+ 
+ By uniknąć zaszumień i błędnych wyników ponownie dokonano filtracji uśredniającej. Natomiast amplituda została dodatkowo poddana operacji normalizacji. Operacja ta została zastosowana tak, by średnia wartość amblitudy w przedziale czasu równa była 1.
+ \item \textbf{Obliczenie minimalnej amplitudy Hilberta oraz maksymalnej częstotliwości Hilberta}
+ 
+ Obliczenie minimalnej amplitudy Hilberta, która była wskaźnikiem na podstawie którego stwierdzano występowanie dolegliwości wyliczono z wzoru:
+ \begin{equation}
+ ampl = a+\frac{b(mid +1)}{2}
+ \end{equation}
+  gdzie: a=0.3, b=1.85, mid - środkowa wartość między maksymalną a minimalną amplitudą.
+  
+ Obliczenie minimalnej częstotliwości Hilberta, która również była wskaźnikiem na podstawie którego stwierdzano występowanie bezdechu senngo:
+ \begin{equation}
+ freq = 0.4mid
+ \end{equation}
+  gdzie: mid - środkowa wartość między maksymalną a minimalną częstotliwością.
+ \item \textbf{Oznaczenie próbek, w których wystąpił bezdech senny}
+ Bezdech senny był wyznaczany na podstawie amplitudy i częstotliwści Hilberta. Przekroczenie przez amplitudę,wyznaczonej w poprzednim punkcie, minimalnej amplitudy Hilberta oznaczało występowanie bezdechu sennego. Podobnie z częstotliwoscią. W miejscach gdzie spadała poniżej maksymalnej częstotliwości Hilberta występował bezdech senny.
+ 
+\end{enumerate}
