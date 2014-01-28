@@ -1134,11 +1134,11 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
 
     for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
-        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgSignal.begin());
+        P_onsetData.append(ecgFrames.PWaveStart->at(i)-ecgSignal.begin());
         P_onsetDataX[i]=P_onsetData[i]*dt*1000;
         P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
 
-        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgSignal.begin());
+        P_endData.append(ecgFrames.PWaveEnd->at(i)-ecgSignal.begin());
         P_endDataX[i]=P_endData[i]*dt*1000;
         P_endDataY[i]=ecgSignal[P_endData[i]];
 
