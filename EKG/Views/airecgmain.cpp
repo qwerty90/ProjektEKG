@@ -1607,17 +1607,17 @@ void AirEcgMain::drawStInterval(EcgData *data)
         newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 2, newItem);
 
-        newItem = new QTableWidgetItem(QString::number(desc.offset, 'g', 3));
+        newItem = new QTableWidgetItem(QString::number(desc.offset, 'f', 3));
         newItem->setBackgroundColor(bgColor);
         newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 3, newItem);
 
-        newItem = new QTableWidgetItem(QString::number(desc.slope1, 'g', 2));
+        newItem = new QTableWidgetItem(QString::number(desc.slope1, 'f', 2));
         newItem->setBackgroundColor(bgColor);
         newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 4, newItem);
 
-        newItem = new QTableWidgetItem(QString::number(desc.slope2, 'g', 2));
+        newItem = new QTableWidgetItem(QString::number(desc.slope2, 'f', 2));
         newItem->setBackgroundColor(bgColor);
         newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 5, newItem);
@@ -1654,10 +1654,10 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stEndPoints->setSamples(stEnd);
     stEndPoints->attach(stIntervalPlot);
 
-    double percentage = static_cast<double>(abnormalNum) / num;
+    double percentage = static_cast<double>(abnormalNum) / num * 100.0;
 
     ui->stAbnormalNum->setText(QString::number(abnormalNum));
-    ui->stPercentage->setText(QString("%1%").arg(percentage, 0, 'g', 2));
+    ui->stPercentage->setText(QString("%1%").arg(percentage, 0, 'f', 2));
 }
 
 void AirEcgMain::initStIntervalGui()
