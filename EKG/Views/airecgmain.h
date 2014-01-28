@@ -255,6 +255,7 @@ private slots:
     void on_pushButton_11_clicked();
 
     void initEcgBaselineGui();
+    void initStIntervalGui();
 
     void on_pushButton_16_clicked();
 

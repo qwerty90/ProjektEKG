@@ -70,6 +70,7 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->progressBar->setVisible(false);
     ui->busy_label->setVisible(false);
     initEcgBaselineGui();
+    initStIntervalGui();
 }
 
 AirEcgMain::~AirEcgMain()
@@ -1572,20 +1573,18 @@ void AirEcgMain::drawStInterval(EcgData *data)
         QString time = QString("%1:%2:%3").arg(mm, 2, 10, QChar('0')).arg(ss, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
 
         // create list item
-        QTableWidgetItem *newItem = new QTableWidgetItem(QString::number(i + 1));
-        ui->stIntervalList->setItem(i, 0 , newItem);
-        newItem = new QTableWidgetItem(time);
-        ui->stIntervalList->setItem(i, 1, newItem);
+        QTableWidgetItem *newItem = new QTableWidgetItem(time);
+        ui->stIntervalList->setItem(i, 0, newItem);
         newItem = new QTableWidgetItem(position);
-        ui->stIntervalList->setItem(i, 2, newItem);
+        ui->stIntervalList->setItem(i, 1, newItem);
         newItem = new QTableWidgetItem(shape);
-        ui->stIntervalList->setItem(i, 3, newItem);
+        ui->stIntervalList->setItem(i, 2, newItem);
         newItem = new QTableWidgetItem(QString::number(desc.offset));
-        ui->stIntervalList->setItem(i, 4, newItem);
+        ui->stIntervalList->setItem(i, 3, newItem);
         newItem = new QTableWidgetItem(QString::number(desc.slope1));
-        ui->stIntervalList->setItem(i, 5, newItem);
+        ui->stIntervalList->setItem(i, 4, newItem);
         newItem = new QTableWidgetItem(QString::number(desc.slope2));
-        ui->stIntervalList->setItem(i, 6, newItem);
+        ui->stIntervalList->setItem(i, 5, newItem);
     }
 
     // draw STon points
@@ -2162,6 +2161,15 @@ void AirEcgMain::initEcgBaselineGui()
 
     ecgBase_WindowSizeChanged("150");
     on_butterworthRadioButton_clicked();
+}
+
+void AirEcgMain::initStIntervalGui()
+{
+    const int INITIAL_SIZE = 250;
+    QList<int> sizes;
+    sizes.append(INITIAL_SIZE);
+    sizes.append(ui->stSplitter->width() - INITIAL_SIZE);
+    ui->stSplitter->setSizes(sizes);
 }
 
 void AirEcgMain::on_pushButton_16_clicked()
