@@ -66,6 +66,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(runSleepApnea()) ,this, SLOT (runSleepApnea()));
     this->connect(view, SIGNAL(runQtDisp())     ,this, SLOT (runQtDisp()));
     this->connect(view, SIGNAL(runHRT())     ,this, SLOT (runHRT()));
+    this->connect(view, SIGNAL(runQrsClass())     ,this, SLOT (runQrsClass()));
     this->connect(view, SIGNAL(run()), this, SLOT(run()));
 
     this->connect(this, SIGNAL(EcgBaseline_done(EcgData*)),view, SLOT(drawEcgBaseline(EcgData*)));//example
@@ -547,7 +548,6 @@ void AppController::runQrsClass()
     }
 
     QRSClassModule QrsClassifier;
-    //QrsClassifier.setSettings(this->entity->settings->qrsClassSettings);
 
     QrsClassifier.setWaves(this->entity->Waves->QRS_onset, this->entity->Waves->QRS_end);
     QrsClassifier.setEGCBaseline(this->entity->ecg_baselined);

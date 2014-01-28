@@ -37,7 +37,7 @@ class AirEcgMain : public QMainWindow
 
 
     void resetQrsToolbox(EcgData* data);
-    //void populareQRSClassBox(QRSClass currentClass, int type);
+    void populareQRSClassBox(QRSClass currentClass, int type);
 public:
 
     explicit AirEcgMain(QWidget *parent = 0);
@@ -103,7 +103,7 @@ signals:
     void runHRT();
 
     void qrsClassChanged(int index, int type);
-    //void qrsClustererChanged(ClustererType type);
+    void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
     void qrsParallelExecutionChanged(bool flag);
     void qrsGMinClustersChanged(int minClusters);
@@ -127,7 +127,7 @@ signals:
 public slots:
     void receivePatientData(EcgData *data);
 
-    //void receiveQRSData(QRSClass currClass, int type);
+    void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
 
     //modules recieve

@@ -1678,7 +1678,7 @@ void AirEcgMain::drawVcgLoop(EcgData* data)
 
 void AirEcgMain::drawQrsClass(EcgData *data)
 {
-    //this->resetQrsToolbox(data);
+    this->resetQrsToolbox(data);
 }
 
 void AirEcgMain::drawHrt(EcgData *data)
@@ -1714,7 +1714,7 @@ void AirEcgMain::busy(bool state)
     ui->busy_label->setVisible(state);
 }
 
-/*void AirEcgMain::resetQrsToolbox(EcgData *data)
+void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
     ui->stackedWidget->setCurrentIndex(0);
@@ -1744,9 +1744,9 @@ void AirEcgMain::busy(bool state)
         listView->setMinimumHeight(100);
         ui->QRSClassesToolBox->addItem(listView,labelText);
     }
-}*/
+}
 
-/*void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
+void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
 {
     QVector<double> xAxis;
     QVector<double> qrsSegment = *(currClass.representative);
@@ -1852,9 +1852,9 @@ void AirEcgMain::busy(bool state)
     this->qrsClassPlot->setAxisScale( QwtPlot::xBottom , xMin*this->tScale, xMax*this->tScale);
 
     this->populareQRSClassBox(currClass, type);
-}*/
+}
 
-/*void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
+void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
 {
     QGridLayout* layout;
 
@@ -1892,7 +1892,7 @@ void AirEcgMain::busy(bool state)
         layout->addWidget(label,3 + i,0,1,1);
         layout->addWidget(label2,3 + i,1,1,1);
     }
-}*/
+}
 
 
 
