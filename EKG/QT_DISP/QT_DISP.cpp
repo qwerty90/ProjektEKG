@@ -108,7 +108,7 @@ Evaluation QT_DISP::returnEvaluations(int number)
 	return evaluations[number];
 }
 
-void QT_DISP::setOutput(vector <Evaluation> out_evaluations, vector <double> T_End)
+void QT_DISP::setOutput(vector <Evaluation> &out_evaluations, vector <double> &T_End)
 {
 
 	//out_evaluations = evaluations;
@@ -121,7 +121,7 @@ void QT_DISP::Run()
 {
         for(int j = 0; j < heartBeats; ++j)
         {			
-			cout << j << endl;
+            //cout << j << endl;
             int iQRS_On = QRS_On[j] - QRS_On[j];
 			int	iQRS_End = QRS_End[j] - QRS_On[j];
 			int	iP_On = P_On[j] - QRS_On[j];	
@@ -158,7 +158,7 @@ void QT_DISP::Run()
 			T_EndP[j]=CalculateTendParabol(x, y, highestvelocity, iT_Peak, iP_On);
 			T_EndT[j]=CalculateTendTangent(x, y, highestvelocity, iT_Peak, iP_On);
 
-			//i obliczenie d³ugoœci odcinka QT
+            //i obliczenie dlugosci odcinka QT
 			CalculateQT(x->at(0), j);
 
 			//i ocena tego odcinka
@@ -395,7 +395,7 @@ int QT_DISP::EvaluateBazzet(double gapQT, double RR)
 	double BazzetValue =  gapQT/sqrt(RR);
 
 	//interpretacja wyniku ze wzoru Bazzeta : wynik poprawny (405-452 ms)
-	//0 - w porz¹dku, 1 - za ma³o, 2 - za du¿o
+    //0 - w porzadku, 1 - za malo, 2 - za duzo
 	
 	int BazzetState = 0;
 
@@ -416,7 +416,7 @@ int QT_DISP::EvaluateFrideric(double gapQT, double RR)
 {
 	double FridericValue =  gapQT/pow(RR, 1/3);
 	//interpretacja wyniku ze wzoru Friderica : wynik poprawny (386-432 ms)
-	//0 - w porz¹dku, 1 - za ma³o, 2 - za du¿o
+    //0 - w porzadku, 1 - za ma³o, 2 - za du¿o
 
 	int FridericState = 0;
 
@@ -440,7 +440,7 @@ int QT_DISP::EvaluateHodges(double gapQT, double heartAction)
 	double HodgesValue =  gapQT + 1.75 * (heartAction - 60); 
 
 	//interpretacja wyniku ze wzoru Hodges : wynik poprawny (390-432 ms)
-	//0 - w porz¹dku, 1 - za ma³o, 2 - za du¿o
+    //0 - w porzadku, 1 - za ma³o, 2 - za duzo
 	
 	int HodgesState = 0;
 
@@ -462,7 +462,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 	double FraminghamValue =  gapQT + 0.154* (1 - RR); 
 
 	//interpretacja wyniku ze wzoru Framingham : wynik poprawny (388-432 ms)
-	//0 - w porz¹dku, 1 - za ma³o, 2 - za du¿o
+    //0 - w porzadku, 1 - za ma³o, 2 - za duzo
 
 	int FraminghamState = 0;
 
@@ -778,7 +778,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 //	*HodgesValue =  gapQT + 1.75 * (heartAction - 60); 
 //
 //	//interpretacja wyniku ze wzoru Hodges : wynik poprawny (390-432 ms)
-//	//0 - w porz¹dku, 1 - za ma³o, 2 - za du¿o
+//	//0 - w porzadku, 1 - za malo, 2 - za duzo
 //	
 //	if (*HodgesValue < 390)
 //	{
@@ -794,7 +794,7 @@ int QT_DISP::EvaluateFramingham(double gapQT, double RR)
 //	*FraminghamValue =  gapQT + 0.154* (1 - RR); 
 //
 //	//interpretacja wyniku ze wzoru Framingham : wynik poprawny (388-432 ms)
-//	//0 - w porz¹dku, 1 - za ma³o, 2 - za du¿o
+//	//0 - w porzadku, 1 - za ma³o, 2 - za du¿o
 //
 //	if (*FraminghamValue < 388)
 //	{
