@@ -41,8 +41,8 @@ class QRSClassModule {
     //ClustererType clusterer;
     QString errMsg;
     QVector<double> *ecgBaselined;
-    QVector<const double> *waves_onset;
-    QVector<const double> *waves_end;
+    QVector<QVector<double>::const_iterator> *waves_onset;
+    QVector<QVector<double>::const_iterator> *waves_end;
     QList<int> *artifactsList;
     bool runParallel;
     void setDefaultConfiguration();
@@ -50,7 +50,7 @@ public:
     QRSClassModule();
     void setClusterer(ClustererType clustererType);
     void setEGCBaseline(QVector<double> *ecg);
-    void setWaves(QVector<const double*>*&, QVector<const double*>*&);
+    void setWaves(QVector<QVector<double>::const_iterator> *waves_onset, QVector<QVector<double>::const_iterator> *waves_end);
     bool setSettings(QRSClassSettings settings);
     bool process();
     QVector<QRSClass>* getClasses();
