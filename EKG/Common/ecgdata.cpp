@@ -78,12 +78,12 @@ QVector<double>* EcgData::GetCurrentSignal()
 {
     if(this->settings->signalIndex == 0)
     {
-        QLOG_INFO() << "Primary signal will be processed.";
+        QLOG_INFO() << "MVC/ "<< this->info->primaryName << " signal will be processed.";
         return this->primary;
     }
     else
     {
-        QLOG_INFO() << "Secondary signal will be processed.";
+        QLOG_INFO() << "MVC/ "<< this->info->secondaryName << " signal will be processed.";
         return this->secondary;
     }
 }

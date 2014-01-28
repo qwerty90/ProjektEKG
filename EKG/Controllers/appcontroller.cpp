@@ -39,7 +39,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(switchEcgBaseline(int)), this, SLOT(switchEcgBaseline(int)));
     this->connect(view, SIGNAL(switchRPeaks(unsigned char)), this, SLOT(switchRPeaks(unsigned char)));
     this->connect(view, SIGNAL(switchWaves_p_onset(bool)), this, SLOT(switchWaves_p_onset( bool)));
-    this->connect(view, SIGNAL(switchTWA(unsigned char)), this, SLOT(switchTWA(unsigned char)));
+   // this->connect(view, SIGNAL(switchTWA(unsigned char)), this, SLOT(switchTWA(unsigned char)));
 
     this->connect(view, SIGNAL(qrsClassChanged(int,int)),this,SLOT(sendQRSData(int,int)));
     this->connect(this, SIGNAL(sendQRSData(QRSClass,int)),view,SLOT(receiveQRSData(QRSClass,int)));
@@ -202,25 +202,13 @@ void AppController::ResetModules()
         this->entity->Rpeaks_uint.clear();
         QLOG_INFO() << "MVC/ Rpeaks uint removed.";
     }
-    if (this->entity->fft_x != NULL)
-    {
-        this->entity->fft_x->clear();
-        this->entity->fft_x=NULL;
-        QLOG_INFO() <<"MVC/ HRV1-x removed.";
-    }
-    if (this->entity->fft_y != NULL)
-    {
-        this->entity->fft_y->clear();
-        this->entity->fft_y=NULL;
-        QLOG_INFO() <<"MVC/ HRV1-y removed.";
-    }
     if (this->entity->hrt_tachogram!=NULL)
     {
         this->entity->hrt_tachogram->clear();
         QLOG_INFO() <<"MVC/ HRT removed.";
     }
 
-
+    deleteHRV1();
     deleteWaves();
     deleteApnea();
 
@@ -291,18 +279,7 @@ void AppController::runEcgBaseline()
     }            
 
     QLOG_INFO() << "Ecg baseline done.";
-    double min=0;
-    double max=0;
-    for (int i=0; i<this->entity->ecg_baselined->size();i++)
-    {
-        if (this->entity->ecg_baselined->at(i)<min)
-            min = this->entity->ecg_baselined->at(i);
 
-        if (this->entity->ecg_baselined->at(i)>max)
-            max = this->entity->ecg_baselined->at(i);
-    }
-
-    QLOG_TRACE() << "MVC/ min/max values :" <<min<<"//"<<max;
     emit EcgBaseline_done(this->entity);
     emit busy(false);
     // runVcgLoop(); //tam jest bezwzgledna sciezka - nie odpali sie wam!
@@ -314,26 +291,15 @@ void AppController::runHRV1()
     QLOG_INFO() << "HRV1 started.";
     ifRpeaksExists();
 
-    if (this->entity->fft_x != NULL)
+    if ( (this->entity->fft_x != NULL)
+         &(this->entity->fft_y != NULL)
+         &(this->entity->RR_x != NULL)
+         &(this->entity->RR_y != NULL) )
     {
-        this->entity->fft_x->clear();
-        this->entity->fft_x=NULL;
+        QLOG_INFO() << "MVC/ HRV1 already exists.";
+        return;
     }
-    if (this->entity->fft_y != NULL)
-    {
-        this->entity->fft_y->clear();
-        this->entity->fft_y=NULL;
-    }
-    if (this->entity->RR_x != NULL)
-    {
-        this->entity->RR_x->clear();
-        this->entity->RR_x=NULL;
-    }
-    if (this->entity->RR_y != NULL)
-    {
-        this->entity->RR_y->clear();
-        this->entity->RR_y=NULL;
-    }
+
 
     QVector<int> *wektor = new QVector<int>(this->entity->Rpeaks_uint.size());
 
@@ -988,6 +954,34 @@ void AppController::deleteApnea()
         (*this->entity->SleepApnea_wykresy)[1].clear();
         (*this->entity->SleepApnea_wykresy)[2].clear();
         QLOG_INFO() << "MVC/ Sleep Apnea deleted";
+    }
+}
+
+void AppController::deleteHRV1(void)
+{
+    if (this->entity->fft_x != NULL)
+    {
+        this->entity->fft_x->clear();
+        this->entity->fft_x=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-x removed.";
+    }
+    if (this->entity->fft_y != NULL)
+    {
+        this->entity->fft_y->clear();
+        this->entity->fft_y=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-y removed.";
+    }
+    if (this->entity->RR_x != NULL)
+    {
+        this->entity->RR_x->clear();
+        this->entity->RR_x=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-RR_x removed.";
+    }
+    if (this->entity->RR_x != NULL)
+    {
+        this->entity->RR_x->clear();
+        this->entity->RR_x=NULL;
+        QLOG_INFO() <<"MVC/ HRV1-RR_y removed.";
     }
 }
 
