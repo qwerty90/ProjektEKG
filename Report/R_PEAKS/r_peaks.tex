@@ -24,15 +24,15 @@ W trakcie realizacji modułu R\_PEAKS zdecydowano się na implementację trzech 
 \end{itemize}
 \subsubsection{Algorytm Pan - Tompkins}
 
-Algorytm ten można podzielić na dwa etapy. Pierwszym jest odpowiednie przygotowanie sygnału poprzez przefiltrowanie go oraz późniejsze jego uśrednienie. Drugim etapem jest znajdowanie załamków R we wcześniej przygotowanym sygnale. Na rysunku nr 2 przedstawiono schemat blokowy pierwszego etapu algorytmu.
+Algorytm ten można podzielić na dwa etapy. Pierwszym jest odpowiednie przygotowanie sygnału poprzez przefiltrowanie go oraz późniejsze jego uśrednienie. Drugim etapem jest znajdowanie załamków R we wcześniej przygotowanym sygnale. Na rysunku ~\ref{fig:RPPTA} przedstawiono schemat blokowy pierwszego etapu algorytmu.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{R_PEAKS/img/pan_tompkins_alg}
 \label{fig:RPPTA}
-\caption{Kolejne etapy algorytmu Pan - Tompkins}
+\caption{Kolejne etapy algorytmu Pan - Tompkins przygotowujące sygnał do detekcji załamków R}
 \end{figure}
-Jako, że moduł R\_PEAKS otrzymuje już przefiltrowany sygnał od innego modułu, analiza poszczególnych faz algorytmu zacznie się od fazy różniczkowania.
 \begin{enumerate}[I.]
+\item Przepuszczenie sygnału przez filtry dolno i górnoprzepustowy.
 \item Różniczkowanie
 
 Celem różniczkowania sygnału jest wytłumienie komponentów niskoczęstotliwościowych oraz wzmocnienie komponentów wysokoczęstotliwościowych charakterystycznych dla zespołów QRS. W tej fazie skorzystano z różniczkowania pięciopunktowego opisanego wzorem:
@@ -55,29 +55,50 @@ Gdzie N to szerokość okna, którą należy odpowiednio dobrać w zależności 
 \item Progowanie i detekcja załamków R
 
 W trakcie pracy algorytmu odnajdywane są kolejne maksima lokalne, którą mogą być oznaczone jako załamek R lub jako szum. Wykorzystywane są przy tym dwa progi: THRESHOLD1 i THRESHOLD2. Są one na bieżąco aktualizowane na podstawie estymaty amplitudy załamków R (SPK) i szumu (NPK). Dodatkowo wykorzystywana jest technika searchback z parametrem RRMISSEDLIMIT, który wyznaczany jest na podstawie różnic między kolejnymi załamkami R. Poniżej przedstawiono reguły detekcji załamków R:
-\begin{itemize}
-\item Jeżeli nowy załamek R wykryto w czasie maksymalnie 200 ms od ostatniego załamka R i amplituda nowego załamka jest mniejsza od poprzedniego wykrytego to ten załamek jest odrzucany.
-\item Jeżeli nowy załamek R wykryto w czasie ponad 200 ms, a mniej niż 360 ms od ostatniego załamka sprawdza się, czy maksymalne nachylenie sygnału przy nowym maksimum jest przynajmniej równe połowie nachylenia dla poprzedniego maksimum. Jeżeli nie, to przyjmuje się, że maksimum jest szumem, np. załamkiem T.
-\item Jeżeli wartość wykrytego maksimum jest większa niż THRESHOLD1, to uznaje się to maksimum za załamek R, w przeciwnym razie jest to szum.
-\item Technika searchback: Jeżeli załamek R nie został wykryty przez okres RRMISSEDLIMIT, a w ciągu tego czasu zostały znalezione maksima większe niż THRESHOLD2, to największe z nich traktowane jest jako załamek R.
-\end{itemize}
+
+\begin{algorithmic}
+\If {załamek R wykryto w czasie maksymalnie 200 ms od ostatniego załamka R \textbf{AND} amplituda nowego załamka jest mniejsza od poprzedniego wykrytego}
+    \State odrzuć załamek
+\ElsIf {nowy załamek R wykryto w czasie ponad 200 ms, a mniej niż 360 ms od ostatniego załamka \textbf{AND} nachylenie sygnału przy nowym maksimum jest przynajmniej równe połowie nachylenia dla poprzedniego maksimum}
+    \State dodaj załamek
+\ElsIf {wartość wykrytego maksimum jest większa niż THRESHOLD1}
+	\State dodaj załamek
+\ElsIf{załamek R nie został wykryty przez okres RRMISSEDLIMIT \textbf{AND} w ciągu tego czasu zostały znalezione maksima większe niż THRESHOLD2}
+	\State dodaj jako załamek największe znalezione maksimum
+\EndIf
+\end{algorithmic}
+%\begin{itemize}
+%\item Jeżeli nowy załamek R wykryto w czasie maksymalnie 200 ms od ostatniego załamka R i amplituda nowego załamka jest mniejsza od poprzedniego wykrytego to ten załamek jest odrzucany.
+%\item Jeżeli nowy załamek R wykryto w czasie ponad 200 ms, a mniej niż 360 ms od ostatniego załamka sprawdza się, czy maksymalne nachylenie sygnału przy nowym maksimum jest przynajmniej równe połowie nachylenia dla poprzedniego maksimum. Jeżeli nie, to przyjmuje się, że maksimum jest szumem, np. załamkiem T.
+%\item Jeżeli wartość wykrytego maksimum jest większa niż THRESHOLD1, to uznaje się to maksimum za załamek R, w przeciwnym razie jest to szum.
+%\item Technika searchback: Jeżeli załamek R nie został wykryty przez okres RRMISSEDLIMIT, a w ciągu tego czasu zostały znalezione maksima większe niż THRESHOLD2, to największe z nich traktowane jest jako załamek R.
+%\end{itemize}
 W takcie działania algorytmu konieczna jest aktualizacja progów. Są one aktualizowane na podstawie wartości parametrów SPK i NPK, których początkowe wartości są następujące:
 \begin{itemize}
 \item SPK = średnia z ośmiu maksimów z pierwszych ośmiu sekund badania,
 \item NPK = 0.
 \end{itemize}
-Wartości tych parametró są aktualizowane w następujący sposób:
-\begin{itemize}
-\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD1 
-\newline
-SPK = 0.125 PEAK + 0.875 SPK,
-\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD2 
-\newline
-SPK = 0.250 PEAK + 0.750 SPK,
-\item jeżeli został wykryty szum
-\newline
-NPK = 0.125 PEAK + 0.875 NPK
-\end{itemize}
+Wartości tych parametrów są aktualizowane w następujący sposób:
+\begin{algorithmic}
+\If {załamek R został wykryty za pomocą porównania z THRESHOLD1}
+    \State $SPK \gets 0.125 PEAK + 0.875 SPK$
+\ElsIf {załamek R został wykryty za pomocą porównania z THRESHOLD2}
+	\State $SPK \gets 0.250 PEAK + 0.750 SPK$
+\Else 
+	\State $NPK \gets 0.125 PEAK + 0.875 NPK$
+\EndIf
+\end{algorithmic}
+%\begin{itemize}
+%\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD1 
+%\newline
+%SPK = 0.125 PEAK + 0.875 SPK,
+%\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD2 
+%\newline
+%SPK = 0.250 PEAK + 0.750 SPK,
+%\item jeżeli został wykryty szum
+%\newline
+%NPK = 0.125 PEAK + 0.875 NPK
+%\end{itemize}
 Progi natomiast są aktualizowane w następujący sposób:
 \newline
 THRESHOLD1 = NPK+ 0.25 (SPK-NPK)
@@ -147,5 +168,40 @@ Zastosowanie transformacji falkowej pozwala rozłożyć sygnał na kilka subpasm
 \caption{Dekompozycja sygnału na subpasma za pomocą transformacji falkowej}
 \label{fig:RPWS}
 \end{figure}
+
+Działanie algorytmu można przedstawić w następujących krokach:
+\begin{enumerate}[I.]
+\item Dwukrotna dekompozycja oryginalnego sygnału z wykorzystaniem transformacji falkowej.
+\item Wyszukanie próbki o największej wartości w zdekomponowanym sygnale.
+\item Znalezienie wszystkich próbek o wartości nie mniejszej niż 30\% wartości próbki znalezionej w poprzednim kroku.
+\item Filtracja próbek, które zostały wykryte w poprzednim kroku w celu odrzucenia tych, które należą do tego samego załamka R.
+\item Znalezienie indeksów wyszukanych próbek w sygnale po transformacji i przemnożenie ich razy 4 w celu znalezienia w przybliżeniu indeksów próbek w sygnale oryginalnym, które zostały sklasyfikowane jako załamki R.
+\item Wyszukanie faktycznego indeksu próbki w oryginalnym sygnale poprzez przeszukanie odpowiedniego przedziału oryginalnego sygnału wokół próbki o indeksie znalezionym w poprzednim kroku.
+\end{enumerate}
 \subsection{Rezultaty i wnioski}
+Zaimplementowane metody w większości przypadków działają dobrze i poprawnie wykrywają załamki R. Ewentualny błąd wynosi co najwyżej kilka próbek. W przypadku sygnałów dosyć zniekształconych zdarzają się sytuacje, że zostały wykryte nadmiarowe załamki R, bądź niektóre z nich nie zostały w ogóle wykryte.
+
+Należy jednak nadmienić, iż metody detekcji załamków R, Pan - Tompkins oraz bazująca na transformacie Hilberta, które zostały zaimplementowane w roku poprzednim przez kolegów Pawła Kasperczyka i Kamila Pękalę działają poprawnie. Z tego powodu zostały również wykorzystane w tegorocznym projekcie. Zostały wprowadzone jednak drobne modyfikacje związane z dopasowaniem tych metod pod API tegorocznego projektu, jak również pewne modyfikacje w sposobie zwracania rezultatów obliczeń funkcji składowych klasy reprezentującej moduł oraz pewne zmiany kosmetyczne związane z formatowaniem kodu. Konsekwencją wynikającą z wykorzystania zaimplementowanych już metod jest to, że są pewne różnice pomiędzy proponowanym w wcześniej rozwiązaniem a rozwiązaniem zastosowanym w programie.
+
+W zaimplementowanej metodzie bazującej na transformacji Hilberta został zastosowany podział sygnału na przedziały. Transformacja dokonywana jest zatem na fragmencie sygnału, po czym otrzymane rezultaty sklejane są w całość. Zgodnie z informacjami zawartymi w raporcie z zeszłorocznego projektu, daje to lepsze rezultaty, niż obliczenia dokonywane na całym sygnale bez podziału na przedziały. Kolejną różnicą jest to, że nie jest obliczany pierwiastek kwadratowy, który występuje we wzorze na obwiednią sygnału. Upraszcza to obliczenia. Podyktowane jest to faktem, iż liczba rzeczywista o większej wartości ma również większy pierwiastek kwadratowy. Również sama metoda detekcji załamków R jest nieco inna niż proponowana w jednym z wcześniejszych rozdziałów. Dokonywana ona jest na podstawie przeglądu fragmentu tablicy \textit{diff} zawierającej posortowane malejąco elementy, które są większe niż $\frac{1}{21}$ maksymalnej wartości z tej. Elementy te są wkładem transformaty Hilberta w obwiednię sygnału, obliczone na podstawie wspomnianego wyżej, uproszczonego wzoru niezawierającego pierwiastka kwadratowego. Próbka sygnału wejściowego, która odpowiada aktualnie przeglądanemu elementowi tablicy, jest odpowiednio daleko od poprzednio zakwalifikowanych jako załamek R próbek, jest również traktowana jako szukany załamek. W przeciwnym przypadku jest odrzucana. Minimalna odległość między załamkami jest oszacowana na podstawie założenia, iż maksymalna częstotliwość pracy serca wynosi 220 uderzeń na minutę. Wyznaczona odległość pomnożona jest jeszcze przez współczynnik wynoszący 0,8. Szerokość fragmentu sygnału poddawanego transformacji Hilberta przyjęta została jako 200 sekund.
+
+Bardzo ważnym elementem detekcji załamków R jest uzyskanie do analizy dobrze przefiltrowanego sygnału, pozbawionego dużych zakłóceń i szumów. Podczas testów poprawności działania modułu został przeprowadzony eksperyment polegający na detekcji załamków R w sygnale nie poddanym filtracji. Metoda Pan - Tompkins mimo wszystko dała w miarę dobre rezultaty, natomiast metoda bazująca na transformacji Hilberta kompletnie nie poradziła sobie z wykryciem pików. Prawdopodobnie główną przyczyną tego faktu jest obecność prostej i odwrotnej transformaty Fouriera w zaimplementowanej metodzie. Metoda oparta na transformacji falkowej, w zaimplementowanym w module algorytmie, wyszukuje załamki, których wartość przekracza pewien ustalony próg wyznaczony w oparciu o próbkę o największej wartości. Z tego powodu obecność zakłóceń o zbyt dużej wartości może powodować zakwalifikowanie tych zakłóceń jako nadmiarowe załamki.
+
+Z racji, iż stosowane algorytmy przeważnie wykrywają trochę mniejszą liczbę załamków niż wynosi ona w rzeczywistości, ciężko było dokonać analizy różnic pomiędzy wynikami zwróconym przez algorytm a wynikami referencyjnymi w sposób automatyczny, przy wykorzystaniu programu. Dla wybranych sygnałów EKG zostały narysowane wykresy z naniesionymi, referencyjnymi i wyznaczonymi przez algorytmy, załamkami R. Sygnał oryginalny był filtrowany przy pomocy filtru Butterwortha. Nie zostały przeprowadzone testy dla innych metod filtracji w oparciu o założenie, że każda z tych metod daje poprawne rezultaty i wyniki detekcji załamków R powinny być podobne dla każdej z metod filtrowania sygnału.
+\subsubsection{Sygnał 105}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{R_PEAKS/img/105_hilbert_calosc}
+\caption{Sygnał nr 105 z naniesionymi pikami R - Hilbert}
+\label{fig:105HC}
+\end{figure}
+Piki referencyjne zostały oznaczone czarnymi gwiazdkami, natomiast wyznaczone przy pomocy moduły załamki R czerwonymi kółkami. Również takie same oznaczenia są przyjęte na kolejnych wykresach. Można zauważyć, że generalnie piki zostały wyznaczone całkiem dobrze, różnice są rzędu kilku próbek, co będzie widoczne lepiej na następnych wykresach. Można zauważyć, że jest parę niewykrytych w ogóle załamków.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{R_PEAKS/img/105_hilbert_nadmiar}
+\caption{Nadmiarowe załamki R - Hilbert}
+\label{fig:105HN}
+\end{figure}
+Na powyższym wykresie widać, że mimo dosyć nieregularnego kształtu sygnału załamki zostały wykryte dosyć poprawnie. Na zielono również zaznaczono piki, które nie są zawarte w pliku z referencyjnymi załamkami.
 \subsection{Literatura}

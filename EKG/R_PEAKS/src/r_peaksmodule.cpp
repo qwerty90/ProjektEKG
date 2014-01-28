@@ -320,7 +320,7 @@ double R_peaksModule::PTHighPassFilter(double data, bool reset = false)
 double R_peaksModule::PTDerivative (double data, bool reset = false) {
     double y;
     static double x_derv[6];
-    if(reset)     {
+    if(reset) {
         for (int i=0; i<6; i++) x_derv[i]=0;
     }
 
@@ -403,7 +403,7 @@ PairDoubleUnsignedInt R_peaksModule::Peak200MS(int & index, QVector<double>  & s
         newPeak = tempPeak;
         indexPeak = signal.size()-2;
     }
-    else index = indexPeak+t200;
+    else index = indexPeak + t200;
     return PairDoubleUnsignedInt(newPeak, indexPeak);
 }
 
