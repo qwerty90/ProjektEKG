@@ -106,7 +106,7 @@ bool QRSClassModule::process()
         return false;
     }
 
-    if (this->waves_onset == NULL || this->waves_end)
+    if (this->waves_onset == NULL || this->waves_end  == NULL)
     {
         this->errMsg = "WAVES NOT SET!";
         return false;
@@ -133,9 +133,8 @@ bool QRSClassModule::process()
     for(int i = 0; i < this->waves_onset->count(); i++)
     {
         QList<double> currentQRS;
-
         //POCZATEK KODU DO PRZEROBIENIA DO WAVES  ??
-        for(unsigned int j = this->waves_onset->at(i) - this->waves_onset->at(0); j <= this->waves_end->at(i) - this->waves_onset->at(0); j++) //nie wiem czy bedzie dobrze
+        for(int j = this->waves_onset->at(i) - this->waves_onset->at(0); j <= this->waves_end->at(i) - this->waves_onset->at(0); j++) //nie wiem czy bedzie dobrze
         {
             currentQRS.append(this->ecgBaselined->at(j));
         }
@@ -149,6 +148,7 @@ bool QRSClassModule::process()
 
         int j = 0;
         //KONIEC KODU DO PRZEROBIENIA DO WAVES??
+
         foreach(AbstractExtractor* extractor, *extractors)
         {
             currInstance[j] = extractor->extractFeature(currentQRS);
@@ -160,6 +160,7 @@ bool QRSClassModule::process()
         // Cluster
         this->clusterer->setClusteringSet(features);
 
+        //tu sie wywala
         if (!this->clusterer->classify())
         {
             this->errMsg = this->clusterer->getErrorMessage();

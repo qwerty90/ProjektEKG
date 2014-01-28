@@ -541,11 +541,7 @@ void AppController::runQrsClass()
 {
     QLOG_INFO() << "Start QrsClass";
 
-    if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
-    {
-        QLOG_ERROR() <<"No data for QRS_Class";
-        return;
-    }
+    ifWavesExists();
 
     QRSClassModule QrsClassifier;
     QRSClassSettings QrsClassifierSettings;
@@ -564,7 +560,7 @@ void AppController::runQrsClass()
     else
     {
         QVector<QRSClass>* classes = QrsClassifier.getClasses();
-        this->entity->classes = classes;
+        this->entity->classes = classes;        
     }
 
     emit QrsClass_done(this->entity);

@@ -15,7 +15,7 @@
 
 GMeans::GMeans()
     : minNumOfClusters(1),
-      maxNumOfClusters(1)
+      maxNumOfClusters(10)
 {
 }
 
