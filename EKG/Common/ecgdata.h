@@ -128,6 +128,7 @@ public:
     //modul sleep apnea
     QVector<BeginEndPair>    *SleepApnea;
     QVector<double>          *SleepApnea_plot;
+    QVector<QVector<double>> *SleepApnea_wykresy;
 
     //modul QtDisp (bez TWaves)
     QVector<Evaluation> *evaluations;

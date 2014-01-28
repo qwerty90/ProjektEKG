@@ -29,6 +29,8 @@ EcgData::EcgData(QObject *parent) :
     this->fft_y=NULL;
     this->SleepApnea=NULL;
     this->SleepApnea_plot=NULL;
+    this->SleepApnea_wykresy=NULL;
+    this->hrt_tachogram=NULL;
     //hrv2
     //twa
     //dfa
@@ -65,6 +67,8 @@ EcgData::EcgData(QString id)
     this->fft_y=NULL;
     this->SleepApnea=NULL;
     this->SleepApnea_plot=NULL;
+    this->SleepApnea_wykresy=NULL;
+    this->hrt_tachogram=NULL;
 
     this->RecordId = id;
     this->settings = new EcgSettings();

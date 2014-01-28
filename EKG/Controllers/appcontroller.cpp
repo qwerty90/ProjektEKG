@@ -218,6 +218,7 @@ void AppController::ResetModules()
 
 
     deleteWaves();
+    deleteApnea();
 
     QLOG_INFO() << "All removed.";
 }
@@ -797,6 +798,11 @@ void AppController::runHRT()
     QLOG_INFO() << "HRT started.";
     ifRpeaksExists();
 
+    if (this->entity->hrt_tachogram!=NULL)
+    {
+        QLOG_INFO() << "MVC/ HRT already exists.";
+        return;
+    }
     HRT::HRTmodule obiekt;
     obiekt.calculateHRT(this->entity->Rpeaks_uint,(int)this->entity->info->frequencyValue);
 
@@ -816,7 +822,16 @@ void AppController::runSleepApnea()
 {
     QLOG_INFO()<< "Sleep apnea started.";
 
-    ifRpeaksExists();
+    ifRpeaksExists();    
+    if ( (this->entity->SleepApnea!=NULL)
+         & (this->entity->SleepApnea_plot!=NULL)
+         & (this->entity->SleepApnea_wykresy!=NULL) )
+    {
+        QLOG_INFO() << "MVC/ Sleep Apnea already exists.";
+        return;
+    }
+
+
     sleep_apnea obiekt((int)this->entity->info->frequencyValue);
 
     this->entity->SleepApnea = new QVector<BeginEndPair>(obiekt.sleep_apnea_output(
@@ -825,6 +840,9 @@ void AppController::runSleepApnea()
     //narysować proste na podstawie wartosci treshold z obiekt.gui_output
     this->entity->SleepApnea_plot = new QVector<double>(obiekt.gui_output(
                                                             this->entity->Rpeaks_uint));
+
+    this->entity->SleepApnea_wykresy=new QVector<QVector<double>>(obiekt.sleep_apnea_plots(
+                                                                      this->entity->Rpeaks_uint));
 
     //wykorzystac obiekt.sleep_apnea_plots() do wyrysowania dwóch wykresów!!!
 
@@ -951,6 +969,21 @@ void AppController::deleteWaves(void)
         this->entity->Waves->Count=0;
      //   delete this->entity->Waves;
       //  this->entity->Waves = new Waves_struct;
+    }
+}
+
+void AppController::deleteApnea()
+{
+    if (this->entity->SleepApnea!=NULL)
+        this->entity->SleepApnea->clear();
+    if (this->entity->SleepApnea_plot!=NULL)
+        this->entity->SleepApnea_plot->clear();
+    if (this->entity->SleepApnea_wykresy!=NULL)
+    {
+        (*this->entity->SleepApnea_wykresy)[0].clear();
+        (*this->entity->SleepApnea_wykresy)[1].clear();
+        (*this->entity->SleepApnea_wykresy)[2].clear();
+        QLOG_INFO() << "MVC/ Sleep Apnea deleted";
     }
 }
 

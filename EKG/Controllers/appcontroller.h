@@ -36,6 +36,7 @@ public:
     void ifWavesExists(void);
     void ifTWaveExists(void);
     void deleteWaves(void);
+    void deleteApnea(void);
 
     void load12lead_db(VCG_input &input);
 
