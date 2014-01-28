@@ -2,7 +2,6 @@
 #include "ui_airecgmain.h"
 #include "about.h"
 #include "filebrowser.h"
-#include "notready.h"
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
@@ -69,8 +68,9 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
     ui->QRSSampleDataGroupBox->setVisible(false);
     ui->progressBar->setVisible(false);
-
+    ui->busy_label->setVisible(false);
     initEcgBaselineGui();
+    initStIntervalGui();
 }
 
 AirEcgMain::~AirEcgMain()
@@ -85,12 +85,12 @@ void AirEcgMain::on_actionO_programie_triggered()
 }
 void AirEcgMain::on_actionWczytaj_triggered()
 {
-    ui->progressBar->setVisible(true);
+    emit this->busy(true);
     fileBrowser dialogFileBrowser;
     this->connect(&dialogFileBrowser, SIGNAL(fbLoadEntity(QString,QString)), this, SLOT(fbLoadData(QString,QString)));
     dialogFileBrowser.setModal(true);
     dialogFileBrowser.exec();
-    ui->progressBar->setVisible(false);
+    emit this->busy(false);
 }
 
 void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
@@ -1408,6 +1408,7 @@ void AirEcgMain::drawRPeaks(EcgData *data)
     //QwtPlot *plotVI = plotPointsPlot_uint((data->Rpeaks_uint),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
     ui->rpeaksArea->show();
+    emit busy(false);
 }
 
 void AirEcgMain::drawHrv1(EcgData *data)
@@ -1572,20 +1573,18 @@ void AirEcgMain::drawStInterval(EcgData *data)
         QString time = QString("%1:%2:%3").arg(mm, 2, 10, QChar('0')).arg(ss, 2, 10, QChar('0')).arg(ms, 3, 10, QChar('0'));
 
         // create list item
-        QTableWidgetItem *newItem = new QTableWidgetItem(QString::number(i + 1));
-        ui->stIntervalList->setItem(i, 0 , newItem);
-        newItem = new QTableWidgetItem(time);
-        ui->stIntervalList->setItem(i, 1, newItem);
+        QTableWidgetItem *newItem = new QTableWidgetItem(time);
+        ui->stIntervalList->setItem(i, 0, newItem);
         newItem = new QTableWidgetItem(position);
-        ui->stIntervalList->setItem(i, 2, newItem);
+        ui->stIntervalList->setItem(i, 1, newItem);
         newItem = new QTableWidgetItem(shape);
-        ui->stIntervalList->setItem(i, 3, newItem);
+        ui->stIntervalList->setItem(i, 2, newItem);
         newItem = new QTableWidgetItem(QString::number(desc.offset));
-        ui->stIntervalList->setItem(i, 4, newItem);
+        ui->stIntervalList->setItem(i, 3, newItem);
         newItem = new QTableWidgetItem(QString::number(desc.slope1));
-        ui->stIntervalList->setItem(i, 5, newItem);
+        ui->stIntervalList->setItem(i, 4, newItem);
         newItem = new QTableWidgetItem(QString::number(desc.slope2));
-        ui->stIntervalList->setItem(i, 6, newItem);
+        ui->stIntervalList->setItem(i, 5, newItem);
     }
 
     // draw STon points
@@ -1694,6 +1693,9 @@ void AirEcgMain::drawHrt(EcgData *data)
 
 void AirEcgMain::drawQtDisp(EcgData *data)
 {
+    QwtPlot *plotQtDisp = plotPointsPlot(*(data->Waves->T_end),*(data->ecg_baselined),data->info->frequencyValue);
+    ui->scrollArea_9->setWidget(plotQtDisp);
+    ui->scrollArea_9->show();
     QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
 void AirEcgMain::drawWaves(EcgData *data)
@@ -1706,6 +1708,12 @@ void AirEcgMain::drawWaves(EcgData *data)
     ui->scrollAreaWaves->show();
 
 }
+void AirEcgMain::busy(bool state)
+{
+    ui->progressBar->setVisible(state);
+    ui->busy_label->setVisible(state);
+}
+
 /*void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
@@ -1890,6 +1898,7 @@ void AirEcgMain::drawWaves(EcgData *data)
 
 void AirEcgMain::on_pushButton_2_clicked()
 {
+    busy(true);
     emit this->runEcgBaseline();
 }
 
@@ -2152,6 +2161,15 @@ void AirEcgMain::initEcgBaselineGui()
 
     ecgBase_WindowSizeChanged("150");
     on_butterworthRadioButton_clicked();
+}
+
+void AirEcgMain::initStIntervalGui()
+{
+    const int INITIAL_SIZE = 250;
+    QList<int> sizes;
+    sizes.append(INITIAL_SIZE);
+    sizes.append(ui->stSplitter->width() - INITIAL_SIZE);
+    ui->stSplitter->setSizes(sizes);
 }
 
 void AirEcgMain::on_pushButton_16_clicked()

@@ -143,6 +143,10 @@ public slots:
     void drawSleep_Apnea(EcgData *data);
     void drawQtDisp(EcgData *data);
     void drawHrt(EcgData *data);
+
+    //busy
+    void busy(bool);
+
 private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
@@ -251,6 +255,7 @@ private slots:
     void on_pushButton_11_clicked();
 
     void initEcgBaselineGui();
+    void initStIntervalGui();
 
     void on_pushButton_16_clicked();
 

@@ -3,7 +3,8 @@
 AtrialFibrApi::AtrialFibrApi(
     const QVector<double> &signal,
     const QVector<QVector<double>::const_iterator> &RPeaksIterators,
-    const QVector<QVector<double>::const_iterator> &pWaveStarts)
+    const QVector<QVector<double>::const_iterator> &pWaveStarts,
+    const QString &)
     : pWaveStarts(pWaveStarts), endOfSignal(signal.end()), entropyResult(0.0),
       divergenceResult(0.0), pWaveOccurenceRatioResult(0.0) {
   rrmethod.RunRRMethod(RPeaksIterators);

@@ -55,6 +55,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(stInterval_algorithmChanged(int)),this,SLOT(stInterval_algorithmChanged(int)));
 
     this->connect(view, SIGNAL(runEcgBaseline()),this, SLOT (runEcgBaseline()));//example
+
     this->connect(view, SIGNAL(runAtrialFibr()) ,this, SLOT (runAtrialFibr()));
     this->connect(view, SIGNAL(runStInterval()) ,this, SLOT (runStInterval()));
     this->connect(view, SIGNAL(runHRV1())       ,this, SLOT (runHRV1()));
@@ -77,7 +78,9 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
     this->connect(this, SIGNAL(runVcgLoop_done(EcgData*)) ,view, SLOT(drawVcgLoop(EcgData*)))   ;
     this->connect(this, SIGNAL(SleepApnea_done(EcgData*)) ,view, SLOT(drawSleep_Apnea(EcgData*)));
+    this->connect(this, SIGNAL(QtDisp_done(EcgData*)) ,view, SLOT(drawQtDisp(EcgData*)));
     this->connect(this, SIGNAL(HRT_done(EcgData*)) ,view, SLOT(drawHrt(EcgData*)));
+    this->connect(this, SIGNAL(busy(bool)) ,view, SLOT(busy(bool)));
 
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
     this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
@@ -222,7 +225,6 @@ void AppController::ResetModules()
 void AppController::runEcgBaseline()
 {
     QLOG_INFO() <<"Ecg baseline started.";
-
     if (this->entity->primary==NULL || this->entity->secondary==NULL)
     {
         QLOG_FATAL() << "No data loaded";
@@ -297,7 +299,7 @@ void AppController::runEcgBaseline()
 
     QLOG_TRACE() << "MVC/ min/max values :" <<min<<"//"<<max;
     emit EcgBaseline_done(this->entity);
-
+    emit busy(false);
     // runVcgLoop(); //tam jest bezwzgledna sciezka - nie odpali sie wam!
 
 }
