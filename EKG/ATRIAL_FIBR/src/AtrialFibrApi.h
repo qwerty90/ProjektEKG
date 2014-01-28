@@ -11,12 +11,16 @@ class AtrialFibrApi {
   double entropyResult;
   double divergenceResult;
   double pWaveOccurenceRatioResult;
+  double divergenceFactor;
+  double entropyFactor;
+  double pWaveOccFactor;
+  void setWeights(const QString &Signal);
 
 public:
   AtrialFibrApi(const QVector<double> &signal,
                 const QVector<QVector<double>::const_iterator> &RPeaksIterators,
                 const QVector<QVector<double>::const_iterator> &pWaveStarts,
-                const QString & = QString(""));
+                const QString & = QString("V5"));
   double GetRRIntEntropy() const;
   double GetRRIntDivergence() const;
   double GetPWaveAbsenceRatio() const;
