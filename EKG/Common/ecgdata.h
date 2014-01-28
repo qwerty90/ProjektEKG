@@ -73,6 +73,7 @@ public:
 
     // modul ST_INTERVAL
     QList<EcgStDescriptor> *STintervals;
+    QVector<QVector<double>::const_iterator> *TWaveStart;
 
     // HRV1
     //dane statystyczne
@@ -104,7 +105,8 @@ public:
     //modul sleep apnea
     QVector<BeginEndPair>    *SleepApnea;
     QVector<double>          *SleepApnea_plot;
-    QVector<QVector<double>> *SleepApnea_wykresy;
+    QVector<double>          *SleepApneaamp;
+    QVector<double>          *SleepApneafreq;
 
     //modul QtDisp (bez TWaves)
     QVector<Evaluation> *evaluations;
