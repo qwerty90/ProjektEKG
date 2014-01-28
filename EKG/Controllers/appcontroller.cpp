@@ -618,11 +618,9 @@ void AppController::runQtDisp()
     obiekt.setOutput(output,T_end);
 
 
-    iters tmp_it;
+    this->entity->Waves->T_end = new iters;
     for(int i=0 ; i<T_end.size();i++)
-        tmp_it.append(&((*this->entity->ecg_baselined)[(int) floor(T_end.at(i)*this->entity->info->frequencyValue)]));
-
-    this->entity->Waves->T_end = new iters (tmp_it);
+        this->entity->Waves->T_end->append(&((*this->entity->ecg_baselined)[(int) floor(T_end.at(i)*this->entity->info->frequencyValue)]));
 
     this->entity->evaluations = new QVector<Evaluation>(QVector<Evaluation>::fromStdVector(output));
 
