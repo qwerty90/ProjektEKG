@@ -547,7 +547,11 @@ void AppController::runQrsClass()
     }
 
     QRSClassModule QrsClassifier;
-    //QrsClassifier.setSettings(this->entity->settings->qrsClassSettings);
+    QRSClassSettings QrsClassifierSettings;
+    //ustaw jakieś settingsy
+    QrsClassifierSettings.maxIterations = this->entity->settings->QRSClass_maxIterations;
+    QrsClassifierSettings.clusterer = static_cast<ClustererType>(this->entity->settings->QRSClass_clusterer);
+    QrsClassifier.setSettings(QrsClassifierSettings);
 
     QrsClassifier.setWaves(this->entity->Waves->QRS_onset, this->entity->Waves->QRS_end);
     QrsClassifier.setEGCBaseline(this->entity->ecg_baselined);
