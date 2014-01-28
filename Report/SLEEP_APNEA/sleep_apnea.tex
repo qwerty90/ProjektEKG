@@ -53,3 +53,88 @@ Na podstawie algorytmu opisanego w dokumencie [4] powstała koncepcja rozwiązan
  \item \textbf{Oznaczenie próbek, w których wystąpił bezdech senny}
  Bezdech senny był wyznaczany na podstawie amplitudy i częstotliwści Hilberta. Przekroczenie przez amplitudę,wyznaczonej w poprzednim punkcie, minimalnej amplitudy Hilberta oznaczało występowanie bezdechu sennego. Podobnie z częstotliwoscią. W miejscach gdzie spadała poniżej maksymalnej częstotliwości Hilberta występował bezdech senny.
 \end{enumerate}
+
+\subsection{Rezultaty i wyniki}
+Program został przetestowany na podstawie pieciu próbek pobranych z internetowej Bazy danych Physionet. Algorytm analizował dane próbkowane z częstotliwością 100Hz.
+Na każdym z wykresów zostały przedstawione następujące elementy:
+\begin{enumerate}
+ \item \textbf {\color{blue}Znormalizowana amplituda sygnału}
+ \item \textbf {\color{black}Maksymalna amplituda Hilberta}
+ \item \textbf {\color{red}Okres bezdechu sennego}
+ \item {Podsumowanie danych wyjsciowych}
+\end{enumerate}
+
+
+Poniżej zamieszczono wykresy dla pięciu zestawów danych.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{SLEEP_APNEA/img/apnea1.png}
+\caption{Wykres końcowy programu dla danych a01}
+\label{fig:apnea_1}
+\end{figure} 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{SLEEP_APNEA/img/apnea2.png}
+\caption{Wykres końcowy programu dla danych a02}
+\label{fig:apnea_2}
+\end{figure} 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{SLEEP_APNEA/img/apnea3.png}
+\caption{Wykres końcowy programu dla danych a03}
+\label{fig:apnea_3}
+\end{figure} 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{SLEEP_APNEA/img/apnea4.png}
+\caption{Wykres końcowy programu dla danych a04}
+\label{fig:apnea_4}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{SLEEP_APNEA/img/apnea5.png}
+\caption{Wykres końcowy programu dla danych a05}
+\label{fig:apnea_5}
+\end{figure} 
+
+
+Poniżej przedstawiono tabelę porównawczą dla omawianych wyżej przykładów. Są w niej zawarte wyniki badań specjalistów z Physionetu oraz wyniki sporządzonego algorytmu. 
+
+
+\textbf{Współczynnik} opisywany w tabeli jest liczony następująco:
+ \begin{equation}
+ wsp =\frac{apnea}{ (end-begin)} 
+ \end{equation}
+
+gdzie:
+begin - numer pierwszej próbki rekordu
+end - numer ostatniej próbki rekordu
+apnea - ilość próbek w których wykryto bezdech senny
+
+
+\textbf{Ilość przedziałów} mówi o liczbie niezależnych odcinków czasu w całym sygnale, gdzie wykryto bezdech senny
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+  &\multicolumn{2}{|c|}{Physionet}&\multicolumn{2}{|c|}{Algorytm} \\
+    \hline
+Dane&Współczynnik&Ilość przedzialów&Współczynnik&Ilość przedzialów \\
+    \hline
+    a01 & 95,69 & 3 & 97,71 & 10 \\
+    a02 & 77,61 & 11 &  69,83 & 40 \\
+    a03 & 45,37 & 11 &  67,86 & 28 \\
+    a04 & 91,65 & 3 & 91,41 & 8 \\
+    a05 & 57,62 & 15 & 83,97 & 36 \\
+    \hline
+  \end{tabular}
+\caption{Tabela porównawcza dla danych pobranych z Physionetu oraz danych wyjsciowych algorytmu }
+\end{table}
+
+Jak można zauważyć...

@@ -46,6 +46,9 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     connect(ui->QRSClassesToolBox, SIGNAL(currentChanged(int)),this,SLOT(on_qrsclassestoolbox_changed(int)));
     connect(ui->qrsClassLabelTextEdit, SIGNAL(textChanged(QString)),this,SLOT(qrcclasslabel_changed(QString)));
 
+    this->stIntervalPlot = NULL;
+    this->stIntervalZoomer = NULL;
+
     connect(ui->butterworthRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->movingAverageRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->savitzkyGolayRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
@@ -1484,8 +1487,9 @@ void AirEcgMain::drawSigEdr(EcgData *data)
 void AirEcgMain::drawStInterval(EcgData *data)
 {
     // draw baselined data
-    QwtPlot *plotST = plotPlot(*(data->ecg_baselined), data->info->frequencyValue);
-    ui->stIntervalArea->setWidget(plotST);
+    stIntervalPlot = plotPlot(*(data->ecg_baselined), data->info->frequencyValue);
+    stIntervalZoomer = zoom;
+    ui->stIntervalArea->setWidget(stIntervalPlot);
     ui->stIntervalArea->show();
 
     if (data->STintervals == NULL)
@@ -1499,6 +1503,8 @@ void AirEcgMain::drawStInterval(EcgData *data)
     QVector<QPointF> stOn;
     QVector<QPointF> stMid;
     QVector<QPointF> stEnd;
+
+    int abnormalNum = 0;
 
     for (int i = 0; i < num; i++)
     {
@@ -1530,8 +1536,11 @@ void AirEcgMain::drawStInterval(EcgData *data)
         st->setPen(pen);
         st->setSamples(x, y);
         st->setItemAttribute(QwtPlotItem::Legend, false);
-        st->attach(plotST);
+        st->attach(stIntervalPlot);
 
+        QColor bgColor(255, 255, 255);
+
+        bool abnormal = false;
         QString position;
         switch (desc.position)
         {
@@ -1540,10 +1549,19 @@ void AirEcgMain::drawStInterval(EcgData *data)
             break;
         case ST_POS_ELEVATION:
             position = tr("elevation");
+            abnormal = true;
             break;
         case ST_POS_DEPRESSION:
             position = tr("depression");
+            bgColor = QColor(255, 0, 0, 60);
+            abnormal = true;
             break;
+        }
+
+        if (abnormal)
+        {
+            bgColor = QColor(255, 0, 0, 60);
+            abnormalNum++;
         }
 
         QString shape;
@@ -1574,16 +1592,34 @@ void AirEcgMain::drawStInterval(EcgData *data)
 
         // create list item
         QTableWidgetItem *newItem = new QTableWidgetItem(time);
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
+        newItem->setData(Qt::UserRole + 1, abnormal);
         ui->stIntervalList->setItem(i, 0, newItem);
+
         newItem = new QTableWidgetItem(position);
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 1, newItem);
+
         newItem = new QTableWidgetItem(shape);
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 2, newItem);
-        newItem = new QTableWidgetItem(QString::number(desc.offset));
+
+        newItem = new QTableWidgetItem(QString::number(desc.offset, 'g', 3));
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 3, newItem);
-        newItem = new QTableWidgetItem(QString::number(desc.slope1));
+
+        newItem = new QTableWidgetItem(QString::number(desc.slope1, 'g', 2));
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 4, newItem);
-        newItem = new QTableWidgetItem(QString::number(desc.slope2));
+
+        newItem = new QTableWidgetItem(QString::number(desc.slope2, 'g', 2));
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 5, newItem);
     }
 
@@ -1595,7 +1631,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stOnPoints->setPen(QColor(Qt::red));
     stOnPoints->setStyle(QwtPlotCurve::NoCurve);
     stOnPoints->setSamples(stOn);
-    stOnPoints->attach(plotST);
+    stOnPoints->attach(stIntervalPlot);
 
     // draw STmid points
     QwtPlotCurve *stMidPoints = new QwtPlotCurve();
@@ -1606,7 +1642,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stMidPoints->setPen(color);
     stMidPoints->setStyle(QwtPlotCurve::NoCurve);
     stMidPoints->setSamples(stMid);
-    stMidPoints->attach(plotST);
+    stMidPoints->attach(stIntervalPlot);
 
     // draw STend points
     QwtPlotCurve *stEndPoints = new QwtPlotCurve();
@@ -1616,23 +1652,78 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stEndPoints->setPen(QColor(Qt::blue));
     stEndPoints->setStyle(QwtPlotCurve::NoCurve);
     stEndPoints->setSamples(stEnd);
-    stEndPoints->attach(plotST);
+    stEndPoints->attach(stIntervalPlot);
 
-//    QVector<QPointF> tEnd;
-//    foreach (QVector<double>::const_iterator iter, *data->Waves->T_end)
-//    {
-//        qDebug() << (iter - data->ecg_baselined->constBegin());
-//        tEnd.append(QPointF(static_cast<double>(iter - data->ecg_baselined->constBegin()) / data->info->frequencyValue * 1000, *iter));
-//    }
+    double percentage = static_cast<double>(abnormalNum) / num;
 
-//    QwtPlotCurve *tEndPoints = new QwtPlotCurve();
-//    QwtSymbol *tEndMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::magenta, QPen(Qt::magenta), QSize(6, 6));
-//    tEndPoints->setSymbol(tEndMarker);
-//    tEndPoints->setTitle("tEnd");
-//    tEndPoints->setPen(QColor(Qt::magenta));
-//    tEndPoints->setStyle(QwtPlotCurve::NoCurve);
-//    tEndPoints->setSamples(tEnd);
-//    tEndPoints->attach(plotST);
+    ui->stAbnormalNum->setText(QString::number(abnormalNum));
+    ui->stPercentage->setText(QString("%1%").arg(percentage, 0, 'g', 2));
+}
+
+void AirEcgMain::initStIntervalGui()
+{
+    const int INITIAL_SIZE = 250;
+    QList<int> sizes;
+    sizes.append(INITIAL_SIZE);
+    sizes.append(ui->stSplitter->width() - INITIAL_SIZE);
+    ui->stSplitter->setSizes(sizes);
+
+    connect(ui->stIntervalList, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(stItemSelected(int,int)));
+    connect(ui->stPrev, SIGNAL(clicked()), this, SLOT(prevStAbnormality()));
+    connect(ui->stNext, SIGNAL(clicked()), this, SLOT(nextStAbnormality()));
+}
+
+void AirEcgMain::stItemSelected(int row, int column)
+{
+    QTableWidgetItem *item = ui->stIntervalList->item(row, column);
+    if (item == NULL)
+        return;
+
+    bool ok;
+    double onTime = item->data(Qt::UserRole).toDouble(&ok);
+    if (!ok)
+        return;
+
+    if (stIntervalZoomer != NULL)
+        stIntervalZoomer->moveToHPosition(onTime, true);
+}
+
+void AirEcgMain::nextStAbnormality()
+{
+    int curr = ui->stIntervalList->currentRow();
+    for (int i = curr + 1; i < ui->stIntervalList->rowCount(); i++)
+    {
+        QTableWidgetItem *item = ui->stIntervalList->item(i, 0);
+        if (item == NULL)
+            continue;
+
+        bool abnormal = item->data(Qt::UserRole + 1).toBool();
+        if (abnormal)
+        {
+            ui->stIntervalList->selectRow(i);
+            stItemSelected(i, 0);
+            return;
+        }
+    }
+}
+
+void AirEcgMain::prevStAbnormality()
+{
+    int curr = ui->stIntervalList->currentRow();
+    for (int i = curr - 1; i >= 0; i--)
+    {
+        QTableWidgetItem *item = ui->stIntervalList->item(i, 0);
+        if (item == NULL)
+            continue;
+
+        bool abnormal = item->data(Qt::UserRole + 1).toBool();
+        if (abnormal)
+        {
+            ui->stIntervalList->selectRow(i);
+            stItemSelected(i, 0);
+            return;
+        }
+    }
 }
 
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
@@ -2161,15 +2252,6 @@ void AirEcgMain::initEcgBaselineGui()
 
     ecgBase_WindowSizeChanged("150");
     on_butterworthRadioButton_clicked();
-}
-
-void AirEcgMain::initStIntervalGui()
-{
-    const int INITIAL_SIZE = 250;
-    QList<int> sizes;
-    sizes.append(INITIAL_SIZE);
-    sizes.append(ui->stSplitter->width() - INITIAL_SIZE);
-    ui->stSplitter->setSizes(sizes);
 }
 
 void AirEcgMain::on_pushButton_16_clicked()
