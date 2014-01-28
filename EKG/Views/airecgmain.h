@@ -32,9 +32,8 @@ class AirEcgMain : public QMainWindow
 
     EcgData *currentEcgData;
 
-
-
-
+    QwtPlot *stIntervalPlot;
+    ScrollZoomer *stIntervalZoomer;
 
     void resetQrsToolbox(EcgData* data);
     void populareQRSClassBox(QRSClass currentClass, int type);
@@ -255,11 +254,15 @@ private slots:
     void on_pushButton_11_clicked();
 
     void initEcgBaselineGui();
-    void initStIntervalGui();
 
     void on_pushButton_16_clicked();
 
     void on_pushButton_18_clicked();
+
+    void initStIntervalGui();
+    void stItemSelected(int row, int column);
+    void nextStAbnormality();
+    void prevStAbnormality();
 
 private:
     Ui::AirEcgMain *ui;
