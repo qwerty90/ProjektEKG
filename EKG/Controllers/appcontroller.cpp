@@ -11,10 +11,9 @@
 #include "R_PEAKS/src/r_peaksmodule.h"
 #include "Waves/src/waves.h"
 #include "SIG_EDR/sig_edr.h"
-//#include "QT_DISP/QT_DISP.h"
-//#include "QT_DISP/Evaluation.h"
 #include "HRT/HRTmodule.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
+#include "VCG_T_LOOP/vcg_t_loop.h"
 
 #include <QThread>
 
@@ -290,7 +289,8 @@ void AppController::runEcgBaseline()
 
     emit EcgBaseline_done(this->entity);
     emit busy(false);
-    // runVcgLoop(); //tam jest bezwzgledna sciezka - nie odpali sie wam!
+
+        // runVcgLoop();  <- nie odpalajcie tego!
 
 }
 
@@ -533,7 +533,6 @@ void AppController::runVcgLoop()
 {
     QLOG_INFO() << "Start VcgLoop (not ready yet)";
 
-
     this->entity->VCG_raw->I  = new QVector<double>;
     this->entity->VCG_raw->II = new QVector<double>;
     this->entity->VCG_raw->V1 = new QVector<double>;
@@ -545,8 +544,54 @@ void AppController::runVcgLoop()
 
     load12lead_db(*(this->entity->VCG_raw));
 
+    QVector<double> *tmp;
+
+    if(this->entity->settings->signalIndex==0)
+    {
+        tmp = new QVector<double>(*this->entity->primary);
+        this->entity->primary = new QVector<double>(*this->entity->VCG_raw->V1);
+    }
+    else
+    {
+        tmp = new QVector<double>(*this->entity->secondary);
+        this->entity->secondary = new QVector<double>(*this->entity->VCG_raw->V1);
+    }
+
+    runStInterval();
+
+    VCG_T_LOOP obiekt(*this->entity->VCG_raw->V1,
+                      *this->entity->VCG_raw->V2,
+                      *this->entity->VCG_raw->V3,
+                      *this->entity->VCG_raw->V4,
+                      *this->entity->VCG_raw->V5,
+                      *this->entity->VCG_raw->V6,
+                      *this->entity->VCG_raw->I,
+                      *this->entity->VCG_raw->II,
+                      *this->entity->Waves->QRS_onset,
+                      *this->entity->TWaveStart,
+                      *this->entity->Waves->T_end);
+    QLOG_TRACE() <<"VCG run execute";
+    obiekt.Run();
+QLOG_TRACE() <<"VCG ran";
+    this->entity->X  = new QVector<double> (obiekt.getX());
+    this->entity->Y  = new QVector<double> (obiekt.getY());
+    this->entity->Z  = new QVector<double> (obiekt.getZ());
+    this->entity->MA = new QVector<double> (obiekt.getMA());
+    this->entity->RMMV=new QVector<double> (obiekt.getRMMV());
+    this->entity->DEA= new QVector<double> (obiekt.getDEA());
+QLOG_TRACE() <<"results";
+    if(this->entity->settings->signalIndex==0)
+    {
+        this->entity->primary = new QVector<double>(*tmp);
+    }
+    else
+    {
+        this->entity->secondary = new QVector<double>(*tmp);
+    }
+QLOG_TRACE() <<"previous signals loaded.";
     emit runVcgLoop_done(this->entity);
-    QLOG_INFO() << "VcgLoop done";
+    QLOG_INFO() << "VcgLoop done";            
+
 }
 
 void AppController::runQtDisp()
@@ -583,14 +628,16 @@ void AppController::runQtDisp()
 
     obiekt.getInput(baselined, qrs_on, qrs_end, Pwave_start,
                     (double)this->entity->info->frequencyValue);
-    obiekt.Run();
-    QLOG_TRACE() <<"MVC/ QT_DISP calculated.";
+    QLOG_INFO() << "MVC/ QT_DISP reslly started.";
+    obiekt.Run();    
     obiekt.setOutput(output,T_end);
 
 
     this->entity->Waves->T_end = new iters;
     for(int i=0 ; i<T_end.size();i++)
         this->entity->Waves->T_end->append(&((*this->entity->ecg_baselined)[(int) floor(T_end.at(i)*this->entity->info->frequencyValue)]));
+
+    QLOG_TRACE() <<"MVC/ QT_DISP calculated"<<this->entity->Waves->T_end->size()<<" TWave end-points.";
 
     this->entity->evaluations = new QVector<Evaluation>(QVector<Evaluation>::fromStdVector(output));
 
@@ -911,6 +958,11 @@ void AppController::ifTWaveExists()
     if (this->entity->Waves->T_end==NULL)
         runQtDisp();
 }
+void AppController::ifTWaveStartExists()
+{
+    if (this->entity->TWaveStart==NULL)
+        runStInterval();
+}
 
 void AppController::deleteWaves(void)
 {
@@ -1005,6 +1057,7 @@ void AppController::deleteHRV1(void)
 void AppController::load12lead_db(VCG_input &input)
 {
 
+    QLOG_TRACE() << "loading started.";
     QStringList line;
     QStringList::iterator iter_column;
 
