@@ -1134,11 +1134,11 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
 
     for(unsigned int i = 0; i < ecgFrames.Count; i++)
     {
-        P_onsetData.append(ecgFrames.PWaveEnd->at(i)-ecgSignal.begin());
+        P_onsetData.append(ecgFrames.PWaveStart->at(i)-ecgSignal.begin());
         P_onsetDataX[i]=P_onsetData[i]*dt*1000;
         P_onsetDataY[i]=ecgSignal[P_onsetData[i]];
 
-        P_endData.append(ecgFrames.PWaveStart->at(i)-ecgSignal.begin());
+        P_endData.append(ecgFrames.PWaveEnd->at(i)-ecgSignal.begin());
         P_endDataX[i]=P_endData[i]*dt*1000;
         P_endDataY[i]=ecgSignal[P_endData[i]];
 
@@ -1678,7 +1678,7 @@ void AirEcgMain::drawVcgLoop(EcgData* data)
 
 void AirEcgMain::drawQrsClass(EcgData *data)
 {
-    //this->resetQrsToolbox(data);
+    this->resetQrsToolbox(data);
 }
 
 void AirEcgMain::drawHrt(EcgData *data)
@@ -1714,7 +1714,7 @@ void AirEcgMain::busy(bool state)
     ui->busy_label->setVisible(state);
 }
 
-/*void AirEcgMain::resetQrsToolbox(EcgData *data)
+void AirEcgMain::resetQrsToolbox(EcgData *data)
 {
     this->tScale = 1000/data->info->frequencyValue;
     ui->stackedWidget->setCurrentIndex(0);
@@ -1744,9 +1744,9 @@ void AirEcgMain::busy(bool state)
         listView->setMinimumHeight(100);
         ui->QRSClassesToolBox->addItem(listView,labelText);
     }
-}*/
+}
 
-/*void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
+void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
 {
     QVector<double> xAxis;
     QVector<double> qrsSegment = *(currClass.representative);
@@ -1852,9 +1852,9 @@ void AirEcgMain::busy(bool state)
     this->qrsClassPlot->setAxisScale( QwtPlot::xBottom , xMin*this->tScale, xMax*this->tScale);
 
     this->populareQRSClassBox(currClass, type);
-}*/
+}
 
-/*void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
+void AirEcgMain::populareQRSClassBox(QRSClass currentClass, int type)
 {
     QGridLayout* layout;
 
@@ -1892,7 +1892,7 @@ void AirEcgMain::busy(bool state)
         layout->addWidget(label,3 + i,0,1,1);
         layout->addWidget(label2,3 + i,1,1,1);
     }
-}*/
+}
 
 
 

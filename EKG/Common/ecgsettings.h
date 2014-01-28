@@ -37,7 +37,9 @@ public:
     bool SigEdr_rpeaks;
     bool SigEdr_qrs;
     int  SigEdr_lead;
-
+    //QRSClass settings
+    unsigned char QRSClass_clusterer; //1-kmeans 2-gmeans
+    unsigned int QRSClass_maxIterations;
 signals:
     
 public slots:

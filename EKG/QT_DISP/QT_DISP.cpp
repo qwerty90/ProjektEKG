@@ -94,7 +94,7 @@ void QT_DISP::getInput(string path)
 // Funkcja wyjsciowa - konce zalamka T
 vector <double> QT_DISP::returnTEnd()
 {
-	return T_EndP;
+    return T_EndT;
 }
 
 
