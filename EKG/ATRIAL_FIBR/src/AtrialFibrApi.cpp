@@ -1,17 +1,24 @@
 #include "AtrialFibrApi.h"
 #include <map>
-
+#include <algorithm>
+ 
 std::map<QString, std::tuple<double, double, double> > Weights{
-  std::make_pair("V5", std::make_tuple(0.25, 0.25, 0.5)),
-  std::make_pair("MLII", std::make_tuple(0.5, 0.5, 0))
+  std::make_pair("WithPWave", std::make_tuple(0.25, 0.25, 0.5)),
+  std::make_pair("WithoutPWave", std::make_tuple(0.5, 0.5, 0))
 };
 
+QVector<QString> PWaveSignalTypes = { "PV1", "PV2", "PV5" };
 void AtrialFibrApi::setWeights(const QString &Signal) {
-  divergenceFactor = std::get<0>(Weights[Signal]);
-  entropyFactor = std::get<1>(Weights[Signal]);
-  pWaveOccFactor = std::get<2>(Weights[Signal]);
-}
 
+  QString SignalType;
+  if(PWaveSignalTypes.contains(Signal)){
+    SignalType = "WithPWave";
+  } else {
+    SignalType = "WithoutPWave";
+  }
+  std::tie(divergenceFactor, entropyFactor, pWaveOccFactor) =
+      Weights[SignalType];
+}
 AtrialFibrApi::AtrialFibrApi(
     const QVector<double> &signal,
     const QVector<QVector<double>::const_iterator> &RPeaksIterators,
