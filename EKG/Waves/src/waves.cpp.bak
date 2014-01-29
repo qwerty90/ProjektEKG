@@ -207,7 +207,7 @@ void waves::set_p_onset(QVector<double>& ecg, vector_it& r_peaks)
  QVector<double> Pt;
  QVector<double> M;
 
- int p_one_end_window=25;
+ int p_one_end_window=ceil(0.1*fs);
  for(int i=0;i<r_peaks.size()-1;i++)
      {
     window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
@@ -317,7 +317,7 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
     QVector<double> Pt;
     QVector<double> M;
 
-    int p_one_end_window=25;
+    int p_one_end_window=ceil(0.1*fs);
     for(int i=0;i<r_peaks.size()-1;i++)
         {
        window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));

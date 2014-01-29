@@ -69,7 +69,8 @@ public:
     QwtPlot* plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
 //////////
-     QwtPlot* plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs);
+    QwtPlot* plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs);
+    QwtPlot* plotSleep_ApneaFreq(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs);
 
 
 
@@ -150,6 +151,25 @@ private slots:
     void on_actionO_programie_triggered();
     void on_actionWczytaj_triggered();
     void on_Hilbert_radiobutton_clicked();
+
+    //MENU RUN
+
+    void on_actionECG_BASELINE_triggered();
+    void on_actionR_PEAKS_triggered();
+    void on_actionWAVES_triggered();
+    void on_actionHRV1_triggered();
+    void on_actionSettings_triggered();
+    void on_actionATRIAL_FIBR_triggered();
+    void on_actionQT_DISP_triggered();
+    void on_actionSLEEP_APNEA_triggered();
+    void on_actionST_INTERVAL_triggered();
+    void on_actionSIG_EDR_triggered();
+    void on_actionVCG_LOOP_triggered();
+    void on_actionHRT_triggered();
+
+
+
+
 
     void on_PanTompkins_radiobutton_clicked();
 

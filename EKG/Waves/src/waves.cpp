@@ -309,6 +309,7 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
     int P_mid;
     int ipeak;
     int poczatek;
+    int window=0;
     QVector<int> window_length;
     QVector<double> PTend;
     QVector<double> dPTend;
@@ -368,8 +369,12 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
              if((M.at(ipeak-2)<M.at(ipeak-1))&&(M.at(ipeak-1)>M.at(ipeak)))
                  {
                   P_mid=ipeak+(qrs_onset_it.at(i+poczatek)-ecg.begin()-window_length.at(i));
+                 if(P_mid+p_one_end_window-1>qrs_onset_it.at(i+poczatek)-ecg.begin())
+                      window=(qrs_onset_it.at(i+poczatek)-ecg.begin())-P_mid+1;
+                  else
+                      window=p_one_end_window;
                   Rv=0.005;
-                  for(int j=P_mid-1;j<P_mid+p_one_end_window-1;j++)
+                  for(int j=P_mid-1;j<P_mid+window-1;j++)
                   {
                   onset_signal.push_back(ecg.at(j));
                   mediana+=onset_signal.last();
