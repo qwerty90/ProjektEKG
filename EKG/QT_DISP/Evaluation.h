@@ -7,7 +7,7 @@ using namespace std;
 class Evaluation
 {
 public:
-    Qstring nameOfEvaluation;
+    Qstring nameOfEvaluation; 
 	int numberOfCorrectQT;
 	int numberOfTooLowQT;
 	int numberOfTooHighQT;
