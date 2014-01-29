@@ -22,21 +22,20 @@ private:
 
 //	/*ilosc kanalow*/			int channels;
 	/*ilosc akcji serca*/				int heartBeats; 
-    /*nr probek Tpeak*/					vector <int> T_Peak;
+	/*nr próbek Tpeak*/					vector <int> T_Peak;
 	/*czas Tend dla wyszukiwania parabolicznego*/			vector <double> T_EndP;
 	/*czas Tend dla wyszukiwania styczna*/					vector <double> T_EndT;
-    /*dlugosci odcinkow QT dla wyszukiwania parabolicznego*/		vector <double> QTP;
-    /*dlugosci odcinkow QT dla wyszukiwania styczna*/				vector <double> QTT;
+	/*d³ugoœci odcinków QT dla wyszukiwania parabolicznego*/		vector <double> QTP;
+	/*d³ugoœci odcinków QT dla wyszukiwania styczna*/				vector <double> QTT;
 
 public:
 	QT_DISP();
 	void getInput(vector <double> in_signals2, vector <int> in_QRS_On, vector <int> in_QRS_End, vector <int> in_P_On, double in_samplingFrequency);
 	void getInput(string path);
-    void setOutput(vector <Evaluation> &out_evaluation, vector <double> &T_End);
+	void setOutput(vector <Evaluation> &out_evaluation, vector <double> &T_End);
 	void Run();
 
 private:
-	void CalculateTend(vector<double> x, vector<double> y, int QRS_End, int P_On, int T_Peak );
 	void CalculateQT(double QRS_OnTime, int number_T_End_QT);
 	void Filtering(vector<double> *y, int QRS_End, int P_Onset);
 	int FindTPeak(vector<double> *y, int QRS_End, int P_Onset);
@@ -53,6 +52,7 @@ private:
 	int EvaluateFrideric(double gapQT, double RR);
 	int EvaluateHodges(double gapQT, double heartAction);
 	int EvaluateFramingham(double gapQT, double RR);
+	void CalculateStatistics();
 
 	vector <double> returnTEnd();
 	Evaluation returnEvaluations(int number);
