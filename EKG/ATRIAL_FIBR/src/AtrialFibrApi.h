@@ -20,7 +20,7 @@ public:
   AtrialFibrApi(const QVector<double> &signal,
                 const QVector<QVector<double>::const_iterator> &RPeaksIterators,
                 const QVector<QVector<double>::const_iterator> &pWaveStarts,
-                const QString & = QString("V5"));
+                const QString & = QString("V1"));
   double GetRRIntEntropy() const;
   double GetRRIntDivergence() const;
   double GetPWaveAbsenceRatio() const;
