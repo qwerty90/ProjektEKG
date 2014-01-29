@@ -1,1 +1,124 @@
 \section{Moduł HRV1}
+
+\subsection{Diagramy klas i sekwencji}
+
+\subsubsection{Diagram klas}
+
+\begin {tikzpicture}
+
+	\begin{class}[text width = 13cm]{HRV1MainModule}{0,0}
+		\attribute{- dividedPeaks : QVector<QVector<double>*>}
+		\attribute{- peaks : QVector<double>}
+		\attribute{- RRDifferences : QVector<double>}
+		\attribute{- samplingFrequency : double}
+		\attribute{- toReturnStatistical : HRV1BundleStatistical}
+		\attribute{- splineInterpolant : spline1dinterpolant}
+		\attribute{- fftArray : complex\_1d\_array}
+		\attribute{- toReturnFrequency : HRV1BundleFrequency}
+
+		\operation{+ prepare(RRPeaks : QVector<int>*, samplingFrequency : int = 1000)}
+		\operation{+ evaluateStatistical() : HRV1BundleStatistical}
+		\operation{+ evaluateFrequency() : HRV1BundleFrequency}
+		\operation{- evaluateRRMeanEntirety()}
+		\operation{- evaluateSDNNEntirety()}
+		\operation{- evaluateRMSSD()}		
+		\operation{- evaluateNN50()}
+		\operation{- evaluatepNN50()}
+		\operation{- evaluateSDANN()}
+		\operation{- evaluateSDANNindex()}
+		\operation{- evaluateSDSD()}
+		\operation{- evaluateSplainInterpolation()}
+		\operation{- evaluateFFT()}
+		\operation{- evaluateTP()}
+		\operation{- evaluateHF()}
+		\operation{- evaluateLF()}
+		\operation{- evaluateVLF()}
+		\operation{- evaluateULF()}
+		\operation{- evaluateLFHF()}
+
+	\end{class}
+
+	\begin{class}{HRV1BundleStatistical}{-5.0, -15.0}
+		\attribute{RRMean : double}
+		\attribute{SDNN : double}
+		\attribute{RMSSD : double}
+		\attribute{NN50 : double}
+		\attribute{pNN50 : double}
+		\attribute{SDANN : double}
+		\attribute{SDANNindex : double}
+		\attribute{SDSD : double}
+	
+
+	\end{class}
+
+	\begin{class}{HRV1BundleFrequency}{5.0, -15.0}
+		\attribute{xData : QVector<double>*}
+		\attribute{yData : QVector<double>*}
+		\attribute{rrXData : QVector<double>*}
+		\attribute{rrYData : QVector<double>*}
+		\attribute{TP : double}
+		\attribute{HF : double}
+		\attribute{LF : double}
+		\attribute{VLF : double}
+		\attribute{ULF : double}
+		\attribute{LFHF : double}
+
+	\end{class}
+
+	\aggregation{ HRV1MainModule}{output}{1}{HRV1BundleStatistical}
+	\aggregation{ HRV1MainModule}{output}{1}{HRV1BundleFrequency}
+
+\end{tikzpicture}
+
+\subsubsection{Diagram sekwencji}
+
+\begin{sequencediagram}
+	\newthread{t}{ : Controller}
+	\newinst[2]{i}{ : HRV1MainModule}
+
+	\begin{messcall}{t}{prepare()}{i}
+	\end{messcall}
+
+	\begin{call}{t}{evaluateStatistical()}{i}{toReturnStatistical}
+		\begin{callself}{i}{evaluateRRMeanEntirety()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateSDNNEntirety()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateRMSSD()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateNN50()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluatepNN50()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateSDANN()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateSDANNindex()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateSDSD()}{}
+		\end{callself}
+	\end{call}
+\end{sequencediagram}
+\begin{sequencediagram}
+	\newthread{t}{ : Controller}
+	\newinst[2]{i}{ : HRV1MainModule}
+
+	\begin{call}{t}{evaluateFrequency()}{i}{toReturnFrequency}
+		\begin{callself}{i}{evaluateSplainInterpolation()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateFFT()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateTP()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateHF()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateLF()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateVLF()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateULF()}{}
+		\end{callself}
+		\begin{callself}{i}{evaluateLFHF()}{}
+		\end{callself}
+	\end{call}
+
+\end{sequencediagram}

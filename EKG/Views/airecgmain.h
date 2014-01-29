@@ -69,8 +69,8 @@ public:
     QwtPlot* plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
 //////////
-     QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
-     QwtPlot* plotSleep_Apneafrequence(const QVector<double> &yData, float freq);
+     QwtPlot* plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs);
+
 
 
 signals:
