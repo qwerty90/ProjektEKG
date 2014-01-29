@@ -39,7 +39,7 @@ private Q_SLOTS:
   void pWaveOccurence_AllFound();
   void pWaveOccurence_HalfFound();
   void pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal();
-  void GetPWaveOccurenceRatioTest();
+  void GetPWaveAbsenceRatioTest();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -270,7 +270,7 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
   QVERIFY(thrown);
 }
 
-void RRSanityTest::GetPWaveOccurenceRatioTest() {
+void RRSanityTest::GetPWaveAbsenceRatioTest() {
   // Arrange
   QVector<double> signal(200);
   QVector<QVector<double>::iterator> pWaveStarts = { signal.begin() + 10,
@@ -282,7 +282,7 @@ void RRSanityTest::GetPWaveOccurenceRatioTest() {
     copy(begin(averagePWave), end(averagePWave), it);
   AtrialFibrApi AtrFibrApi(signal, pWaveStartsC, pWaveStartsC);
   // Assert
-  QCOMPARE(AtrFibrApi.GetPWaveOccurenceRatio(), 1.0);
+  QCOMPARE(AtrFibrApi.GetPWaveAbsenceRatio(), 0.0);
 }
 QTEST_APPLESS_MAIN(RRSanityTest)
 
