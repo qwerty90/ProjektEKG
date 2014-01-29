@@ -7,7 +7,7 @@ using namespace std;
 class Evaluation
 {
 public:
-    Qstring nameOfEvaluation; 
+    QString nameOfEvaluation;
 	int numberOfCorrectQT;
 	int numberOfTooLowQT;
 	int numberOfTooHighQT;
@@ -29,7 +29,7 @@ public:
 		standardDeviationQT = 0;
 	};
 	
-	Evaluation(Qstring name)
+    Evaluation(QString name)
 	{
 		nameOfEvaluation = name;
 		numberOfCorrectQT = 0;

@@ -1927,8 +1927,8 @@ void AirEcgMain::drawQtDisp(EcgData *data)
     ui->TH_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooHighQT ), 'f', 0) + " %");
     ui->name3->setText(QString(data->evaluations->at(3).nameOfEvaluation));
 
-    ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 0)+ " %"));
-            ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 0)+ " %");
+    ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 0)));
+            ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 0));
 
     QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
