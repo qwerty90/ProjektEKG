@@ -2,7 +2,6 @@
 #include "kmeans.h"
 #include "float.h"
 #include <math.h>
-//#include <QDebug>
 
 #define CDF_A_1  0.254829592
 #define CDF_A_2  -0.284496736
@@ -42,11 +41,8 @@ bool GMeans::classify()
     {
         iters++;
         keepGoing = false;
-     //   qDebug() << "XMEANS ITER: " << iters++;
         clusterer.setCentroids(initCentroids);
         // Check errors
-        //if (!clusterer.classifyParallel())
-        //    return false;
 
         for(int i = 0 ; i < clusterer.getNumberOfClusters(); i++)
         {
