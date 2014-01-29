@@ -192,15 +192,15 @@ private slots:
 
     void on_qrsSetGinKMaxIterations_valueChanged(int arg1);
 
-    void on_qrsSetGMinClusterSpinBox_valueChanged(int arg1);
+  //  void on_qrsSetGMinClusterSpinBox_valueChanged(int arg1);
 
-    void on_qrsSetGMaxClusterSpinBox_valueChanged(int arg1);
+ //   void on_qrsSetGMaxClusterSpinBox_valueChanged(int arg1);
 
     void on_qrsSettingsGMeansParallelCheckBox_toggled(bool checked);
 
     void on_qrsSetKMaxIterSpinBox_valueChanged(int arg1);
 
-    void on_qrsSetKClusterNumSpinBox_valueChanged(int arg1);
+  //  void on_qrsSetKClusterNumSpinBox_valueChanged(int arg1);
 
     void on_qrsSetKMeansParallelCheckBox_toggled(bool checked);
 
@@ -283,6 +283,8 @@ private slots:
     void stItemSelected(int row, int column);
     void nextStAbnormality();
     void prevStAbnormality();
+
+    void on_G_QRS_toggled(bool checked);
 
 private:
     Ui::AirEcgMain *ui;
