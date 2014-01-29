@@ -7,7 +7,7 @@ using namespace std;
 class Evaluation
 {
 public:
-    QString nameOfEvaluation;
+    Qstring nameOfEvaluation; 
 	int numberOfCorrectQT;
 	int numberOfTooLowQT;
 	int numberOfTooHighQT;
@@ -29,7 +29,7 @@ public:
 		standardDeviationQT = 0;
 	};
 	
-    Evaluation(QString name)
+	Evaluation(Qstring name)
 	{
 		nameOfEvaluation = name;
 		numberOfCorrectQT = 0;
@@ -45,9 +45,9 @@ public:
 	void CalculatePercentage()
 	{
 		int sum = numberOfCorrectQT + numberOfTooLowQT + numberOfTooHighQT;
-		percentOfCorrectQT = numberOfCorrectQT / sum;
-		percentOfTooLowQT = numberOfTooLowQT / sum;
-		percentOfTooHighQT = numberOfTooHighQT / sum;
+		percentOfCorrectQT = (numberOfCorrectQT / sum)*100;
+		percentOfTooLowQT = (numberOfTooLowQT / sum)*100;
+		percentOfTooHighQT = (numberOfTooHighQT / sum)*100;
         //cout << percentOfCorrectQT << endl;
         //cout << percentOfTooLowQT << endl;
         //cout << percentOfTooHighQT << endl;
