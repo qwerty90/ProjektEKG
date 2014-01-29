@@ -460,7 +460,7 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
     QwtText xaxis("Frequence [Hz]");
-    QwtText yaxis("Power");
+    QwtText yaxis("Power [ms^2]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
 
@@ -604,8 +604,8 @@ QwtPlot* AirEcgMain::plotPlotRR(const QVector<double>& yData,const QVector<doubl
     plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
-    QwtText xaxis("Frequence [Hz]");
-    QwtText yaxis("Power");
+    QwtText xaxis("Time [ms]");
+    QwtText yaxis("Interval length [ms]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
 
