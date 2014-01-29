@@ -529,7 +529,6 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
 
     plot->setAxisTitle( QwtPlot::yLeft, yaxis );
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-    plot->setFixedHeight(230);
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
     grid->enableYMin(true);
@@ -561,12 +560,12 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
     {
         marker.append(new QwtPlotMarker);
         marker.at(i)->setLineStyle( QwtPlotMarker::VLine );
-        marker.at(i)->setLinePen( QPen( Qt::black, 2, Qt::SolidLine ) );
+        marker.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
         marker.at(i)->setXValue( sleep_apnea_pairs[i].first);
         marker.at(i)->attach( plot );
         marker.append(new QwtPlotMarker);
         marker.at(i+1)->setLineStyle( QwtPlotMarker::VLine );
-        marker.at(i+1)->setLinePen( QPen( Qt::black, 2, Qt::SolidLine ) );
+        marker.at(i+1)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
         marker.at(i+1)->setXValue( sleep_apnea_pairs[i].first);
         marker.at(i+1)->attach( plot );
 
@@ -614,7 +613,6 @@ QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVec
     plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
     plot->setTitle(QwtText("Hilbert frequency and Apnea Detections"));
-    plot->setFixedHeight(230);
     QwtText xaxis("Samples ");
     QwtText yaxis("Hilbert frequency [Hz] ");
     xaxis.setFont(QFont("Arial", 8));
@@ -654,12 +652,12 @@ QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVec
     {
         marker.append(new QwtPlotMarker);
         marker.at(i)->setLineStyle( QwtPlotMarker::VLine );
-        marker.at(i)->setLinePen( QPen( Qt::black, 2, Qt::SolidLine ) );
+        marker.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
         marker.at(i)->setXValue( sleep_apnea_pairs[i].first);
         marker.at(i)->attach( plot );
         marker.append(new QwtPlotMarker);
         marker.at(i+1)->setLineStyle( QwtPlotMarker::VLine );
-        marker.at(i+1)->setLinePen( QPen( Qt::black, 2, Qt::SolidLine ) );
+        marker.at(i+1)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
         marker.at(i+1)->setXValue( sleep_apnea_pairs[i].first);
         marker.at(i+1)->attach( plot );
 
@@ -2256,8 +2254,7 @@ void AirEcgMain::on_butterworthRadioButton_clicked()
 
 void AirEcgMain::on_pushButton_17_clicked()
 {
-    //TODO: Sprawdzanie czy wczesniej juz bylo policzone
-    emit this->runEcgBaseline();
+
     emit this->runRPeaks();
 }
 
