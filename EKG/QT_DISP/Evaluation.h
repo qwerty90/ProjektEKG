@@ -1,13 +1,13 @@
 #ifndef EVALUATION_H
 #define EVALUATION_H
 
-#include <string>
+#include <Qstring>
 using namespace std;
 
 class Evaluation
 {
 public:
-    string nameOfEvaluation;
+    Qstring nameOfEvaluation; 
 	int numberOfCorrectQT;
 	int numberOfTooLowQT;
 	int numberOfTooHighQT;
@@ -29,7 +29,7 @@ public:
 		standardDeviationQT = 0;
 	};
 	
-	Evaluation(string name)
+	Evaluation(Qstring name)
 	{
 		nameOfEvaluation = name;
 		numberOfCorrectQT = 0;
