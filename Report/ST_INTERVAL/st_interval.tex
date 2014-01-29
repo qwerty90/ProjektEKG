@@ -119,7 +119,7 @@ Na podstawie położenia punktów $ J $ oraz $ T_{on} $ można wyznaczyć punkt 
 \end{figure}
 Odcinek ST może być aproksymowany dwoma prostymi łączącymi kolejno punkty $ J $ i $ ST_{mid} $ oraz $ ST_{mid} $ i $ T_{on} $ (rys. \ref{fig:ST_aproksymacjaST}). Kąty nachylenia tych prostych względem izolinii (oznaczane jako $ d_1 $ i $ d_2 $) pozwalają na klasyfikację kształtu odcinka [2].
 
-Wprowadzić można zatem dwa parametry progowe determinujące kształt interwału ST: $ a_{tol} $ (odległość od izolinii), $ d_{tol} $ (kąt nachylenia). Klasyfikacja kształtu zależna od tych parametrów przedstawiona została w tabeli \ref{tab:ST_klasyfikacjaST}. Typowymi wartościami zgodnymi z normami kardiologicznymi [2] są:\\
+Wprowadzić można zatem dwa parametry progowe determinujące kształt interwału ST: $ a_{tol} $ (odległość od izolinii), $ d_{tol} $ (kąt nachylenia). Klasyfikacja kształtu zależna od tych parametrów przedstawiona została w tabeli \ref{tab:ST_klasyfikacjaST}. Typowymi wartościami zgodnymi z normami kardiologicznymi [2] są:
 \[ a_{tol} = 0.1 mV, \; d_{tol} = 35^\circ  \]
 \begin{table}[H]
 	\centering
@@ -325,3 +325,86 @@ W ramach eksperymentów opisana procedura testowania została przeprowadzona dla
 	112 & 100\% & 100\% & 100\%	\\ \hline
 	\end{tabular}
 \end{table}
+
+\subsection{Diagramy klas}
+\begin{tikzpicture}
+%	\begin{class}[text width = 9cm]{EcgStAnalyzer}{0,0}
+%		\attribute{+ AlgorithmType : enum}
+%		\attribute{+ ErrorType : enum}
+%		\attribute{- smoothSize : unsigned int}
+%		\attribute{- detectionSize : unsigned int}
+%		\attribute{- morphologyCoeff : double}
+%		\attribute{- levelThreshold : double}
+%		\attribute{- slopeThreshold : double}
+%		\attribute{- algorithm : AlgorithmType}
+%		\attribute{- result : QList<EcgStDescriptor>}
+%		\attribute{- lastError : ErrorType}
+%		\attribute{- rData : QVector<EcgSampleIter>}
+%		\attribute{- jData : QVector<EcgSampleIter>}
+%		\attribute{- tEndData : QVector<EcgSampleIter>}
+%		
+%		\operation{+ getSmoothSize() const : unsigned int}
+%		\operation{+ setSmoothSize(value : unsigned int) : void}
+%		\operation{+ getDetectionSize() const : unsigned int}
+%		\operation{+ setDetectionSize(value : unsigned int) : void}
+%		\operation{+ getMorphologyCoeff() const : double}
+%		\operation{+ setMorphologyCoeff(value : double) : void}
+%		\operation{+ getAlgorithm() const : AlgorithmType}
+%		\operation{+ setAlgorithm(value : AlgorithmType) : void}
+%		\operation{+ getLevelThreshold() const : double}
+%		\operation{+ setLevelThreshold(value : double) : void}
+%		\operation{+ getSlopeThreshold() const : double}
+%		\operation{+ setSlopeThreshold(value : double) : void}
+%		\operation{+ getResult() const : QList<EcgStDescriptor>}
+%		\operation{+ getLastError() const : ErrorType}
+%		\operation{+ analyze(\&ecgSamples : const QVector<double>,\\
+%			\&rVec : const QVector<EcgSampleIter>,\\
+%			\&jVec : const QVector<EcgSampleIter>,\\
+%			\&tEndVec : const QVector<EcgSampleIter>,\\
+%			sampleFreq : double) : bool}
+%		\operation{+ classifyPosition(offset : double) : EcgStPosition}
+%		\operation{+ classifyShape(a1 : double, a2 : double) : EcgStShape}
+%		\operation{+ classifyInterval(\&desc : EcgStDescriptor) : void}
+%		\operation{- clearData() : void}
+%		\operation{- prepareData(\&ecgSamples : const QVector<double>,\\
+%			\&rVec : const QVector<EcgSampleIter>,\\
+%			\&jVec : const QVector<EcgSampleIter>,\\
+%			\&tEndVec : const QVector<EcgSampleIter>) : void}
+%	\end{class}
+%	
+%	\begin{class}[text width = 7cm]{EcgStDescriptor}{0,0}
+%		\attribute{STOn : QVector<double>::const\_iterator}
+%		\attribute{STEnd : QVector<double>::const\_iterator}
+%		\attribute{STMid : QVector<double>::const\_iterator}
+%		\attribute{offset : double}
+%		\attribute{slope1 : double}
+%		\attribute{slope2 : double}
+%		\attribute{position : EcgStPosition}
+%		\attribute{shape : EcgStShape}
+%	\end{class}
+%
+%	\begin{class}[text width = 5cm]{<<enumeration>> AlgorithmType}{0,-5}
+%		\attribute{LINEAR}
+%		\attribute{QUADRATIC}
+%	\end{class}
+%
+%	\begin{class}[text width = 5cm]{<<enumeration>> ErrorType}{0,-8}
+%		\attribute{NO\_ERROR}
+%		\attribute{NO\_SAMPLES\_PROVIDED}
+%		\attribute{INSUFFICIENT\_DATA}
+%	\end{class}
+%
+%	\begin{class}[text width = 5cm]{<<enumeration>> EcgStPosition}{0,-11}
+%		\attribute{ST\_POS\_NORMAL}
+%		\attribute{ST\_POS\_ELEVATION}
+%		\attribute{ST\_POS\_DEPRESSION}
+%	\end{class}
+%	
+%	\begin{class}[text width = 5cm]{<<enumeration>> EcgStShape}{0,-14}
+%		\attribute{ST\_SHAPE\_HORIZONTAL}
+%		\attribute{ST\_SHAPE\_DOWNSLOPING}
+%		\attribute{ST\_SHAPE\_UPSLOPING}
+%		\attribute{ST\_SHAPE\_CONCAVE}
+%		\attribute{ST\_SHAPE\_CONVEX}
+%	\end{class}
+\end{tikzpicture}
