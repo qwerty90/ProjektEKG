@@ -460,7 +460,7 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
     QwtText xaxis("Frequence [Hz]");
-    QwtText yaxis("Power");
+    QwtText yaxis("Power [ms^2]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
 
@@ -604,8 +604,8 @@ QwtPlot* AirEcgMain::plotPlotRR(const QVector<double>& yData,const QVector<doubl
     plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
-    QwtText xaxis("Frequence [Hz]");
-    QwtText yaxis("Power");
+    QwtText xaxis("Time [ms]");
+    QwtText yaxis("Interval length [ms]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
 
@@ -1404,12 +1404,12 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->scrollAreaFT->show();
     QLOG_DEBUG() << "GUI/HRV1 2";
     //Frequency Coefficients
-    ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2));
-    ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2));
-    ui->LF->setText("LF=" %QString::number(((long)data->LF), 'f', 2));
-    ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2));
-    ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2));
-    ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + "%");
+    ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2) + " ms^2");
+    ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2) + " ms^2");
+    ui->LF->setText("LF=" %QString::number(((long)data->LF), 'f', 2) + " ms^2");
+    ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2) + " ms^2");
+    ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2) + " ms^2");
+    ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + " %");
     QLOG_DEBUG() << "GUI/HRV1 3";
 }
 
