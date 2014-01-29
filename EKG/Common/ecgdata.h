@@ -106,7 +106,7 @@ public:
     QVector<double>          *SleepApnea_plot;
     QVector<double>          *SleepApneaamp;
     QVector<double>          *SleepApneafreq;
-
+    QVector<double>          *SleepApneatime;
     //modul QtDisp (bez TWaves)
     QVector<Evaluation> *evaluations;
 

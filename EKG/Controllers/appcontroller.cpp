@@ -836,7 +836,8 @@ void AppController::runSleepApnea()
     if ( (this->entity->SleepApnea!=NULL)
          & (this->entity->SleepApnea_plot!=NULL)
          & (this->entity->SleepApneaamp!=NULL)
-         & (this->entity->SleepApneafreq!=NULL))
+         & (this->entity->SleepApneafreq!=NULL)
+         & (this->entity->SleepApneatime!=NULL))
     {
         QLOG_INFO() << "MVC/ Sleep Apnea already exists.";
         return;
@@ -854,6 +855,7 @@ void AppController::runSleepApnea()
 
     QVector<QVector<double>> *tmp = new QVector<QVector<double>>(obiekt.sleep_apnea_plots(
                                                                     this->entity->Rpeaks_uint));
+    this->entity->SleepApneatime= new QVector<double>(tmp->at(0));
     this->entity->SleepApneaamp = new QVector<double>(tmp->at(1));
     this->entity->SleepApneafreq= new QVector<double>(tmp->at(2));
 

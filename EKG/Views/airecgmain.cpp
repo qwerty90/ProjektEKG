@@ -460,7 +460,7 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
     QwtText xaxis("Frequence [Hz]");
-    QwtText yaxis("Power");
+    QwtText yaxis("Power [ms^2]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
 
@@ -480,6 +480,89 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
     curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve->setSamples(xData, yData);
     curve->attach(plot);
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,xData.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
+//Sleap
+QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs)
+{
+    double maxy = yData.first();
+    double miny = yData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
+    }
+    double maxx = xData.first();
+    double minx = xData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
+
+    QwtText xaxis(" ");
+    QwtText yaxis(" ");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+    grid->attach(plot);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 2));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(xData, yData);
+    curve->attach(plot);
+
+
+    QwtPlotMarker *mY = new QwtPlotMarker();
+    mY->setLineStyle( QwtPlotMarker::HLine );
+    mY->setLinePen( QPen( Qt::green, 2, Qt::SolidLine ) );
+    mY->setYValue( threshold);
+    mY->attach( plot );
+
+    QwtPlotMarker *mX = new QwtPlotMarker();
+    mX->setLineStyle( QwtPlotMarker::VLine );
+    mX->setLinePen( QPen( Qt::black, 2, Qt::SolidLine ) );
+    QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
+    for(int i=0;i<sleep_apnea_pairs.size();i++)
+    {
+        mX->setYValue( sleep_apnea_pairs[i].first);
+        mX->attach( plot );
+        mX->setYValue( sleep_apnea_pairs[i].second);
+        mX->attach( plot );
+       QLOG_TRACE() <<"Sleep 1= "<< QString::number( sleep_apnea_pairs[i].first)<< "2 = " << QString::number( sleep_apnea_pairs[i].second);
+    }
 
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
@@ -521,8 +604,8 @@ QwtPlot* AirEcgMain::plotPlotRR(const QVector<double>& yData,const QVector<doubl
     plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
 
-    QwtText xaxis("Frequence [Hz]");
-    QwtText yaxis("Power");
+    QwtText xaxis("Time [ms]");
+    QwtText yaxis("Interval length [ms]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
 
@@ -558,126 +641,7 @@ QwtPlot* AirEcgMain::plotPlotRR(const QVector<double>& yData,const QVector<doubl
 
     return plot;
 }
-QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData, float freq)
-{
-    QVector<double> sampleNo = QVector<double>(yData.size());
 
-    double max = yData.first();
-    double min = yData.first();
-
-    double tos=1/freq;
-
-    for (int i = 0; i < yData.size(); ++i)
-    {
-        sampleNo[i] = i*tos*1000;
-        max = qMax(max, yData[i]);
-        min = qMin(min, yData[i]);
-    }
-
-    QwtPlot* plot = new QwtPlot();
-    plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
-
-    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
-    plot->axisAutoScale(QwtPlot::xBottom);
-    QwtText xaxis("Time [mm:ss:zzz]");
-    QwtText yaxis("Voltage [mV]");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-    QwtPlotGrid* grid = new QwtPlotGrid();
-    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
-    grid->enableYMin(true);
-    grid->enableXMin(true);
-    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
-    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
-    grid->attach(plot);
-
-    QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 2));
-    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-    curve->setSamples(sampleNo, yData);
-    curve->attach(plot);
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-
-    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
-    panner->setMouseButton(Qt::MidButton);
-    panner->setOrientations(Qt::Horizontal);
-
-    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
-    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
-
-    return plot;
-}
-
-QwtPlot* AirEcgMain::plotSleep_Apneafrequence(const QVector<double>& yData, float freq)
-{
-    QVector<double> sampleNo = QVector<double>(yData.size());
-
-    double max = yData.first();
-    double min = yData.first();
-
-    double tos=1/freq;
-
-    for (int i = 0; i < yData.size(); ++i)
-    {
-        sampleNo[i] = i*tos*1000;
-        max = qMax(max, yData[i]);
-        min = qMin(min, yData[i]);
-    }
-
-    QwtPlot* plot = new QwtPlot();
-    plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
-    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
-    plot->axisAutoScale(QwtPlot::xBottom);
-    QwtText xaxis("Time [mm:ss:zzz]");
-    QwtText yaxis("Voltage [mV]");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-    QwtPlotGrid* grid = new QwtPlotGrid();
-    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
-    grid->enableYMin(true);
-    grid->enableXMin(true);
-    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
-    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
-    grid->attach(plot);
-
-    QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 2));
-    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-    curve->setSamples(sampleNo, yData);
-    curve->attach(plot);
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-
-    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
-    panner->setMouseButton(Qt::MidButton);
-    panner->setOrientations(Qt::Horizontal);
-
-    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
-    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
-
-    return plot;
-}
 QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, double a, double b)
 {
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -1440,12 +1404,12 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->scrollAreaFT->show();
     QLOG_DEBUG() << "GUI/HRV1 2";
     //Frequency Coefficients
-    ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2));
-    ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2));
-    ui->LF->setText("LF=" %QString::number(((long)data->LF), 'f', 2));
-    ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2));
-    ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2));
-    ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + "%");
+    ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2) + " ms^2");
+    ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2) + " ms^2");
+    ui->LF->setText("LF=" %QString::number(((long)data->LF), 'f', 2) + " ms^2");
+    ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2) + " ms^2");
+    ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2) + " ms^2");
+    ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + " %");
     QLOG_DEBUG() << "GUI/HRV1 3";
 }
 
@@ -1728,11 +1692,11 @@ void AirEcgMain::prevStAbnormality()
 
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
-    QwtPlot *plotSleepApnea = plotSleep_Apnea(*((data->SleepApnea_plot)),data->info->frequencyValue );
+    QwtPlot *plotSleepApnea = plotSleep_Apnea(*(data->SleepApneaamp),*(data->SleepApneatime), data->SleepApnea_plot->at(0),*(data->SleepApnea));
     ui->sleepArea1->setWidget(plotSleepApnea);
     ui->sleepArea1->show();
 
-    QwtPlot *plotSleepApneafrequence = plotSleep_Apneafrequence(*(data->ecg_baselined),data->info->frequencyValue );
+    QwtPlot *plotSleepApneafrequence = plotSleep_Apnea(*(data->SleepApneafreq),*(data->SleepApneatime), data->SleepApnea_plot->at(1),*(data->SleepApnea));
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
