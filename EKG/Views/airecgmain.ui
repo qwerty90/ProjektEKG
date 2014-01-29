@@ -347,7 +347,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -447,8 +447,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>501</height>
                       </rect>
                      </property>
                     </widget>
@@ -488,8 +488,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>63</width>
-                       <height>16</height>
+                       <width>988</width>
+                       <height>368</height>
                       </rect>
                      </property>
                     </widget>
@@ -770,8 +770,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>402</height>
                   </rect>
                  </property>
                 </widget>
@@ -914,8 +914,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>494</height>
                   </rect>
                  </property>
                 </widget>
@@ -1294,7 +1294,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -1967,8 +1967,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>63</width>
-                   <height>16</height>
+                   <width>1030</width>
+                   <height>446</height>
                   </rect>
                  </property>
                 </widget>
@@ -2978,7 +2978,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_9">
             <property name="currentIndex">
-             <number>2</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="atrial_fibr">
              <attribute name="title">
@@ -3085,8 +3085,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>18</width>
-                     <height>16</height>
+                     <width>894</width>
+                     <height>492</height>
                     </rect>
                    </property>
                   </widget>
@@ -3615,8 +3615,6 @@
       <string>HRV</string>
      </property>
      <addaction name="actionHRV1"/>
-     <addaction name="actionHRV2"/>
-     <addaction name="actionHRV3"/>
     </widget>
     <widget class="QMenu" name="menuQRS">
      <property name="title">
@@ -3629,7 +3627,13 @@
     <addaction name="actionWAVES"/>
     <addaction name="menuHRV"/>
     <addaction name="menuQRS"/>
-    <addaction name="actionT_WAVE"/>
+    <addaction name="actionATRIAL_FIBR"/>
+    <addaction name="actionQT_DISP"/>
+    <addaction name="actionSLEEP_APNEA"/>
+    <addaction name="actionST_INTERVAL"/>
+    <addaction name="actionSIG_EDR"/>
+    <addaction name="actionVCG_LOOP"/>
+    <addaction name="actionHRT"/>
     <addaction name="separator"/>
     <addaction name="actionRUN_ALL"/>
    </widget>
@@ -3708,6 +3712,41 @@
   <action name="actionData_reset">
    <property name="text">
     <string>Data reset</string>
+   </property>
+  </action>
+  <action name="actionATRIAL_FIBR">
+   <property name="text">
+    <string>ATRIAL_FIBR</string>
+   </property>
+  </action>
+  <action name="actionQT_DISP">
+   <property name="text">
+    <string>QT_DISP</string>
+   </property>
+  </action>
+  <action name="actionSLEEP_APNEA">
+   <property name="text">
+    <string>SLEEP_APNEA</string>
+   </property>
+  </action>
+  <action name="actionST_INTERVAL">
+   <property name="text">
+    <string>ST_INTERVAL</string>
+   </property>
+  </action>
+  <action name="actionSIG_EDR">
+   <property name="text">
+    <string>SIG_EDR</string>
+   </property>
+  </action>
+  <action name="actionVCG_LOOP">
+   <property name="text">
+    <string>VCG_LOOP</string>
+   </property>
+  </action>
+  <action name="actionHRT">
+   <property name="text">
+    <string>HRT</string>
    </property>
   </action>
  </widget>

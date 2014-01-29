@@ -95,6 +95,58 @@ void AirEcgMain::on_actionWczytaj_triggered()
     dialogFileBrowser.exec();
     emit this->busy(false);
 }
+//MENU RUN
+
+void AirEcgMain::on_actionECG_BASELINE_triggered()
+{
+    emit this->runEcgBaseline();
+}
+void AirEcgMain::on_actionR_PEAKS_triggered()
+{
+    emit this->runRPeaks();
+}
+void AirEcgMain::on_actionWAVES_triggered()
+{
+    emit this->runWaves();
+}
+void AirEcgMain::on_actionHRV1_triggered()
+{
+    emit this->runHRV1();
+}
+void AirEcgMain::on_actionSettings_triggered()
+{
+    emit this->runQrsClass();
+}
+
+void AirEcgMain::on_actionATRIAL_FIBR_triggered()
+{
+    emit this->runAtrialFibr();
+}
+void AirEcgMain::on_actionQT_DISP_triggered()
+{
+    emit this->runQtDisp();
+}
+void AirEcgMain::on_actionSLEEP_APNEA_triggered()
+{
+    emit this->runSleepApnea();
+}
+void AirEcgMain::on_actionST_INTERVAL_triggered()
+{
+    emit this->runStInterval();
+}
+void AirEcgMain::on_actionSIG_EDR_triggered()
+{
+    emit this->runSigEdr();
+}
+void AirEcgMain::on_actionVCG_LOOP_triggered()
+{
+    emit this->runVcgLoop();
+}
+void AirEcgMain::on_actionHRT_triggered()
+{
+    emit this->runHRT();
+}
+
 
 void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
 {

@@ -152,6 +152,25 @@ private slots:
     void on_actionWczytaj_triggered();
     void on_Hilbert_radiobutton_clicked();
 
+    //MENU RUN
+
+    void on_actionECG_BASELINE_triggered();
+    void on_actionR_PEAKS_triggered();
+    void on_actionWAVES_triggered();
+    void on_actionHRV1_triggered();
+    void on_actionSettings_triggered();
+    void on_actionATRIAL_FIBR_triggered();
+    void on_actionQT_DISP_triggered();
+    void on_actionSLEEP_APNEA_triggered();
+    void on_actionST_INTERVAL_triggered();
+    void on_actionSIG_EDR_triggered();
+    void on_actionVCG_LOOP_triggered();
+    void on_actionHRT_triggered();
+
+
+
+
+
     void on_PanTompkins_radiobutton_clicked();
 
     void on_qrsclassestoolbox_changed(int index);
