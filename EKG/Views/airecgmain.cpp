@@ -66,10 +66,10 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     connect(shortcut,SIGNAL(activated()), ui->actionWczytaj,SLOT(click()));
 
     // Hide unused controls
-    ui->label_10->setVisible(false);
-    ui->qrsSettingsGMeansParallelCheckBox->setVisible(false);
+  //  ui->label_10->setVisible(false);
+  //  ui->qrsSettingsGMeansParallelCheckBox->setVisible(false);
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
-    ui->QRSSampleDataGroupBox->setVisible(false);
+   ui->QRSSampleDataGroupBox->setVisible(false);
     ui->progressBar->setVisible(false);
     ui->busy_label->setVisible(false);
     initEcgBaselineGui();
@@ -162,7 +162,9 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->tabWidget_5->setEnabled(true);
     ui->tabHrv->setEnabled(true);
     ui->pushButton_18->setEnabled(true);
-
+ui->G_QRS->setEnabled(true);
+ui->K_QRS->setEnabled(true);
+ui->KGroupBox->setEnabled(false);
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
     ui->qrsFeaturesSettingsGroupBox->setEnabled(true);
@@ -2210,10 +2212,10 @@ void AirEcgMain::on_qrsSetGinKMaxIterations_valueChanged(int arg1)
 {
     emit qrsGMaxKIterations(arg1);
 }
-
+/*
 void AirEcgMain::on_qrsSetGMinClusterSpinBox_valueChanged(int arg1)
 {
-    ui->qrsSetGMaxClusterSpinBox->setMinimum(arg1);
+   // ui->qrsSetGMaxClusterSpinBox->setMinimum(arg1);
 
     emit qrsGMinClustersChanged(arg1);
 }
@@ -2222,7 +2224,7 @@ void AirEcgMain::on_qrsSetGMaxClusterSpinBox_valueChanged(int arg1)
 {
     emit qrsGMaxClustersChanged(arg1);
 }
-
+*/
 void AirEcgMain::on_qrsSettingsGMeansParallelCheckBox_toggled(bool checked)
 {
     emit qrsParallelExecutionChanged(checked);
@@ -2232,12 +2234,12 @@ void AirEcgMain::on_qrsSetKMaxIterSpinBox_valueChanged(int arg1)
 {
     emit qrsMaxIterationsChanged(arg1);
 }
-
+/*
 void AirEcgMain::on_qrsSetKClusterNumSpinBox_valueChanged(int arg1)
 {
     emit qrsKClustersNumberChanged(arg1);
 }
-
+*/
 void AirEcgMain::on_qrsSetKMeansParallelCheckBox_toggled(bool checked)
 {
     emit qrsParallelExecutionChanged(checked);
@@ -3440,3 +3442,9 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 }
 */
+
+void AirEcgMain::on_G_QRS_toggled(bool checked)
+{
+    ui->KGroupBox->setEnabled(!checked);
+    ui->GGroupBox->setEnabled(checked);
+}
