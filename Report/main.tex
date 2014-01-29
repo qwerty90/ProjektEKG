@@ -16,7 +16,14 @@
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{tikz}
+<<<<<<< HEAD
 \usepackage{algpseudocode}
+=======
+\usepackage{pgf-umlcd}
+\usepackage{pgf-umlsd}
+\usepackage{multirow}
+\usepackage{tabularx}
+>>>>>>> b7f69190a22769eceb10776fa122f3a7d2994db1
 
 \usepackage[
         unicode=true,
@@ -65,6 +72,48 @@
 \include{ATRIAL_FIBR/atrial_fibr}
 \include{QT_DISP/qt_disp}
 \include{HRT/hrt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tikzpicture}
+  \begin{abstractclass}[text width=5cm]{ExampleClass}{0,0}
+    \attribute{exampleVar : String}
+    \attribute{exampleVar2 : int = 0}
+
+    \operation{exampleMethod(num : int)}
+    \operation[0]{exampleMethod2(num : int)}
+  \end{abstractclass}
+\end{tikzpicture}
+
+\begin{sequencediagram}
+  \newthread{ss}{:SimulationServer}
+  \newinst{ctr}{:SimControlNode}
+  \newinst{ps}{:PhysicsServer}
+  \newinst[1]{sense}{:SenseServer}
+  
+  \begin{call}{ss}{Initialize()}{sense}{}
+  \end{call}
+  \begin{sdblock}{Run Loop}{The main loop}
+    \begin{call}{ss}{StartCycle()}{ctr}{}
+      \begin{call}{ctr}{ActAgent()}{sense}{}
+      \end{call}
+    \end{call}
+    \begin{call}{ss}{Update()}{ps}{}
+      \begin{messcall}{ps}{PrePhysicsUpdate()}{sense}{state}
+      \end{messcall}
+      \begin{sdblock}{Physics Loop}{}
+        \begin{call}{ps}{PhysicsUpdate()}{ps}{}
+        \end{call}
+      \end{sdblock}
+      \begin{call}{ps}{PostPhysicsUpdate()}{sense}{}
+      \end{call}
+    \end{call}
+    \begin{call}{ss}{EndCycle()}{ctr}{}
+      \begin{call}{ctr}{SenseAgent()}{sense}{}
+      \end{call}
+    \end{call}
+  \end{sdblock}
+\end{sequencediagram}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

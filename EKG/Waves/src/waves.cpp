@@ -73,7 +73,7 @@ void waves::set_qrs_onset(QVector<double>& ecg, vector_it& r_peaks)
 
                     w=tp_int-s2;
                     a_t_max=-INFINITY;
-                    for(int j=s2;j<=tp_int;j++)
+                    for(int j=(r_peaks[i]-ecg.begin())-1;j>=s2;j--)
                     {
                         a_t=0;
                         envelope_win.clear();
@@ -158,7 +158,7 @@ void waves::set_qrs_end(QVector<double>& ecg,vector_it& r_peaks)
                     }
                     w=s2-tp_int;
                     a_t_max=-INFINITY;
-                    for(int j=tp_int;j<=s2;j++)
+                    for(int j=(r_peaks[i]-ecg.begin())+1;j<=s2;j++)
                     {
                         a_t=0;
                         envelope_win.clear();
@@ -207,7 +207,7 @@ void waves::set_p_onset(QVector<double>& ecg, vector_it& r_peaks)
  QVector<double> Pt;
  QVector<double> M;
 
- int p_one_end_window=25;
+ int p_one_end_window=ceil(0.1*fs);
  for(int i=0;i<r_peaks.size()-1;i++)
      {
     window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
@@ -309,6 +309,7 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
     int P_mid;
     int ipeak;
     int poczatek;
+    int window=0;
     QVector<int> window_length;
     QVector<double> PTend;
     QVector<double> dPTend;
@@ -317,7 +318,7 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
     QVector<double> Pt;
     QVector<double> M;
 
-    int p_one_end_window=25;
+    int p_one_end_window=ceil(0.1*fs);
     for(int i=0;i<r_peaks.size()-1;i++)
         {
        window_length.push_back(ceil(0.25*((r_peaks.at(i+1)-ecg.begin())-(r_peaks.at(i)-ecg.begin()))));
@@ -368,8 +369,12 @@ void waves::set_p_end(QVector<double>& ecg,vector_it& r_peaks)
              if((M.at(ipeak-2)<M.at(ipeak-1))&&(M.at(ipeak-1)>M.at(ipeak)))
                  {
                   P_mid=ipeak+(qrs_onset_it.at(i+poczatek)-ecg.begin()-window_length.at(i));
+                 if(P_mid+p_one_end_window-1>qrs_onset_it.at(i+poczatek)-ecg.begin())
+                      window=(qrs_onset_it.at(i+poczatek)-ecg.begin())-P_mid+1;
+                  else
+                      window=p_one_end_window;
                   Rv=0.005;
-                  for(int j=P_mid-1;j<P_mid+p_one_end_window-1;j++)
+                  for(int j=P_mid-1;j<P_mid+window-1;j++)
                   {
                   onset_signal.push_back(ecg.at(j));
                   mediana+=onset_signal.last();

@@ -32,12 +32,11 @@ class AirEcgMain : public QMainWindow
 
     EcgData *currentEcgData;
 
-
-
-
+    QwtPlot *stIntervalPlot;
+    ScrollZoomer *stIntervalZoomer;
 
     void resetQrsToolbox(EcgData* data);
-    //void populareQRSClassBox(QRSClass currentClass, int type);
+    void populareQRSClassBox(QRSClass currentClass, int type);
 public:
 
     explicit AirEcgMain(QWidget *parent = 0);
@@ -70,8 +69,8 @@ public:
     QwtPlot* plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
 //////////
-     QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
-     QwtPlot* plotSleep_Apneafrequence(const QVector<double> &yData, float freq);
+     QwtPlot* plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs);
+
 
 
 signals:
@@ -103,7 +102,7 @@ signals:
     void runHRT();
 
     void qrsClassChanged(int index, int type);
-    //void qrsClustererChanged(ClustererType type);
+    void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
     void qrsParallelExecutionChanged(bool flag);
     void qrsGMinClustersChanged(int minClusters);
@@ -127,7 +126,7 @@ signals:
 public slots:
     void receivePatientData(EcgData *data);
 
-    //void receiveQRSData(QRSClass currClass, int type);
+    void receiveQRSData(QRSClass currClass, int type);
     void fbLoadData(const QString &directory, const QString &name);
 
     //modules recieve
@@ -259,6 +258,11 @@ private slots:
     void on_pushButton_16_clicked();
 
     void on_pushButton_18_clicked();
+
+    void initStIntervalGui();
+    void stItemSelected(int row, int column);
+    void nextStAbnormality();
+    void prevStAbnormality();
 
 private:
     Ui::AirEcgMain *ui;

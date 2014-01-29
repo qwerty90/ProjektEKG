@@ -32,11 +32,10 @@ public:
 	QT_DISP();
 	void getInput(vector <double> in_signals2, vector <int> in_QRS_On, vector <int> in_QRS_End, vector <int> in_P_On, double in_samplingFrequency);
 	void getInput(string path);
-	void setOutput(vector <Evaluation> out_evaluation, vector <double> T_End);
+	void setOutput(vector <Evaluation> &out_evaluation, vector <double> &T_End);
 	void Run();
 
 private:
-	void CalculateTend(vector<double> x, vector<double> y, int QRS_End, int P_On, int T_Peak );
 	void CalculateQT(double QRS_OnTime, int number_T_End_QT);
 	void Filtering(vector<double> *y, int QRS_End, int P_Onset);
 	int FindTPeak(vector<double> *y, int QRS_End, int P_Onset);
@@ -53,6 +52,7 @@ private:
 	int EvaluateFrideric(double gapQT, double RR);
 	int EvaluateHodges(double gapQT, double heartAction);
 	int EvaluateFramingham(double gapQT, double RR);
+	void CalculateStatistics();
 
 	vector <double> returnTEnd();
 	Evaluation returnEvaluations(int number);
