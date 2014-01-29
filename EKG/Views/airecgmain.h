@@ -32,9 +32,8 @@ class AirEcgMain : public QMainWindow
 
     EcgData *currentEcgData;
 
-
-
-
+    QwtPlot *stIntervalPlot;
+    ScrollZoomer *stIntervalZoomer;
 
     void resetQrsToolbox(EcgData* data);
     void populareQRSClassBox(QRSClass currentClass, int type);
@@ -70,8 +69,8 @@ public:
     QwtPlot* plotWavesPlot(const QVector<double> &ecgSignal, Waves_struct &ecgFrames, float samplingFrequency);
     QwtPlot* plotIntervalPlot(QList<double> &ecgbaselined, QList<int> &stbegin, QList<int> &stend, double samplingFrequency);
 //////////
-     QwtPlot* plotSleep_Apnea(const QVector<double> &yData, float freq);
-     QwtPlot* plotSleep_Apneafrequence(const QVector<double> &yData, float freq);
+     QwtPlot* plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs);
+
 
 
 signals:
@@ -180,11 +179,11 @@ private slots:
     void on_qrsSettingsGMeansParallelCheckBox_toggled(bool checked);
 
     void on_qrsSetKMaxIterSpinBox_valueChanged(int arg1);
-/*
+
     void on_qrsSetKClusterNumSpinBox_valueChanged(int arg1);
 
     void on_qrsSetKMeansParallelCheckBox_toggled(bool checked);
-*/
+
     void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
@@ -255,11 +254,15 @@ private slots:
     void on_pushButton_11_clicked();
 
     void initEcgBaselineGui();
-    void initStIntervalGui();
 
     void on_pushButton_16_clicked();
 
     void on_pushButton_18_clicked();
+
+    void initStIntervalGui();
+    void stItemSelected(int row, int column);
+    void nextStAbnormality();
+    void prevStAbnormality();
 
 private:
     Ui::AirEcgMain *ui;

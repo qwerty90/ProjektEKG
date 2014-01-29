@@ -46,6 +46,9 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     connect(ui->QRSClassesToolBox, SIGNAL(currentChanged(int)),this,SLOT(on_qrsclassestoolbox_changed(int)));
     connect(ui->qrsClassLabelTextEdit, SIGNAL(textChanged(QString)),this,SLOT(qrcclasslabel_changed(QString)));
 
+    this->stIntervalPlot = NULL;
+    this->stIntervalZoomer = NULL;
+
     connect(ui->butterworthRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->movingAverageRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->savitzkyGolayRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
@@ -493,6 +496,89 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
 
     return plot;
 }
+//Sleap
+QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs)
+{
+    double maxy = yData.first();
+    double miny = yData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
+    }
+    double maxx = xData.first();
+    double minx = xData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
+
+    QwtText xaxis(" ");
+    QwtText yaxis(" ");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+    grid->attach(plot);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 2));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(xData, yData);
+    curve->attach(plot);
+
+
+    QwtPlotMarker *mY = new QwtPlotMarker();
+    mY->setLineStyle( QwtPlotMarker::HLine );
+    mY->setLinePen( QPen( Qt::green, 2, Qt::SolidLine ) );
+    mY->setYValue( threshold);
+    mY->attach( plot );
+
+    QwtPlotMarker *mX = new QwtPlotMarker();
+    mX->setLineStyle( QwtPlotMarker::VLine );
+    mX->setLinePen( QPen( Qt::black, 2, Qt::SolidLine ) );
+    QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
+    for(int i=0;i<sleep_apnea_pairs.size();i++)
+    {
+        mX->setYValue( sleep_apnea_pairs[i].first);
+        mX->attach( plot );
+        mX->setYValue( sleep_apnea_pairs[i].second);
+        mX->attach( plot );
+       QLOG_TRACE() <<"Sleep 1= "<< QString::number( sleep_apnea_pairs[i].first)<< "2 = " << QString::number( sleep_apnea_pairs[i].second);
+    }
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,xData.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
 //RR
 QwtPlot* AirEcgMain::plotPlotRR(const QVector<double>& yData,const QVector<double>& xData)
 {
@@ -555,126 +641,7 @@ QwtPlot* AirEcgMain::plotPlotRR(const QVector<double>& yData,const QVector<doubl
 
     return plot;
 }
-QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData, float freq)
-{
-    QVector<double> sampleNo = QVector<double>(yData.size());
 
-    double max = yData.first();
-    double min = yData.first();
-
-    double tos=1/freq;
-
-    for (int i = 0; i < yData.size(); ++i)
-    {
-        sampleNo[i] = i*tos*1000;
-        max = qMax(max, yData[i]);
-        min = qMin(min, yData[i]);
-    }
-
-    QwtPlot* plot = new QwtPlot();
-    plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
-
-    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
-    plot->axisAutoScale(QwtPlot::xBottom);
-    QwtText xaxis("Time [mm:ss:zzz]");
-    QwtText yaxis("Voltage [mV]");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-    QwtPlotGrid* grid = new QwtPlotGrid();
-    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
-    grid->enableYMin(true);
-    grid->enableXMin(true);
-    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
-    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
-    grid->attach(plot);
-
-    QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 2));
-    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-    curve->setSamples(sampleNo, yData);
-    curve->attach(plot);
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-
-    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
-    panner->setMouseButton(Qt::MidButton);
-    panner->setOrientations(Qt::Horizontal);
-
-    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
-    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
-
-    return plot;
-}
-
-QwtPlot* AirEcgMain::plotSleep_Apneafrequence(const QVector<double>& yData, float freq)
-{
-    QVector<double> sampleNo = QVector<double>(yData.size());
-
-    double max = yData.first();
-    double min = yData.first();
-
-    double tos=1/freq;
-
-    for (int i = 0; i < yData.size(); ++i)
-    {
-        sampleNo[i] = i*tos*1000;
-        max = qMax(max, yData[i]);
-        min = qMin(min, yData[i]);
-    }
-
-    QwtPlot* plot = new QwtPlot();
-    plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
-    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
-    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
-    plot->axisAutoScale(QwtPlot::xBottom);
-    QwtText xaxis("Time [mm:ss:zzz]");
-    QwtText yaxis("Voltage [mV]");
-    xaxis.setFont(QFont("Arial", 8));
-    yaxis.setFont(QFont("Arial", 8));
-
-    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
-    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
-
-    QwtPlotGrid* grid = new QwtPlotGrid();
-    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
-    grid->enableYMin(true);
-    grid->enableXMin(true);
-    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
-    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
-    grid->attach(plot);
-
-    QwtPlotCurve* curve = new QwtPlotCurve();
-    curve->setPen(QPen(Qt::blue, 2));
-    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-    curve->setSamples(sampleNo, yData);
-    curve->attach(plot);
-
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
-
-    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
-    panner->setMouseButton(Qt::MidButton);
-    panner->setOrientations(Qt::Horizontal);
-
-    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
-    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
-
-    return plot;
-}
 QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, double a, double b)
 {
     QVector<double> sampleNo = QVector<double>(yData.size());
@@ -1484,8 +1451,9 @@ void AirEcgMain::drawSigEdr(EcgData *data)
 void AirEcgMain::drawStInterval(EcgData *data)
 {
     // draw baselined data
-    QwtPlot *plotST = plotPlot(*(data->ecg_baselined), data->info->frequencyValue);
-    ui->stIntervalArea->setWidget(plotST);
+    stIntervalPlot = plotPlot(*(data->ecg_baselined), data->info->frequencyValue);
+    stIntervalZoomer = zoom;
+    ui->stIntervalArea->setWidget(stIntervalPlot);
     ui->stIntervalArea->show();
 
     if (data->STintervals == NULL)
@@ -1499,6 +1467,8 @@ void AirEcgMain::drawStInterval(EcgData *data)
     QVector<QPointF> stOn;
     QVector<QPointF> stMid;
     QVector<QPointF> stEnd;
+
+    int abnormalNum = 0;
 
     for (int i = 0; i < num; i++)
     {
@@ -1530,8 +1500,11 @@ void AirEcgMain::drawStInterval(EcgData *data)
         st->setPen(pen);
         st->setSamples(x, y);
         st->setItemAttribute(QwtPlotItem::Legend, false);
-        st->attach(plotST);
+        st->attach(stIntervalPlot);
 
+        QColor bgColor(255, 255, 255);
+
+        bool abnormal = false;
         QString position;
         switch (desc.position)
         {
@@ -1540,10 +1513,19 @@ void AirEcgMain::drawStInterval(EcgData *data)
             break;
         case ST_POS_ELEVATION:
             position = tr("elevation");
+            abnormal = true;
             break;
         case ST_POS_DEPRESSION:
             position = tr("depression");
+            bgColor = QColor(255, 0, 0, 60);
+            abnormal = true;
             break;
+        }
+
+        if (abnormal)
+        {
+            bgColor = QColor(255, 0, 0, 60);
+            abnormalNum++;
         }
 
         QString shape;
@@ -1574,16 +1556,34 @@ void AirEcgMain::drawStInterval(EcgData *data)
 
         // create list item
         QTableWidgetItem *newItem = new QTableWidgetItem(time);
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
+        newItem->setData(Qt::UserRole + 1, abnormal);
         ui->stIntervalList->setItem(i, 0, newItem);
+
         newItem = new QTableWidgetItem(position);
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 1, newItem);
+
         newItem = new QTableWidgetItem(shape);
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 2, newItem);
-        newItem = new QTableWidgetItem(QString::number(desc.offset));
+
+        newItem = new QTableWidgetItem(QString::number(desc.offset, 'f', 3));
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 3, newItem);
-        newItem = new QTableWidgetItem(QString::number(desc.slope1));
+
+        newItem = new QTableWidgetItem(QString::number(desc.slope1, 'f', 2));
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 4, newItem);
-        newItem = new QTableWidgetItem(QString::number(desc.slope2));
+
+        newItem = new QTableWidgetItem(QString::number(desc.slope2, 'f', 2));
+        newItem->setBackgroundColor(bgColor);
+        newItem->setData(Qt::UserRole, onTime);
         ui->stIntervalList->setItem(i, 5, newItem);
     }
 
@@ -1595,7 +1595,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stOnPoints->setPen(QColor(Qt::red));
     stOnPoints->setStyle(QwtPlotCurve::NoCurve);
     stOnPoints->setSamples(stOn);
-    stOnPoints->attach(plotST);
+    stOnPoints->attach(stIntervalPlot);
 
     // draw STmid points
     QwtPlotCurve *stMidPoints = new QwtPlotCurve();
@@ -1606,7 +1606,7 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stMidPoints->setPen(color);
     stMidPoints->setStyle(QwtPlotCurve::NoCurve);
     stMidPoints->setSamples(stMid);
-    stMidPoints->attach(plotST);
+    stMidPoints->attach(stIntervalPlot);
 
     // draw STend points
     QwtPlotCurve *stEndPoints = new QwtPlotCurve();
@@ -1616,32 +1616,87 @@ void AirEcgMain::drawStInterval(EcgData *data)
     stEndPoints->setPen(QColor(Qt::blue));
     stEndPoints->setStyle(QwtPlotCurve::NoCurve);
     stEndPoints->setSamples(stEnd);
-    stEndPoints->attach(plotST);
+    stEndPoints->attach(stIntervalPlot);
 
-//    QVector<QPointF> tEnd;
-//    foreach (QVector<double>::const_iterator iter, *data->Waves->T_end)
-//    {
-//        qDebug() << (iter - data->ecg_baselined->constBegin());
-//        tEnd.append(QPointF(static_cast<double>(iter - data->ecg_baselined->constBegin()) / data->info->frequencyValue * 1000, *iter));
-//    }
+    double percentage = static_cast<double>(abnormalNum) / num * 100.0;
 
-//    QwtPlotCurve *tEndPoints = new QwtPlotCurve();
-//    QwtSymbol *tEndMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::magenta, QPen(Qt::magenta), QSize(6, 6));
-//    tEndPoints->setSymbol(tEndMarker);
-//    tEndPoints->setTitle("tEnd");
-//    tEndPoints->setPen(QColor(Qt::magenta));
-//    tEndPoints->setStyle(QwtPlotCurve::NoCurve);
-//    tEndPoints->setSamples(tEnd);
-//    tEndPoints->attach(plotST);
+    ui->stAbnormalNum->setText(QString::number(abnormalNum));
+    ui->stPercentage->setText(QString("%1%").arg(percentage, 0, 'f', 2));
+}
+
+void AirEcgMain::initStIntervalGui()
+{
+    const int INITIAL_SIZE = 250;
+    QList<int> sizes;
+    sizes.append(INITIAL_SIZE);
+    sizes.append(ui->stSplitter->width() - INITIAL_SIZE);
+    ui->stSplitter->setSizes(sizes);
+
+    connect(ui->stIntervalList, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(stItemSelected(int,int)));
+    connect(ui->stPrev, SIGNAL(clicked()), this, SLOT(prevStAbnormality()));
+    connect(ui->stNext, SIGNAL(clicked()), this, SLOT(nextStAbnormality()));
+}
+
+void AirEcgMain::stItemSelected(int row, int column)
+{
+    QTableWidgetItem *item = ui->stIntervalList->item(row, column);
+    if (item == NULL)
+        return;
+
+    bool ok;
+    double onTime = item->data(Qt::UserRole).toDouble(&ok);
+    if (!ok)
+        return;
+
+    if (stIntervalZoomer != NULL)
+        stIntervalZoomer->moveToHPosition(onTime, true);
+}
+
+void AirEcgMain::nextStAbnormality()
+{
+    int curr = ui->stIntervalList->currentRow();
+    for (int i = curr + 1; i < ui->stIntervalList->rowCount(); i++)
+    {
+        QTableWidgetItem *item = ui->stIntervalList->item(i, 0);
+        if (item == NULL)
+            continue;
+
+        bool abnormal = item->data(Qt::UserRole + 1).toBool();
+        if (abnormal)
+        {
+            ui->stIntervalList->selectRow(i);
+            stItemSelected(i, 0);
+            return;
+        }
+    }
+}
+
+void AirEcgMain::prevStAbnormality()
+{
+    int curr = ui->stIntervalList->currentRow();
+    for (int i = curr - 1; i >= 0; i--)
+    {
+        QTableWidgetItem *item = ui->stIntervalList->item(i, 0);
+        if (item == NULL)
+            continue;
+
+        bool abnormal = item->data(Qt::UserRole + 1).toBool();
+        if (abnormal)
+        {
+            ui->stIntervalList->selectRow(i);
+            stItemSelected(i, 0);
+            return;
+        }
+    }
 }
 
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
-    QwtPlot *plotSleepApnea = plotSleep_Apnea(*((data->ecg_baselined)),data->info->frequencyValue );
+    QwtPlot *plotSleepApnea = plotSleep_Apnea(*(data->SleepApneaamp),*(data->SleepApneatime), data->SleepApnea_plot->at(0),*(data->SleepApnea));
     ui->sleepArea1->setWidget(plotSleepApnea);
     ui->sleepArea1->show();
 
-    QwtPlot *plotSleepApneafrequence = plotSleep_Apneafrequence(*(data->ecg_baselined),data->info->frequencyValue );
+    QwtPlot *plotSleepApneafrequence = plotSleep_Apnea(*(data->SleepApneafreq),*(data->SleepApneatime), data->SleepApnea_plot->at(1),*(data->SleepApnea));
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
@@ -1952,8 +2007,11 @@ void AirEcgMain::on_comboBox_currentIndexChanged(int index)
 
     if(index == 0)
     {
-        emit qrsClustererChanged(KMeansClusterer);
-        emit qrsMaxIterationsChanged(ui->qrsSetKMaxIterSpinBox->value());        
+        /*emit qrsClustererChanged(KMeansClusterer);
+        emit qrsMaxIterationsChanged(ui->qrsSetKMaxIterSpinBox->value());
+        emit qrsParallelExecutionChanged(ui->qrsSetKMeansParallelCheckBox->isEnabled());
+        emit qrsKClustersNumberChanged(ui->qrsSetKClusterNumSpinBox->value());
+        */
     }
     else
     {
@@ -1998,7 +2056,7 @@ void AirEcgMain::on_qrsSetKMaxIterSpinBox_valueChanged(int arg1)
 {
     emit qrsMaxIterationsChanged(arg1);
 }
-/*
+
 void AirEcgMain::on_qrsSetKClusterNumSpinBox_valueChanged(int arg1)
 {
     emit qrsKClustersNumberChanged(arg1);
@@ -2008,7 +2066,7 @@ void AirEcgMain::on_qrsSetKMeansParallelCheckBox_toggled(bool checked)
 {
     emit qrsParallelExecutionChanged(checked);
 }
-*/
+
 void AirEcgMain::on_radioButton_clicked()
 {
     emit this->switchSignal(0);
@@ -2158,15 +2216,6 @@ void AirEcgMain::initEcgBaselineGui()
 
     ecgBase_WindowSizeChanged("150");
     on_butterworthRadioButton_clicked();
-}
-
-void AirEcgMain::initStIntervalGui()
-{
-    const int INITIAL_SIZE = 250;
-    QList<int> sizes;
-    sizes.append(INITIAL_SIZE);
-    sizes.append(ui->stSplitter->width() - INITIAL_SIZE);
-    ui->stSplitter->setSizes(sizes);
 }
 
 void AirEcgMain::on_pushButton_16_clicked()
