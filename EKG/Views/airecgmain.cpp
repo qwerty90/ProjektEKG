@@ -1907,28 +1907,28 @@ void AirEcgMain::drawQtDisp(EcgData *data)
     ui->scrollArea_9->setWidget(plotQtDisp);
     ui->scrollArea_9->show();
 
-    ui->DIS_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfCorrectQT ), 'f', 0));
-    ui->TL_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooLowQT ), 'f', 0));
-    ui->TH_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooHighQT ), 'f', 0));
-  // ui->name0->setText(QString(data->evaluations->at(0).nameOfEvaluation));
+    ui->DIS_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfCorrectQT ), 'f', 0) + " %");
+    ui->TL_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooLowQT ), 'f', 0) + " %");
+    ui->TH_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->name0->setText(QString(data->evaluations->at(0).nameOfEvaluation));
 
-    ui->DIS_Frideric->setText(QString::number((data->evaluations->at(1).percentOfCorrectQT ), 'f', 0));
-    ui->TL_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooLowQT ), 'f', 0));
-    ui->TH_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooHighQT ), 'f', 0));
-  //  ui->name1->setText(QString(data->evaluations->at(1).nameOfEvaluation));
+    ui->DIS_Frideric->setText(QString::number((data->evaluations->at(1).percentOfCorrectQT ), 'f', 0) + " %");
+    ui->TL_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooLowQT ), 'f', 0) + " %");
+    ui->TH_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->name1->setText(QString(data->evaluations->at(1).nameOfEvaluation));
 
-    ui->DIS_Framingham->setText(QString::number((data->evaluations->at(2).percentOfCorrectQT ), 'f', 0));
-    ui->TL_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooLowQT ), 'f', 0));
-    ui->TH_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooHighQT ), 'f', 0));
-   // ui->name2->setText(QString(data->evaluations->at(2).nameOfEvaluation));
+    ui->DIS_Framingham->setText(QString::number((data->evaluations->at(2).percentOfCorrectQT ), 'f', 0) + " %");
+    ui->TL_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooLowQT ), 'f', 0) + " %");
+    ui->TH_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->name2->setText(QString(data->evaluations->at(2).nameOfEvaluation));
 
-    ui->DIS_Hodges->setText(QString::number((data->evaluations->at(3).percentOfCorrectQT ), 'f', 0));
-    ui->TL_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooLowQT ), 'f', 0));
-    ui->TH_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooHighQT ), 'f', 0));
-   // ui->name3->setText(QString(data->evaluations->at(3).nameOfEvaluation));
+    ui->DIS_Hodges->setText(QString::number((data->evaluations->at(3).percentOfCorrectQT ), 'f', 0) + " %");
+    ui->TL_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooLowQT ), 'f', 0) + " %");
+    ui->TH_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->name3->setText(QString(data->evaluations->at(3).nameOfEvaluation));
 
-    ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 0)));
-            ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 0));
+    ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 0)+ " %"));
+            ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 0)+ " %");
 
     QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
