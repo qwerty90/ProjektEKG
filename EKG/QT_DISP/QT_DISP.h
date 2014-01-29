@@ -54,7 +54,5 @@ private:
 	int EvaluateFramingham(double gapQT, double RR);
 	void CalculateStatistics();
 
-	vector <double> returnTEnd();
-	Evaluation returnEvaluations(int number);
 
 };

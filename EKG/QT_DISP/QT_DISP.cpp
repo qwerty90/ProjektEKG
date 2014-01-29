@@ -94,7 +94,7 @@ void QT_DISP::getInput(string path)
 // Funkcja wyjsciowa - konce zalamka T
 vector <double> QT_DISP::returnTEnd()
 {
-	return T_EndP;				//!!!!!!!!!!!!!!!!!!!!!!!! na razie zwracane tylko paraboliczne, jakiœ check box?
+	return T_EndT;				//!!!!!!!!!!!!!!!!!!!!!!!! na razie zwracane tylko paraboliczne, jakiœ check box?
 }
 
 
