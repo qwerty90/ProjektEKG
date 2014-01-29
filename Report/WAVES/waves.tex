@@ -156,7 +156,7 @@ TP - (ang. true positive) ilość próbek wykrytych poprawnie \newline
 FP - (ang. false positive) ilość próbek wykrytych błędnie \newline
 FN - (ang. false negative) ilość zespołów QRS dla których algorytm nie zwrócił wyników \newline
 Implementacja algorytmu zespołu QRS wyklucza możliwość występowania FN, dla każdego wejściowego załamka R zawsze zwraca parę punktów oznaczających QRS-onset o QRS-end. W związku z tym czułość algorytmu zawsze wynosi jeden. Inaczej jest dla algorytmu detekcji fali P. Ponieważ jak pisano wcześniej fala P może być przysłonięta, algorytm najpierw dokonuje oceny czy fala P istnieje. Jeśli stwierdzi brak fali P naturalnie nie wyznacza jej punktów charakterystycznych. W takiej sytuacji może zaistnieć FN, w przypadku gdy algorytm pominie  faktycznie istniejącą falę P. Dlatego, w tym przypadku wyznaczane będą oba wskaźniki. Ponadto algorytm bazuje na wartości interwału pomiędzy kolejnymi załamkami R, dlatego zwraca jedną parę mniej wykrytych początków i końców fali P niż podano wejściowych załamków R. W związku z powyższym konieczne jest też podanie kolejnych R-peaków, bez przerw. Założenie to nie jest spełnione dla wszystkich adnotacji z wykorzystanej bazy referencyjnej, dlatego do testów tego algorytmu brano tylko część adnotacji do pierwszej przerwy.   
-Testy przeprowadzono wykorzystując sygnały z bazy QT database dostępnej na stronie http://physionet.org. Baza ta zawiera sto-pięć piętnastominutowych sygnałów z zaznaczonymi przez ekspertów punktami charakterystycznymi dla zespołu QRS, fali P, T oraz U. W każdym sygnale zostało oznaczone co najmniej 30 cykli. Szczegółowy opis bazy danych odnaleźć można w pracy \cite{Waves_aDfEoAfMoQaOWIitE}. Na potrzeby testów, w celu uniknięcia propagacji błędów z innych modułów wykorzystano referencyjne położenia załamków R jako daną wejściową. Wartości wskaźnika poprawnej wykrywalności (+P), a w przypadku fali P także czułości ($S_e$) zebrano w tabeli ~\ref{tab:Waves_tabela1} oraz tabeli ~\ref{tab:Waves_tabela2} .
+Testy przeprowadzono wykorzystując sygnały z bazy QT database dostępnej na stronie http://physionet.org. Baza ta zawiera sto-pięć piętnastominutowych sygnałów z zaznaczonymi przez ekspertów punktami charakterystycznymi dla zespołu QRS, fali P, T oraz U. W każdym sygnale zostało oznaczone co najmniej 30 cykli. Szczegółowy opis bazy danych odnaleźć można w pracy \cite{Waves_aDfEoAfMoQaOWIitE}. Na potrzeby testów, w celu uniknięcia propagacji błędów z innych modułów wykorzystano referencyjne położenia załamków R jako daną wejściową. Punkt uznawano za poprawnie wykryty gdy jego odległość od odpowiedniego punktu referencyjnego była mniejsza od pięciu próbek. Wartości wskaźnika poprawnej wykrywalności (+P), a w przypadku fali P także czułości ($S_e$) zebrano w tabeli ~\ref{tab:Waves_tabela1} oraz tabeli ~\ref{tab:Waves_tabela2} .
 
 \begin{table}[h!]
 \caption{Wyniki algorytmu poszukującego QRS-onset i QRS-end}
@@ -474,3 +474,57 @@ W przypadku fali P czułość algorytmu jest zadowalająca, choć zdarzają się
 
 Problem tkwi w położeniu P-MIDDLE; gdy znajduje się on zaraz na początku fali lub na jej końcu, okno (o długości 100 ms) łapie za długi odcinek sygnału leżący poza falą P i na niej może znaleźć nieprawidłowe punkty. Takie sytuacje, jak się okazało w badanych sygnałach zdarzają się bardzo często, dlatego też często punkty nie zgadzają się z punktami naniesionymi przez ekspertów. Problem nie jest łatwy do rozwiązania, gdyż stawiając ostrzejszy warunek na pochodną fazy otrzymujemy punkty P-ONSET i P-END na fali P, ale są one wtedy zbyt późne (dla początku) i zbyt wczesne dla (dla końca) w stosunku do wartości referencyjnych, więc mimo optycznego polepszenia sytuacji (wykryte punkty nie wypadają poza falę P), wykrywalność algorytmu staje się gorsza (gdyż przyjmuje się, że punkt został wykryty prawidłowo, gdy między nim a wartością referencyjną występuje maks 5 próbek różnicy. 
 Doświadczenia pokazały,że algorytm w postaci proponowanej w publikacji \cite{Waves_aNMfADoEFPBotPT} może być zastosowany jedynie do zgrubnej detekcji granic fali P, gdyż nie jest wystarczająco dokładny i dla bardzo zniekształconej fali P daje słabe rezultaty. Aby zwiększyć jego wykrywalność, należało by może  wprowadzić zmienną długość okna po wykryciu punktu P-middle w zależności od zaistniałej sytuacji  lub też po wykryciu tego punktu zastosować inny algorytm.
+
+\subsection{Diagramy klasy i sekwencji}
+\subsubsection{Diagram klasy}
+\begin{tikzpicture}
+  \begin{class}[text width=12cm]{Waves}{0,0}
+    \attribute{- qrs\_onset :  QVector<QVector<double>::const\_iterator>> }
+    \attribute{- qrs\_end :  QVector<QVector<double>::const\_iterator>> }
+    \attribute{- p\_onset :  QVector<QVector<double>::const\_iterator>> }
+    \attribute{- p\_end :  QVector<QVector<double>::const\_iterator>> }
+        \attribute{- fs :  double }
+
+    \operation{+calculate\_waves(ECG : QVector<double> \&, R\_peaks : vector\_it\&, Fs : double)}
+    \operation{+get\_qrs\_onset() : const QVector<QVector<double>::const\_iterator>> \&}
+    \operation{+get\_qrs\_end() : const QVector<QVector<double>::const\_iterator>> \&}
+    \operation{+get\_p\_onset() : const QVector<QVector<double>::const\_iterator>> \&}
+    \operation{+get\_p\_end() : const QVector<QVector<double>::const\_iterator>> \&} 
+    \operation{-set\_qrs\_onset(ECG : QVector<double>\&,R\_peaks : vector\_it\&)}
+    \operation{-set\_qrs\_end(ECG : QVector<double\&,vector\_it\&)}
+    \operation{-set\_p\_onset(ECG : QVector<double>\&, R\_peaks : vector\_it\&)}
+    \operation{-set\_p\_end(ECG : QVector<double>\&, R\_peaks : vector\_it\&)}
+        
+  \end{class}
+\end{tikzpicture}
+\subsubsection{Diagram sekwencji}
+\begin{sequencediagram}
+	\newthread{t}{ : Controller}
+	\newinst[2]{i}{ : Waves}
+
+%	\begin{messcall}{t}{prepare()}{i}
+%	\end{messcall}
+
+	\begin{call}{t}{calculate\_waves()}{i}{}
+		\begin{callself}{i}{set\_qrs\_onset()}{}
+		\end{callself}
+		\begin{callself}{i}{set\_qrs\_end()}{}
+		\end{callself}		
+		\begin{callself}{i}{set\_p\_onset()}{}
+		\end{callself}
+		\begin{callself}{i}{set\_p\_end()}{}
+		\end{callself}
+			
+	\end{call}
+	\begin{call}{t}{get\_qrs\_onset()}{i}{qrs\_onset}
+	\end{call}
+	\begin{call}{t}{get\_qrs\_end()}{i}{qrs\_end}
+	\end{call}
+	\begin{call}{t}{get\_p\_onset()}{i}{p\_onset}
+		\end{call}
+	\begin{call}{t}{get\_p\_end()}{i}{p\_end}
+
+	\end{call}		
+\end{sequencediagram}
+
+%\end{sequencediagram}
