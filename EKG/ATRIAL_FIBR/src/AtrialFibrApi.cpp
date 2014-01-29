@@ -7,7 +7,7 @@ std::map<QString, std::tuple<double, double, double> > Weights{
   std::make_pair("WithoutPWave", std::make_tuple(0.5, 0.5, 0))
 };
 
-QVector<QString> PWaveSignalTypes = { "V1", "V2", "V5" };
+QVector<QString> PWaveSignalTypes = { "V1"};
 void AtrialFibrApi::setWeights(const QString &Signal) {
 
   QString SignalType;
