@@ -162,10 +162,10 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->tabWidget_5->setEnabled(true);
     ui->tabHrv->setEnabled(true);
     ui->pushButton_18->setEnabled(true);
-ui->G_QRS->setEnabled(true);
-ui->K_QRS->setEnabled(true);
-ui->KGroupBox->setEnabled(false);
-ui->GGroupBox->setEnabled(true);
+    ui->G_QRS->setEnabled(true);
+    ui->K_QRS->setEnabled(true);
+    ui->KGroupBox->setEnabled(false);
+    ui->GGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
     ui->qrsFeaturesSettingsGroupBox->setEnabled(true);
