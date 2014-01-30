@@ -291,26 +291,6 @@ void RRSanityTest::GetPWaveAbsenceRatioTest() {
   // Assert
   QCOMPARE(AtrFibrApi.GetPWaveAbsenceRatio(), 0.0);
 }
-typedef QVector<double>::const_iterator Cit;
-
-QVector<Cit>::const_iterator closestPWave(QVector<Cit>::const_iterator pBegin,
-                 QVector<Cit>::const_iterator pEnd, Cit rpeak) {
-  const auto ans =
-      find_if(pBegin, pEnd, [=](Cit cit) { return distance(cit, rpeak) < 0; });
-  return ans - 1;
-}
-
-QVector<QVector<Cit>::const_iterator>
-calcRWaveSets(const QVector<Cit>::const_iterator &rpeaksBegin,
-              const QVector<Cit>::const_iterator &rpeaksEnd, int step) {
-  const auto dist = distance(rpeaksBegin, rpeaksEnd);
-  QVector<QVector<Cit>::const_iterator> answer;
-  answer.reserve(dist / 60 - 1);
-  for (auto it = rpeaksBegin; distance(it, rpeaksEnd) > step; it += step) {
-    answer.push_back(it);
-  }
-  return answer;
-}
 
 void RRSanityTest::closestP() {
   // Arrange
@@ -339,7 +319,7 @@ void RRSanityTest::closestP_TwoPPeaks() {
   QVector<Cit> pPeaks = { signal.begin() + 1, signal.begin() + 2 };
 
   // Assert
-  QCOMPARE(pPeaks.end()-1, closestPWave(begin(pPeaks), end(pPeaks), rpeak));
+  QCOMPARE(pPeaks.end() - 1, closestPWave(begin(pPeaks), end(pPeaks), rpeak));
 }
 
 void RRSanityTest::calcRWaveSets_SingleR() {
@@ -353,21 +333,6 @@ void RRSanityTest::calcRWaveSets_SingleR() {
   QCOMPARE(2, answer.size());
   QCOMPARE(rpeaks.begin(), answer[0]);
   QCOMPARE(rpeaks.begin() + 60, answer[1]);
-}
-using namespace std;
-
-typedef tuple<QVector<Cit>::const_iterator, QVector<Cit>::const_iterator> calcPair;
-QVector<calcPair> calcSets(QVector<Cit>::const_iterator pBegin,
-                           QVector<Cit>::const_iterator pEnd,
-                           QVector<Cit>::const_iterator rBegin,
-                           QVector<Cit>::const_iterator rEnd) {
-  const auto rWaveSets = calcRWaveSets(rBegin, rEnd, 60);
-  QVector<calcPair> answer;
-  transform(begin(rWaveSets), end(rWaveSets), back_inserter(answer),
-            [=](decltype(rWaveSets)::value_type rpeak) {
-    return make_tuple(rpeak, closestPWave(pBegin, pEnd, *rpeak));
-  });
-  return answer;
 }
 
 void RRSanityTest::calcSets_SingleR() {
