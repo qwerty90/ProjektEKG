@@ -66,10 +66,10 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     connect(shortcut,SIGNAL(activated()), ui->actionWczytaj,SLOT(click()));
 
     // Hide unused controls
-    ui->label_10->setVisible(false);
-    ui->qrsSettingsGMeansParallelCheckBox->setVisible(false);
+  //  ui->label_10->setVisible(false);
+  //  ui->qrsSettingsGMeansParallelCheckBox->setVisible(false);
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
-    ui->QRSSampleDataGroupBox->setVisible(false);
+   ui->QRSSampleDataGroupBox->setVisible(false);
     ui->progressBar->setVisible(false);
     ui->busy_label->setVisible(false);
     initEcgBaselineGui();
@@ -95,6 +95,58 @@ void AirEcgMain::on_actionWczytaj_triggered()
     dialogFileBrowser.exec();
     emit this->busy(false);
 }
+//MENU RUN
+
+void AirEcgMain::on_actionECG_BASELINE_triggered()
+{
+    emit this->runEcgBaseline();
+}
+void AirEcgMain::on_actionR_PEAKS_triggered()
+{
+    emit this->runRPeaks();
+}
+void AirEcgMain::on_actionWAVES_triggered()
+{
+    emit this->runWaves();
+}
+void AirEcgMain::on_actionHRV1_triggered()
+{
+    emit this->runHRV1();
+}
+void AirEcgMain::on_actionSettings_triggered()
+{
+    emit this->runQrsClass();
+}
+
+void AirEcgMain::on_actionATRIAL_FIBR_triggered()
+{
+    emit this->runAtrialFibr();
+}
+void AirEcgMain::on_actionQT_DISP_triggered()
+{
+    emit this->runQtDisp();
+}
+void AirEcgMain::on_actionSLEEP_APNEA_triggered()
+{
+    emit this->runSleepApnea();
+}
+void AirEcgMain::on_actionST_INTERVAL_triggered()
+{
+    emit this->runStInterval();
+}
+void AirEcgMain::on_actionSIG_EDR_triggered()
+{
+    emit this->runSigEdr();
+}
+void AirEcgMain::on_actionVCG_LOOP_triggered()
+{
+    emit this->runVcgLoop();
+}
+void AirEcgMain::on_actionHRT_triggered()
+{
+    emit this->runHRT();
+}
+
 
 void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
 {
@@ -110,7 +162,10 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->tabWidget_5->setEnabled(true);
     ui->tabHrv->setEnabled(true);
     ui->pushButton_18->setEnabled(true);
-
+    ui->G_QRS->setEnabled(true);
+    ui->K_QRS->setEnabled(true);
+    ui->KGroupBox->setEnabled(false);
+    ui->GGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setEnabled(true);
     ui->qrsClustererSettingsGroupBox->setToolTip("");
     ui->qrsFeaturesSettingsGroupBox->setEnabled(true);
@@ -337,7 +392,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
             max = qMax(max, yData2.at(i));
             min = qMin(min, yData2.at(i));
         }
-        QLOG_TRACE() <<"SIGEDR:size1 = "<< QString::number(yData1.size());
+       // QLOG_TRACE() <<"SIGEDR:size1 = "<< QString::number(yData1.size());
     }
     if(no == 1 || no == 2 )
     {
@@ -346,7 +401,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
             max = qMax(max, yData1.at(i));
             min = qMin(min, yData1.at(i));
         }
-        QLOG_TRACE() <<"SIGEDR:size2 = "<< QString::number(yData2.size());
+//        QLOG_TRACE() <<"SIGEDR:size2 = "<< QString::number(yData2.size());
     }
     QVector<double> pDataX = QVector<double>(p.size());
     for (int i=0;i<p.size();i++)
@@ -354,8 +409,8 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
         pDataX[i] = ((unsigned int)(p.at(i)- yData.begin())*tos*1000);
     }
 
-    QLOG_TRACE() <<"SIGEDR:MIN = "<< QString::number(min);
-    QLOG_TRACE() <<"SIGEDR:MAX = "<< QString::number(max);
+   // QLOG_TRACE() <<"SIGEDR:MIN = "<< QString::number(min);
+   // QLOG_TRACE() <<"SIGEDR:MAX = "<< QString::number(max);
 
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
@@ -521,9 +576,100 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
     plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
+    plot->setTitle(QwtText("Normalised Hilbert amplitude and Apnea Detections"));
+    QwtText xaxis("Samples ");
+    QwtText yaxis("Normalised Hilbert amplitude ");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
 
-    QwtText xaxis(" ");
-    QwtText yaxis(" ");
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+    grid->attach(plot);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 2));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(xData, yData);
+    curve->attach(plot);
+
+
+    QwtPlotMarker *mY = new QwtPlotMarker();
+    mY->setLineStyle( QwtPlotMarker::HLine );
+    mY->setLinePen( QPen( Qt::green, 2, Qt::SolidLine ) );
+    mY->setLabel(QwtText("Minimum Hilbert amplitude"));
+    mY->setLabelOrientation(Qt::Horizontal);
+    mY->setLabelAlignment(Qt::AlignTop);
+    mY->setYValue( threshold);
+    mY->attach( plot );
+
+    QVector<QwtPlotMarker*> marker;
+    QVector<QwtPlotMarker*> marker2;
+    QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
+
+    for(int i=0;i<sleep_apnea_pairs.size();i++)
+    {
+        marker.append(new QwtPlotMarker);
+        marker.at(i)->setLineStyle( QwtPlotMarker::VLine );
+        marker.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
+        marker.at(i)->setXValue( sleep_apnea_pairs[i].first);
+        marker.at(i)->attach( plot );
+        marker2.append(new QwtPlotMarker);
+        marker2.at(i)->setLineStyle( QwtPlotMarker::VLine );
+        marker2.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
+        marker2.at(i)->setXValue( sleep_apnea_pairs[i].second);
+        marker2.at(i)->attach( plot );
+
+        QLOG_TRACE() <<"Sleep 1= "<< QString::number( sleep_apnea_pairs[i].first)<< "2 = " << QString::number( sleep_apnea_pairs[i].second);
+    }
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    plot->canvas()->setGeometry(0,0,xData.last(),0);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
+//Sleap Feq
+QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs)
+{
+    double maxy = yData.first();
+    double miny = yData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
+    }
+    double maxx = xData.first();
+    double minx = xData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
+    plot->setTitle(QwtText("Hilbert frequency and Apnea Detections"));
+    QwtText xaxis("Samples ");
+    QwtText yaxis("Hilbert frequency [Hz] ");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
 
@@ -548,20 +694,30 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
     QwtPlotMarker *mY = new QwtPlotMarker();
     mY->setLineStyle( QwtPlotMarker::HLine );
     mY->setLinePen( QPen( Qt::green, 2, Qt::SolidLine ) );
+    mY->setLabel(QwtText("Maximum Hilbert frequency"));
+    mY->setLabelOrientation(Qt::Horizontal);
+    mY->setLabelAlignment(Qt::AlignTop);
     mY->setYValue( threshold);
     mY->attach( plot );
 
-    QwtPlotMarker *mX = new QwtPlotMarker();
-    mX->setLineStyle( QwtPlotMarker::VLine );
-    mX->setLinePen( QPen( Qt::black, 2, Qt::SolidLine ) );
-    QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
+    QVector<QwtPlotMarker*> marker;
+    QVector<QwtPlotMarker*> marker2;
+    //QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
+
     for(int i=0;i<sleep_apnea_pairs.size();i++)
     {
-        mX->setYValue( sleep_apnea_pairs[i].first);
-        mX->attach( plot );
-        mX->setYValue( sleep_apnea_pairs[i].second);
-        mX->attach( plot );
-       QLOG_TRACE() <<"Sleep 1= "<< QString::number( sleep_apnea_pairs[i].first)<< "2 = " << QString::number( sleep_apnea_pairs[i].second);
+        marker.append(new QwtPlotMarker);
+        marker.at(i)->setLineStyle( QwtPlotMarker::VLine );
+        marker.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
+        marker.at(i)->setXValue( sleep_apnea_pairs[i].first);
+        marker.at(i)->attach( plot );
+        marker2.append(new QwtPlotMarker);
+        marker2.at(i)->setLineStyle( QwtPlotMarker::VLine );
+        marker2.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
+        marker2.at(i)->setXValue( sleep_apnea_pairs[i].second);
+        marker2.at(i)->attach( plot );
+
+        QLOG_TRACE() <<"Sleep 1= "<< QString::number( sleep_apnea_pairs[i].first)<< "2 = " << QString::number( sleep_apnea_pairs[i].second);
     }
 
     zoom = new ScrollZoomer(plot->canvas());
@@ -1342,7 +1498,7 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
 
 void AirEcgMain::drawAtrialFibr(EcgData *data)
 {
-    QLOG_INFO() << "Start \"rysowania\" AtrialFibr";
+    //QLOG_INFO() << "Start \"rysowania\" AtrialFibr";
 
     //wykres
     // QwtPlot *plotAtrialFibr;
@@ -1370,7 +1526,7 @@ void AirEcgMain::drawAtrialFibr(EcgData *data)
 void AirEcgMain::drawRPeaks(EcgData *data)
 {
 
-    QLOG_TRACE() << "drawRPeaks";
+    //QLOG_TRACE() << "drawRPeaks";
     QwtPlot *plotVI = plotPointsPlot(*(data->Rpeaks),*(data->ecg_baselined),data->info->frequencyValue);
     //QwtPlot *plotVI = plotPointsPlot_uint((data->Rpeaks_uint),*(data->ecg_baselined),data->info->frequencyValue);
     ui->rpeaksArea->setWidget(plotVI);
@@ -1380,8 +1536,8 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 
 void AirEcgMain::drawHrv1(EcgData *data)
 {
-    QLOG_DEBUG() << "GUI/HRV1 0";
-    QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
+   // QLOG_DEBUG() << "GUI/HRV1 0";
+   // QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
     ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
     ui->RMSSD->setText("RMSSD = " %QString::number((data->RMSSD), 'f', 2) + " ms");
@@ -1391,7 +1547,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
     ui->SDSD->setText("SDSD = " %QString::number((data->SDSD), 'f', 2) + " ms");
 
-    QLOG_DEBUG() << "GUI/HRV1 1";
+    //QLOG_DEBUG() << "GUI/HRV1 1";
 
     //RR
     QwtPlot *plotRR = plotPlotRR(*(data->RR_y),*(data->RR_x));
@@ -1402,7 +1558,7 @@ void AirEcgMain::drawHrv1(EcgData *data)
     QwtPlot *plotFT = plotPlot(*(data->fft_y),*(data->fft_x));
     ui->scrollAreaFT->setWidget(plotFT);
     ui->scrollAreaFT->show();
-    QLOG_DEBUG() << "GUI/HRV1 2";
+    //QLOG_DEBUG() << "GUI/HRV1 2";
     //Frequency Coefficients
     ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2) + " ms^2");
     ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2) + " ms^2");
@@ -1410,12 +1566,12 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2) + " ms^2");
     ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2) + " ms^2");
     ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + " %");
-    QLOG_DEBUG() << "GUI/HRV1 3";
+    //QLOG_DEBUG() << "GUI/HRV1 3";
 }
 
 void AirEcgMain::drawSigEdr(EcgData *data)
 {
-    QLOG_INFO() << "Drawing SigEdr.";
+    //QLOG_INFO() << "Drawing SigEdr.";
     //if (data->SigEdr_r==NULL)
     //    QLOG_FATAL() << "SigEdr does not exist";
     //else
@@ -1696,7 +1852,7 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
     ui->sleepArea1->setWidget(plotSleepApnea);
     ui->sleepArea1->show();
 
-    QwtPlot *plotSleepApneafrequence = plotSleep_Apnea(*(data->SleepApneafreq),*(data->SleepApneatime), data->SleepApnea_plot->at(1),*(data->SleepApnea));
+    QwtPlot *plotSleepApneafrequence = plotSleep_ApneaFreq(*(data->SleepApneafreq),*(data->SleepApneatime), data->SleepApnea_plot->at(1),*(data->SleepApnea));
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
@@ -1751,12 +1907,34 @@ void AirEcgMain::drawQtDisp(EcgData *data)
     QwtPlot *plotQtDisp = plotPointsPlot(*(data->Waves->T_end),*(data->ecg_baselined),data->info->frequencyValue);
     ui->scrollArea_9->setWidget(plotQtDisp);
     ui->scrollArea_9->show();
+
+    ui->DIS_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooHighQT ), 'f', 2) + " %");
+    ui->name0->setText(QString(data->evaluations->at(0).nameOfEvaluation));
+
+    ui->DIS_Frideric->setText(QString::number((data->evaluations->at(1).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooHighQT ), 'f', 2) + " %");
+    ui->name1->setText(QString(data->evaluations->at(1).nameOfEvaluation));
+
+    ui->DIS_Framingham->setText(QString::number((data->evaluations->at(2).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooHighQT ), 'f', 2) + " %");
+    ui->name2->setText(QString(data->evaluations->at(2).nameOfEvaluation));
+
+    ui->DIS_Hodges->setText(QString::number((data->evaluations->at(3).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooHighQT ), 'f', 2) + " %");
+    ui->name3->setText(QString(data->evaluations->at(3).nameOfEvaluation));
+
+    ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 2)));
+    ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 2));
+
     QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
 void AirEcgMain::drawWaves(EcgData *data)
 {
-    QLOG_FATAL() << "GUI/ drawWaves not done yet.";
-
     QwtPlot *wavesPlot = plotWavesPlot(*(data->ecg_baselined), *(data->Waves), data->info->frequencyValue );
 
     ui->scrollAreaWaves->setWidget(wavesPlot);
@@ -2034,10 +2212,10 @@ void AirEcgMain::on_qrsSetGinKMaxIterations_valueChanged(int arg1)
 {
     emit qrsGMaxKIterations(arg1);
 }
-
+/*
 void AirEcgMain::on_qrsSetGMinClusterSpinBox_valueChanged(int arg1)
 {
-    ui->qrsSetGMaxClusterSpinBox->setMinimum(arg1);
+   // ui->qrsSetGMaxClusterSpinBox->setMinimum(arg1);
 
     emit qrsGMinClustersChanged(arg1);
 }
@@ -2046,7 +2224,7 @@ void AirEcgMain::on_qrsSetGMaxClusterSpinBox_valueChanged(int arg1)
 {
     emit qrsGMaxClustersChanged(arg1);
 }
-
+*/
 void AirEcgMain::on_qrsSettingsGMeansParallelCheckBox_toggled(bool checked)
 {
     emit qrsParallelExecutionChanged(checked);
@@ -2056,12 +2234,12 @@ void AirEcgMain::on_qrsSetKMaxIterSpinBox_valueChanged(int arg1)
 {
     emit qrsMaxIterationsChanged(arg1);
 }
-
+/*
 void AirEcgMain::on_qrsSetKClusterNumSpinBox_valueChanged(int arg1)
 {
     emit qrsKClustersNumberChanged(arg1);
 }
-
+*/
 void AirEcgMain::on_qrsSetKMeansParallelCheckBox_toggled(bool checked)
 {
     emit qrsParallelExecutionChanged(checked);
@@ -2130,8 +2308,7 @@ void AirEcgMain::on_butterworthRadioButton_clicked()
 
 void AirEcgMain::on_pushButton_17_clicked()
 {
-    //TODO: Sprawdzanie czy wczesniej juz bylo policzone
-    emit this->runEcgBaseline();
+
     emit this->runRPeaks();
 }
 
@@ -3265,3 +3442,9 @@ void AirEcgMain::drawHrv2(EcgData *data)
 
 }
 */
+
+void AirEcgMain::on_G_QRS_toggled(bool checked)
+{
+    ui->KGroupBox->setEnabled(!checked);
+    ui->GGroupBox->setEnabled(checked);
+}

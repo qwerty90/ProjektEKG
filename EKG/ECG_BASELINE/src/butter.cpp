@@ -101,7 +101,7 @@ bool initButter()
         complex(0.637250881806022, -0.759347467733407)
     };
     double acGain1 = 0.972154570931970;
-    ButterCoefficients acCoeffs1 = ButterCoefficients("AC 50Hz noise removal (Fs: 360Hz) [BS, Order: 10]",
+    ButterCoefficients acCoeffs1 = ButterCoefficients("AC 50Hz noise removal (Fs: 360Hz) [BS, Order: 10, -3db: 49.5Hz, 50.5Hz]",
                                                       360, acGain1,
                                                       acPoles1, sizeof(acPoles1) / sizeof(complex),
                                                       acMatrix1, sizeof(acMatrix1) / sizeof(double));
@@ -131,7 +131,7 @@ bool initButter()
         complex(-0.858565790490543, -0.495542174305113)
     };
     double acGain2 = 0.972154570931970;
-    ButterCoefficients acCoeffs2 = ButterCoefficients("AC 50Hz 3rd harm. noise removal (Fs: 360Hz) [BS, Order: 10]",
+    ButterCoefficients acCoeffs2 = ButterCoefficients("AC 50Hz 3rd harm. noise removal (Fs: 360Hz) [BS, Order: 10, -3db: 149.5Hz, 150.5Hz]",
                                                       360, acGain2,
                                                       acPoles2, sizeof(acPoles2) / sizeof(complex),
                                                       acMatrix2, sizeof(acMatrix2) / sizeof(double));
@@ -160,7 +160,7 @@ bool initButter()
         complex(0.305205863098539, -0.939163062152108)
     };
     double acGain3 = 0.960148851838195;
-    ButterCoefficients acCoeffs3 = ButterCoefficients("AC 50Hz noise removal (Fs: 250Hz) [BS, Order: 10]",
+    ButterCoefficients acCoeffs3 = ButterCoefficients("AC 50Hz noise removal (Fs: 250Hz) [BS, Order: 10, -3db: 49.5Hz, 50.5Hz]",
                                                       250, acGain3,
                                                       acPoles3, sizeof(acPoles3) / sizeof(complex),
                                                       acMatrix3, sizeof(acMatrix3) / sizeof(double));
