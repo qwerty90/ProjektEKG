@@ -34,12 +34,16 @@ private Q_SLOTS:
   void KLDivergenceTest();
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
-
   void correlation_ObviousCases();
   void pWaveOccurence_AllFound();
   void pWaveOccurence_HalfFound();
   void pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal();
   void GetPWaveAbsenceRatioTest();
+
+  void closestP();
+  void closestP_SinglePPeak();
+  void closestP_TwoPPeaks();
+  void calcRWaveSets_SingleR();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -284,6 +288,71 @@ void RRSanityTest::GetPWaveAbsenceRatioTest() {
   // Assert
   QCOMPARE(AtrFibrApi.GetPWaveAbsenceRatio(), 0.0);
 }
+typedef QVector<double>::const_iterator Cit;
+
+Cit closestPWave(QVector<Cit>::const_iterator pBegin,
+                 QVector<Cit>::const_iterator pEnd, Cit rpeak) {
+  const auto ans =
+      find_if(pBegin, pEnd, [=](Cit cit) { return distance(cit, rpeak) < 0; });
+  return *(ans - 1);
+}
+
+QVector<QVector<Cit>::const_iterator>
+calcRWaveSets(const QVector<Cit>::const_iterator &rpeaksBegin,
+         const QVector<Cit>::const_iterator &rpeaksEnd, int step) {
+    const auto dist = distance(rpeaksBegin, rpeaksEnd);
+  QVector<QVector<Cit>::const_iterator> answer;
+  answer.reserve(dist/60 -1);
+  for (auto it = rpeaksBegin; distance(it, rpeaksEnd) > step; it += step) {
+    answer.push_back(it);
+  }
+  return answer;
+}
+
+void RRSanityTest::closestP() {
+  // Arrange
+  QVector<double> signal = { 0.0, 0.0, 0.0 };
+  Cit rpeak = signal.end() - 1;
+  QVector<Cit> pPeaks = { signal.begin() + 1 };
+
+  // Assert
+  QCOMPARE(signal.begin() + 1, closestPWave(begin(pPeaks), end(pPeaks), rpeak));
+}
+
+void RRSanityTest::closestP_SinglePPeak() {
+  // Arrange
+  QVector<double> signal(4);
+  Cit rpeak = signal.end() - 1;
+  QVector<Cit> pPeaks = { signal.begin() + 1 };
+
+  // Assert
+  QCOMPARE(signal.begin() + 1, closestPWave(begin(pPeaks), end(pPeaks), rpeak));
+}
+
+void RRSanityTest::closestP_TwoPPeaks() {
+  // Arrange
+  QVector<double> signal(4);
+  Cit rpeak = signal.end() - 1;
+  QVector<Cit> pPeaks = { signal.begin() + 1, signal.begin() + 2 };
+
+  // Assert
+  QCOMPARE(signal.begin() + 2, closestPWave(begin(pPeaks), end(pPeaks), rpeak));
+}
+
+void RRSanityTest::calcRWaveSets_SingleR() {
+  // Arrange
+  QVector<Cit> rpeaks(140);
+
+  // Act
+  const auto answer = calcRWaveSets(begin(rpeaks), end(rpeaks), 60);
+
+  // Assert
+  QCOMPARE(2, answer.size());
+  QCOMPARE(rpeaks.begin(), answer[0]);
+  QCOMPARE(rpeaks.begin() + 60, answer[1]);
+}
+
+
 QTEST_APPLESS_MAIN(RRSanityTest)
 
 #include "AfTests.moc"
