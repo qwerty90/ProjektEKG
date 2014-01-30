@@ -1,13 +1,13 @@
 #include "AtrialFibrApi.h"
 #include <map>
 #include <algorithm>
-
-std::map<QString, std::tuple<double, double, double> > Weights{
-  std::make_pair("WithPWave", std::make_tuple(0.25, 0.25, 0.5)),
-  std::make_pair("WithoutPWave", std::make_tuple(0.5, 0.5, 0))
+using namespace std;
+map<QString, tuple<double, double, double> > Weights{
+  make_pair("WithPWave", make_tuple(0.25, 0.25, 0.5)),
+  make_pair("WithoutPWave", make_tuple(0.5, 0.5, 0))
 };
 
-QVector<QString> PWaveSignalTypes = { "V1"};
+QVector<QString> PWaveSignalTypes = { "V1" };
 void AtrialFibrApi::setWeights(const QString &Signal) {
 
   QString SignalType;
@@ -27,7 +27,7 @@ AtrialFibrApi::AtrialFibrApi(
     : pWaveStarts(pWaveStarts), endOfSignal(signal.end()), entropyResult(0.0),
       divergenceResult(0.0), pWaveOccurenceRatioResult(0.0),
       signalName(signalName) {
-  rrmethod.RunRRMethod(RPeaksIterators);
+  rrmethod.RunRRMethod(begin(RPeaksIterators), end(RPeaksIterators));
   pWaveOccurenceRatioResult = pWaveOccurenceRatio(pWaveStarts, endOfSignal);
   Matrix3_3 patternMatrix = { { { { 0.005, 0.023, 0.06 } },
                                 { { 0.007, 0.914, 0.013 } },

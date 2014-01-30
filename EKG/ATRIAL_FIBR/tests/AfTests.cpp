@@ -58,7 +58,8 @@ void RRSanityTest::countRRIntervalsOneInterval() {
                                                    signal.begin() + 2 };
 
   // Act
-  QVector<int> intervals = rrmethod.countRRInvervals(RRTime);
+  QVector<int> intervals =
+      rrmethod.countRRInvervals(begin(RRTime), end(RRTime));
 
   // Assert
   QCOMPARE(intervals.front(), 1);
@@ -76,7 +77,8 @@ void RRSanityTest::countRRIntervalsThreeIntervals() {
   QVector<int> ExpIntervals = { 1, 3, 2, 2 };
 
   // Act
-  QVector<int> intervals = rrmethod.countRRInvervals(RRTime);
+  QVector<int> intervals =
+      rrmethod.countRRInvervals(begin(RRTime), end(RRTime));
 
   // Assert
   QCOMPARE(intervals.size(), RRTime.size() - 1);
@@ -145,7 +147,7 @@ void RRSanityTest::RRRunTest() {
     RRPeaksIterators.push_back(iters);
   }
   // Act
-  a.RunRRMethod(RRPeaksIterators);
+  a.RunRRMethod(begin(RRPeaksIterators), end(RRPeaksIterators));
   Matrix3_3 markovTable = a.getMarkovTable();
   Matrix3_3 ExpectedArray = { { { { 0, 0, 0 } }, { { 0, 1, 0 } },
                                 { { 0, 0, 0 } } } };

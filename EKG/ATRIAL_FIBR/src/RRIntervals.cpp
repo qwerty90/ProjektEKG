@@ -14,9 +14,10 @@ const static double longintervalpercentage = 1.15;
 const static double shortintervalpercentage = 0.85;
 
 QVector<int> RRIntervalMethod::countRRInvervals(
-    const QVector<QVector<double>::const_iterator> &RRtime) {
+    const QVector<CIterators>::const_iterator &RPeaksIteratorsBegin,
+    const QVector<CIterators>::const_iterator &RPeaksIteratorsEnd) {
   QVector<int> RRIntervals;
-  transform(begin(RRtime) + 1, end(RRtime), begin(RRtime),
+  transform(RPeaksIteratorsBegin + 1, RPeaksIteratorsEnd, RPeaksIteratorsBegin,
             back_inserter(RRIntervals),
             [](QVector<double>::const_iterator a,
                QVector<double>::const_iterator b) { return a - b; });
@@ -71,8 +72,11 @@ void RRIntervalMethod::normalizeMarkovTable() {
     markovTable[i] = ans;
   }
 }
-void RRIntervalMethod::RunRRMethod(const QVector<CIterators> &RPeaksIterators) {
-  QVector<int> RRIntervals = countRRInvervals(RPeaksIterators);
+void RRIntervalMethod::RunRRMethod(
+    const QVector<CIterators>::const_iterator &RPeaksIteratorsBegin,
+    const QVector<CIterators>::const_iterator &RPeaksIteratorsEnd) {
+  QVector<int> RRIntervals =
+      countRRInvervals(RPeaksIteratorsBegin, RPeaksIteratorsEnd);
   countAverageInterval(RRIntervals);
   countTransitions(classifyIntervals(RRIntervals));
   normalizeMarkovTable();
