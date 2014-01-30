@@ -1,7 +1,7 @@
 #ifndef EVALUATION_H
 #define EVALUATION_H
 
-#include <Qstring>
+#include <QString>
 using namespace std;
 
 class Evaluation
