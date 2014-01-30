@@ -609,6 +609,7 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
     mY->attach( plot );
 
     QVector<QwtPlotMarker*> marker;
+    QVector<QwtPlotMarker*> marker2;
     QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
 
     for(int i=0;i<sleep_apnea_pairs.size();i++)
@@ -618,18 +619,17 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
         marker.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
         marker.at(i)->setXValue( sleep_apnea_pairs[i].first);
         marker.at(i)->attach( plot );
-        marker.append(new QwtPlotMarker);
-        marker.at(i+1)->setLineStyle( QwtPlotMarker::VLine );
-        marker.at(i+1)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
-        marker.at(i+1)->setXValue( sleep_apnea_pairs[i].first);
-        marker.at(i+1)->attach( plot );
+        marker2.append(new QwtPlotMarker);
+        marker2.at(i)->setLineStyle( QwtPlotMarker::VLine );
+        marker2.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
+        marker2.at(i)->setXValue( sleep_apnea_pairs[i].second);
+        marker2.at(i)->attach( plot );
 
         QLOG_TRACE() <<"Sleep 1= "<< QString::number( sleep_apnea_pairs[i].first)<< "2 = " << QString::number( sleep_apnea_pairs[i].second);
     }
 
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
     plot->canvas()->setGeometry(0,0,xData.last(),0);
     zoom->setZoomBase(plot->canvas()->rect());
 
@@ -701,6 +701,7 @@ QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVec
     mY->attach( plot );
 
     QVector<QwtPlotMarker*> marker;
+    QVector<QwtPlotMarker*> marker2;
     //QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
 
     for(int i=0;i<sleep_apnea_pairs.size();i++)
@@ -710,11 +711,11 @@ QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVec
         marker.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
         marker.at(i)->setXValue( sleep_apnea_pairs[i].first);
         marker.at(i)->attach( plot );
-        marker.append(new QwtPlotMarker);
-        marker.at(i+1)->setLineStyle( QwtPlotMarker::VLine );
-        marker.at(i+1)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
-        marker.at(i+1)->setXValue( sleep_apnea_pairs[i].first);
-        marker.at(i+1)->attach( plot );
+        marker2.append(new QwtPlotMarker);
+        marker2.at(i)->setLineStyle( QwtPlotMarker::VLine );
+        marker2.at(i)->setLinePen( QPen( Qt::black, 3, Qt::SolidLine ) );
+        marker2.at(i)->setXValue( sleep_apnea_pairs[i].second);
+        marker2.at(i)->attach( plot );
 
         QLOG_TRACE() <<"Sleep 1= "<< QString::number( sleep_apnea_pairs[i].first)<< "2 = " << QString::number( sleep_apnea_pairs[i].second);
     }
@@ -1907,28 +1908,28 @@ void AirEcgMain::drawQtDisp(EcgData *data)
     ui->scrollArea_9->setWidget(plotQtDisp);
     ui->scrollArea_9->show();
 
-    ui->DIS_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfCorrectQT ), 'f', 0) + " %");
-    ui->TL_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooLowQT ), 'f', 0) + " %");
-    ui->TH_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->DIS_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Bazzet->setText(QString::number((data->evaluations->at(0).percentOfTooHighQT ), 'f', 2) + " %");
     ui->name0->setText(QString(data->evaluations->at(0).nameOfEvaluation));
 
-    ui->DIS_Frideric->setText(QString::number((data->evaluations->at(1).percentOfCorrectQT ), 'f', 0) + " %");
-    ui->TL_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooLowQT ), 'f', 0) + " %");
-    ui->TH_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->DIS_Frideric->setText(QString::number((data->evaluations->at(1).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Frideric->setText(QString::number((data->evaluations->at(1).percentOfTooHighQT ), 'f', 2) + " %");
     ui->name1->setText(QString(data->evaluations->at(1).nameOfEvaluation));
 
-    ui->DIS_Framingham->setText(QString::number((data->evaluations->at(2).percentOfCorrectQT ), 'f', 0) + " %");
-    ui->TL_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooLowQT ), 'f', 0) + " %");
-    ui->TH_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->DIS_Framingham->setText(QString::number((data->evaluations->at(2).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Framingham->setText(QString::number((data->evaluations->at(2).percentOfTooHighQT ), 'f', 2) + " %");
     ui->name2->setText(QString(data->evaluations->at(2).nameOfEvaluation));
 
-    ui->DIS_Hodges->setText(QString::number((data->evaluations->at(3).percentOfCorrectQT ), 'f', 0) + " %");
-    ui->TL_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooLowQT ), 'f', 0) + " %");
-    ui->TH_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooHighQT ), 'f', 0) + " %");
+    ui->DIS_Hodges->setText(QString::number((data->evaluations->at(3).percentOfCorrectQT ), 'f', 2) + " %");
+    ui->TL_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooLowQT ), 'f', 2) + " %");
+    ui->TH_Hodges->setText(QString::number((data->evaluations->at(3).percentOfTooHighQT ), 'f', 2) + " %");
     ui->name3->setText(QString(data->evaluations->at(3).nameOfEvaluation));
 
-    ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 0)));
-            ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 0));
+    ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 4)));
+    ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 4));
 
     QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }

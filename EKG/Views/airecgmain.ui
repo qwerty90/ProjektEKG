@@ -347,7 +347,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -357,7 +357,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>4</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -447,8 +447,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>988</width>
+                       <height>501</height>
                       </rect>
                      </property>
                     </widget>
@@ -3167,28 +3167,28 @@
                    <item row="2" column="4">
                     <widget class="QLabel" name="TH_Frideric">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="4">
                     <widget class="QLabel" name="TH_Hodges">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="4">
                     <widget class="QLabel" name="TH_Bazzet">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="2" column="1">
                     <widget class="QLabel" name="DIS_Frideric">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3223,49 +3223,49 @@
                    <item row="1" column="1">
                     <widget class="QLabel" name="DIS_Bazzet">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="1">
                     <widget class="QLabel" name="DIS_Hodges">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="1">
                     <widget class="QLabel" name="DIS_Framingham">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="3">
                     <widget class="QLabel" name="TL_Bazzet">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="2" column="3">
                     <widget class="QLabel" name="TL_Frideric">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="3">
                     <widget class="QLabel" name="TL_Hodges">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="3">
                     <widget class="QLabel" name="TL_Framingham">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3293,7 +3293,7 @@
                    <item row="4" column="4">
                     <widget class="QLabel" name="TH_Framingham">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3307,7 +3307,7 @@
                    <item row="1" column="6">
                     <widget class="QLabel" name="avQTdis">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3328,7 +3328,7 @@
                    <item row="3" column="6">
                     <widget class="QLabel" name="deviationQtdis">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3643,16 +3643,9 @@
     <addaction name="separator"/>
     <addaction name="actionRUN_ALL"/>
    </widget>
-   <widget class="QMenu" name="menuReset">
-    <property name="title">
-     <string>Reset</string>
-    </property>
-    <addaction name="actionData_reset"/>
-   </widget>
    <addaction name="menuMenu"/>
    <addaction name="menuRUN"/>
    <addaction name="menuAbout"/>
-   <addaction name="menuReset"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionO_programie">
