@@ -630,7 +630,6 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
 
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
-    //zoom->setZoomBase( false );
     plot->canvas()->setGeometry(0,0,xData.last(),0);
     zoom->setZoomBase(plot->canvas()->rect());
 
