@@ -1162,8 +1162,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>964</width>
-                           <height>426</height>
+                           <width>98</width>
+                           <height>28</height>
                           </rect>
                          </property>
                         </widget>
@@ -2282,7 +2282,7 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>69</width>
+                    <width>98</width>
                     <height>348</height>
                    </rect>
                   </property>
@@ -3167,28 +3167,28 @@
                    <item row="2" column="4">
                     <widget class="QLabel" name="TH_Frideric">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="4">
                     <widget class="QLabel" name="TH_Hodges">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="4">
                     <widget class="QLabel" name="TH_Bazzet">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="2" column="1">
                     <widget class="QLabel" name="DIS_Frideric">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3223,49 +3223,49 @@
                    <item row="1" column="1">
                     <widget class="QLabel" name="DIS_Bazzet">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="1">
                     <widget class="QLabel" name="DIS_Hodges">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="1">
                     <widget class="QLabel" name="DIS_Framingham">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="3">
                     <widget class="QLabel" name="TL_Bazzet">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="2" column="3">
                     <widget class="QLabel" name="TL_Frideric">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="3">
                     <widget class="QLabel" name="TL_Hodges">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="3">
                     <widget class="QLabel" name="TL_Framingham">
                      <property name="text">
-                      <string>0.0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3293,7 +3293,7 @@
                    <item row="4" column="4">
                     <widget class="QLabel" name="TH_Framingham">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3307,7 +3307,7 @@
                    <item row="1" column="6">
                     <widget class="QLabel" name="avQTdis">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
@@ -3328,7 +3328,7 @@
                    <item row="3" column="6">
                     <widget class="QLabel" name="deviationQtdis">
                      <property name="text">
-                      <string>0</string>
+                      <string>-</string>
                      </property>
                     </widget>
                    </item>
