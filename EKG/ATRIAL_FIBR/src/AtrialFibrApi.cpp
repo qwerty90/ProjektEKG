@@ -19,6 +19,11 @@ void AtrialFibrApi::setWeights(const QString &Signal) {
   std::tie(divergenceFactor, entropyFactor, pWaveOccFactor) =
       Weights[SignalType];
 }
+
+const Matrix3_3 patternMatrix = { { { { 0.005, 0.023, 0.06 } },
+                                    { { 0.007, 0.914, 0.013 } },
+                                    { { 0.019, 0.006, 0.003 } } } };
+
 AtrialFibrApi::AtrialFibrApi(
     const QVector<double> &signal,
     const QVector<QVector<double>::const_iterator> &RPeaksIterators,
@@ -27,15 +32,36 @@ AtrialFibrApi::AtrialFibrApi(
     : pWaveStarts(pWaveStarts), endOfSignal(signal.end()), entropyResult(0.0),
       divergenceResult(0.0), pWaveOccurenceRatioResult(0.0),
       signalName(signalName) {
-  rrmethod.RunRRMethod(begin(RPeaksIterators), end(RPeaksIterators));
-  pWaveOccurenceRatioResult = pWaveOccurenceRatio(pWaveStarts, endOfSignal);
-  Matrix3_3 patternMatrix = { { { { 0.005, 0.023, 0.06 } },
-                                { { 0.007, 0.914, 0.013 } },
-                                { { 0.019, 0.006, 0.003 } } } };
-  divergenceResult = JKdivergence(rrmethod.getMarkovTable(), patternMatrix);
-  entropyResult = entropy(rrmethod.getMarkovTable());
   setWeights(signalName);
+  const auto sets =
+      calcSets(begin(pWaveStarts), end(pWaveStarts),
+               begin(RPeaksIterators) + 200, end(RPeaksIterators) - 120);
+  double maxPWaveOccurenceRatioResult = 0.0;
+  double maxDivergenceResult = 0.0;
+  double maxEntropyResult = 0.0;
+  double maxSum = 0.0;
+  for (const auto &set : sets) {
+    rrmethod.RunRRMethod(get<0>(set), get<0>(set) + 60);
+    const double pWaveOccurenceRatioResult =
+        pWaveOccurenceRatio(get<1>(set), get<1>(set) + 60, endOfSignal);
+    const double divergenceResult =
+        JKdivergence(rrmethod.getMarkovTable(), patternMatrix);
+    const double entropyResult = entropy(rrmethod.getMarkovTable());
+    const double sum = divergenceFactor * divergenceResult +
+                       entropyResult * entropyFactor +
+                       (1 - pWaveOccurenceRatioResult) * pWaveOccFactor;
+    if (sum > maxSum) {
+      maxPWaveOccurenceRatioResult = pWaveOccurenceRatioResult;
+      maxDivergenceResult = divergenceResult;
+      maxEntropyResult = entropyResult;
+      maxSum = sum;
+    }
+    this->divergenceResult = maxDivergenceResult;
+    this->entropyResult = maxEntropyResult;
+    this->pWaveOccurenceRatioResult = maxPWaveOccurenceRatioResult;
+  }
 }
+
 double AtrialFibrApi::GetRRIntEntropy() const { return entropyResult; }
 
 double AtrialFibrApi::GetRRIntDivergence() const { return divergenceResult; }

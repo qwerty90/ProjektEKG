@@ -242,7 +242,9 @@ void RRSanityTest::pWaveOccurence_AllFound() {
   for (auto it : pWaveStarts)
     copy(begin(averagePWave), end(averagePWave), it);
   // Assert
-  QCOMPARE(pWaveOccurenceRatio(pWaveStartsC, end(signal)), 1.0);
+  QCOMPARE(
+      pWaveOccurenceRatio(begin(pWaveStartsC), end(pWaveStartsC), end(signal)),
+      1.0);
 }
 
 void RRSanityTest::pWaveOccurence_HalfFound() {
@@ -254,7 +256,9 @@ void RRSanityTest::pWaveOccurence_HalfFound() {
   copy(begin(averagePWave), end(averagePWave), begin(signal) + 10);
 
   // Assert
-  QCOMPARE(pWaveOccurenceRatio(pWaveStarts, end(signal)), 1.0 / 2);
+  QCOMPARE(
+      pWaveOccurenceRatio(begin(pWaveStarts), end(pWaveStarts), end(signal)),
+      1.0 / 2);
 }
 
 void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
@@ -267,7 +271,7 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
 
   // Act
   try {
-    pWaveOccurenceRatio(pWaveStarts, end(signal));
+    pWaveOccurenceRatio(begin(pWaveStarts), end(pWaveStarts), end(signal));
   }
   catch (PWaveStartTooCloseToEndOfSignal) {
     thrown = true;
@@ -288,6 +292,7 @@ void RRSanityTest::GetPWaveAbsenceRatioTest() {
   for (auto it : pWaveStarts)
     copy(begin(averagePWave), end(averagePWave), it);
   AtrialFibrApi AtrFibrApi(signal, pWaveStartsC, pWaveStartsC);
+
   // Assert
   QCOMPARE(AtrFibrApi.GetPWaveAbsenceRatio(), 0.0);
 }
