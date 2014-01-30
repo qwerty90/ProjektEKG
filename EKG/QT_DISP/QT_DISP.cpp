@@ -16,7 +16,7 @@ QT_DISP::QT_DISP()
 
 void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vector <int> in_QRS_End, vector <int> in_P_On, double in_samplingFrequency)
 {
-	signals2 = in_signals2;
+	signals2 = in_signals2; 
 	QRS_On = in_QRS_On;
 	QRS_End = in_QRS_End;
 	if(QRS_End[0] < QRS_On[0])
@@ -94,7 +94,7 @@ void QT_DISP::getInput(string path)
 // Funkcja wyjsciowa - konce zalamka T
 vector <double> QT_DISP::returnTEnd()
 {
-	return T_EndP;				//!!!!!!!!!!!!!!!!!!!!!!!! na razie zwracane tylko paraboliczne, jakiœ check box?
+	return T_EndT;
 }
 
 
