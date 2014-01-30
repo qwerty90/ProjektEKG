@@ -24,8 +24,8 @@ QVector<int> RRIntervalMethod::countRRInvervals(
   return RRIntervals;
 }
 
-QVector<classification>
-RRIntervalMethod::classifyIntervals(const QVector<int> &RRIntervals) {
+QVector<classification> classifyIntervals(const QVector<int> &RRIntervals,
+                                          int averageInterval) {
   QVector<classification> classifiedIntervals;
   for (const auto &interval : RRIntervals) {
     if (interval >= longintervalpercentage * averageInterval) {
@@ -39,8 +39,8 @@ RRIntervalMethod::classifyIntervals(const QVector<int> &RRIntervals) {
   return classifiedIntervals;
 }
 
-void RRIntervalMethod::countAverageInterval(const QVector<int> &RRIntervals) {
-  averageInterval = mean(RRIntervals);
+int countAverageInterval(const QVector<int> &RRIntervals) {
+  return mean(RRIntervals);
 }
 
 void RRIntervalMethod::countTransitions(
@@ -77,8 +77,8 @@ void RRIntervalMethod::RunRRMethod(
     const QVector<CIterators>::const_iterator &RPeaksIteratorsEnd) {
   QVector<int> RRIntervals =
       countRRInvervals(RPeaksIteratorsBegin, RPeaksIteratorsEnd);
-  countAverageInterval(RRIntervals);
-  countTransitions(classifyIntervals(RRIntervals));
+  const int avgInterval = countAverageInterval(RRIntervals);
+  countTransitions(classifyIntervals(RRIntervals, avgInterval));
   normalizeMarkovTable();
 }
 

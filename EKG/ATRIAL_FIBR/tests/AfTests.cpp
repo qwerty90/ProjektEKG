@@ -91,9 +91,9 @@ void RRSanityTest::classifyIntervalsTest() {
   QVector<classification> expectedIntervals = { Regular, Regular, Long, Short };
 
   // Act
-  rrmethod.countAverageInterval(intervals);
+  const int averageInterval = countAverageInterval(intervals);
   QVector<classification> classifiedIntervals =
-      rrmethod.classifyIntervals(intervals);
+      classifyIntervals(intervals, averageInterval);
 
   // Assert
   QVERIFY(classifiedIntervals == expectedIntervals);
@@ -107,9 +107,9 @@ void RRSanityTest::countTransitionsTest() {
   };
 
   // Act
-  rrmethod.countAverageInterval(intervals);
+  int interval = countAverageInterval(intervals);
   QVector<classification> classifiedIntervals =
-      rrmethod.classifyIntervals(intervals);
+      classifyIntervals(intervals, interval);
   rrmethod.countTransitions(classifiedIntervals);
 
   // Assert
@@ -124,9 +124,9 @@ void RRSanityTest::normalizeMarkovTableTest() {
   };
 
   // Act
-  rrmethod.countAverageInterval(intervals);
+  const int avgInterval = countAverageInterval(intervals);
   QVector<classification> classifiedIntervals =
-      rrmethod.classifyIntervals(intervals);
+      classifyIntervals(intervals, avgInterval);
   rrmethod.countTransitions(classifiedIntervals);
   rrmethod.normalizeMarkovTable();
 
