@@ -44,6 +44,7 @@ private Q_SLOTS:
   void closestP_SinglePPeak();
   void closestP_TwoPPeaks();
   void calcRWaveSets_SingleR();
+  void calcSets_SingleR();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -299,10 +300,10 @@ Cit closestPWave(QVector<Cit>::const_iterator pBegin,
 
 QVector<QVector<Cit>::const_iterator>
 calcRWaveSets(const QVector<Cit>::const_iterator &rpeaksBegin,
-         const QVector<Cit>::const_iterator &rpeaksEnd, int step) {
-    const auto dist = distance(rpeaksBegin, rpeaksEnd);
+              const QVector<Cit>::const_iterator &rpeaksEnd, int step) {
+  const auto dist = distance(rpeaksBegin, rpeaksEnd);
   QVector<QVector<Cit>::const_iterator> answer;
-  answer.reserve(dist/60 -1);
+  answer.reserve(dist / 60 - 1);
   for (auto it = rpeaksBegin; distance(it, rpeaksEnd) > step; it += step) {
     answer.push_back(it);
   }
@@ -351,7 +352,42 @@ void RRSanityTest::calcRWaveSets_SingleR() {
   QCOMPARE(rpeaks.begin(), answer[0]);
   QCOMPARE(rpeaks.begin() + 60, answer[1]);
 }
+using namespace std;
 
+typedef tuple<QVector<Cit>::const_iterator, Cit> calcPair;
+QVector<calcPair> calcSets(QVector<Cit>::const_iterator pBegin,
+                           QVector<Cit>::const_iterator pEnd,
+                           QVector<Cit>::const_iterator rBegin,
+                           QVector<Cit>::const_iterator rEnd) {
+  const auto rWaveSets = calcRWaveSets(rBegin, rEnd, 60);
+  QVector<calcPair> answer;
+  transform(begin(rWaveSets), end(rWaveSets), back_inserter(answer),
+            [=](decltype(rWaveSets)::value_type rpeak) {
+    return make_tuple(rpeak, closestPWave(pBegin, pEnd, *rpeak));
+  });
+  return answer;
+}
+
+void RRSanityTest::calcSets_SingleR() {
+  // Arrange
+  QVector<double> signal(2000);
+  QVector<Cit> rpeaks(140);
+  QVector<Cit> ppeaks(140);
+  for (int i = 0; i < 140; i++) {
+    rpeaks[i] = signal.begin() + i * 10 + 10;
+    ppeaks[i] = signal.begin() + i * 10 + 5;
+  }
+
+  // Act
+  auto sets = calcSets(begin(ppeaks), end(ppeaks), begin(rpeaks), end(rpeaks));
+
+  // Assert
+  QCOMPARE(2, sets.size());
+  QCOMPARE(rpeaks.begin(), get<0>(sets[0]));
+  QCOMPARE(ppeaks[0], get<1>(sets[0]));
+  QCOMPARE(rpeaks.begin() + 60, get<0>(sets[1]));
+  QCOMPARE(ppeaks[60], get<1>(sets[1]));
+}
 
 QTEST_APPLESS_MAIN(RRSanityTest)
 
