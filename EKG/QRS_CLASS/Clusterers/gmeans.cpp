@@ -2,6 +2,9 @@
 #include "kmeans.h"
 #include "float.h"
 #include <math.h>
+#include <QsLog.h>
+#include <QDir>
+#include <QsLogDest.h>
 
 #define CDF_A_1  0.254829592
 #define CDF_A_2  -0.284496736
@@ -20,25 +23,31 @@ GMeans::GMeans()
 
 bool GMeans::classify()
 {
+
     if (this->instances == NULL || this->maxNumOfClusters == 0)
         return false;
-
+QLOG_INFO() << "dupa1";
     //Generate initial centroids;
     int numOfAttributes = this->instances->first().numberOfAttributes();
-    QList<Instance>* initCentroids = this->initializeCentroids(RandomPoints, this->minNumOfClusters);
+    QLOG_INFO() << "dupa1.1";
+    QLOG_INFO() << "dupa1.2" << this->minNumOfClusters;
+    QList<Instance>* initCentroids = this->initializeCentroids(RandomPoints, this->minNumOfClusters); //tu sie sypie
 
     bool keepGoing = true;
     int iters = 0;
+
     int currentNoOfClusters = this->minNumOfClusters;
 
-
+QLOG_INFO() << "dupa2";
     // Run G-Means
     KMeans clusterer;
     clusterer.setClusteringSet(this->instances);
     clusterer.setMaxIterations(this->maxIters);
 
+QLOG_INFO() << "dupa3";
     while(keepGoing && iters < this->maxIters)
     {
+        QLOG_INFO() << "dupa4";
         iters++;
         keepGoing = false;
         clusterer.setCentroids(initCentroids);
