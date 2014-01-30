@@ -196,9 +196,42 @@ jest średnią ważoną z następujących parametrów:
  Stosunek liczby okresów PQRST w których fala P występuje, do całkowitej liczby tych okresów.
  Za występowanie fali P uznajemy sytuację, w której korelacja między sygnałem w przedziale otrzymanym z modułu WAVES,
  a sygnałem wzorcowym jest większa od $0.2$.
+ 
 \end{itemize}
 Po zaaplikowaniu wyżej wspomnianych metod dla wzorcowych sygnałów z bazy Physiobank, 
 można stwierdzić, że program dokonuje detekcji poprawnie. 
 Właściwie dla wiekszości przypadków wystarczająca jest sama analiza rytmu bicia serca (dystansów R-R).
 Zastosowanie drugiej metody związanej z absencją fali P dodatkowo zwiększyło skuteczność wykrywania choroby.
+
+\paragraph{Weryfikacja na podstawie otrzymanych danych}
+
+\begin{table}[ht]
+
+\centering
+    \begin{tabular}{c c c c c}
+    \hline \hline
+    Numer próbki & Absencja fali P &Dywergencja & Entropia &Chory \\
+    \hline
+    101 &0.09 &0.18 &0.04 &NIE\\
+    105 &0.84 &0.26 &0.02 &NIE\\
+    106 &0.81 &0.94 &0.16 &NIE\\
+    107 &0.79 &0.22 &0.03 &NIE\\
+    108 &0.86 &0.97 &0.31 &TAK\\
+    109 &0.29 &0.20 &0.02 &NIE\\
+    111 &0.09 &0.41 &0.04 &NIE\\
+    112 &0.40 &0.05 &0.04 &NIE\\
+    113 &0.06 &0.55 &0.04 &NIE\\
+    \end{tabular}
+    \caption{Rezultaty uzyskane dla poszczególnych danych}
+\end{table}
+
+Moduł jest zależny od wyników uzyskanych od innych. 
+Gdyby wszystkie dane były dostarczone wcześniej, można by było wygenerować średnią falę P ze wszystkich sygnałów.
+Dodatkowo, dla różnych elektrod fala P różni się kształtem i nie da się dobrać jednej uniwersalnej.
+Konieczne byłoby uśrednienie na podstawie otrzymanych początków i końców fal P, by otrzymać średni wzorzec.
+Ze względu na charakter tego projektu - wszystkie moduły pracowały równolegle i dopiero pod koniec wszystkie zależności były gotowe - 
+zrealizowanie tego wykracza poza nasze możliwości.
+Jest to jednak doskonały punkt, w którym można kontynuować projekt.
+Metody przez nas zaimplementowane są dokładnie przetestowane, należałoby stworzyć odpowiedni algorytm do uzyskania średniej fali P.
+Dlatego w tym momencie zaimplementowane jest rozwiązanie dla sygnału V1, w przypadku pozostałych, współczynnik zaniku fali P nie jest obliczany.
 
