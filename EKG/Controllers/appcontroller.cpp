@@ -290,7 +290,7 @@ void AppController::runEcgBaseline()
     emit EcgBaseline_done(this->entity);
     emit busy(false);
 
-        // runVcgLoop();  <- nie odpalajcie tego!
+         //runVcgLoop();//  <- nie odpalajcie tego!
 
 }
 
@@ -1064,7 +1064,7 @@ void AppController::load12lead_db(VCG_input &input)
     QStringList::iterator iter_column;
 
     int i=0;
-    QString name = "C:\\SampleData\\12-lead_db\\samples.txt";
+    QString name = "./samples.txt";
 
     QFile f(name);
     if (f.open(QIODevice::ReadOnly))
@@ -1102,8 +1102,6 @@ void AppController::load12lead_db(VCG_input &input)
         f.close();
     }
     else
-        QLOG_TRACE() <<"VCG_LOOP/ Nie otwarto pliku.";
-
-    QLOG_INFO() <<"VCG_LOOP/ " << i << " Samples loaded";
+        QLOG_FATAL() <<"VCG_LOOP/ Nie otwarto pliku.";
 
 }
