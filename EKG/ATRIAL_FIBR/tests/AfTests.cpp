@@ -38,7 +38,6 @@ private Q_SLOTS:
   void pWaveOccurence_AllFound();
   void pWaveOccurence_HalfFound();
   void pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal();
-  void GetPWaveAbsenceRatioTest();
 
   void closestP();
   void closestP_SinglePPeak();
@@ -279,22 +278,6 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
 
   // Assert
   QVERIFY(thrown);
-}
-
-void RRSanityTest::GetPWaveAbsenceRatioTest() {
-  // Arrange
-  QVector<double> signal(200);
-  QVector<QVector<double>::iterator> pWaveStarts = { signal.begin() + 10,
-                                                     signal.begin() + 70 };
-  QVector<QVector<double>::const_iterator> pWaveStartsC = {
-    signal.begin() + 10, signal.begin() + 70
-  };
-  for (auto it : pWaveStarts)
-    copy(begin(averagePWave), end(averagePWave), it);
-  AtrialFibrApi AtrFibrApi(signal, pWaveStartsC, pWaveStartsC);
-
-  // Assert
-  QCOMPARE(AtrFibrApi.GetPWaveAbsenceRatio(), 0.0);
 }
 
 void RRSanityTest::closestP() {

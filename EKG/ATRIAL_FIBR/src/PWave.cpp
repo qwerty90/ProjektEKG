@@ -28,10 +28,6 @@ double correlation(const Cit &start1, const Cit &end1, const Cit &start2) {
         return sum + (x - mean2) * (x - mean2);
       });
   const auto denominator = sqrt(squaredError1) * sqrt(squaredError2);
-
-  for_each(start2, end2, [](double x) { cout << x << endl; });
-  cout << "==============" << endl;
-
   return numerator / denominator;
 }
 
