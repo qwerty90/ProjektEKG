@@ -196,6 +196,11 @@ jest średnią ważoną z następujących parametrów:
  Stosunek liczby okresów PQRST w których fala P występuje, do całkowitej liczby tych okresów.
  Za występowanie fali P uznajemy sytuację, w której korelacja między sygnałem w przedziale otrzymanym z modułu WAVES,
  a sygnałem wzorcowym jest większa od $0.2$.
+ 
+ Moduł jest zależny od wyników innych. 
+ Gdyby wszystkie dane były dostarczone wcześniej, można by było wygenerować średnią falę P ze wszystkich sygnałów.
+ Dodatkowo, dla różnych elektrod fala P różni się kształtem i nie da się dobrać jednej uniwersalnej.
+ Dlatego w tym momencie zaimplementowane jest rozwiązanie dla sygnału V1, w przypadku pozostałych, współczynnik zaniku fali P nie jest obliczany.
 \end{itemize}
 Po zaaplikowaniu wyżej wspomnianych metod dla wzorcowych sygnałów z bazy Physiobank, 
 można stwierdzić, że program dokonuje detekcji poprawnie. 
