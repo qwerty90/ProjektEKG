@@ -20,7 +20,8 @@ class RRSanityTest : public QObject {
 public:
   RRSanityTest();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void initTestCase();
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
@@ -334,7 +335,9 @@ void RRSanityTest::calcSets_SingleR() {
   }
 
   // Act
-  auto sets = calcSets(begin(ppeaks), end(ppeaks), begin(rpeaks), end(rpeaks));
+
+  auto sets =
+      calcSets(begin(ppeaks), end(ppeaks), begin(rpeaks), end(rpeaks), 60);
 
   // Assert
   QCOMPARE(2, sets.size());

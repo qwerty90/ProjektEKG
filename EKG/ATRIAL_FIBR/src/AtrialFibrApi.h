@@ -35,14 +35,14 @@ QVector<Cit>::const_iterator closestPWave(QVector<Cit>::const_iterator pBegin,
                                           Cit rpeak);
 
 QVector<QVector<Cit>::const_iterator>
-calcRWaveSets(const QVector<Cit>::const_iterator &rpeaksBegin,
-              const QVector<Cit>::const_iterator &rpeaksEnd, int step);
+    calcRWaveSets(const QVector<Cit>::const_iterator &rpeaksBegin,
+                  const QVector<Cit>::const_iterator &rpeaksEnd, int step);
 
 using namespace std;
 
 typedef tuple<QVector<Cit>::const_iterator, QVector<Cit>::const_iterator>
-calcPair;
+    calcPair;
 QVector<calcPair> calcSets(QVector<Cit>::const_iterator pBegin,
                            QVector<Cit>::const_iterator pEnd,
                            QVector<Cit>::const_iterator rBegin,
-                           QVector<Cit>::const_iterator rEnd);
+                           QVector<Cit>::const_iterator rEnd, int window);

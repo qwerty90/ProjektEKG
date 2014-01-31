@@ -32,24 +32,25 @@ AtrialFibrApi::AtrialFibrApi(
     : pWaveStarts(pWaveStarts), endOfSignal(signal.end()), entropyResult(0.0),
       divergenceResult(0.0), pWaveOccurenceRatioResult(0.0),
       signalName(signalName) {
+  int window = 100;
   setWeights(signalName);
-  const auto sets =
-      calcSets(begin(pWaveStarts), end(pWaveStarts),
-               begin(RPeaksIterators) + 200, end(RPeaksIterators) - 120);
+  const auto sets = calcSets(begin(pWaveStarts), end(pWaveStarts),
+                             begin(RPeaksIterators) + 200,
+                             end(RPeaksIterators) - 120, window);
   double maxPWaveOccurenceRatioResult = 0.0;
   double maxDivergenceResult = 0.0;
   double maxEntropyResult = 0.0;
   double maxSum = 0.0;
   for (const auto &set : sets) {
-    rrmethod.RunRRMethod(get<0>(set), get<0>(set) + 60);
+    rrmethod.RunRRMethod(get<0>(set), get<0>(set) + window);
     const double pWaveOccurenceRatioResult =
-        pWaveOccurenceRatio(get<1>(set), get<1>(set) + 60, endOfSignal);
+        pWaveOccurenceRatio(get<1>(set), get<1>(set) + window, endOfSignal);
     const double divergenceResult =
         JKdivergence(rrmethod.getMarkovTable(), patternMatrix);
     const double entropyResult = entropy(rrmethod.getMarkovTable());
-    const double sum = divergenceFactor * divergenceResult +
-                       entropyResult * entropyFactor +
-                       (1 - pWaveOccurenceRatioResult) * pWaveOccFactor;
+    const double sum =
+        divergenceFactor * divergenceResult + entropyResult * entropyFactor +
+        (1 - pWaveOccurenceRatioResult) * pWaveOccFactor;
     if (sum > maxSum) {
       maxPWaveOccurenceRatioResult = pWaveOccurenceRatioResult;
       maxDivergenceResult = divergenceResult;
@@ -86,8 +87,9 @@ typedef QVector<double>::const_iterator Cit;
 QVector<Cit>::const_iterator closestPWave(QVector<Cit>::const_iterator pBegin,
                                           QVector<Cit>::const_iterator pEnd,
                                           Cit rpeak) {
-  const auto ans =
-      find_if(pBegin, pEnd, [=](Cit cit) { return distance(cit, rpeak) < 0; });
+  const auto ans = find_if(pBegin, pEnd, [ = ](Cit cit) {
+    return distance(cit, rpeak) < 0;
+  });
   return ans - 1;
 }
 
@@ -96,7 +98,7 @@ calcRWaveSets(const QVector<Cit>::const_iterator &rpeaksBegin,
               const QVector<Cit>::const_iterator &rpeaksEnd, int step) {
   const auto dist = distance(rpeaksBegin, rpeaksEnd);
   QVector<QVector<Cit>::const_iterator> answer;
-  answer.reserve(dist / 60 - 1);
+  answer.reserve(dist / step - 1);
   for (auto it = rpeaksBegin; distance(it, rpeaksEnd) > step; it += step) {
     answer.push_back(it);
   }
@@ -106,15 +108,15 @@ calcRWaveSets(const QVector<Cit>::const_iterator &rpeaksBegin,
 using namespace std;
 
 typedef tuple<QVector<Cit>::const_iterator, QVector<Cit>::const_iterator>
-calcPair;
+    calcPair;
 QVector<calcPair> calcSets(QVector<Cit>::const_iterator pBegin,
                            QVector<Cit>::const_iterator pEnd,
                            QVector<Cit>::const_iterator rBegin,
-                           QVector<Cit>::const_iterator rEnd) {
-  const auto rWaveSets = calcRWaveSets(rBegin, rEnd, 60);
+                           QVector<Cit>::const_iterator rEnd, int window) {
+  const auto rWaveSets = calcRWaveSets(rBegin, rEnd, window);
   QVector<calcPair> answer;
   transform(begin(rWaveSets), end(rWaveSets), back_inserter(answer),
-            [=](decltype(rWaveSets)::value_type rpeak) {
+            [ = ](decltype(rWaveSets) ::value_type rpeak) {
     return make_tuple(rpeak, closestPWave(pBegin, pEnd, *rpeak));
   });
   return answer;
