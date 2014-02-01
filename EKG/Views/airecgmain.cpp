@@ -1507,8 +1507,8 @@ void AirEcgMain::drawAtrialFibr(EcgData *data)
 
     //parametry
     ui->Param1->setText(QString::number((data->PWaveOccurenceRatio), 'f', 2) + " ");
-    ui->Param2->setText(QString::number((data->RRIntEntropy), 'f', 2) + " ");
-    ui->Param3->setText(QString::number((data->RRIntDivergence), 'f', 2) + "");
+    ui->Param2->setText(QString::number((data->RRIntDivergence), 'f', 2) + " ");
+    ui->Param3->setText(QString::number((data->RRIntEntropy), 'f', 2) + "");
 
     //migotanie
     if(data->AtrialFibr)
