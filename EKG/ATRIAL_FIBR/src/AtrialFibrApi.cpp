@@ -35,7 +35,7 @@ AtrialFibrApi::AtrialFibrApi(
   int window = 100;
   setWeights(signalName);
   const auto sets = calcSets(begin(pWaveStarts), end(pWaveStarts),
-                             begin(RPeaksIterators) + 200,
+                             begin(RPeaksIterators) + 100,
                              end(RPeaksIterators) - 120, window);
   double maxPWaveOccurenceRatioResult = 0.0;
   double maxDivergenceResult = 0.0;
