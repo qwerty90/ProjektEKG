@@ -116,7 +116,7 @@ QVector<calcPair> calcSets(QVector<Cit>::const_iterator pBegin,
   const auto rWaveSets = calcRWaveSets(rBegin, rEnd, window);
   QVector<calcPair> answer;
   transform(begin(rWaveSets), end(rWaveSets), back_inserter(answer),
-            [ = ](decltype(rWaveSets) ::value_type rpeak) {
+            [ = ](QVector<Cit>::const_iterator rpeak) {
     return make_tuple(rpeak, closestPWave(pBegin, pEnd, *rpeak));
   });
   return answer;
