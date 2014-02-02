@@ -832,6 +832,15 @@ QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, double a, double b)
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
 
+    QwtPlotCurve *points = new QwtPlotCurve();
+    QwtSymbol *marker = new QwtSymbol( QwtSymbol::Ellipse, Qt::green, QPen( Qt::green ), QSize( 10, 10 ) );
+    points->setSymbol(marker);
+    points->setPen( QColor( Qt::green ) );
+    points->setStyle( QwtPlotCurve::NoCurve );
+    points->setSamples(sampleNo,yData);
+    points->attach( plot );
+
+
     QVector<double> prosta_x = QVector<double>(2);
     QVector<double> prosta_y = QVector<double>(2);
     prosta_x[0] = 0;
@@ -845,19 +854,7 @@ QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, double a, double b)
     curve2->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve2->setSamples(prosta_x, prosta_y);
     curve2->attach(plot);
-/*
-    // linia laczaca 2pkty
-    QwtPlotCurve *curve2 = new QwtPlotCurve();
-    curve2->setPen(QPen( Qt::blue, 3));
-    curve2->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    QwtSymbol *symbol = new QwtSymbol( QwtSymbol::Ellipse,
-                                      QBrush( Qt::yellow ), QPen( Qt::red, 2 ), QSize( 8, 8 ) );
-    curve2->setSymbol( symbol );
-    QPolygonF points;
-    points << S1 << S2;
-    curve2->setSamples( points );
-    curve2->attach( plot );
-*/
+
     // wstawianie lini poziomej
     QwtPlotMarker *mY = new QwtPlotMarker();
     mY->setLabel( QString::fromLatin1( "label" ) );
@@ -1897,7 +1894,15 @@ void AirEcgMain::drawHrt(EcgData *data)
     QwtPlot *hrtTachogram = plotHrt(*(data->hrt_tachogram),data->hrt_a,data->hrt_b);
     ui->scrollAreaHrt->setWidget(hrtTachogram);
     ui->scrollAreaHrt->show();
-    ui->vpbs_detected_count->setText(QString::number((data->vpbs_detected_count), 'f', 0));
+    unsigned int classification=0;
+    if (data->turbulence_onset < 0 && data->turbulence_slope > 2.5)
+        classification = 0;
+    else if(data->turbulence_onset > 0 && data->turbulence_slope < 2.5)
+        classification = 2;
+    else
+        classification = 1;
+    ui->hrt_classification->setText(QString::number((classification), 'f', 0));
+    ui->Veb_count->setText(QString::number((data->vpbs_detected_count), 'f', 0));
     ui->turbulence_onset_val->setText(QString::number((data->turbulence_onset), 'f', 2));
     ui->turbulence_slope_val->setText(QString::number((data->turbulence_slope), 'f', 2));
 }
