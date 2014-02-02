@@ -587,8 +587,8 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
     QVector<QwtPlotMarker*> marker2;
     QVector<double> points= QVector<double>(2);
      QVector<double> pointsY = QVector<double>(2);
-     pointsY[0]=threshold;
-     pointsY[1]=threshold;
+     pointsY[0]=0;//threshold;
+     pointsY[1]=0;//threshold;
     QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
 
    QVector< QwtPlotCurve*> sleep_line;// = QVector< QwtPlotCurve*>(new QwtPlotCurve());
@@ -687,8 +687,8 @@ QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVec
     QVector<QwtPlotMarker*> marker2;
     QVector<double> points= QVector<double>(2);
      QVector<double> pointsY = QVector<double>(2);
-     pointsY[0]=threshold;
-     pointsY[1]=threshold;
+     pointsY[0]=0;//threshold;
+     pointsY[1]=0;//threshold;
     QLOG_TRACE() <<"Sleep size= "<< QString::number( sleep_apnea_pairs.size());
 
    QVector< QwtPlotCurve*> sleep_line;// = QVector< QwtPlotCurve*>(new QwtPlotCurve());

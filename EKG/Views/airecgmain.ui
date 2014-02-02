@@ -1162,8 +1162,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>964</width>
-                           <height>426</height>
+                           <width>63</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1975,8 +1975,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>427</height>
+                   <width>63</width>
+                   <height>16</height>
                   </rect>
                  </property>
                 </widget>
@@ -2807,8 +2807,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>209</height>
+                   <width>80</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -2843,8 +2843,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1030</width>
-                   <height>209</height>
+                   <width>80</width>
+                   <height>198</height>
                   </rect>
                  </property>
                 </widget>
@@ -3406,7 +3406,7 @@
                  <enum>QTabWidget::East</enum>
                 </property>
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="tab">
                  <attribute name="title">
@@ -3424,7 +3424,7 @@
                        <x>0</x>
                        <y>0</y>
                        <width>988</width>
-                       <height>422</height>
+                       <height>442</height>
                       </rect>
                      </property>
                     </widget>
@@ -3432,6 +3432,22 @@
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_11">
+                    <item>
+                     <spacer name="verticalSpacer_15">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
                     <item>
                      <widget class="QFrame" name="frame_2">
                       <property name="enabled">
@@ -3478,6 +3494,22 @@
                       </property>
                      </widget>
                     </item>
+                    <item>
+                     <spacer name="verticalSpacer_16">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
                    </layout>
                   </item>
                  </layout>
@@ -3498,7 +3530,7 @@
                        <x>0</x>
                        <y>0</y>
                        <width>988</width>
-                       <height>445</height>
+                       <height>442</height>
                       </rect>
                      </property>
                     </widget>
@@ -3506,6 +3538,22 @@
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
+                    <item>
+                     <spacer name="verticalSpacer_13">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
                     <item>
                      <widget class="QFrame" name="frame">
                       <property name="enabled">
@@ -3551,6 +3599,22 @@
                        <number>30</number>
                       </property>
                      </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_14">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                    </layout>
                   </item>
