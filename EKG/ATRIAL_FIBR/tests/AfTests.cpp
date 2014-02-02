@@ -20,8 +20,7 @@ class RRSanityTest : public QObject {
 public:
   RRSanityTest();
 
-private
-Q_SLOTS:
+private Q_SLOTS:
   void initTestCase();
   void countRRIntervalsOneInterval();
   void countRRIntervalsThreeIntervals();
@@ -35,16 +34,12 @@ Q_SLOTS:
   void KLDivergenceTest();
   void JKDivergenceEqualMatrix();
   void JKDivergenceTest();
+
   void correlation_ObviousCases();
   void pWaveOccurence_AllFound();
   void pWaveOccurence_HalfFound();
   void pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal();
-
-  void closestP();
-  void closestP_SinglePPeak();
-  void closestP_TwoPPeaks();
-  void calcRWaveSets_SingleR();
-  void calcSets_SingleR();
+  void GetPWaveOccurenceRatioTest();
 };
 
 RRSanityTest::RRSanityTest() {}
@@ -58,8 +53,7 @@ void RRSanityTest::countRRIntervalsOneInterval() {
                                                    signal.begin() + 2 };
 
   // Act
-  QVector<int> intervals =
-      rrmethod.countRRInvervals(begin(RRTime), end(RRTime));
+  QVector<int> intervals = rrmethod.countRRInvervals(RRTime);
 
   // Assert
   QCOMPARE(intervals.front(), 1);
@@ -77,8 +71,7 @@ void RRSanityTest::countRRIntervalsThreeIntervals() {
   QVector<int> ExpIntervals = { 1, 3, 2, 2 };
 
   // Act
-  QVector<int> intervals =
-      rrmethod.countRRInvervals(begin(RRTime), end(RRTime));
+  QVector<int> intervals = rrmethod.countRRInvervals(RRTime);
 
   // Assert
   QCOMPARE(intervals.size(), RRTime.size() - 1);
@@ -91,9 +84,9 @@ void RRSanityTest::classifyIntervalsTest() {
   QVector<classification> expectedIntervals = { Regular, Regular, Long, Short };
 
   // Act
-  const int averageInterval = countAverageInterval(intervals);
+  rrmethod.countAverageInterval(intervals);
   QVector<classification> classifiedIntervals =
-      classifyIntervals(intervals, averageInterval);
+      rrmethod.classifyIntervals(intervals);
 
   // Assert
   QVERIFY(classifiedIntervals == expectedIntervals);
@@ -107,9 +100,9 @@ void RRSanityTest::countTransitionsTest() {
   };
 
   // Act
-  int interval = countAverageInterval(intervals);
+  rrmethod.countAverageInterval(intervals);
   QVector<classification> classifiedIntervals =
-      classifyIntervals(intervals, interval);
+      rrmethod.classifyIntervals(intervals);
   rrmethod.countTransitions(classifiedIntervals);
 
   // Assert
@@ -124,9 +117,9 @@ void RRSanityTest::normalizeMarkovTableTest() {
   };
 
   // Act
-  const int avgInterval = countAverageInterval(intervals);
+  rrmethod.countAverageInterval(intervals);
   QVector<classification> classifiedIntervals =
-      classifyIntervals(intervals, avgInterval);
+      rrmethod.classifyIntervals(intervals);
   rrmethod.countTransitions(classifiedIntervals);
   rrmethod.normalizeMarkovTable();
 
@@ -147,7 +140,7 @@ void RRSanityTest::RRRunTest() {
     RRPeaksIterators.push_back(iters);
   }
   // Act
-  a.RunRRMethod(begin(RRPeaksIterators), end(RRPeaksIterators));
+  a.RunRRMethod(RRPeaksIterators);
   Matrix3_3 markovTable = a.getMarkovTable();
   Matrix3_3 ExpectedArray = { { { { 0, 0, 0 } }, { { 0, 1, 0 } },
                                 { { 0, 0, 0 } } } };
@@ -242,9 +235,7 @@ void RRSanityTest::pWaveOccurence_AllFound() {
   for (auto it : pWaveStarts)
     copy(begin(averagePWave), end(averagePWave), it);
   // Assert
-  QCOMPARE(
-      pWaveOccurenceRatio(begin(pWaveStartsC), end(pWaveStartsC), end(signal)),
-      1.0);
+  QCOMPARE(pWaveOccurenceRatio(pWaveStartsC, end(signal)), 1.0);
 }
 
 void RRSanityTest::pWaveOccurence_HalfFound() {
@@ -256,9 +247,7 @@ void RRSanityTest::pWaveOccurence_HalfFound() {
   copy(begin(averagePWave), end(averagePWave), begin(signal) + 10);
 
   // Assert
-  QCOMPARE(
-      pWaveOccurenceRatio(begin(pWaveStarts), end(pWaveStarts), end(signal)),
-      1.0 / 2);
+  QCOMPARE(pWaveOccurenceRatio(pWaveStarts, end(signal)), 1.0 / 2);
 }
 
 void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
@@ -271,7 +260,7 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
 
   // Act
   try {
-    pWaveOccurenceRatio(begin(pWaveStarts), end(pWaveStarts), end(signal));
+    pWaveOccurenceRatio(pWaveStarts, end(signal));
   }
   catch (PWaveStartTooCloseToEndOfSignal) {
     thrown = true;
@@ -281,72 +270,20 @@ void RRSanityTest::pWaveOccurence_ThrowIfPWaveStartTooCloseToEndOfSignal() {
   QVERIFY(thrown);
 }
 
-void RRSanityTest::closestP() {
+void RRSanityTest::GetPWaveOccurenceRatioTest() {
   // Arrange
-  QVector<double> signal = { 0.0, 0.0, 0.0 };
-  Cit rpeak = signal.end() - 1;
-  QVector<Cit> pPeaks = { signal.begin() + 1 };
-
+  QVector<double> signal(200);
+  QVector<QVector<double>::iterator> pWaveStarts = { signal.begin() + 10,
+                                                     signal.begin() + 70 };
+  QVector<QVector<double>::const_iterator> pWaveStartsC = {
+    signal.begin() + 10, signal.begin() + 70
+  };
+  for (auto it : pWaveStarts)
+    copy(begin(averagePWave), end(averagePWave), it);
+  AtrialFibrApi AtrFibrApi(signal, pWaveStartsC, pWaveStartsC);
   // Assert
-  QCOMPARE(pPeaks.begin(), closestPWave(begin(pPeaks), end(pPeaks), rpeak));
+  QCOMPARE(AtrFibrApi.GetPWaveOccurenceRatio(), 1.0);
 }
-
-void RRSanityTest::closestP_SinglePPeak() {
-  // Arrange
-  QVector<double> signal(4);
-  Cit rpeak = signal.end() - 1;
-  QVector<Cit> pPeaks = { signal.begin() + 1 };
-
-  // Assert
-  QCOMPARE(pPeaks.begin(), closestPWave(begin(pPeaks), end(pPeaks), rpeak));
-}
-
-void RRSanityTest::closestP_TwoPPeaks() {
-  // Arrange
-  QVector<double> signal(4);
-  Cit rpeak = signal.end() - 1;
-  QVector<Cit> pPeaks = { signal.begin() + 1, signal.begin() + 2 };
-
-  // Assert
-  QCOMPARE(pPeaks.end() - 1, closestPWave(begin(pPeaks), end(pPeaks), rpeak));
-}
-
-void RRSanityTest::calcRWaveSets_SingleR() {
-  // Arrange
-  QVector<Cit> rpeaks(140);
-
-  // Act
-  const auto answer = calcRWaveSets(begin(rpeaks), end(rpeaks), 60);
-
-  // Assert
-  QCOMPARE(2, answer.size());
-  QCOMPARE(rpeaks.begin(), answer[0]);
-  QCOMPARE(rpeaks.begin() + 60, answer[1]);
-}
-
-void RRSanityTest::calcSets_SingleR() {
-  // Arrange
-  QVector<double> signal(2000);
-  QVector<Cit> rpeaks(140);
-  QVector<Cit> ppeaks(140);
-  for (int i = 0; i < 140; i++) {
-    rpeaks[i] = signal.begin() + i * 10 + 10;
-    ppeaks[i] = signal.begin() + i * 10 + 5;
-  }
-
-  // Act
-
-  auto sets =
-      calcSets(begin(ppeaks), end(ppeaks), begin(rpeaks), end(rpeaks), 60);
-
-  // Assert
-  QCOMPARE(2, sets.size());
-  QCOMPARE(rpeaks.begin(), get<0>(sets[0]));
-  QCOMPARE(ppeaks.begin(), get<1>(sets[0]));
-  QCOMPARE(rpeaks.begin() + 60, get<0>(sets[1]));
-  QCOMPARE(ppeaks.begin() + 60, get<1>(sets[1]));
-}
-
 QTEST_APPLESS_MAIN(RRSanityTest)
 
 #include "AfTests.moc"

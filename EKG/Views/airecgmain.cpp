@@ -341,7 +341,7 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
     plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
     plot->axisAutoScale(QwtPlot::xBottom);
-     QwtText xaxis("Time [mm:ss:zzz]");
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Voltage [mV]");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
@@ -552,7 +552,7 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData,const QVector<double>
     return plot;
 }
 //Sleap
-QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs)
+QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs,float freq)
 {
     double maxy = yData.first();
     double miny = yData.first();
@@ -562,10 +562,15 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
         maxy = qMax(maxy, yData.at(i));
         miny = qMin(miny, yData.at(i));
     }
+    double tos=1000/freq;
+    QVector<double> sampleNo = QVector<double>(yData.size());
+    for(int i=0;i<xData.size();i++)
+        sampleNo[i]=xData.at(i)*tos;
+
     double maxx = xData.first();
     double minx = xData.first();
 
-    for (int i = 0; i < yData.size(); ++i)
+    for (int i = 0; i < xData.size(); ++i)
     {
         maxx = qMax(maxx, xData.at(i));
         minx = qMin(minx, xData.at(i));
@@ -575,22 +580,26 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
     plot->setAxisScale(QwtPlot::yLeft, miny,maxy);
-    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
     plot->setTitle(QwtText("Normalised Hilbert amplitude and Apnea Detections"));
-    QwtText xaxis("Samples ");
+    QwtText xaxis("Time [mm:ss:zzz]");
     QwtText yaxis("Normalised Hilbert amplitude ");
     xaxis.setFont(QFont("Arial", 8));
     yaxis.setFont(QFont("Arial", 8));
+    plot->axisAutoScale(QwtPlot::xBottom);
+
 
     plot->setAxisTitle( QwtPlot::yLeft, yaxis );
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+    /*
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
     grid->enableYMin(true);
     grid->enableXMin(true);
     grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
     grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
-    grid->attach(plot);
+    grid->attach(plot);*/
 
     QwtPlotCurve* curve = new QwtPlotCurve();
     curve->setPen(QPen(Qt::blue, 2));
@@ -643,7 +652,7 @@ QwtPlot* AirEcgMain::plotSleep_Apnea(const QVector<double>& yData,const QVector<
     return plot;
 }
 //Sleap Feq
-QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs)
+QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVector<double>& xData, double threshold, QVector<BeginEndPair> sleep_apnea_pairs,float freq)
 {
     double maxy = yData.first();
     double miny = yData.first();
@@ -653,10 +662,12 @@ QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVec
         maxy = qMax(maxy, yData.at(i));
         miny = qMin(miny, yData.at(i));
     }
+
+
     double maxx = xData.first();
     double minx = xData.first();
 
-    for (int i = 0; i < yData.size(); ++i)
+    for (int i = 0; i < xData.size(); ++i)
     {
         maxx = qMax(maxx, xData.at(i));
         minx = qMin(minx, xData.at(i));
@@ -676,13 +687,13 @@ QwtPlot* AirEcgMain::plotSleep_ApneaFreq(const QVector<double>& yData,const QVec
     plot->setAxisTitle( QwtPlot::yLeft, yaxis );
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
 
-    QwtPlotGrid* grid = new QwtPlotGrid();
+    /*QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setPen(QPen(QColor(255, 0, 0 ,127)));
     grid->enableYMin(true);
     grid->enableXMin(true);
     grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
     grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
-    grid->attach(plot);
+    grid->attach(plot);*/
 
     QwtPlotCurve* curve = new QwtPlotCurve();
     curve->setPen(QPen(Qt::blue, 2));
@@ -1845,11 +1856,11 @@ void AirEcgMain::prevStAbnormality()
 
 void AirEcgMain::drawSleep_Apnea(EcgData* data)
 {
-    QwtPlot *plotSleepApnea = plotSleep_Apnea(*(data->SleepApneaamp),*(data->SleepApneatime), data->SleepApnea_plot->at(0),*(data->SleepApnea));
+    QwtPlot *plotSleepApnea = plotSleep_Apnea(*(data->SleepApneaamp),*(data->SleepApneatime), data->SleepApnea_plot->at(0),*(data->SleepApnea), data->info->frequencyValue);
     ui->sleepArea1->setWidget(plotSleepApnea);
     ui->sleepArea1->show();
 
-    QwtPlot *plotSleepApneafrequence = plotSleep_ApneaFreq(*(data->SleepApneafreq),*(data->SleepApneatime), data->SleepApnea_plot->at(1),*(data->SleepApnea));
+    QwtPlot *plotSleepApneafrequence = plotSleep_ApneaFreq(*(data->SleepApneafreq),*(data->SleepApneatime), data->SleepApnea_plot->at(1),*(data->SleepApnea), data->info->frequencyValue);
     ui->sleepArea2->setWidget(plotSleepApneafrequence);
     ui->sleepArea2->show();
 
