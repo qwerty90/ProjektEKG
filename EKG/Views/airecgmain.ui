@@ -347,7 +347,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -357,7 +357,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_6">
             <property name="currentIndex">
-             <number>0</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="Signals">
              <attribute name="title">
@@ -405,8 +405,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
@@ -488,8 +488,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>988</width>
+                       <height>368</height>
                       </rect>
                      </property>
                     </widget>
@@ -770,8 +770,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>402</height>
                   </rect>
                  </property>
                 </widget>
@@ -827,7 +827,7 @@
                    <item>
                     <widget class="QRadioButton" name="Falkowa_radiobutton">
                      <property name="text">
-                      <string>Transformata falkowa</string>
+                      <string>Wavelet transformation</string>
                      </property>
                     </widget>
                    </item>
@@ -914,8 +914,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>494</height>
                   </rect>
                  </property>
                 </widget>
@@ -1186,8 +1186,8 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>98</width>
-                           <height>28</height>
+                           <width>63</width>
+                           <height>16</height>
                           </rect>
                          </property>
                         </widget>
@@ -1294,7 +1294,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_7">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="qrs">
              <attribute name="title">
@@ -1344,7 +1344,7 @@
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>98</width>
+                            <width>161</width>
                             <height>141</height>
                            </rect>
                           </property>
@@ -1365,7 +1365,7 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>98</width>
+                                <width>126</width>
                                 <height>89</height>
                                </rect>
                               </property>
@@ -1383,7 +1383,7 @@
                                    <rect>
                                     <x>0</x>
                                     <y>0</y>
-                                    <width>98</width>
+                                    <width>89</width>
                                     <height>73</height>
                                    </rect>
                                   </property>
@@ -1408,8 +1408,8 @@
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>98</width>
-                                <height>28</height>
+                                <width>100</width>
+                                <height>30</height>
                                </rect>
                               </property>
                               <attribute name="label">
@@ -1975,8 +1975,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>1030</width>
+                   <height>427</height>
                   </rect>
                  </property>
                 </widget>
@@ -1996,13 +1996,6 @@
                    <string/>
                   </property>
                   <layout class="QGridLayout" name="gridLayout">
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="label_17">
-                     <property name="text">
-                      <string>Turbulence Onset:</string>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="1" column="1">
                     <widget class="QLabel" name="turbulence_slope_val">
                      <property name="text">
@@ -2034,7 +2027,28 @@
                    <item row="2" column="0">
                     <widget class="QLabel" name="label_18">
                      <property name="text">
-                      <string>Klasyfikacja HRT:</string>
+                      <string>HRT Classification:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_17">
+                     <property name="text">
+                      <string>Turbulence Onset:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="label_5">
+                     <property name="text">
+                      <string>Veb count</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QLabel" name="Veb_count">
+                     <property name="text">
+                      <string>  0</string>
                      </property>
                     </widget>
                    </item>
@@ -2100,7 +2114,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_8">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="st_interval">
              <attribute name="title">
@@ -2545,8 +2559,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>226</height>
                       </rect>
                      </property>
                     </widget>
@@ -2562,8 +2576,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>225</height>
                       </rect>
                      </property>
                     </widget>
@@ -2583,8 +2597,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>226</height>
                       </rect>
                      </property>
                     </widget>
@@ -2600,8 +2614,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>508</width>
+                       <height>225</height>
                       </rect>
                      </property>
                     </widget>
@@ -2793,8 +2807,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>198</height>
+                   <width>1030</width>
+                   <height>209</height>
                   </rect>
                  </property>
                 </widget>
@@ -2829,8 +2843,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>198</height>
+                   <width>1030</width>
+                   <height>209</height>
                   </rect>
                  </property>
                 </widget>
@@ -2986,7 +3000,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_9">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="atrial_fibr">
              <attribute name="title">
@@ -3062,7 +3076,7 @@
                   <item>
                    <widget class="QGroupBox" name="migotanieGroup">
                     <property name="title">
-                     <string>Migotanie</string>
+                     <string>Atrial Fibr</string>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_37">
                      <item>
@@ -3093,8 +3107,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>98</width>
-                     <height>28</height>
+                     <width>894</width>
+                     <height>492</height>
                     </rect>
                    </property>
                   </widget>
@@ -3409,8 +3423,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>988</width>
+                       <height>470</height>
                       </rect>
                      </property>
                     </widget>
@@ -3433,8 +3447,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>63</width>
+                       <height>16</height>
                       </rect>
                      </property>
                     </widget>
