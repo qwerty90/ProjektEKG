@@ -53,7 +53,6 @@ class R_peaksModule {
 public:
         // konstruktor parametryczny, obiekt incjowany przy pomocy sygnalu z ecg_baseline i czestotliwosci tego sygnalu
         R_peaksModule(const QVector<double> & filteredSignal, double freq);
-        R_peaksModule(void) {};
 
         // funkcja znajdujaca piki metoda transformacji Hilberta
         void hilbert(void);
