@@ -385,7 +385,7 @@ QwtPlot* AirEcgMain::plotPlotBSiG(const QVector<double>& yData, float freq)
 
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max);
+    plot->setAxisScale(QwtPlot::yLeft, -1, max);
     plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
     plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
     plot->axisAutoScale(QwtPlot::xBottom);
@@ -412,12 +412,12 @@ QwtPlot* AirEcgMain::plotPlotBSiG(const QVector<double>& yData, float freq)
     curve->setSamples(sampleNo, yData);
     curve->attach(plot);
 
-    zoom2 = new ScrollZoomer(plot->canvas());
-    zoom2->setRubberBandPen(QPen(Qt::white));
-    zoom2->setHScrollBarPosition(ScrollZoomer::AttachedToScale);
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    zoom->setHScrollBarPosition(ScrollZoomer::AttachedToScale);
     //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
-    zoom2->setZoomBase(plot->canvas()->rect());
+    plot->canvas()->setGeometry(min,min,sampleNo.last(),min);
+    zoom->setZoomBase(plot->canvas()->rect());
 
     QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
     panner->setMouseButton(Qt::MidButton);
@@ -463,7 +463,7 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
 
     QwtPlot* plot = new QwtPlot();
     plot->setCanvasBackground(Qt::white);
-    plot->setAxisScale(QwtPlot::yLeft, min, max,0);
+    plot->setAxisScale(QwtPlot::yLeft, -1, max);
     plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
 
     plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
@@ -512,11 +512,11 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
     legend->setItemMode(QwtLegend::ReadOnlyItem);
     plot->insertLegend(legend, QwtPlot::BottomLegend);
 
-    zoom3 = new ScrollZoomer(plot->canvas(),zoom2);
-    zoom3->setRubberBandPen(QPen(Qt::white));
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
     plot->canvas()->setGeometry(min,min,pDataX.last(),min);
-    zoom3->setZoomBase(plot->canvas()->rect());
+    zoom->setZoomBase(plot->canvas()->rect());
 
     QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
     panner->setMouseButton(Qt::MidButton);
