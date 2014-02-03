@@ -2,12 +2,12 @@
 \section{Moduł R\_PEAKS}
 \subsection{Badania literaturowe}
 
-Zadaniem modułu R\_PEAKS jest detekcja załamków R w elektrokardiogramie. Jest to jeden z kluczowych etapów analizy sygnału EKG. Poprawne wykrycie i oznaczenie załamków R umożliwia bowiem wykrycie pozostałych punktów charakterystycznych cyklu pracy serca. Pozwala to dalej np. na przeprowadzenie dokładnej analizy zmienności rytmu serca. Załamki R są częścią tzw. zespołu QRS, który został przedstawiony na rysunku ~\ref{fig:RP_QRS}.
+Zadaniem modułu R\_PEAKS jest detekcja załamków R w elektrokardiogramie. Jest to jeden z kluczowych etapów analizy sygnału EKG. Poprawne wykrycie i oznaczenie załamków R umożliwia bowiem wykrycie pozostałych punktów charakterystycznych cyklu pracy serca. Pozwala to dalej np. na przeprowadzenie dokładnej analizy zmienności rytmu serca. Załamki R są częścią tzw. zespołu QRS, który został przedstawiony na rysunku \ref{fig:RPQRS}.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{R_PEAKS/img/qrs_class}
-\label{fig:RP_QRS}
 \caption{Fragment sygnału EKG z zaznaczonym zespołem QRS (QRS Complex)}
+\label{fig:RPQRS}
 \end{figure}
 Zespół QRS tworzą trzy sąsiadujące ze sobą punkty elektrokardiogramu, które składają się na wychylenie w kształcie wąskiego impulsu. Załamek Q to pierwsze ujemne wychylenie elektrokardiogramu, załamek R to pierwsze dodatnie wychylenie elektrokardiogramu, a załamek S to ostatnie ujemne wychylenie elektrokardiogramu w zespole QRS.
 
@@ -24,15 +24,15 @@ W trakcie realizacji modułu R\_PEAKS zdecydowano się na implementację trzech 
 \end{itemize}
 \subsubsection{Algorytm Pan - Tompkins}
 
-Algorytm ten można podzielić na dwa etapy. Pierwszym jest odpowiednie przygotowanie sygnału poprzez przefiltrowanie go oraz późniejsze jego uśrednienie. Drugim etapem jest znajdowanie załamków R we wcześniej przygotowanym sygnale. Na rysunku nr 2 przedstawiono schemat blokowy pierwszego etapu algorytmu.
+Algorytm ten można podzielić na dwa etapy. Pierwszym jest odpowiednie przygotowanie sygnału poprzez przefiltrowanie go oraz późniejsze jego uśrednienie. Drugim etapem jest znajdowanie załamków R we wcześniej przygotowanym sygnale. Na rysunku \ref{fig:RPPTA} przedstawiono schemat blokowy pierwszego etapu algorytmu.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{R_PEAKS/img/pan_tompkins_alg}
-\label{fig:RP_PTA}
-\caption{Kolejne etapy algorytmu Pan - Tompkins}
+\caption{Kolejne etapy algorytmu Pan - Tompkins przygotowujące sygnał do detekcji załamków R}
+\label{fig:RPPTA}
 \end{figure}
-Jako, że moduł R\_PEAKS otrzymuje już przefiltrowany sygnał od innego modułu, analiza poszczególnych faz algorytmu zacznie się od fazy różniczkowania.
 \begin{enumerate}[I.]
+\item Przepuszczenie sygnału przez filtry dolno i górnoprzepustowy.
 \item Różniczkowanie
 
 Celem różniczkowania sygnału jest wytłumienie komponentów niskoczęstotliwościowych oraz wzmocnienie komponentów wysokoczęstotliwościowych charakterystycznych dla zespołów QRS. W tej fazie skorzystano z różniczkowania pięciopunktowego opisanego wzorem:
@@ -55,29 +55,50 @@ Gdzie N to szerokość okna, którą należy odpowiednio dobrać w zależności 
 \item Progowanie i detekcja załamków R
 
 W trakcie pracy algorytmu odnajdywane są kolejne maksima lokalne, którą mogą być oznaczone jako załamek R lub jako szum. Wykorzystywane są przy tym dwa progi: THRESHOLD1 i THRESHOLD2. Są one na bieżąco aktualizowane na podstawie estymaty amplitudy załamków R (SPK) i szumu (NPK). Dodatkowo wykorzystywana jest technika searchback z parametrem RRMISSEDLIMIT, który wyznaczany jest na podstawie różnic między kolejnymi załamkami R. Poniżej przedstawiono reguły detekcji załamków R:
-\begin{itemize}
-\item Jeżeli nowy załamek R wykryto w czasie maksymalnie 200 ms od ostatniego załamka R i amplituda nowego załamka jest mniejsza od poprzedniego wykrytego to ten załamek jest odrzucany.
-\item Jeżeli nowy załamek R wykryto w czasie ponad 200 ms, a mniej niż 360 ms od ostatniego załamka sprawdza się, czy maksymalne nachylenie sygnału przy nowym maksimum jest przynajmniej równe połowie nachylenia dla poprzedniego maksimum. Jeżeli nie, to przyjmuje się, że maksimum jest szumem, np. załamkiem T.
-\item Jeżeli wartość wykrytego maksimum jest większa niż THRESHOLD1, to uznaje się to maksimum za załamek R, w przeciwnym razie jest to szum.
-\item Technika searchback: Jeżeli załamek R nie został wykryty przez okres RRMISSEDLIMIT, a w ciągu tego czasu zostały znalezione maksima większe niż THRESHOLD2, to największe z nich traktowane jest jako załamek R.
-\end{itemize}
+
+\begin{algorithmic}
+\If {załamek R wykryto w czasie maksymalnie 200 ms od ostatniego załamka R \textbf{AND} amplituda nowego załamka jest mniejsza od poprzedniego wykrytego}
+    \State odrzuć załamek
+\ElsIf {nowy załamek R wykryto w czasie ponad 200 ms, a mniej niż 360 ms od ostatniego załamka \textbf{AND} nachylenie sygnału przy nowym maksimum jest przynajmniej równe połowie nachylenia dla poprzedniego maksimum}
+    \State dodaj załamek
+\ElsIf {wartość wykrytego maksimum jest większa niż THRESHOLD1}
+	\State dodaj załamek
+\ElsIf{załamek R nie został wykryty przez okres RRMISSEDLIMIT \textbf{AND} w ciągu tego czasu zostały znalezione maksima większe niż THRESHOLD2}
+	\State dodaj jako załamek największe znalezione maksimum
+\EndIf
+\end{algorithmic}
+%\begin{itemize}
+%\item Jeżeli nowy załamek R wykryto w czasie maksymalnie 200 ms od ostatniego załamka R i amplituda nowego załamka jest mniejsza od poprzedniego wykrytego to ten załamek jest odrzucany.
+%\item Jeżeli nowy załamek R wykryto w czasie ponad 200 ms, a mniej niż 360 ms od ostatniego załamka sprawdza się, czy maksymalne nachylenie sygnału przy nowym maksimum jest przynajmniej równe połowie nachylenia dla poprzedniego maksimum. Jeżeli nie, to przyjmuje się, że maksimum jest szumem, np. załamkiem T.
+%\item Jeżeli wartość wykrytego maksimum jest większa niż THRESHOLD1, to uznaje się to maksimum za załamek R, w przeciwnym razie jest to szum.
+%\item Technika searchback: Jeżeli załamek R nie został wykryty przez okres RRMISSEDLIMIT, a w ciągu tego czasu zostały znalezione maksima większe niż THRESHOLD2, to największe z nich traktowane jest jako załamek R.
+%\end{itemize}
 W takcie działania algorytmu konieczna jest aktualizacja progów. Są one aktualizowane na podstawie wartości parametrów SPK i NPK, których początkowe wartości są następujące:
 \begin{itemize}
 \item SPK = średnia z ośmiu maksimów z pierwszych ośmiu sekund badania,
 \item NPK = 0.
 \end{itemize}
-Wartości tych parametró są aktualizowane w następujący sposób:
-\begin{itemize}
-\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD1 
-\newline
-SPK = 0.125 PEAK + 0.875 SPK,
-\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD2 
-\newline
-SPK = 0.250 PEAK + 0.750 SPK,
-\item jeżeli został wykryty szum
-\newline
-NPK = 0.125 PEAK + 0.875 NPK
-\end{itemize}
+Wartości tych parametrów są aktualizowane w następujący sposób:
+\begin{algorithmic}
+\If {załamek R został wykryty za pomocą porównania z THRESHOLD1}
+    \State $SPK \gets 0.125 PEAK + 0.875 SPK$
+\ElsIf {załamek R został wykryty za pomocą porównania z THRESHOLD2}
+	\State $SPK \gets 0.250 PEAK + 0.750 SPK$
+\Else 
+	\State $NPK \gets 0.125 PEAK + 0.875 NPK$
+\EndIf
+\end{algorithmic}
+%\begin{itemize}
+%\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD1 
+%\newline
+%SPK = 0.125 PEAK + 0.875 SPK,
+%\item jeżeli załamek R został wykryty za pomocą porównania z THRESHOLD2 
+%\newline
+%SPK = 0.250 PEAK + 0.750 SPK,
+%\item jeżeli został wykryty szum
+%\newline
+%NPK = 0.125 PEAK + 0.875 NPK
+%\end{itemize}
 Progi natomiast są aktualizowane w następujący sposób:
 \newline
 THRESHOLD1 = NPK+ 0.25 (SPK-NPK)
@@ -140,12 +161,363 @@ gdzie:
 \item $\tilde{s} _\Psi$ - współczynnik falkowy zależny od parametrów a i b
 \item $\Psi(\frac{t-b}{a})$ - jądro przekształcenia
 \end{itemize}
-Zastosowanie transformacji falkowej pozwala rozłożyć sygnał na kilka subpasm (rysunek ~\ref{fig:RP_WS}). Następnie dobiera się odpowiednie subpasma i rekonstruuje sygnał. Tak uzyskany sygnał poddaje się takiej samej procedurze progowania i detekcji załamków R jak w przypadku wcześniej opisywanego algorytmu wykorzystującego przekształcenia Hilberta.
+Zastosowanie transformacji falkowej pozwala rozłożyć sygnał na kilka subpasm (rysunek \ref{fig:RPWS}). Następnie dobiera się odpowiednie subpasma i rekonstruuje sygnał. Tak uzyskany sygnał poddaje się takiej samej procedurze progowania i detekcji załamków R jak w przypadku wcześniej opisywanego algorytmu wykorzystującego przekształcenia Hilberta.
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.85]{R_PEAKS/img/wavelet_schema}
-\label{fig:RP_WS}
+\includegraphics[scale=0.6]{R_PEAKS/img/wavelet_schema}
 \caption{Dekompozycja sygnału na subpasma za pomocą transformacji falkowej}
+\label{fig:RPWS}
 \end{figure}
+
+Działanie algorytmu można przedstawić w następujących krokach:
+\begin{enumerate}[I.]
+\item Dwukrotna dekompozycja oryginalnego sygnału z wykorzystaniem transformacji falkowej.
+\item Wyszukanie próbki o największej wartości w zdekomponowanym sygnale.
+\item Znalezienie wszystkich próbek o wartości nie mniejszej niż 30\% wartości próbki znalezionej w poprzednim kroku.
+\item Filtracja próbek, które zostały wykryte w poprzednim kroku w celu odrzucenia tych, które należą do tego samego załamka R.
+\item Znalezienie indeksów wyszukanych próbek w sygnale po transformacji i przemnożenie ich razy 4 w celu znalezienia w przybliżeniu indeksów próbek w sygnale oryginalnym, które zostały sklasyfikowane jako załamki R.
+\item Wyszukanie faktycznego indeksu próbki w oryginalnym sygnale poprzez przeszukanie odpowiedniego przedziału oryginalnego sygnału wokół próbki o indeksie znalezionym w poprzednim kroku.
+\end{enumerate}
 \subsection{Rezultaty i wnioski}
+Zaimplementowane metody w większości przypadków działają dobrze i poprawnie wykrywają załamki R. Ewentualny błąd wynosi co najwyżej kilka próbek. W przypadku sygnałów dosyć zniekształconych zdarzają się sytuacje, że zostały wykryte nadmiarowe załamki R, bądź niektóre z nich nie zostały w ogóle wykryte.
+
+Należy jednak nadmienić, iż metody detekcji załamków R, Pan - Tompkins oraz bazująca na transformacie Hilberta, które zostały zaimplementowane w roku poprzednim przez kolegów Pawła Kasperczyka i Kamila Pękalę działają poprawnie. Z tego powodu zostały również wykorzystane w tegorocznym projekcie. Zostały wprowadzone jednak drobne modyfikacje związane z dopasowaniem tych metod pod API tegorocznego projektu, jak również pewne modyfikacje w sposobie zwracania rezultatów obliczeń funkcji składowych klasy reprezentującej moduł oraz pewne zmiany kosmetyczne związane z formatowaniem kodu. Konsekwencją wynikającą z wykorzystania zaimplementowanych już metod jest to, że są pewne różnice pomiędzy proponowanym w wcześniej rozwiązaniem a rozwiązaniem zastosowanym w programie.
+
+W zaimplementowanej metodzie bazującej na transformacji Hilberta został zastosowany podział sygnału na przedziały. Transformacja dokonywana jest zatem na fragmencie sygnału, po czym otrzymane rezultaty sklejane są w całość. Zgodnie z informacjami zawartymi w raporcie z zeszłorocznego projektu, daje to lepsze rezultaty, niż obliczenia dokonywane na całym sygnale bez podziału na przedziały. Kolejną różnicą jest to, że nie jest obliczany pierwiastek kwadratowy, który występuje we wzorze na obwiednią sygnału. Upraszcza to obliczenia. Podyktowane jest to faktem, iż liczba rzeczywista o większej wartości ma również większy pierwiastek kwadratowy. Również sama metoda detekcji załamków R jest nieco inna niż proponowana w jednym z wcześniejszych rozdziałów. Dokonywana ona jest na podstawie przeglądu fragmentu tablicy \textit{diff} zawierającej posortowane malejąco elementy, które są większe niż $\frac{1}{21}$ maksymalnej wartości z tej. Elementy te są wkładem transformaty Hilberta w obwiednię sygnału, obliczone na podstawie wspomnianego wyżej, uproszczonego wzoru niezawierającego pierwiastka kwadratowego. Próbka sygnału wejściowego, która odpowiada aktualnie przeglądanemu elementowi tablicy, jest odpowiednio daleko od poprzednio zakwalifikowanych jako załamek R próbek, jest również traktowana jako szukany załamek. W przeciwnym przypadku jest odrzucana. Minimalna odległość między załamkami jest oszacowana na podstawie założenia, iż maksymalna częstotliwość pracy serca wynosi 220 uderzeń na minutę. Wyznaczona odległość pomnożona jest jeszcze przez współczynnik wynoszący 0,8. Szerokość fragmentu sygnału poddawanego transformacji Hilberta przyjęta została jako 200 sekund.
+
+Bardzo ważnym elementem detekcji załamków R jest uzyskanie do analizy dobrze przefiltrowanego sygnału, pozbawionego dużych zakłóceń i szumów. Podczas testów poprawności działania modułu został przeprowadzony eksperyment polegający na detekcji załamków R w sygnale nie poddanym filtracji. Metoda Pan - Tompkins mimo wszystko dała w miarę dobre rezultaty, natomiast metoda bazująca na transformacji Hilberta kompletnie nie poradziła sobie z wykryciem pików. Prawdopodobnie główną przyczyną tego faktu jest obecność prostej i odwrotnej transformaty Fouriera w zaimplementowanej metodzie. Metoda oparta na transformacji falkowej, w zaimplementowanym w module algorytmie, wyszukuje załamki, których wartość przekracza pewien ustalony próg wyznaczony w oparciu o próbkę o największej wartości. Z tego powodu obecność zakłóceń o zbyt dużej wartości może powodować zakwalifikowanie tych zakłóceń jako nadmiarowe załamki.
+
+Z racji, iż stosowane algorytmy przeważnie wykrywają trochę mniejszą liczbę załamków niż wynosi ona w rzeczywistości, ciężko było dokonać analizy różnic pomiędzy wynikami zwróconym przez algorytm a wynikami referencyjnymi w sposób automatyczny, przy wykorzystaniu programu. Dla wybranych sygnałów EKG zostały narysowane wykresy z naniesionymi, referencyjnymi i wyznaczonymi przez algorytmy, załamkami R. Sygnał oryginalny był filtrowany przy pomocy filtru Butterwortha. Nie zostały przeprowadzone testy dla innych metod filtracji w oparciu o założenie, że każda z tych metod daje poprawne rezultaty i wyniki detekcji załamków R powinny być podobne dla każdej z metod filtrowania sygnału.
+\subsubsection{Analiza rezultatów działania modułu oraz porównanie algorytmów detekcji załamków R na podstawie wybranych sygnałów}
+\begin{itemize}
+\item Sygnał nr 105
+%
+%
+%
+%
+Sygnał o numerze 105 został wybrany do analizy efektów działania modułu ze względu na jego ciekawy kształt w drugiej połowie.
+
+\begin{table}[H]
+\centering
+\label{105peaks}
+\caption{Załamki R dla sygnału 105}
+\begin{tabular}{|l|c|}
+\hline
+\multicolumn{2}{|c|}{Sygnał nr 105}\\
+\hline
+Referencyjne & 2691 \\ \hline
+Hilbert & 2607 \\ \hline
+Pan - Tompkins & 2554 \\ \hline
+Transformata falkowa & 2587 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{enumerate}[I.]
+\item Algorytm bazujący na transformacji Hilberta
+
+Na wykresie \ref{fig:105HC} zaznaczone zostały czerwonymi kółkami wykryte przez algorytm załamki R, natomiast kwadratami koloru czarnego naniesione są piki referencyjne. Taki sposób oznaczania załamków jest przyjęty dla pozostałych wykresów.
+
+Można odnieść wrażenie, że różnice między załamkami referencyjnymi i tymi znalezionymi przez algorytm są dosyć duże. Jednak po dokonaniu szybkiej analizy wykresu \ref{fig:105HF} nasuwa się wniosek, że różnica nie jest duża, rzędu kilku próbek, a wrażenie dużych różnic spowodowane jest stromym nachyleniem załamka. Można również zauważyć, że wykryte zostały pewne nadmiarowe piki. W związku z tym, należy się spodziewać, że wiele pików zostało również pominiętych. Wynika to z faktu, że sumaryczna ilość załamków wykrytych przez algorytm jest ciut mniejsza niż ilość załamków referencyjnych. Można również stwierdzić, iż załamki referencyjne nie są również idealne. Może to być podyktowane ewentualnymi opóźnieniami powstałymi np. w przypadku filtracji sygnału.
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/105_hilbert_calosc.eps}
+\caption{Sygnał nr 105 z naniesionymi pikami R - Hilbert}
+\label{fig:105HC}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/105_hilbert_fragment.eps}
+\caption{Fragment sygnału nr 105 - Hilbert}
+\label{fig:105HF}
+\end{figure}
+%
+%
+%
+\newpage
+\item Algorytm Pan - Tompkins
+
+Dla sygnału o nr. 105, wynik działania algorytmu Pan - Tompkins wydają się być lepsze niż dla algorytmu, który bazuje na przekształceniu Hilberta. Wprawdzie można zauważyć na rysunku \ref{fig:105PTC}, że jest całkiem sporo załamków niewykrytych, lecz te, które zostały znalezione, różnią się niewiele od tych referencyjnych. Analizując fragment sygnału widać, że niejednokrotnie załamki znalezione na drodze działania algorytmu pokrywają się z referencyjnymi, lub różnią się od nich bardzo mało. Podobnie jak w przypadku poprzedniej metody, ilość wykrytych załamków jest nieco mniejsza niż ich faktyczna liczba.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/105_pan_calosc.eps}
+\caption{Sygnał nr 105 z naniesionymi pikami R - Pan - Tompkins}
+\label{fig:105PTC}
+\end{figure}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/105_pan_fragment.eps}
+\caption{Fragment sygnału nr 105 - Pan - Tompkins}
+\label{fig:105PTF}
+\end{figure}
+%
+%
+%
+%
+\item Algorytm bazujący na transformacji falkowej
+
+Specyfika działania tego algorytmu powoduje, że za przyczyną widocznego na rysunku \ref{fig:105WC}, mniej więcej w dwóch trzecich sygnału wysokiemu załamkowi, dosyć dużo załamków R nie zostało wykrytych. Natomiast w przypadku załamków, które zostały odnalezione, widoczna jest mała różnica w stosunku do załamków referencyjnych. Analiza fragmentu sygnału (rys. \ref{fig:105WF}) pokazuje, że często piki wykryte przez algorytm są lepsze od referencyjnych, lub pokrywają się z nimi.
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/105_falka_calosc.eps}
+\caption{Sygnał nr 105 z naniesionymi pikami R - transformata falkowa}
+\label{fig:105WC}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/105_falka_fragment.eps}
+\caption{Fragment sygnału nr 105 - transformata falkowa}
+\label{fig:105WF}
+\end{figure}
+\end{enumerate}
+%
+%
+%
+\newpage
+\item Sygnał nr 122
+
+Sygnał nr 122 został wybrany ze względu na jego dosyć regularny kształt. Z tego powodu każda z metod bardzo dobrze pozwoliła na detekcje załamków R, co można odnotować czytając dane zawarte w poniższej tabeli.
+
+\begin{table}[H]
+\centering
+\label{122peaks}
+\caption{Załamki R dla sygnału 122}
+\begin{tabular}{|l|c|}
+\hline
+\multicolumn{2}{|c|}{Sygnał nr 122}\\
+\hline
+Referencyjne & 2479 \\ \hline
+Hilbert & 2476 \\ \hline
+Pan - Tompkins & 2475 \\ \hline
+Transformata falkowa & 2476 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{enumerate}[I.]
+\item Algorytm bazujący na transformacji Hilberta
+
+Podobnie jak dla sygnału o nr. 105, analiza wykresu \ref{fig:122HC} pozornie może doprowadzić do wniosku, iż różnice między pikami R referencyjnymi oraz wykrytymi na podstawie działania algorytmu bazującego na przekształceniu Hilberta są dosyć znaczne. Wynika to jednak ponownie z faktu, że załamki R są strome i różnica kilku próbek powoduje duże różnice w wartości sygnału, jednak istotą algorytmu detekcji załamków R jest przede wszystkim dostarczenie indeksów próbek.
+
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/122_hilbert_calosc.eps}
+\caption{Sygnał nr 122 z naniesionymi pikami R - Hilbert}
+\label{fig:122HC}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/122_hilbert_fragment.eps}
+\caption{Fragment sygnału nr 122 - Hilbert}
+\label{fig:122HF}
+\end{figure}
+%
+%
+%
+\newpage
+\item Algorytm Pan - Tompkins
+
+Na diagramie \ref{fig:122PTC} widać, że różnice pomiędzy załamkami wykrytymi przez algorytm Pan - Tompkins i  referencyjnymi są bardzo małe. Analiza fragmentu sygnału (rys. \ref{fig:122PTF}) tylko to potwierdza. Widać nawet, że niekiedy piki R wykryte przez algorytm są lepsze.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/122_pan_calosc.eps}
+\caption{Sygnał nr 122 z naniesionymi pikami R - Pan - Tompkins}
+\label{fig:122PTC}
+\end{figure}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/122_pan_fragment.eps}
+\caption{Fragment sygnału nr 122 - Pan - Tompkins}
+\label{fig:122PTF}
+\end{figure}
+%
+%
+%
+%
+\item Algorytm bazujący na transformacji falkowej
+
+Podobnie jak w przypadku algorytmu Pan - Tompkins, algorytm bazujący na transformacji falkowej dostarcza bardzo dobre rezultaty. Wszystkie załamki są o podobnej amplitudzie, więc algorytm nie wprowadza przekłamań. Na fragmencie sygnału (rys. \ref{fig:122WF}) widać, że załamki wykryte przez algorytm pokrywają się z załamkami referencyjnymi, lub są nawet lepsze.
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/122_falka_calosc.eps}
+\caption{Sygnał nr 122 z naniesionymi pikami R - transformata falkowa}
+\label{fig:122WC}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/122_falka_fragment.eps}
+\caption{Fragment sygnału nr 122 - transformata falkowa}
+\label{fig:122WF}
+\end{figure}
+\end{enumerate}
+%
+%
+%
+\newpage
+\item Sygnał nr 228
+
+Sygnał nr 228 został wybrany ze względu na jego ciekawy, nieregularny kształt. Z tego powodu algorytm bazujący na transformacie falkowej kompletnie zawiódł - wykryto jedynie ok. 25\% wszystkim załamków.
+
+\begin{table}[H]
+\centering
+\label{228peaks}
+\caption{Załamki R dla sygnału 228}
+\begin{tabular}{|l|c|}
+\hline
+\multicolumn{2}{|c|}{Sygnał nr 228}\\
+\hline
+Referencyjne & 2141 \\ \hline
+Hilbert & 2094 \\ \hline
+Pan - Tompkins & 1890 \\ \hline
+Transformata falkowa & 568 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{enumerate}[I.]
+\item Algorytm bazujący na transformacji Hilberta
+
+Analizując wykres całego przebiegu sygnału (rys. \ref{fig:228HC}) można dojść do wniosku, że algorytm bazujący na transformacie Hilberta dosyć dobrze wywiązał się z zadania, aczkolwiek różnice są widoczne. Na fragmencie sygnału (rys. \ref{fig:228HF} widać, że w przypadku wykrytych w miarę poprawnie załamków, różnice są rzędu kilku próbek, natomiast widać, również piki, które nie zostały w ogóle wykryte, lub nawet pewne nadmiarowe załamki. Ostatni przypadek oznacza jednak, że w przekroju całego sygnału dużo załamków musiało być pominiętych - liczba wszystkich wykrytych załamków jest mniejsza od liczby pików referencyjnych. 
+
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/228_hilbert_calosc.eps}
+\caption{Sygnał nr 228 z naniesionymi pikami R - Hilbert}
+\label{fig:228HC}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/228_hilbert_fragment.eps}
+\caption{Fragment sygnału nr 228 - Hilbert}
+\label{fig:228HF}
+\end{figure}
+%
+%
+%
+\newpage
+\item Algorytm Pan - Tompkins
+
+Na wykresie \ref{fig:228PTC} widać, że wykryto większość załamków i różnice między nimi i referencyjnymi są małe. Analiza fragmentu sygnału tylko to potwierdza - piki wykryte przez algorytm Pan - Tompkins pokrywają się z referencyjnymi, a nieraz nawet są lepsze.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/228_pan_calosc.eps}
+\caption{Sygnał nr 228 z naniesionymi pikami R - Pan - Tompkins}
+\label{fig:228PTC}
+\end{figure}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/122_pan_fragment.eps}
+\caption{Fragment sygnału nr 228 - Pan - Tompkins}
+\label{fig:228PTF}
+\end{figure}
+%
+%
+%
+%
+\item Algorytm bazujący na transformacji falkowej
+
+Sygnał nr 228 jest dobrym przykładem sygnału, dla którego algorytm opierający swoje działanie na transformacie falkowej nie radzi sobie. Z powodu, iż różnice w amplitudzie sygnału dla niektórych załamków R są znaczne, algorytm może nie wykryć pików o małej wartości. Wprawdzie w przypadku wykrytych załamków rezultaty są dobre, to w kontekście całego sygnału wyniki są słabe. Dobrze widoczne jest to na fragmencie sygnału (rys. \ref{fig:228WF}). Widać bardzo dużo niskich załamków, które zostały pominięte przez algorytm. Piki o dużej amplitudzie zostały wykryte bardzo dobrze.
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/228_falka_calosc.eps}
+\caption{Sygnał nr 228 z naniesionymi pikami R - transformata falkowa}
+\label{fig:228WC}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{R_PEAKS/wektorowe/228_falka_fragment.eps}
+\caption{Fragment sygnału nr 228 - transformata falkowa}
+\label{fig:228WF}
+\end{figure}
+\end{enumerate}
+\end{itemize}
+\newpage
+\subsection{Diagramy klas}
+\begin{tikzpicture}
+  \begin{class}[text width=10cm]{RpeaksModule}{0,0}
+    \attribute{SAFETYCOEFFICIENT : static const double = 0.8}
+    \attribute{MAXBPM : static const unsigned short = 220}
+    \attribute{THRESHOLDDIVISOR : static const double = 20}
+    \attribute{PTLPM : static const unsigned int = 9}
+    \attribute{PTHPM: static const unsigned int = 56}
+    \attribute{PTMWN: static const unsigned int = 58}
+    \attribute{filteredSignal : QVector<double>}
+    \attribute{ecgSignal : const QVector<double> \&}
+    \attribute{itVect : QVector<unsigned int>}
+    \attribute{frequency : double}
+    
+	\operation{fft(x, result)}
+    \operation{ifft(x, result)}
+    \operation{fftHilbertWindowed(x, result, windowlength, windowoverlap)}
+    \operation{fftHilbert(x, result)}
+    \operation{setHilbertRPeaks(peaks, dt)}
+    \operation{PTLowPassFilter(data, reset): double}
+    \operation{PTHighPassFilter(data, reset): double}
+    \operation{PTDerivative (data, reset): double}
+    \operation{PTSquaringFunction data): double}
+    \operation{PTMovingWindowIntegral(data, reset): double}
+    \operation{Maximum(begin, end, values): PairDoubleUnsignedInt}
+    \operation{PanTompkinsDo(signal, result)}
+    \operation{PanTompkinsSetPeaks(filter, movingWindow)}
+    \operation{PeakMS(index, signal): PairDoubleUnsignedInt}
+    \operation{QRSCheck(rpCandidate, rpLast, threshold, slope): int}
+    \operation{falka(x, result)}
+    \operation{getEvenSamples(x, result)}
+    \operation{getOddSamples(x, result)}
+    \operation{findGreaterEqualThan(x, coeff, result)}  
+    \operation{RpeaksModule(filteredSignal, freq)}
+	\operation{hilbert()}
+	\operation{panTompkins()}
+	\operation{wavelet()}
+	\operation{getPeaksIter(): const RpeaksIterVector \&}
+	\operation{getPeaksIndex(): const QVector<unsigned int> \&}
+	\operation{ecgBegin(): const RpeaksIter}
+  \end{class}
+\end{tikzpicture}\\
+
+\noindent \begin{tikzpicture}
+  \begin{class}{DiffSorter}{0,0}
+    \operation{DiffSorter()};
+    \operation{operator()(a, b): bool};
+  \end{class}
+\end{tikzpicture}\\
+
+\noindent \begin{tikzpicture}
+  \begin{class}{PeaksCutSorter}{0,0}
+    \operation{PeaksCutSorter(scope)};
+    \operation{operator()(a, b): bool};
+  \end{class}
+\end{tikzpicture}
+
+\newpage
 \subsection{Literatura}
+[1] Farahabadi A., Farahabadi E., Parsa M. Mahjoob1, Rabbani Hossein. R Peak Detection in Electrocardiogram Signal Based on an Optimal Combination of Wavelet Transform, Hilbert Transform, and Adaptive Thresholding. \textit{Journal of Medical Signals \& Sensors} 2011, nr 2, s. 91-98.\\
+
+\noindent [2] Augustyniak Piotr. \textit{Przetwarzanie sygnałów elektrodiagnostycznych}. Kraków, Uczelniane Wydawnictwo Naukowo-Dydaktyczne, 2001, ISBN 83-88400-37-2.\\
+
+\noindent [3] Pięciak Tomasz, \textit{Elektrokardiografia (EKG)}.\\
+
+\noindent [4] Goszcz Sławomir, Kokoć Kamil. \textit{Detekcja i synchronizacja reprezentacji uderzeń serca (zespół QRS)}.\\
+
+\noindent [5] Kasperczyk Paweł, Pękala Kamil. \textit{Raport z modułu obliczeniowego R\_PEAKS}. Kraków 2013.\\
+
+\noindent [6] Hennig Carsten, Köhler Bert-Uwe, Orglmeister Reinhold. The Principles ofSoftware QRS Detection. \textit{IEEE ENGINEERING IN MEDICINE AND BIOLOGY}, January/February 2002.\\
+
+\noindent [7] Bhujanga Rao A., Narayana K.V.L., Wavelet based QRS detection in ECG using MATLAB. \textit{Innovative Systems Design and Engineering} 2011, nr 7, s.\\ 60-69.\\
+
+\noindent [8] Simranjit Singh Kohli, Nikunj Makwana, Nishant Mishra, Balwalli Sagar. Hilbert Transform Based Adaptive ECG R-Peak Detection Technique. \textit{International Journal of Electrical and Computer Engineering (IJECE)} 2012, nr 5, s. 639-643.
