@@ -7,7 +7,7 @@
 
 #define M_PI       3.14159265358979323846
 
-using namespace std;
+using namespace std; 
 
 class QT_DISP
 {
@@ -54,7 +54,7 @@ private:
 	int EvaluateFramingham(double gapQT, double RR);
 	void CalculateStatistics();
 
-	vector <double> returnTEnd();
-	Evaluation returnEvaluations(int number);
+    vector <double> returnTEnd();
+    Evaluation returnEvaluations(int number);
 
 };

@@ -18,11 +18,10 @@ Sygnał EKG u chorego charaktreryzuje się następującymi własnościami:
 \begin{figure}[ht]
 \centering
 \includegraphics{ATRIAL_FIBR/img/AF_ecg.jpg}
-\label{fig:AF_ecg}
-\caption{Sygnał EKG dla osoby chorej i prawidłowy rytm zatokowy}
+\caption{Sygnał EKG dla osoby chorej i prawidłowy rytm zatokowy} \label{fig:AF_ecg}
 \end{figure}
 
-Rysunek~\ref{fig:AF_ecg} na górym zapisie przedstawia sygnał EKG dla osoby chorej na migotanie przedsionków,
+Rysunek \ref{fig:AF_ecg} na górym zapisie przedstawia sygnał EKG dla osoby chorej na migotanie przedsionków,
 natomiast dolny zapis prezentuje prawidłowy rytm zatokowy.
 Wykres osoby chorej wyraźnie przedstawia wszystkie podane symptomy.
 
@@ -62,7 +61,10 @@ Ze względu na istotę problemu -- zdecydowaliśmy się również wykorzystać m
     \item Odległości pomiędzy załamkami R
     \item Brak załamków P
 \end{enumerate}
-Gdy oba warunki zostaną spełnione, uznamy, że występuje migotanie przedsionków w danym sygnale.
+Gdy oba warunki zostaną spełnione, uznamy, że występuje migotanie przedsionków w danym fragmencie sygnału.
+Okno analizowanego sygnału wynosi 100 uderzeń serca - 60 załamków P.
+Wartość ta musiała być wystarczająco duża, by móc odpowiednio zbadać wszystkie wartości.
+Jednak przy zbyt dużym oknie wynik mógłby zostać błędnie zinterpretowany.
 
 \paragraph{Parametry związane z rytmem serca}
 Informację na temat położenia w czasie peaków R otrzymamy z modułu QRS Complex. 
@@ -155,7 +157,7 @@ Następnie przy użyciu oszacowanego progu wyliczymy procentową absencję fali 
 która będzie stanowiła kolejny współczynnik.
 \begin{figure}
   \centering
-  \includegraphics[width=12cm]{ATRIAL_FIBR/img/PWaveFlow.jpg}
+  \includegraphics[width=12cm]{ATRIAL_FIBR/img/PMethodFlow.png}
   \caption{Algorytm wyliczenia współczynnika występowania fali P.}
 \end{figure}
 
@@ -174,6 +176,8 @@ cc(i) = |\mathrm{corr\:coef}(P_\mathrm{wave}(i),\: \overline{P_\mathrm{wave}(i)}
 \end{equation}
 Za wykrytą falę P uznajemy tę, dla której współczynnik korelacji wynosi co najmniej $0.2$.
 Stosunek liczby wykrytych fal P do liczby wszystkich okresów PQRST jest poszukiwanym współczynnikiem.
+
+Badanie przeprowadzane jest dla pewnych okien czasowych
 
 \subsection{Rezultaty i wnioski}
 Zaproponowane przez nas metody zostały poprawnie zaimplementowane w języku C++ oraz zintegrowane z główną linią projektu.
@@ -196,9 +200,76 @@ jest średnią ważoną z następujących parametrów:
  Stosunek liczby okresów PQRST w których fala P występuje, do całkowitej liczby tych okresów.
  Za występowanie fali P uznajemy sytuację, w której korelacja między sygnałem w przedziale otrzymanym z modułu WAVES,
  a sygnałem wzorcowym jest większa od $0.2$.
+ 
 \end{itemize}
 Po zaaplikowaniu wyżej wspomnianych metod dla wzorcowych sygnałów z bazy Physiobank, 
 można stwierdzić, że program dokonuje detekcji poprawnie. 
 Właściwie dla wiekszości przypadków wystarczająca jest sama analiza rytmu bicia serca (dystansów R-R).
 Zastosowanie drugiej metody związanej z absencją fali P dodatkowo zwiększyło skuteczność wykrywania choroby.
+
+\paragraph{Weryfikacja na podstawie otrzymanych danych}
+
+\begin{table}[ht]
+
+\centering
+    \begin{tabular}{c c c c c}
+    \hline \hline
+    Numer próbki & Absencja fali P &Dywergencja & Entropia &Chory \\
+    \hline
+    101 &0.20 &0.10 &0.71 &NIE\\
+    105 &0.97 &0.04 &0.34 &NIE\\
+    106 &0.83 &0.49 &0.95 &TAK\\
+    107 &0.78 &0.05 &0.57 &NIE\\
+    108 &0.87 &0.56 &0.95 &TAK\\
+    109 &0.86 &0.07 &0.65 &NIE\\
+    111 &0.18 &0.34 &0.96 &NIE\\
+    112 &0.68 &0.05 &0.00 &NIE\\
+    113 &0.13 &0.07 &0.72 &NIE\\
+    115 &0.46 &0.14 &0.78 &NIE\\
+    116 &0.85 &0.07 &0.59 &NIE\\
+    118 &0.81 &0.06 &0.65 &NIE\\
+    119 &0.99 &0.46 &1.00 &TAK\\
+    121 &0.46 &0.39 &0.94 &NIE\\
+    122 &0.88 &0.04 &0.10 &NIE\\
+    200 &0.67 &0.42 &1.01 &NIE\\
+    201 &0.64 &0.52 &0.92 &NIE\\
+    202 &0.66 &0.22 &1.01 &NIE\\
+    203 &0.72 &0.43 &1.04 &TAK\\
+    \hline
+    \end{tabular}
+    \caption{Rezultaty uzyskane dla poszczególnych danych}\label{table:wynikiAtrialFibr}
+\end{table}
+
+Moduł jest zależny od wyników uzyskanych od innych. 
+Gdyby wszystkie dane były dostarczone wcześniej, można by było wygenerować średnią falę P ze wszystkich sygnałów.
+Dodatkowo, dla różnych elektrod fala P różni się kształtem i nie da się dobrać jednej uniwersalnej.
+Konieczne byłoby uśrednienie na podstawie otrzymanych początków i końców fal P, by otrzymać średni wzorzec.
+Ze względu na charakter tego projektu - wszystkie moduły pracowały równolegle i dopiero pod koniec wszystkie zależności były gotowe - 
+zrealizowanie tego wykracza poza nasze możliwości.
+Jest to jednak doskonały punkt, w którym można kontynuować projekt.
+Metody przez nas zaimplementowane są dokładnie przetestowane, należałoby stworzyć odpowiedni algorytm do uzyskania średniej fali P.
+Dlatego w tym momencie zaimplementowane jest rozwiązanie dla sygnału V1, w przypadku pozostałych, współczynnik zaniku fali P nie jest obliczany.
+\paragraph{}
+Tablica~\ref{table:wynikiAtrialFibr} powstała w oparciu o dane istniejące już w formacie $.dat$. 
+Nie było możliwości sprawdzenia wyników w programie z danych zaimportowanych z bazy Physiobank.
+Po podanym na stronie sposobie konwersji, sygnał nie może być wczytany.
+Przez to nie jesteśmy w stanie zaprezentować wyników jak w przypadku testowego programu w języku Julia.
+Sporządziliśmy więc listę wyników możliwych do osiągniecia,
+jednak żadnen z nich nie zawierał w sobie danych osoby chorej na migotanie przedsionków.
+Te wyniki, które program zakwalifikował pozytywnie, okazały się błędne ze względu na charakterystykę sygnału.
+Przykład stanowi rysunek~\ref{fig:BadSignal108} lub \ref{fig:BadSignal203}. 
+Wykresy przedstawiają całkowicie zakłocone i niepoprawne przebiegi dla EKG.
+Prawidłowe działanie naszego modułu wymaga odpowiednie przefiltrowanie i usunięcie fragmentu sygnału,
+który może spowodować błędny wynik.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{ATRIAL_FIBR/img/BadSignal108.png}
+\caption{Fragment próbki nr 108} \label{fig:BadSignal108}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{ATRIAL_FIBR/img/BadSignal203.png}
+\caption{Fragment próbki nr 203} \label{fig:BadSignal203}
+\end{figure}
 
