@@ -309,7 +309,7 @@ double R_peaksModule::PTHighPassFilter(double data, bool reset = false)
     }
 
     double y0;
-    x[n] = x[n + PT_HP_M+1] = data;
+    x[n] = x[n + PT_HP_M + 1] = data;
     y0 = y1 + x[n] - x[n + PT_HP_M];
     y1 = y0;
     if(--n < 0)
@@ -317,17 +317,15 @@ double R_peaksModule::PTHighPassFilter(double data, bool reset = false)
     return(x[n + (int) ceil((double) (PT_HP_M-1)/2)] - (y0/PT_HP_M));
 }
 
-double R_peaksModule::PTDerivative (double data, bool reset = false)
-{
+double R_peaksModule::PTDerivative (double data, bool reset = false) {
     double y;
     static double x_derv[6];
-    if (reset)
-    {
+    if(reset) {
         for (int i=0; i<6; i++) x_derv[i]=0;
     }
 
     /*y = 1/8 (2x( nT) + x( nT - T) - x( nT - 3T) - 2x( nT -4T))*/
-    y = (data*2) + x_derv[3] - x_derv[1] - ( x_derv[0]*2);
+    y = (data * 2) + x_derv[3] - x_derv[1] - ( x_derv[0] * 2);
     y /= 8;
     //y = (data*3) + 2*x_derv[5] + x_derv[4] - x_derv[2] - (x_derv[1]*2)-( x_derv[0]*3);
 
@@ -337,13 +335,11 @@ double R_peaksModule::PTDerivative (double data, bool reset = false)
     return y;
 }
 
-double R_peaksModule::PTSquaringFunction(double data)
-{
-    return data*data;
+double R_peaksModule::PTSquaringFunction(double data) {
+    return data * data;
 }
 
-double R_peaksModule::PTMovingWindowIntegral(double data, bool reset = false)
-{
+double R_peaksModule::PTMovingWindowIntegral(double data, bool reset = false) {
       static double x[PT_MW_N], sum = 0;
       static int ptr = 0;
       if (reset)
@@ -407,7 +403,7 @@ PairDoubleUnsignedInt R_peaksModule::Peak200MS(int & index, QVector<double>  & s
         newPeak = tempPeak;
         indexPeak = signal.size()-2;
     }
-    else index = indexPeak+t200;
+    else index = indexPeak + t200;
     return PairDoubleUnsignedInt(newPeak, indexPeak);
 }
 
@@ -484,7 +480,6 @@ void R_peaksModule::PanTompkinsDo(QVector<double> & signal, VectorPairDoubleUnsi
 
     result.clear();
     while(index < N-1) {
-
         if(!mwindow) rpCandidate = Peak200MS(index, signal);
         else rpCandidate = Peak200MS(index, slopePTSignal);
 
@@ -495,7 +490,7 @@ void R_peaksModule::PanTompkinsDo(QVector<double> & signal, VectorPairDoubleUnsi
             rpLast = rpCandidate;
             double qrsMean = 0.0;
             int licz = 0;
-            for (unsigned int i = result.size()-1; i > 0 && i > result.size()-9  ; i--) {
+            for(unsigned int i = result.size()-1; i > 0 && i > result.size()-9; i--) {
                 qrsMean += result[i].first;
                 licz++;
             }
@@ -618,8 +613,6 @@ void R_peaksModule::PanTompkinsSetPeaks(VectorPairDoubleUnsignedInt & filter, Ve
             R_peaksIter iter = this->ecgSignal.begin();
             for(unsigned int j = 0; j < index; j++) iter++;
             this->itVect.push_back(iter);
-            //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
-            //QLOG_INFO() << "indeks" << index;
         }
 
         i1++;
@@ -636,8 +629,6 @@ void R_peaksModule::PanTompkinsSetPeaks(VectorPairDoubleUnsignedInt & filter, Ve
         R_peaksIter iter = this->ecgSignal.begin();
         for(unsigned int j = 0; j < index; j++) iter++;
         this->itVect.push_back(iter);
-        //QLOG_INFO() << "roznica" << iter - this->ecgSignal.begin();
-        //QLOG_INFO() << "indeks" << index;
     }
 }
 
@@ -686,15 +677,11 @@ void R_peaksModule::panTompkins(void) {
         mwisignal[i] = block_signal[i];
     }
 
-    //algorytm Pan Tompkins - wyszukiwanie peaków
-
     VectorPairDoubleUnsignedInt rPeaksBPF;
     PanTompkinsDo(fsignal, rPeaksBPF);
 
     VectorPairDoubleUnsignedInt rPeaksMWI;
     PanTompkinsDo(mwisignal, rPeaksMWI);
-    //VectorPairDoubleUnsignedInt rPeaksBandPassFilter = rPeaksMovingWindowIntegration;
-    //obliczenie delay:
     int max1 = Maximum(rPeaksBPF[1].second - 50, rPeaksBPF[1].second + 50, this->filteredSignal).second; //ok
     int dtFilter = rPeaksBPF[1].second - max1;
 
@@ -710,7 +697,6 @@ void R_peaksModule::panTompkins(void) {
         rPeaksMWI[i].second = max1;
     }
 
-    //this->rPeaksSamples = PanTompkinsGetPeaks(rPeaksBPF, rPeaksMWI);
     PanTompkinsSetPeaks(rPeaksBPF, rPeaksMWI);
 }
 
@@ -784,7 +770,6 @@ void R_peaksModule::falka(QVector<double> & x, QVector<double> & result) {
     QVector<double> d2;
     s1 = mulVector(evenSamples, sqrt(3.0));
     s1 = addVector(s1, oddSamples);
-    //s1 = S(1:2:N-1) + sqrt(3)*S(2:2:N);
 
     d1 = mulVector(s1, (sqrt(3.0)/4.0));
     d1 = subtractVector(evenSamples, d1);
@@ -794,7 +779,6 @@ void R_peaksModule::falka(QVector<double> & x, QVector<double> & result) {
     d2.push_front(d);
     d2 = mulVector(d2, ((sqrt(3.0)-2.0)/4.0));
     d1 = subtractVector(d1, d2);
-    //d1 = S(2:2:N) - sqrt(3)/4*s1 - (sqrt(3)-2)/4*[s1(N/2); s1(1:N/2-1)];
     double dd = d1.at(0);
     d1.remove(0);
     d1.push_back(dd);
@@ -813,23 +797,13 @@ void R_peaksModule::wavelet(void) {
     falka(this->filteredSignal, WaveletStepOne);
     falka(WaveletStepOne, WaveletStepTwo);
 
-    //std::ofstream falka_sample;
-    //falka_sample.open("falka.dat");
-    //for(int i = 0; i < WaveletStepTwo.size(); i++) falka_sample << WaveletStepTwo.at(i) << std::endl;
-    //falka_sample.close();
-
     double peakTreshold;
     peakTreshold = max(WaveletStepTwo) * COEFF;
 
     QVector<unsigned int> result;
     findGreaterEqualThan(WaveletStepTwo, peakTreshold, result);
-    //P=find(y1>=m1);
 
     QVector<double> P2;
-    //P1=P;
-    //P2=[];
-    //last=P1(1);
-    //P2=[P2 last];
     double last = result.at(0);
     P2.push_back(last);
 
@@ -839,22 +813,9 @@ void R_peaksModule::wavelet(void) {
             P2.push_back(last);
         }
     }
-    //for i=2:1:length(P1)
-    //    if(P1(i)>(last+10))
-    //% In this step we find R peaks which are atleast 10 samples apart
-    //        last=P1(i);
-    //        P2=[P2 last];
-    //    end
-    //end
-
-    //piks = zeros(1,length(P2));
-    //for i=1:length(P2)
-    //    piks(i) = y1(P2(i));
-    //end
 
     QVector<double> P3 = mulVector(P2, 4.0);
 
-    //P3=P2*4;
     int start;
     int stop;
     for(int i = 0; i < P3.size(); i++) {
