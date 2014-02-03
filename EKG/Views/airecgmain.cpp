@@ -508,10 +508,6 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
         curve3->setCurveFitter(fitter);
     }
 
-    QwtLegend* legend = new QwtLegend();
-    legend->setItemMode(QwtLegend::ReadOnlyItem);
-    plot->insertLegend(legend, QwtPlot::BottomLegend);
-
     zoom = new ScrollZoomer(plot->canvas());
     zoom->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
