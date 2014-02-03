@@ -24,12 +24,12 @@ W trakcie realizacji modułu R\_PEAKS zdecydowano się na implementację trzech 
 \end{itemize}
 \subsubsection{Algorytm Pan - Tompkins}
 
-Algorytm ten można podzielić na dwa etapy. Pierwszym jest odpowiednie przygotowanie sygnału poprzez przefiltrowanie go oraz późniejsze jego uśrednienie. Drugim etapem jest znajdowanie załamków R we wcześniej przygotowanym sygnale. Na rysunku ~\ref{fig:RPPTA} przedstawiono schemat blokowy pierwszego etapu algorytmu.
+Algorytm ten można podzielić na dwa etapy. Pierwszym jest odpowiednie przygotowanie sygnału poprzez przefiltrowanie go oraz późniejsze jego uśrednienie. Drugim etapem jest znajdowanie załamków R we wcześniej przygotowanym sygnale. Na rysunku \ref{fig:RPPTA} przedstawiono schemat blokowy pierwszego etapu algorytmu.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{R_PEAKS/img/pan_tompkins_alg}
-\label{fig:RPPTA}
 \caption{Kolejne etapy algorytmu Pan - Tompkins przygotowujące sygnał do detekcji załamków R}
+\label{fig:RPPTA}
 \end{figure}
 \begin{enumerate}[I.]
 \item Przepuszczenie sygnału przez filtry dolno i górnoprzepustowy.
