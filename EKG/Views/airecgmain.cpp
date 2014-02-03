@@ -367,6 +367,67 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     return plot;
 }
 
+QwtPlot* AirEcgMain::plotPlotBSiG(const QVector<double>& yData, float freq)
+{
+    QVector<double> sampleNo = QVector<double>(yData.size());
+
+    double max = yData.first();
+    double min = yData.first();
+
+    double tos=1/freq;
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        sampleNo[i] = i*tos*1000; //*1000 przeliczenie na ms
+        max = qMax(max, yData.at(i));
+        min = qMin(min, yData.at(i));
+    }
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, min, max);
+    plot->setAxisScale( QwtPlot::xBottom , 0, 4000.0);
+    plot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw( QTime() ) );
+    plot->axisAutoScale(QwtPlot::xBottom);
+    QwtText xaxis("Time [mm:ss:zzz]");
+    QwtText yaxis("Voltage [mV]");
+    xaxis.setFont(QFont("Arial", 8));
+    yaxis.setFont(QFont("Arial", 8));
+
+    plot->setAxisTitle( QwtPlot::yLeft, yaxis );
+    plot->setAxisTitle( QwtPlot::xBottom, xaxis );
+
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+
+    grid->attach(plot);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 2));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(sampleNo, yData);
+    curve->attach(plot);
+
+    zoom2 = new ScrollZoomer(plot->canvas());
+    zoom2->setRubberBandPen(QPen(Qt::white));
+    zoom2->setHScrollBarPosition(ScrollZoomer::AttachedToScale);
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(0,0,sampleNo.last(),0);
+    zoom2->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+    return plot;
+}
+
 QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_iterator> &p,const QVector<double>& yData,const QVector<double>& yData1,const QVector<double>& yData2, float freq, unsigned int no)
 {
     double tos=1/freq;
@@ -415,14 +476,6 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
     plot->setAxisTitle( QwtPlot::yLeft, yaxis );
     plot->setAxisTitle( QwtPlot::xBottom, xaxis );
 
-    QwtPlotGrid* grid = new QwtPlotGrid();
-    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
-    grid->enableYMin(true);
-    grid->enableXMin(true);
-    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
-    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
-    grid->attach(plot);
-
     if(no == 1 || no == 2)
     {
         QwtPlotCurve *curve1 = new QwtPlotCurve();
@@ -459,11 +512,11 @@ QwtPlot* AirEcgMain::plotPlot_SIG_EDR(const QVector<QVector<double>::const_itera
     legend->setItemMode(QwtLegend::ReadOnlyItem);
     plot->insertLegend(legend, QwtPlot::BottomLegend);
 
-    zoom = new ScrollZoomer(plot->canvas());
-    zoom->setRubberBandPen(QPen(Qt::white));
+    zoom3 = new ScrollZoomer(plot->canvas(),zoom2);
+    zoom3->setRubberBandPen(QPen(Qt::white));
     //zoom->setZoomBase( false );
-    plot->canvas()->setGeometry(0,0,pDataX.last(),0);
-    zoom->setZoomBase(plot->canvas()->rect());
+    plot->canvas()->setGeometry(min,min,pDataX.last(),min);
+    zoom3->setZoomBase(plot->canvas()->rect());
 
     QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
     panner->setMouseButton(Qt::MidButton);
@@ -845,11 +898,11 @@ QwtPlot* AirEcgMain::plotHrt(QVector<double>& yData, double a, double b)
 
     QVector<double> prosta_x = QVector<double>(2);
     QVector<double> prosta_y = QVector<double>(2);
-    prosta_x[0] = 0;
-    prosta_x[1] = 24;
+    prosta_x[0] = 1;
+    prosta_x[1] = 25;
 
     prosta_y[0] = b;
-    prosta_y[1] = a*24  + b ;
+    prosta_y[1] = a*25  + b ;
 
     QwtPlotCurve* curve2 = new QwtPlotCurve();
     curve2->setPen(QPen(Qt::black, 1));
@@ -1576,7 +1629,8 @@ void AirEcgMain::drawSigEdr(EcgData *data)
     //else
     {
         //Rysowanie Baselina dla sig edr
-        QwtPlot *plotBaseEDR = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
+
+        QwtPlot *plotBaseEDR = plotPlotBSiG(*(data->ecg_baselined),data->info->frequencyValue);
         ui->Baseline_edr->setWidget(plotBaseEDR);
         ui->Baseline_edr->show();
 
