@@ -316,6 +316,60 @@ void VCG_T_LOOP::Run()
        DEA.append(CalculateDEA(distance(d1.begin(),TWaveStarts.at(i)),distance(d1.begin(),TWaveEnds.at(i))));
     }
 }
+QVector<QVector<double> > VCG_T_LOOP::getSplitX()
+{
+    QVector<double> temp;
+    for(int i=0;i<QRSStarts.size();i++)
+    {
+        temp.clear();
+        for(int j=distance(d1.begin(),QRSStarts.at(i));j<distance(d1.begin(),TWaveEnds.at(i));j++)
+        {
+            if(j>9000)
+            {
+                cout<<'a'<<endl;
+            }
+            temp.append(X[j]);
+        }
+        splitX.append(temp);
+    }
+    return splitX;
+}
+QVector<QVector<double> > VCG_T_LOOP::getSplitY()
+{
+    QVector<double> temp;
+    for(int i=0;i<QRSStarts.size();i++)
+    {
+        temp.clear();
+        for(int j=distance(d1.begin(),QRSStarts.at(i));j<distance(d1.begin(),TWaveEnds.at(i));j++)
+        {
+            if(j>9000)
+            {
+                cout<<'a'<<endl;
+            }
+            temp.append(Y[j]);
+        }
+        splitY.append(temp);
+    }
+    return splitY;
+}
+QVector<QVector<double> > VCG_T_LOOP::getSplitZ()
+{
+    QVector<double> temp;
+    for(int i=0;i<QRSStarts.size();i++)
+    {
+        temp.clear();
+        for(int j=distance(d1.begin(),QRSStarts.at(i));j<distance(d1.begin(),TWaveEnds.at(i));j++)
+        {
+            if(j>9000)
+            {
+                cout<<'a'<<endl;
+            }
+            temp.append(Z[j]);
+        }
+        splitZ.append(temp);
+    }
+    return splitZ;
+}
 QVector<double> VCG_T_LOOP::getX(){
     return X;
 }
@@ -337,3 +391,4 @@ QVector<double> VCG_T_LOOP::getDEA()
 {
     return DEA;
 }
+
