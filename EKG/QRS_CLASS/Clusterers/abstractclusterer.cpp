@@ -5,6 +5,11 @@
 
 #include <QDebug>
 
+//include do loggera - korzystajcie smialo
+#include <QsLog.h>
+#include <QDir>
+#include <QsLogDest.h>
+
 AbstractClusterer::AbstractClusterer()
 {
     this->instances = NULL;
@@ -214,6 +219,8 @@ QList<Instance> *AbstractClusterer::initializeRandomPointsCentroids(int numberOf
         {
             alreadyInUse = false;
             index = rand() % this->instances->size();
+            QLOG_INFO() << this->instances->size();
+            QLOG_INFO() << index;
 
             for(int j = 0 ; j < numberOfClusters; j++)
             {

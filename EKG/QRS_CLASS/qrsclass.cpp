@@ -19,7 +19,7 @@ void QRSClassModule::setDefaultConfiguration()
     // TMP
     KMeans* clusterer = new KMeans();
     clusterer->setMaxIterations(1000);
-    clusterer->setNumberOfClusters(4);
+    clusterer->setNumberOfClusters(3);
     this->clusterer = clusterer;
 }
 
@@ -47,7 +47,7 @@ void QRSClassModule::setClusterer(ClustererType clustererType)
     {
         KMeans* clusterer = new KMeans();
         clusterer->setMaxIterations(1000);
-        clusterer->setNumberOfClusters(4);
+        clusterer->setNumberOfClusters(3);
         this->clusterer = clusterer;
         break;
     }
@@ -81,7 +81,7 @@ bool QRSClassModule::setSettings(QRSClassSettings settings)
         KMeans* clusterer = new KMeans();
         clusterer->setMaxIterations(settings.maxIterations);
         //clusterer->setNumberOfClusters(settings.minClusterNo);
-        clusterer->setNumberOfClusters(4);
+        clusterer->setNumberOfClusters(3);
         this->clusterer = clusterer;
         this->runParallel = settings.parallelExecution;
         break;
@@ -90,7 +90,7 @@ bool QRSClassModule::setSettings(QRSClassSettings settings)
     {
         GMeans* clusterer = new GMeans();
         //clusterer->setClusterNumbers(settings.minClusterNo,settings.maxClusterNo);
-        clusterer->setClusterNumbers(4,4);
+        clusterer->setClusterNumbers(3,3);
         clusterer->setMaxIterations(settings.maxIterations);
         this->runParallel = false;
         this->clusterer = clusterer;
@@ -136,19 +136,19 @@ bool QRSClassModule::process()
     for(int i = 0; i < this->waves_onset->count()-1; i++)
         //pomniejszone o jeden dla sprawdzenia - trzeba rozwazyc przypadki, oni to do sprawdzaja this->entity->Waves->Count, ale chyba sprawdzimy sami
     {
-        //QLOG_INFO() << "onset->count " << this->waves_onset->count();
-        //QLOG_INFO() << "end->count " << this->waves_end->count();
-        QLOG_INFO() << "i = " << i;
         QList<double> currentQRS;
 
-        for(int j = this->waves_onset->at(i) - this->ecgBaselined->begin(); j < this->waves_end->at(i) - this->ecgBaselined->begin(); j++)
+        int currentQRSfirstSampleNumber = this->waves_onset->at(i) - this->ecgBaselined->begin();
+        int currentQRSlastSampleNumber = this->waves_end->at(i) - this->ecgBaselined->begin();
+
+        for(int j = currentQRSfirstSampleNumber; j <= currentQRSlastSampleNumber; j++)
         {
             currentQRS.append(this->ecgBaselined->at(j));
         }
 
         if (currentQRS.count() < 2)
         {
-            this->artifactsList->append(i); //tu pewnie nie będzie po tym indeksie, ale to się zaraz ogarnie
+            this->artifactsList->append(currentQRSfirstSampleNumber); //chyba ok
         }
 
         Instance currInstance(extractors->count());

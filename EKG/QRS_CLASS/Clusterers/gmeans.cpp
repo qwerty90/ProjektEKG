@@ -23,28 +23,22 @@ GMeans::GMeans()
 
 bool GMeans::classify()
 {
-
     if (this->instances == NULL || this->maxNumOfClusters == 0)
         return false;
-QLOG_INFO() << "dupa1";
+
     //Generate initial centroids;
     int numOfAttributes = this->instances->first().numberOfAttributes();
-    QLOG_INFO() << "dupa1.1";
-    QLOG_INFO() << "dupa1.2" << this->minNumOfClusters;
-    QList<Instance>* initCentroids = this->initializeCentroids(RandomPoints, this->minNumOfClusters); //tu sie sypie
-
+    QList<Instance>* initCentroids = this->initializeCentroids(RandomPoints, this->minNumOfClusters);
     bool keepGoing = true;
     int iters = 0;
 
     int currentNoOfClusters = this->minNumOfClusters;
 
-QLOG_INFO() << "dupa2";
     // Run G-Means
     KMeans clusterer;
     clusterer.setClusteringSet(this->instances);
     clusterer.setMaxIterations(this->maxIters);
 
-QLOG_INFO() << "dupa3";
     while(keepGoing && iters < this->maxIters)
     {
         QLOG_INFO() << "dupa4";
