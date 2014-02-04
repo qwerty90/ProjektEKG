@@ -290,7 +290,7 @@ void AppController::runEcgBaseline()
     emit EcgBaseline_done(this->entity);
     emit busy(false);
 
-         //runVcgLoop();//  <- nie odpalajcie tego!
+         runVcgLoop();//  <- nie odpalajcie tego!
 
 }
 
@@ -499,11 +499,7 @@ void AppController::runQrsClass()
 {
     QLOG_INFO() << "Start QrsClass";
 
-    if (!this->entity || !this->entity->Waves || !this->entity->ecg_baselined)
-    {
-        QLOG_ERROR() <<"No data for QRS_Class";
-        return;
-    }
+    ifWavesExists();
 
     QRSClassModule QrsClassifier;
     QRSClassSettings QrsClassifierSettings;
@@ -522,7 +518,7 @@ void AppController::runQrsClass()
     else
     {
         QVector<QRSClass>* classes = QrsClassifier.getClasses();
-        this->entity->classes = classes;
+        this->entity->classes = classes;        
     }
 
     emit QrsClass_done(this->entity);
@@ -531,7 +527,7 @@ void AppController::runQrsClass()
 
 void AppController::runVcgLoop()
 {
-    QLOG_INFO() << "Start VcgLoop (not ready yet)";
+    QLOG_INFO() << "Start VcgLoop (not ready yet).";
 
     this->entity->VCG_raw->I  = new QVector<double>;
     this->entity->VCG_raw->II = new QVector<double>;
@@ -579,6 +575,9 @@ QLOG_TRACE() <<"VCG ran";
     this->entity->MA = new QVector<double> (obiekt.getMA());
     this->entity->RMMV=new QVector<double> (obiekt.getRMMV());
     this->entity->DEA= new QVector<double> (obiekt.getDEA());
+
+for(int i=0;i<this->entity->MA->size();i++)
+    QLOG_TRACE()<<this->entity->MA->at(i);
 QLOG_TRACE() <<"results";
     if(this->entity->settings->signalIndex==0)
     {
@@ -1077,10 +1076,12 @@ void AppController::load12lead_db(VCG_input &input)
         {
             line=(name).split(",",QString::SkipEmptyParts);
             iter_column=line.begin();
+            iter_column++;
+
             input.I->append((*iter_column).toDouble());
             iter_column++;
             input.II->append((*iter_column).toDouble());
-            iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;
+            iter_column++;iter_column++;iter_column++;iter_column++;//iter_column++;iter_column++;
             input.V1->append((*iter_column).toDouble());
             QLOG_TRACE() <<"v1 sample: " << (*iter_column).toDouble();
             iter_column++;

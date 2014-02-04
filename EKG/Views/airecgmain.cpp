@@ -351,6 +351,7 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     curve->setPen(QPen(Qt::blue, 2));
     curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
     curve->setSamples(sampleNo, yData);
+    curve->setTitle("Signal");
     curve->attach(plot);
 
     zoom = new ScrollZoomer(plot->canvas());
@@ -1816,13 +1817,17 @@ void AirEcgMain::drawStInterval(EcgData *data)
 
     // draw STend points
     QwtPlotCurve *stEndPoints = new QwtPlotCurve();
-    QwtSymbol *stEndMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::blue, QPen(Qt::blue), QSize(6, 6));
+    QwtSymbol *stEndMarker = new QwtSymbol(QwtSymbol::Ellipse, Qt::black, QPen(Qt::black), QSize(6, 6));
     stEndPoints->setSymbol(stEndMarker);
     stEndPoints->setTitle("STend");
-    stEndPoints->setPen(QColor(Qt::blue));
+    stEndPoints->setPen(QColor(Qt::black));
     stEndPoints->setStyle(QwtPlotCurve::NoCurve);
     stEndPoints->setSamples(stEnd);
     stEndPoints->attach(stIntervalPlot);
+
+    QwtLegend *legend = new QwtLegend();
+    legend->setItemMode(QwtLegend::ReadOnlyItem);
+    stIntervalPlot->insertLegend(legend, QwtPlot::BottomLegend);
 
     double percentage = static_cast<double>(abnormalNum) / num * 100.0;
 

@@ -9,16 +9,17 @@
 #include "QRS_CLASS/Clusterers/kmeans.h"
 #include "QRS_CLASS/Clusterers/gmeans.h"
 
-#include <QFile>
-#include <iostream>
-
+//include do loggera - korzystajcie smialo
+#include <QsLog.h>
+#include <QDir>
+#include <QsLogDest.h>
 
 void QRSClassModule::setDefaultConfiguration()
 {
     // TMP
     KMeans* clusterer = new KMeans();
     clusterer->setMaxIterations(1000);
-    clusterer->setNumberOfClusters(4);
+    clusterer->setNumberOfClusters(3);
     this->clusterer = clusterer;
 }
 
@@ -46,7 +47,7 @@ void QRSClassModule::setClusterer(ClustererType clustererType)
     {
         KMeans* clusterer = new KMeans();
         clusterer->setMaxIterations(1000);
-        clusterer->setNumberOfClusters(4);
+        clusterer->setNumberOfClusters(3);
         this->clusterer = clusterer;
         break;
     }
@@ -79,7 +80,8 @@ bool QRSClassModule::setSettings(QRSClassSettings settings)
     {
         KMeans* clusterer = new KMeans();
         clusterer->setMaxIterations(settings.maxIterations);
-        clusterer->setNumberOfClusters(settings.minClusterNo);
+        //clusterer->setNumberOfClusters(settings.minClusterNo);
+        clusterer->setNumberOfClusters(3);
         this->clusterer = clusterer;
         this->runParallel = settings.parallelExecution;
         break;
@@ -87,7 +89,8 @@ bool QRSClassModule::setSettings(QRSClassSettings settings)
     default:
     {
         GMeans* clusterer = new GMeans();
-        clusterer->setClusterNumbers(settings.minClusterNo,settings.maxClusterNo);
+        //clusterer->setClusterNumbers(settings.minClusterNo,settings.maxClusterNo);
+        clusterer->setClusterNumbers(3,3);
         clusterer->setMaxIterations(settings.maxIterations);
         this->runParallel = false;
         this->clusterer = clusterer;
@@ -106,7 +109,7 @@ bool QRSClassModule::process()
         return false;
     }
 
-    if (this->waves_onset == NULL || this->waves_end)
+    if (this->waves_onset == NULL || this->waves_end  == NULL)
     {
         this->errMsg = "WAVES NOT SET!";
         return false;
@@ -130,42 +133,45 @@ bool QRSClassModule::process()
     extractors->append(new MaxSpeedExceedExtractor());
 
     QList<Instance>* features = new QList<Instance>();
-    for(int i = 0; i < this->waves_onset->count(); i++)
+    for(int i = 0; i < this->waves_onset->count()-1; i++)
+        //pomniejszone o jeden dla sprawdzenia - trzeba rozwazyc przypadki, oni to do sprawdzaja this->entity->Waves->Count, ale chyba sprawdzimy sami
     {
         QList<double> currentQRS;
 
-        //POCZATEK KODU DO PRZEROBIENIA DO WAVES  ??
-        for(unsigned int j = this->waves_onset->at(i) - this->waves_onset->at(0); j <= this->waves_end->at(i) - this->waves_onset->at(0); j++) //nie wiem czy bedzie dobrze
+        int currentQRSfirstSampleNumber = this->waves_onset->at(i) - this->ecgBaselined->begin();
+        int currentQRSlastSampleNumber = this->waves_end->at(i) - this->ecgBaselined->begin();
+
+        for(int j = currentQRSfirstSampleNumber; j <= currentQRSlastSampleNumber; j++)
         {
             currentQRS.append(this->ecgBaselined->at(j));
         }
 
         if (currentQRS.count() < 2)
         {
-            this->artifactsList->append(i);
+            this->artifactsList->append(currentQRSfirstSampleNumber); //chyba ok
         }
 
         Instance currInstance(extractors->count());
 
         int j = 0;
-        //KONIEC KODU DO PRZEROBIENIA DO WAVES??
+
         foreach(AbstractExtractor* extractor, *extractors)
         {
             currInstance[j] = extractor->extractFeature(currentQRS);
             j++;
         }
-
         features->append(currInstance);
-
-        // Cluster
-        this->clusterer->setClusteringSet(features);
-
-        if (!this->clusterer->classify())
-        {
-            this->errMsg = this->clusterer->getErrorMessage();
-            return false;
-        }
     }
+
+    // Cluster
+    this->clusterer->setClusteringSet(features);
+
+    if (!this->clusterer->classify())
+    {
+        this->errMsg = this->clusterer->getErrorMessage();
+        return false;
+    }
+
     return true;
 }
 

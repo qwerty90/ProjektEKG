@@ -2,7 +2,9 @@
 #include "kmeans.h"
 #include "float.h"
 #include <math.h>
-//#include <QDebug>
+#include <QsLog.h>
+#include <QDir>
+#include <QsLogDest.h>
 
 #define CDF_A_1  0.254829592
 #define CDF_A_2  -0.284496736
@@ -15,7 +17,7 @@
 
 GMeans::GMeans()
     : minNumOfClusters(1),
-      maxNumOfClusters(1)
+      maxNumOfClusters(10)
 {
 }
 
@@ -27,11 +29,10 @@ bool GMeans::classify()
     //Generate initial centroids;
     int numOfAttributes = this->instances->first().numberOfAttributes();
     QList<Instance>* initCentroids = this->initializeCentroids(RandomPoints, this->minNumOfClusters);
-
     bool keepGoing = true;
     int iters = 0;
-    int currentNoOfClusters = this->minNumOfClusters;
 
+    int currentNoOfClusters = this->minNumOfClusters;
 
     // Run G-Means
     KMeans clusterer;
@@ -40,13 +41,11 @@ bool GMeans::classify()
 
     while(keepGoing && iters < this->maxIters)
     {
+        QLOG_INFO() << "dupa4";
         iters++;
         keepGoing = false;
-     //   qDebug() << "XMEANS ITER: " << iters++;
         clusterer.setCentroids(initCentroids);
         // Check errors
-        //if (!clusterer.classifyParallel())
-        //    return false;
 
         for(int i = 0 ; i < clusterer.getNumberOfClusters(); i++)
         {

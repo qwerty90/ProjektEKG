@@ -17,12 +17,25 @@ VCG_T_LOOP::VCG_T_LOOP(const QVector<double> &d1,
                        const QVector<QVector<double>::const_iterator> &QRSStarts,
                        const QVector<QVector<double>::const_iterator> &TWaveStarts,
                        const QVector<QVector<double>::const_iterator> &TWaveEnds)
-                       :d1(d1),d2(d2),d3(d3),d4(d4),d5(d5),d6(d6),I(i),II(ii),
-                        QRSStarts(QRSStarts),TWaveStarts(TWaveStarts), TWaveEnds(TWaveEnds),
-                        Dower({{-0.172, -0.074,  0.122,  0.231, 0.239, 0.194,  0.156, -0.010 },
+                       :d1(d1),d2(d2),d3(d3),d4(d4),d5(d5),d6(d6),I(i),II(ii),                      Dower({{-0.172, -0.074,  0.122,  0.231, 0.239, 0.194,  0.156, -0.010 },
                                {0.057, -0.019, -0.106, -0.022, 0.041, 0.048, -0.227,  0.887 },
                                {-0.229, -0.310, -0.246, -0.063, 0.055, 0.108,  0.022,  0.102 }})
 {
+    int qrsstart = 700;
+    int qrslength = 200;
+    int tlength = 300;
+    int next = 900;
+    int modifier = 0;
+
+    QVector<QVector<double>::const_iterator> qrson;
+    QVector<QVector<double>::const_iterator> ton;
+    QVector<QVector<double>::const_iterator> tend;
+    for(int i=0;i<9;i++)
+    {
+        this->QRSStarts.append(d1.begin()+qrsstart+i*next-1);
+        this->TWaveStarts.append(d1.begin()+qrsstart+qrslength+i*next-1);
+        this->TWaveEnds.append(d1.begin()+qrsstart+qrslength+tlength+i*next+i*modifier-1);
+    }
 }
 
 void VCG_T_LOOP::SynthesizeVCG()
@@ -109,7 +122,6 @@ double VCG_T_LOOP::CalculateMA(double qrsStart, double Ton, double Tend)
         XYqrsNorm[i]=sqrt(pow(XYqrs[0][i],2)+pow(XYqrs[1][i],2));
         XZqrsNorm[i]=sqrt(pow(XZqrs[0][i],2)+pow(XZqrs[1][i],2));
         ZYqrsNorm[i]=sqrt(pow(ZYqrs[0][i],2)+pow(ZYqrs[1][i],2));
-        cout<<XYqrsNorm[i]<<endl;
     }
     for(int i =0;i<tSize;i++)
     {
@@ -232,7 +244,6 @@ double VCG_T_LOOP::CalculateRMMV(double qrsStart, double Tend)
     {
         V[i]=sqrt(pow(Xt[i],2)+pow(Yt[i],2)+pow(Zt[i],2));
         Vsum=Vsum+V[i];
-        cout<<V[i]<<endl;
     }
     Vsum=Vsum/tSize;
     double Vmax=0;

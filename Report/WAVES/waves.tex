@@ -57,7 +57,7 @@ Rysunek ~\ref{fig:Waves_ENV} pokazuje przykładowy zespół QRS wraz z wyznaczon
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.7] {Waves/img/Envelope.eps}
+\includegraphics[width=\textwidth,keepaspectratio] {Waves/img/Envelope.eps}
 \caption{Sygnał EKG wraz z odpowiadającą mu obwiednią.}
 \label{fig:Waves_ENV}
 \end{figure}
@@ -115,28 +115,29 @@ y[n]=Rv+j \cdot x[n], dla n=1,2...,N
 
 Sygnał po transformacie składa się zatem ze rzeczywistej stałej części Rv i urojonej części x[n], będącą wartością sygnału w próbce n. Moduł i faza wskazu jest obliczany jako: \newline
 $M[n]=\sqrt{Rv^2+x[n]^2}$ \newline
-$\phi [n]= arctan(\frac{x[n]}{Rv})$ \newline
+$\phi [n]= arctan(\frac{x[n]}{Rv})$  \newline
+
 Wykrywanie fali P dokonuje się na podstawie badania wartości fazy $\phi$, obliczanej w odpowiednim oknie.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth,keepaspectratio] {Waves/img/dzialania_fazowej.jpg}
+\includegraphics[width=\textwidth,keepaspectratio] {Waves/img/dzialania_fazowej.eps}
 \caption{Zależność między fazą $\phi$ a badanym sygnałem EKG. Źródło: \cite{Waves_aNMfADoEFPBotPT}  }
 \label{fig:Waves_DzialFaz}
 \end{figure}
 
 Dzięki tej transformacji można odwzorować niewielką amplitudę fali P w funkcję arcustangens zawierającym wartości z przedziału [-pi/2,pi/2], co ułatwia jej wykrycie. Wykrywanie fali P za pomocą tego algorytmu polega najpierw na znalezieniu maksimum lokalnego fali P (P-middle), a następnie dokonania niezależnego wykrycia początku i końca fali (P-onset i P-end). Schematy blokowe wykrycia punktów P-middle i P-onset (P-end jest analogiczny) są zamieszczone na rysunkach ~\ref{fig:Waves_SchemPMid} oraz ~\ref{fig:Waves_SchemPOnset}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.8] {Waves/img/schemat_Pmiddle.jpg}
+\includegraphics[scale=0.8] {Waves/img/schemat_Pmiddle.eps}
 \caption{Schemat blokowy algorytmu wykrywającego P-MIDDLE  }
 \label{fig:Waves_SchemPMid}
 \end{figure}
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.8] {Waves/img/schemat_P_oneset.jpg}
+\includegraphics[scale=0.8] {Waves/img/schemat_P_oneset.eps}
 \caption{Schemat blokowy algorytmu wykrywającego P-ONSET (dla P-END jest podobny)  }
 \label{fig:Waves_SchemPOnset}
 \end{figure}
@@ -265,7 +266,7 @@ sel820 &
 \end{table}
 
 \begin{table}[!h]
-\caption{Wyniki algorytmu poszukującego QRS-onset i QRS-end}
+\caption{Wyniki algorytmu poszukującego P-onset i P-end}
 \label{tab:Waves_tabela2}
 \begin{tabularx}{\textwidth}{|c|p{0.8cm}|X|X|X|p{0.7cm}|p{0.8cm}|p{0.8cm}|X|X|}
 \hline
@@ -465,9 +466,9 @@ Jak widać na rysunku ~\ref{fig:Waves_Error}, algorytm dla pierwszego zespołu Q
 
 W przypadku fali P czułość algorytmu jest zadowalająca, choć zdarzają się rekordy, gdzie spada ona poniżej 50\% (według tabeli ~\ref{tab:Waves_tabela2}). Gorzej jest natomiast z wykrywalnością: średnio 71\% dla fali P-ONSET i prawie 83\% procent dla fali P-END. Dzieje się tak wskutek odbiegającego od oryginału kształtu załamka P. W badanych sygnałach bardzo często fala P przyjmowała kształt przedstawiony na rysunku ~\ref{fig:Waves_PrzykP}:
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth,keepaspectratio] {Waves/img/przykladowy_P.jpg}
+\includegraphics[scale=0.9] {Waves/img/przykladowa_fala_p.eps}
 \caption{Przykładowy załamek P z oznaczonym początkiem P-ONSET (kolor zielony), maksimum P-MIDDLE (kolor czarny) oraz końcem P-END(kolor czerwony).  }
 \label{fig:Waves_PrzykP}
 \end{figure}

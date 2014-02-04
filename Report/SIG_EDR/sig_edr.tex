@@ -64,7 +64,7 @@
 \end{figure}
  
 		Niestety, z braku dostępu do rzeczywistego sygnału oddechowego dla posiadanych danych, przebiegi nie mogły zostać porównane w sposób analityczny. Jedynym sposobem sprawdzenia poprawności otrzymanego sygnału EDR było porównanie kształtu przebiegu z sygnałem ECG, a następnie porównanie z wzorcowymi sygnałami, uzyskanymi przy pomocy aparatury do mierzenia oddechu (PRT). Z tej przyczyny skupiono się na przeprowadzeniu porównania otrzymanych danych w celu weryfikacji poprawności zastosowanych algorytmów.
-	   
+	   \newpage
 		Dane zostały porównane w następujący sposób:
 		\begin{itemize}
 		\item obliczenie różnicy pomiędzy wartościami próbek stanowiących R-piki z wartościami                                   otrzymanymi w wyniku działania modułu
@@ -127,45 +127,44 @@
 	   
 		Kształt przebiegu sygnału EDR w niewielkim stopniu odbiega od kształtu sygnałów wzorcowych, otrzymanych z pneumatycznej aparatury pomiarowej. Głównymi czynnikami generującymi różnice pomiędzy sygnałami EDR są nienaturalne różnice występujące pomiędzy badanymi próbkami, a tym samym wykrytymi pikami R, które są filarem stosowanego algorytmu. Podobne problemy występują w przypadku drugiego z algorytmów, gdyż jest on zależny od obu próbek. Dodatkowo nie wszystkie wykryte obszary QRS, z których ten algorytm korzysta, są poprawne.
 	   
+
 \subsection{Diagram klasy}
 \begin{tikzpicture}
-%       \begin{class}[text width = 9cm]{sig_edr}{0,0}
-%               \attribute{+ signal_one; : const QVector<double>}
-%               \attribute{+ signal_two :const QVector<double>}
-%               \attribute{+ EDRsignal_RPeaks_one : QVector<double> }
-%               \attribute{+ EDRsignal_RPeaks_two : QVector<double>}
-%               \attribute{+ EDRsignal_Waves : QVector<double>}
-%               \attribute{+ EDRsignal : std::vector<double>}
-%               \attribute{+ Integrals_one :  QVector<double>}
-%               \attribute{+ Integrals_two :  QVector<double>}
-%              
-%               \operation{+ sig_edr(\&signal_one : const QVector<double>,\\
-%                       \&signal_two : const QVector<double>)}
-%               \operation{+ sig_edr(\&signal_one : const QVector<double>,\\
-%                       \&signal_two : const QVector<double>,\\
-%                       \&RPeaksIterators_one : const QVector<unsigned int>,\\
-%                       \&RPeaksIterators_two : const QVector<unsigned int>)}
-%               \operation{+ sig_edr(\&signal_one : const QVector<double>,\\
-%                       \&signal_two : const QVector<double>,\\
-%                       \&QRSonsetIterators_one : const vector_it,\\
-%                       \&QRSonsetIterators_two : const vector_it,\\
-%                       \&QRSendIterators_one : const vector_it,\\
-%                       \&QRSendIterators_two : const vector_it)}
-%               \operation{+ new_RPeaks_signal(\&signal_num : int,\\
-%                       \&RPeaksIterators : const QVector<unsigned int>) : void}
-%               \operation{+new_Waves_signal(\&QRSonsetIterators_one : const vector_it,\\
-%                       \&QRSonsetIterators_two : const vector_it,\\
-%                       \&QRSendIterators_one : const vector_it,\\
-%                       \&QRSendIterators_two : const vector_it) : void}
-%               \operation{+ retrieveEDR_QVec(\EDR_type : int,\\
-%                       \&signal_num : int) : QVector<double>*}
-%               \operation{+ retrieveEDR_StdVec(\EDR_type : int,\\
-%                       \&signal_num : int) : std::vector<double>*}
-%               \operation{- integral( &value : QVector<double>) : double}
-%               \operation{- calculate_signal_from_QRS(\&QRSIntegrals_one : const QVector<double>,\\
-%                       \&QRSIntegrals_two : const QVector<double>) : void}
-%       \end{class}
-%      
- 
+\begin{class}[text width = 10cm]{sigedr}{0,0}
+   \attribute{signalone : const QVector<double>}
+   \attribute{signal\_two : const QVector<double>}
+   \attribute{EDRsignal\_RPeaks\_one : QVector<double>}
+   \attribute{EDRsignal\_RPeaks\_two : QVector<double>}
+   \attribute{EDRsignal\_Waves : QVector<double>}
+   \attribute{EDRsignal : stdvector<double>}
+   \attribute{Integrals\_one : QVector<double>}
+   \attribute{Integrals\_two : QVector<double>}
+	
+   \operation{sig\_edr(\&signal\_one : const QVector<double>,\\
+		   \&signal\_two : const QVector<double>)}
+   \operation{sig\_edr(\&signal\_one : const QVector<double>,\\
+		   \&signal\_two : const QVector<double>,\\
+		   \&RPeaksIterators\_one : const QVector<unsigned int>,\\
+		   \&RPeaksIterators\_two : const QVector<unsigned int>)}
+   \operation{sig\_edr(\&signal\_one : const QVector<double>,\\
+		   \&signal\_two : const QVector<double>,\\
+		   \&QRSonsetIterators\_one : const vector\_it,\\
+		   \&QRSonsetIterators\_two : const vector\_it,\\
+		   \&QRSendIterators\_one : const vector\_it,\\
+		   \&QRSendIterators\_two : const vector\_it)}
+   \operation{new\_RPeaks\_signal(\&signal\_num : int,\\
+		   \&RPeaksIterators : const QVector<unsigned int>) : void}
+   \operation{new\_Waves\_signal(\&QRSonsetIterators\_one : const vector\_it,\\
+		   \&QRSonsetIterators\_two : const vector\_it,\\
+		   \&QRSendIterators\_one : const vector\_it,\\
+		   \&QRSendIterators\_two : const vector\_it) : void}
+   \operation{retrieveEDR\_QVec(EDR\_type : int,\\
+		   \&signal\_num : int) : QVector<double>*}
+   \operation{retrieveEDR\_StdVec(EDR\_type : int,\\
+		   \&signal\_num : int) : stdvector<double>*}
+   \operation{integral(\&value : QVector<double>) : double}
+   \operation{calculate\_signal\_from\_QRS(\&QRSIntegrals\_one : const QVector<double>,\\
+		   \&QRSIntegrals\_two : const QVector<double>) : void}
+\end{class}
 \end{tikzpicture}
 

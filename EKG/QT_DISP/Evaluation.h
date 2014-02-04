@@ -44,10 +44,10 @@ public:
 	
 	void CalculatePercentage()
 	{
-		int sum = numberOfCorrectQT + numberOfTooLowQT + numberOfTooHighQT;
-		percentOfCorrectQT = (numberOfCorrectQT / sum)*100;
-		percentOfTooLowQT = (numberOfTooLowQT / sum)*100;
-		percentOfTooHighQT = (numberOfTooHighQT / sum)*100;
+        double sum = numberOfCorrectQT + numberOfTooLowQT + numberOfTooHighQT;
+        percentOfCorrectQT = (double(numberOfCorrectQT) / sum)*100;
+        percentOfTooLowQT = (double(numberOfTooLowQT) / sum)*100;
+        percentOfTooHighQT = (double(numberOfTooHighQT) / sum)*100;
         //cout << percentOfCorrectQT << endl;
         //cout << percentOfTooLowQT << endl;
         //cout << percentOfTooHighQT << endl;
