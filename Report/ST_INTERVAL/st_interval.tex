@@ -4,7 +4,7 @@ Zadaniem modułu ST\_INTERVAL jest detekcja oraz analiza tzw. odcinków ST w zar
 \begin{figure}[H]
 	\centering
 	\includegraphics{ST_INTERVAL/img/ST_rodzajeST.png}
-	\caption{Rodzaje kształtu odcinka ST [3].}
+	\caption{Rodzaje kształtu odcinka ST \cite{STInt3}.}
 	\label{fig:ST_rodzajeST}
 \end{figure}
 Postawiony problem można zatem zdekomponować na następujące zagadnienia:
@@ -22,16 +22,16 @@ Postawiony problem można zatem zdekomponować na następujące zagadnienia:
 	\item Wykrywanie i ocena epizodów związanych z odcinkami ST wykorzystanie danych o kształcie fragmentów w celu wykrycia potencjalnych zaburzeń.
 \end{enumerate}
 
-Najważniejszym zadaniem w pierwszym podproblemie jest poprawne wyznaczenie położenia początku fali T. W dostępnej literaturze można najczęściej spotkać się z algorytmami detekcji bazującymi na transformacji falkowej, wykorzystującymi fakt, iż punkt $ T_{on} $ w większości przypadków jest lokalnym ekstremum sygnału EKG. W opracowaniu [3] zaproponowano analizę zmienności znaku parametrów falkowej dekompozycji sygnału. Odmienne rozwiązanie zostało przedstawione w [1]. Algorytm ten wykorzystuje proste poszukiwanie ekstremów odpowiednio dobranego wskaźnika jakości, bazującego na morfologii (kształcie) fali T.
+Najważniejszym zadaniem w pierwszym podproblemie jest poprawne wyznaczenie położenia początku fali T. W dostępnej literaturze można najczęściej spotkać się z algorytmami detekcji bazującymi na transformacji falkowej, wykorzystującymi fakt, iż punkt $ T_{on} $ w większości przypadków jest lokalnym ekstremum sygnału EKG. W opracowaniu \cite{STInt3} zaproponowano analizę zmienności znaku parametrów falkowej dekompozycji sygnału. Odmienne rozwiązanie zostało przedstawione w \cite{STInt1}. Algorytm ten wykorzystuje proste poszukiwanie ekstremów odpowiednio dobranego wskaźnika jakości, bazującego na morfologii (kształcie) fali T.
 
 Wadą metod wykorzystujących falki jest zwiększona złożoność obliczeniowa, a ponadto trudność w doborze parametrów transformacji (tj. wyboru falki-matki, rzędu dekompozycji), w taki sposób, by uwzględniona została każda morfologia fali T. Algorytm bazujący na optymalizacji wskaźnika jakości wykorzystuje znacznie prostsze metody obliczeniowe, dodatkowo w jego konstrukcji uwzględniona została informacja o kształcie fali T, co pozwala na dokładniejszą detekcję pożądanego punktu. Założeniem rozważanych metod jest operowanie na zaszumionym sygnale EKG, stąd w każdej z nich znajduje się pewna forma filtracji (poprzez średnią kroczącą lub w wyniku transformacji falkowej).
 
-Intuicyjna metoda klasyfikacji kształtu odcinka ST opisana została w pracy [2]. Opiera się ona na aproksymacji analizowanego fragmentu dwoma prostymi, umożliwiając jednoczesne wyznaczenie położenia oraz morfologii ST.
+Intuicyjna metoda klasyfikacji kształtu odcinka ST opisana została w pracy \cite{STInt2}. Opiera się ona na aproksymacji analizowanego fragmentu dwoma prostymi, umożliwiając jednoczesne wyznaczenie położenia oraz morfologii ST.
 
 \subsection{Koncepcja proponowanego rozwiązania}
 Wyznaczenie punktu $ T_{on} $ odbywa się poprzez analizę odcinków znajdujących się pomiędzy punktami $ J $ oraz $ T_{end} $ (koniec fali T). Odpowiedni dobór przedziału poszukiwania ogranicza wpływ morfologii pozostałych zespołów (QRS, P) w sygnale EKG.
 
-Punkt $ T_{on} $ można wyznaczyć poprzez poszukiwanie ekstremów wskaźnika jakości $ A_k $, opierającego się na morfologii fali T [1]. Formuła ta wyznacza dla każdego rozważanego punktu w badanym obszarze wartość stanowiącą analogię pola powierzchni pod sygnałem EKG w oknie przesuwnym o szerokości w próbek, rozpoczynającym się badaną próbką k oraz ograniczonego od dołu wartością tej próbki, co ukazane jest na rysunku \ref{fig:ST_wskaznikAK}.
+Punkt $ T_{on} $ można wyznaczyć poprzez poszukiwanie ekstremów wskaźnika jakości $ A_k $, opierającego się na morfologii fali T \cite{STInt1}. Formuła ta wyznacza dla każdego rozważanego punktu w badanym obszarze wartość stanowiącą analogię pola powierzchni pod sygnałem EKG w oknie przesuwnym o szerokości w próbek, rozpoczynającym się badaną próbką k oraz ograniczonego od dołu wartością tej próbki, co ukazane jest na rysunku \ref{fig:ST_wskaznikAK}.
 \begin{equation}
 	A_k = \sum_{j=k}^{k+w-1} \left( s_j-\bar{s}_k \right)
 \end{equation}
@@ -49,10 +49,10 @@ $ p $ - połowa szerokości okna uśredniającego.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{ST_INTERVAL/img/ST_wskaznikAK.png}
-	\caption{Graficzna interpretacja wskaźnika $ A_k $ [1].}
+	\caption{Graficzna interpretacja wskaźnika $ A_k $ \cite{STInt1}.}
 	\label{fig:ST_wskaznikAK}
 \end{figure}
-W przypadku analizy nominalnego obszaru zawierającego odcinek ST (linia prosta równoległa do izolinii) oraz falę T (krzywa wypukła), ekstrema wskaźnika $ A_k $ znajdują się w punkcie początkowym fali T (maksimum) oraz jego szczycie (minimum). Wyznaczenie obydwu punktów ekstremalnych $ k' $ oraz $ k'' $ jest konieczne w celu uwzględnienia innych morfologii tej fali (wklęsłości, dwubiegunowości – zob. rys. \ref{fig:ST_morfologieT2}) [1].
+W przypadku analizy nominalnego obszaru zawierającego odcinek ST (linia prosta równoległa do izolinii) oraz falę T (krzywa wypukła), ekstrema wskaźnika $ A_k $ znajdują się w punkcie początkowym fali T (maksimum) oraz jego szczycie (minimum). Wyznaczenie obydwu punktów ekstremalnych $ k' $ oraz $ k'' $ jest konieczne w celu uwzględnienia innych morfologii tej fali (wklęsłości, dwubiegunowości – zob. rys. \ref{fig:ST_morfologieT}) \cite{STInt1}.
 \begin{subequations}
 	\begin{align}
 	k' = \arg \max_{k_a \leq k \leq k_b} A_k \\
@@ -74,14 +74,9 @@ w przeciwnym wypadku:
 \end{equation}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.62\textwidth]{ST_INTERVAL/img/ST_morfologieT1.png}
-	\label{fig:ST_morfologieT1}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.62\textwidth]{ST_INTERVAL/img/ST_morfologieT2.png}
-	\caption{Morfologie fali T [1].}
-	\label{fig:ST_morfologieT2}
+	\includegraphics[width=0.62\textwidth]{ST_INTERVAL/img/ST_morfologieT.png}
+	\caption{Morfologie fali T \cite{STInt1}.}
+	\label{fig:ST_morfologieT}
 \end{figure}
 Aby uwzględnić sygnały EKG, w których występuje zjawisko dominacji fali T utrudniające poprawną detekcję krótkich odcinków ST, można wprowadzić następującą modyfikację wskaźnika $ A_k $:
 \begin{equation}
@@ -90,7 +85,7 @@ Aby uwzględnić sygnały EKG, w których występuje zjawisko dominacji fali T u
 
 Wprowadzenie kwadratu do wskaźnika pozwala na zwiększenie wpływu próbek sygnału znacznie oddalonych od linii izoelektrycznej, poprawiając jakość detekcji dla specyficznych przypadków.
 
-Pozycja punktu początkowego fali ST uzależniona jest od szybkości pracy serca [1]. W celu poprawnego wykrycia punktu $ ST_{on} $ konieczne jest obliczenie interwału RT oraz oszacowanie tętna HR osoby badanej. Interwał RT wyznaczany jest jako odległość między punktami $ T_{on} $ i $ R_{peak} $:
+Pozycja punktu początkowego fali ST uzależniona jest od szybkości pracy serca \cite{STInt1}. W celu poprawnego wykrycia punktu $ ST_{on} $ konieczne jest obliczenie interwału RT oraz oszacowanie tętna HR osoby badanej. Interwał RT wyznaczany jest jako odległość między punktami $ T_{on} $ i $ R_{peak} $:
 \begin{equation}
 	RT = T_{on} - R_{peak}
 \end{equation}
@@ -117,9 +112,9 @@ Na podstawie położenia punktów $ J $ oraz $ T_{on} $ można wyznaczyć punkt 
 	\caption{Aproksymacja odcinka ST prostymi.}
 	\label{fig:ST_aproksymacjaST}
 \end{figure}
-Odcinek ST może być aproksymowany dwoma prostymi łączącymi kolejno punkty $ J $ i $ ST_{mid} $ oraz $ ST_{mid} $ i $ T_{on} $ (rys. \ref{fig:ST_aproksymacjaST}). Kąty nachylenia tych prostych względem izolinii (oznaczane jako $ d_1 $ i $ d_2 $) pozwalają na klasyfikację kształtu odcinka [2].
+Odcinek ST może być aproksymowany dwoma prostymi łączącymi kolejno punkty $ J $ i $ ST_{mid} $ oraz $ ST_{mid} $ i $ T_{on} $ (rys. \ref{fig:ST_aproksymacjaST}). Kąty nachylenia tych prostych względem izolinii (oznaczane jako $ d_1 $ i $ d_2 $) pozwalają na klasyfikację kształtu odcinka \cite{STInt2}.
 
-Wprowadzić można zatem dwa parametry progowe determinujące kształt interwału ST: $ a_{tol} $ (odległość od izolinii), $ d_{tol} $ (kąt nachylenia). Klasyfikacja kształtu zależna od tych parametrów przedstawiona została w tabeli \ref{tab:ST_klasyfikacjaST}. Typowymi wartościami zgodnymi z normami kardiologicznymi [2] są:
+Wprowadzić można zatem dwa parametry progowe determinujące kształt interwału ST: $ a_{tol} $ (odległość od izolinii), $ d_{tol} $ (kąt nachylenia). Klasyfikacja kształtu zależna od tych parametrów przedstawiona została w tabeli \ref{tab:ST_klasyfikacjaST}. Typowymi wartościami zgodnymi z normami kardiologicznymi \cite{STInt2} są:
 \[ a_{tol} = 0.1 mV, \; d_{tol} = 35^\circ  \]
 \begin{table}[H]
 	\centering
@@ -328,83 +323,76 @@ W ramach eksperymentów opisana procedura testowania została przeprowadzona dla
 
 \subsection{Diagramy klas}
 \begin{tikzpicture}
-%	\begin{class}[text width = 9cm]{EcgStAnalyzer}{0,0}
-%		\attribute{+ AlgorithmType : enum}
-%		\attribute{+ ErrorType : enum}
-%		\attribute{- smoothSize : unsigned int}
-%		\attribute{- detectionSize : unsigned int}
-%		\attribute{- morphologyCoeff : double}
-%		\attribute{- levelThreshold : double}
-%		\attribute{- slopeThreshold : double}
-%		\attribute{- algorithm : AlgorithmType}
-%		\attribute{- result : QList<EcgStDescriptor>}
-%		\attribute{- lastError : ErrorType}
-%		\attribute{- rData : QVector<EcgSampleIter>}
-%		\attribute{- jData : QVector<EcgSampleIter>}
-%		\attribute{- tEndData : QVector<EcgSampleIter>}
-%		
-%		\operation{+ getSmoothSize() const : unsigned int}
-%		\operation{+ setSmoothSize(value : unsigned int) : void}
-%		\operation{+ getDetectionSize() const : unsigned int}
-%		\operation{+ setDetectionSize(value : unsigned int) : void}
-%		\operation{+ getMorphologyCoeff() const : double}
-%		\operation{+ setMorphologyCoeff(value : double) : void}
-%		\operation{+ getAlgorithm() const : AlgorithmType}
-%		\operation{+ setAlgorithm(value : AlgorithmType) : void}
-%		\operation{+ getLevelThreshold() const : double}
-%		\operation{+ setLevelThreshold(value : double) : void}
-%		\operation{+ getSlopeThreshold() const : double}
-%		\operation{+ setSlopeThreshold(value : double) : void}
-%		\operation{+ getResult() const : QList<EcgStDescriptor>}
-%		\operation{+ getLastError() const : ErrorType}
-%		\operation{+ analyze(\&ecgSamples : const QVector<double>,\\
-%			\&rVec : const QVector<EcgSampleIter>,\\
-%			\&jVec : const QVector<EcgSampleIter>,\\
-%			\&tEndVec : const QVector<EcgSampleIter>,\\
-%			sampleFreq : double) : bool}
-%		\operation{+ classifyPosition(offset : double) : EcgStPosition}
-%		\operation{+ classifyShape(a1 : double, a2 : double) : EcgStShape}
-%		\operation{+ classifyInterval(\&desc : EcgStDescriptor) : void}
-%		\operation{- clearData() : void}
-%		\operation{- prepareData(\&ecgSamples : const QVector<double>,\\
-%			\&rVec : const QVector<EcgSampleIter>,\\
-%			\&jVec : const QVector<EcgSampleIter>,\\
-%			\&tEndVec : const QVector<EcgSampleIter>) : void}
-%	\end{class}
-%	
-%	\begin{class}[text width = 7cm]{EcgStDescriptor}{0,0}
-%		\attribute{STOn : QVector<double>::const\_iterator}
-%		\attribute{STEnd : QVector<double>::const\_iterator}
-%		\attribute{STMid : QVector<double>::const\_iterator}
-%		\attribute{offset : double}
-%		\attribute{slope1 : double}
-%		\attribute{slope2 : double}
-%		\attribute{position : EcgStPosition}
-%		\attribute{shape : EcgStShape}
-%	\end{class}
-%
-%	\begin{class}[text width = 5cm]{<<enumeration>> AlgorithmType}{0,-5}
-%		\attribute{LINEAR}
-%		\attribute{QUADRATIC}
-%	\end{class}
-%
-%	\begin{class}[text width = 5cm]{<<enumeration>> ErrorType}{0,-8}
-%		\attribute{NO\_ERROR}
-%		\attribute{NO\_SAMPLES\_PROVIDED}
-%		\attribute{INSUFFICIENT\_DATA}
-%	\end{class}
-%
-%	\begin{class}[text width = 5cm]{<<enumeration>> EcgStPosition}{0,-11}
-%		\attribute{ST\_POS\_NORMAL}
-%		\attribute{ST\_POS\_ELEVATION}
-%		\attribute{ST\_POS\_DEPRESSION}
-%	\end{class}
-%	
-%	\begin{class}[text width = 5cm]{<<enumeration>> EcgStShape}{0,-14}
-%		\attribute{ST\_SHAPE\_HORIZONTAL}
-%		\attribute{ST\_SHAPE\_DOWNSLOPING}
-%		\attribute{ST\_SHAPE\_UPSLOPING}
-%		\attribute{ST\_SHAPE\_CONCAVE}
-%		\attribute{ST\_SHAPE\_CONVEX}
-%	\end{class}
+	\begin{class}[text width = 8cm]{EcgStAnalyzer}{0,0}
+		\attribute{- smoothSize : unsigned int}
+		\attribute{- detectionSize : unsigned int}
+		\attribute{- morphologyCoeff : double}
+		\attribute{- levelThreshold : double}
+		\attribute{- slopeThreshold : double}
+		\attribute{- algorithm : AlgorithmType}
+		\attribute{- result : QList<EcgStDescriptor>}
+		\attribute{- lastError : ErrorType}
+		\attribute{- rData : QVector<EcgSampleIter>}
+		\attribute{- jData : QVector<EcgSampleIter>}
+		\attribute{- tEndData : QVector<EcgSampleIter>}
+		
+		\operation{+ getSmoothSize() const : unsigned int}
+		\operation{+ setSmoothSize(value : unsigned int) : void}
+		\operation{+ getDetectionSize() const : unsigned int}
+		\operation{+ setDetectionSize(value : unsigned int) : void}
+		\operation{+ getMorphologyCoeff() const : double}
+		\operation{+ setMorphologyCoeff(value : double) : void}
+		\operation{+ getAlgorithm() const : AlgorithmType}
+		\operation{+ setAlgorithm(value : AlgorithmType) : void}
+		\operation{+ getLevelThreshold() const : double}
+		\operation{+ setLevelThreshold(value) : void}
+		\operation{+ getSlopeThreshold() const : double}
+		\operation{+ setSlopeThreshold(value : double) : void}
+		\operation{+ getResult() const : QList<EcgStDescriptor>}
+		\operation{+ getLastError() const : ErrorType}
+		\operation{+ analyze(ecgSamples : const QVector<double>\&, \\rVec : const QVector<EcgSampleIter>\&, \\jVec : const QVector<EcgSampleIter>\&, \\tEndVec : const QVector<EcgSampleIter>\&, \\sampleFreq : double) : bool}
+		\operation{+ classifyPosition(offset : double) : EcgStPosition}
+		\operation{+ classifyShape(a1 : double, a2 : double) : EcgStShape}
+		\operation{+ classifyInterval(desc : EcgStDescriptor\&) : void}
+		\operation{- clearData() : void}
+		\operation{- prepareData(ecgSamples : const QVector<double>\&, \\rVec : const QVector<EcgSampleIter>\&, \\jVec : const QVector<EcgSampleIter>\&, \\tEndVec : const QVector<EcgSampleIter>\&) : void}
+	\end{class}
+	
+	\begin{class}[text width = 6.6cm]{EcgStDescriptor}{8,0}
+		\attribute{STOn : QVector<double>::const\_iterator}
+		\attribute{STEnd : QVector<double>::const\_iterator}
+		\attribute{STMid : QVector<double>::const\_iterator}
+		\attribute{offset : double}
+		\attribute{slope1 : double}
+		\attribute{slope2 : double}
+		\attribute{position : EcgStPosition}
+		\attribute{shape : EcgStShape}
+	\end{class}
+
+	\begin{class}[text width = 5cm]{<<enumeration>> AlgorithmType}{8,-15}
+		\attribute{LINEAR}
+		\attribute{QUADRATIC}
+	\end{class}
+
+	\begin{class}[text width = 5cm]{<<enumeration>> ErrorType}{8,-18}
+		\attribute{NO\_ERROR}
+		\attribute{NO\_SAMPLES\_PROVIDED}
+		\attribute{INSUFFICIENT\_DATA}
+	\end{class}
+
+	\begin{class}[text width = 5cm]{<<enumeration>> EcgStPosition}{8,-7}
+		\attribute{ST\_POS\_NORMAL}
+		\attribute{ST\_POS\_ELEVATION}
+		\attribute{ST\_POS\_DEPRESSION}
+	\end{class}
+	
+	\begin{class}[text width = 5cm]{<<enumeration>> EcgStShape}{8,-10.5}
+		\attribute{ST\_SHAPE\_HORIZONTAL}
+		\attribute{ST\_SHAPE\_DOWNSLOPING}
+		\attribute{ST\_SHAPE\_UPSLOPING}
+		\attribute{ST\_SHAPE\_CONCAVE}
+		\attribute{ST\_SHAPE\_CONVEX}
+	\end{class}
+	
+	\aggregation{EcgStAnalyzer}{0..*}{output}{EcgStDescriptor}
 \end{tikzpicture}
