@@ -15,6 +15,12 @@ public:
         mode( Qt::ScrollBarAsNeeded )
     {
     }
+    ScrollData(ScrollZoomer *drugi):
+        position( ScrollZoomer::OppositeToScale ),
+        mode( Qt::ScrollBarAsNeeded )
+    {
+        scrollBar= new ScrollBar(NULL,(drugi->horizontalScrollBar()));
+    }
 
     ~ScrollData()
     {
@@ -26,7 +32,7 @@ public:
     Qt::ScrollBarPolicy mode;
 };
 
-ScrollZoomer::ScrollZoomer( QwtPlotCanvas *canvas ):
+ScrollZoomer::ScrollZoomer( QwtPlotCanvas *canvas,ScrollZoomer *drugi ):
     QwtPlotZoomer( canvas ),
     d_cornerWidget( NULL ),
     d_hScrollData( NULL ),

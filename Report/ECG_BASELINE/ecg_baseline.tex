@@ -176,7 +176,7 @@ Współczynniki filtru usuwającego 3. harmoniczną szumu sieciowego 50 Hz dla c
 \label{fig:3rd_360}
 \end{figure}
 
-\subsection{Średnia krocząca}
+\subsubsection{Średnia krocząca}
 
 Średnia krocząca (MA -- \emph{Moving Average}) jest jednym z najprostszych filtrów cyfrowych. Równanie średniej kroczącej jest następujące
 
@@ -199,7 +199,7 @@ M = \ceil{t_a \cdot f_s}
 \end{equation}
 
 
-\subsection{Rozszerzony Filtr Kalmana}
+\subsubsection{Rozszerzony Filtr Kalmana}
 Konstrukcja filtru Kalmana powstała w oparciu o \cite{Sameni2005-1, Sameni2005-2} i przedstawiona w formie algorytmicznej. Podstawy teoretyczne metody oraz szczegóły poszczególnych kroków algorytmu znajdują się w dalszej części rozdziału.
 
 Algorytm odszumiania zapisu EKG przy użyciu rozszerzonego filtru Kalmana
@@ -222,8 +222,8 @@ z wyjściem opisanym równaniem:
 Zmienne losowe $w_k, \upsilon_k$ reprezentują odpowiednio szum procesu i pomiaru. Zakładamy, że są one niezależne od siebie i charakteryzują się rozkładem normalnym:
 \begin{equation}
 \begin{split}
- p(w) \backsim N(0,Q) \\
- p(\upsilon) \backsim N(0,R)
+ p(w) \sim N(0,Q) \\
+ p(\upsilon) \sim N(0,R)
  \end{split}
 \end{equation}
 
@@ -298,9 +298,9 @@ Podobnie, układ równań~\ref{eq:model-lin3} to wynik linearyzacji równania~\r
 
 Szum procesowy może być oznaczony jako $\underline{w}_k = \left[ a_P,...,a_T,b_P,...,b_T, \theta_P,...,\theta_T,\omega,N \right]$, a $Q_k = E \{\underline{w}_k, \underline{w}_k^T \}$. Tym samym model dynamiczny jest przygotowany do wykorzystania w rozszerzonym filtrze Kalmana.
 
-\section{Testy filtrów}
+\subsection{Testy filtrów}
 
-\subsection{Filtr Butterwortha}
+\subsubsection{Filtr Butterwortha}
 
 Wyniki części przeprowadzonych testów nowych zestawów współczynników dla fitru Butterwortha przedstawiono na rysunkach~\ref{fig:bw_removal_comparison},~\ref{fig:bw_removal_zoom},~\ref{fig:50hz_comparison},~\ref{fig:50hz_zoom}.
 

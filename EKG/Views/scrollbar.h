@@ -8,7 +8,7 @@ class ScrollBar: public QScrollBar
     Q_OBJECT
 
 public:
-    ScrollBar( QWidget *parent = NULL );
+    ScrollBar( QWidget *parent = NULL,ScrollBar *drugi=NULL );
     ScrollBar( Qt::Orientation, QWidget *parent = NULL );
     ScrollBar( double minBase, double maxBase,
         Qt::Orientation o, QWidget *parent = NULL );
@@ -42,7 +42,7 @@ private Q_SLOTS:
     void catchSliderMoved( int value );
 
 private:
-    void init();
+    void init(ScrollBar *drugi=NULL);
 
     bool d_inverted;
     double d_minBase;
