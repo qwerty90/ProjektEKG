@@ -9,9 +9,10 @@
 #include "QRS_CLASS/Clusterers/kmeans.h"
 #include "QRS_CLASS/Clusterers/gmeans.h"
 
-#include <QFile>
-#include <iostream>
-
+//include do loggera - korzystajcie smialo
+#include <QsLog.h>
+#include <QDir>
+#include <QsLogDest.h>
 
 void QRSClassModule::setDefaultConfiguration()
 {
@@ -79,7 +80,8 @@ bool QRSClassModule::setSettings(QRSClassSettings settings)
     {
         KMeans* clusterer = new KMeans();
         clusterer->setMaxIterations(settings.maxIterations);
-        clusterer->setNumberOfClusters(settings.minClusterNo);
+        //clusterer->setNumberOfClusters(settings.minClusterNo);
+        clusterer->setNumberOfClusters(4);
         this->clusterer = clusterer;
         this->runParallel = settings.parallelExecution;
         break;
@@ -87,7 +89,8 @@ bool QRSClassModule::setSettings(QRSClassSettings settings)
     default:
     {
         GMeans* clusterer = new GMeans();
-        clusterer->setClusterNumbers(settings.minClusterNo,settings.maxClusterNo);
+        //clusterer->setClusterNumbers(settings.minClusterNo,settings.maxClusterNo);
+        clusterer->setClusterNumbers(4,4);
         clusterer->setMaxIterations(settings.maxIterations);
         this->runParallel = false;
         this->clusterer = clusterer;
@@ -130,43 +133,45 @@ bool QRSClassModule::process()
     extractors->append(new MaxSpeedExceedExtractor());
 
     QList<Instance>* features = new QList<Instance>();
-    for(int i = 0; i < this->waves_onset->count(); i++)
+    for(int i = 0; i < this->waves_onset->count()-1; i++)
+        //pomniejszone o jeden dla sprawdzenia - trzeba rozwazyc przypadki, oni to do sprawdzaja this->entity->Waves->Count, ale chyba sprawdzimy sami
     {
+        //QLOG_INFO() << "onset->count " << this->waves_onset->count();
+        //QLOG_INFO() << "end->count " << this->waves_end->count();
+        QLOG_INFO() << "i = " << i;
         QList<double> currentQRS;
-        //POCZATEK KODU DO PRZEROBIENIA DO WAVES  ??
-        for(int j = this->waves_onset->at(i) - this->waves_onset->at(0); j <= this->waves_end->at(i) - this->waves_onset->at(0); j++) //nie wiem czy bedzie dobrze
+
+        for(int j = this->waves_onset->at(i) - this->ecgBaselined->begin(); j < this->waves_end->at(i) - this->ecgBaselined->begin(); j++)
         {
             currentQRS.append(this->ecgBaselined->at(j));
         }
 
         if (currentQRS.count() < 2)
         {
-            this->artifactsList->append(i);
+            this->artifactsList->append(i); //tu pewnie nie będzie po tym indeksie, ale to się zaraz ogarnie
         }
 
         Instance currInstance(extractors->count());
 
         int j = 0;
-        //KONIEC KODU DO PRZEROBIENIA DO WAVES??
 
         foreach(AbstractExtractor* extractor, *extractors)
         {
             currInstance[j] = extractor->extractFeature(currentQRS);
             j++;
         }
-
         features->append(currInstance);
-
-        // Cluster
-        this->clusterer->setClusteringSet(features);
-
-        //tu sie wywala
-        if (!this->clusterer->classify())
-        {
-            this->errMsg = this->clusterer->getErrorMessage();
-            return false;
-        }
     }
+
+    // Cluster
+    this->clusterer->setClusteringSet(features);
+
+    if (!this->clusterer->classify())
+    {
+        this->errMsg = this->clusterer->getErrorMessage();
+        return false;
+    }
+
     return true;
 }
 
