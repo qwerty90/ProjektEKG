@@ -33,6 +33,16 @@ EcgData::EcgData(QObject *parent) :
     this->SleepApneafreq=NULL;
     this->hrt_tachogram=NULL;
     this->TWaveStart=NULL;
+    this->VCG_raw= new VCG_input;
+    this->VCG_raw->I  = NULL;
+    this->VCG_raw->II = NULL;
+    this->VCG_raw->V1 = NULL;
+    this->VCG_raw->V2 = NULL;
+    this->VCG_raw->V3 = NULL;
+    this->VCG_raw->V4 = NULL;
+    this->VCG_raw->V5 = NULL;
+    this->VCG_raw->V6 = NULL;
+
     //hrv2
     //twa
     //dfa
@@ -73,6 +83,15 @@ EcgData::EcgData(QString id)
     this->SleepApneafreq=NULL;
     this->hrt_tachogram=NULL;
     this->TWaveStart=NULL;
+    this->VCG_raw= new VCG_input;
+    this->VCG_raw->I  = NULL;
+    this->VCG_raw->II = NULL;
+    this->VCG_raw->V1 = NULL;
+    this->VCG_raw->V2 = NULL;
+    this->VCG_raw->V3 = NULL;
+    this->VCG_raw->V4 = NULL;
+    this->VCG_raw->V5 = NULL;
+    this->VCG_raw->V6 = NULL;
 
     this->RecordId = id;
     this->settings = new EcgSettings();
