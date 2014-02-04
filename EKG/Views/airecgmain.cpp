@@ -170,6 +170,7 @@ void AirEcgMain::fbLoadData(const QString &directory, const QString &name)
     ui->qrsClustererSettingsGroupBox->setToolTip("");
     ui->qrsFeaturesSettingsGroupBox->setEnabled(true);
     ui->qrsFeaturesSettingsGroupBox->setToolTip("");
+    ui->RUN_VCG_pushButton->setEnabled(true);
 }
 
 void AirEcgMain::receivePatientData(EcgData *data)
