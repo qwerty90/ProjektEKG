@@ -17,7 +17,7 @@ public:
         OppositeToScale
     };
 
-    ScrollZoomer( QwtPlotCanvas * );
+    ScrollZoomer( QwtPlotCanvas *, ScrollZoomer *drugi=NULL);
     virtual ~ScrollZoomer();
 
     ScrollBar *horizontalScrollBar() const;
@@ -49,7 +49,7 @@ protected:
     virtual void updateScrollBars();
     virtual void layoutScrollBars( const QRect & );
 
-private Q_SLOTS:
+public Q_SLOTS:
     void scrollBarMoved( Qt::Orientation o, double min, double max );
 
 private:
