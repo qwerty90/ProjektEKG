@@ -27,7 +27,11 @@ void QT_DISP::getInput (vector<double> in_signals2, vector <int> in_QRS_On, vect
 	samplingFrequency = in_samplingFrequency;
 
 	heartBeats = QRS_On.size() - 1;
-
+    heartAction = 60*heartBeats*samplingFrequency / signals2.size();
+    //cout <<"HB" << heartBeats <<endl;
+    //cout << "SIGNALS" << signals2.size()<<endl;
+    //cout << "sampling" << samplingFrequency<<endl;
+    //cout << "HeartAction:" << heartAction <<endl;
 	/*channels = signals2.size() - 1;
 	T_Peak.resize(channels);
 	T_EndP.resize(channels);
@@ -163,7 +167,7 @@ void QT_DISP::Run()
 		int highestvelocity = HighestVelocity(x, y, iT_Peak,  iP_On);
 
 		//wyznaczenie koncow zalamka T przy pomocy metod: paraboli oraz stycznej
-		T_EndP[j]=CalculateTendParabol(x, y, highestvelocity, iT_Peak, iP_On);
+        //T_EndP[j]=CalculateTendParabol(x, y, highestvelocity, iT_Peak, iP_On);
 		T_EndT[j]=CalculateTendTangent(x, y, highestvelocity, iT_Peak, iP_On);
 
 		//i obliczenie d³ugoœci odcinka QT
@@ -174,8 +178,9 @@ void QT_DISP::Run()
 			
 		delete x;
 		delete y;
-	}
-	CalculateStatistics();
+    }
+
+    CalculateStatistics();
 }
 
 void QT_DISP::CalculateStatistics()
@@ -374,7 +379,10 @@ double QT_DISP::CalculateTendParabol(vector <double> *x, vector <double> *y, int
 void QT_DISP::EvaluateQTDisp(double QTT, double QTP)
 {
 	double RR = 60/heartAction;
+    //cout << "RR" << RR <<endl;
+    //cout << "hearAction" << heartAction<<endl;
 	double gapQT_T = 1000*(QTT);
+    //cout << "gaptQT_T" << gapQT_T << endl;
 	double gapQT_P = 1000*(QTP);
 
 	int EvaluatedValue;
@@ -427,6 +435,10 @@ int QT_DISP::EvaluateBazzet(double gapQT, double RR)
 {
 	//wyliczenie ze wzoru Bazzeta i ocena wyliczenia
 	double BazzetValue =  gapQT/sqrt(RR);
+    //cout << "RR" << RR << endl;
+    //cout << "sqrt(RR)" << sqrt(RR);
+    //cout << "gapQT" << gapQT;
+    //cout << "BazzetValue" << BazzetValue << endl;
 
 	//interpretacja wyniku ze wzoru Bazzeta : wynik poprawny (405-452 ms)
 	//0 - w porz¹dku, 1 - za ma³o, 2 - za du¿o
