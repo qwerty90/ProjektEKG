@@ -218,8 +218,15 @@ QVector<QRSClass> *QRSClassModule::getClasses()
 
         if (representativeId > -1)
         {
-            int begin = waves_onset->at(representativeId) - waves_onset->at(0); //do sprawdzenia!
-            int end = waves_end->at(representativeId) - waves_onset->at(0) + 1; //do sprawdzenia!
+            // Checking if each onset has a corresponding end and vice versa
+            int offsetAdditionalEnd = 0;
+
+            if (this->waves_onset->count() < this->waves_end->count()) //less onsets - ignore the leading end by offseting the index by 1
+            {
+                offsetAdditionalEnd = 1;
+            }
+            int begin = waves_onset->at(representativeId) - this->ecgBaselined->begin();
+            int end = waves_end->at(representativeId+offsetAdditionalEnd) - this->ecgBaselined->begin();
             for(int j = begin; j < end; j++)
                 currentClass.representative->append(ecgBaselined->at(j));
         }

@@ -262,7 +262,7 @@ int KMeans::getClassRepresentative(int classNumber)
 
 QList<Instance> *KMeans::getCentroids()
 {
-    return this->centroids;
+    return this->centroids; //kopia pomoze?
 }
 
 QList<Instance> KMeans::getInstancesForCentroid(int centroidIndex)

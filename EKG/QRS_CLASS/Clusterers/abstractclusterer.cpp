@@ -218,7 +218,7 @@ QList<Instance> *AbstractClusterer::initializeRandomPointsCentroids(int numberOf
         while (alreadyInUse)
         {
             alreadyInUse = false;
-            index = rand() % this->instances->size();
+            index = rand() % this->instances->size() - 1;
             QLOG_INFO() << this->instances->size();
             QLOG_INFO() << index;
 
