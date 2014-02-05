@@ -323,10 +323,10 @@ void AppController::runHRV1()
     }
 
     HRV1MainModule obiekt;
-    QLOG_TRACE <<"MVC/ HRV calc...";
+    QLOG_TRACE() <<"MVC/ HRV calc...";
     obiekt.prepare(wektor,(int)this->entity->info->frequencyValue);
     HRV1BundleStatistical results = obiekt.evaluateStatistical();
-    QLOG_TRACE <<"MVC/ HRV calc done";
+    QLOG_TRACE() <<"MVC/ HRV calc done";
     this->entity->Mean = results.RRMean;
     this->entity->SDNN = results.SDNN;
     this->entity->RMSSD= results.RMSSD;
@@ -375,12 +375,12 @@ void AppController::runAtrialFibr()
     QString sig_name;
     this->entity->settings->signalIndex?sig_name=this->entity->info->secondaryName
                                         :sig_name=this->entity->info->primaryName;
-    QLOG_TRACE <<"MVC/ atrial calc...";
+    QLOG_TRACE() <<"MVC/ atrial calc...";
     AtrialFibrApi obiekt(*(this->entity->ecg_baselined),
                          *(this->entity->Rpeaks) ,
                          *(this->entity->Waves->PWaveStart),
                          sig_name)   ;
-    QLOG_TRACE <<"MVC/ HRV calc done";
+    QLOG_TRACE() <<"MVC/ HRV calc done";
 
     this->entity->PWaveOccurenceRatio= obiekt.GetPWaveAbsenceRatio();
     this->entity->RRIntDivergence    = obiekt.GetRRIntDivergence();
@@ -427,7 +427,7 @@ void AppController::runRPeaks()
         QLOG_INFO() << "RPeaks/ using default (PanTompkins)";
         obiekt.panTompkins();
     }
-    QLOG_TRACE <<"MVC/ rpiks calc done";
+    QLOG_TRACE() <<"MVC/ rpiks calc done";
     //this->entity->Rpeaks = new iters (obiekt.getPeaksIter());
     this->entity->Rpeaks_uint = obiekt.getPeaksIndex();
     iters tmp_it;
