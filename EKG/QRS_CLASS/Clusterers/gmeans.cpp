@@ -136,13 +136,13 @@ bool GMeans::classify()
     this->numOfClusters = currentNoOfClusters;
     this->itersPerformed = iters;
     QList<Instance>* finalCentroids = new QList<Instance>();
-
+    QLOG_TRACE() << "trololol 1";
     finalCentroids->append(*initCentroids);
-
+    QLOG_TRACE() << "trololol 2";
     this->centroids = finalCentroids;
-
+    QLOG_TRACE() << "trololol 3";
     this->handleArtifacts();
-
+    QLOG_TRACE() << "trololol 4";
     return true;
 }
 

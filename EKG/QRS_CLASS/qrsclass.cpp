@@ -54,7 +54,7 @@ void QRSClassModule::setClusterer(ClustererType clustererType)
     default:
     {
         GMeans* clusterer = new GMeans();
-        clusterer->setClusterNumbers(1,30);
+        clusterer->setClusterNumbers(1,10);
         clusterer->setMaxIterations(10);
         this->clusterer = clusterer;
     }

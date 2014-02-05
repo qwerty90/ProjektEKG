@@ -2075,11 +2075,17 @@ void AirEcgMain::resetQrsToolbox(EcgData *data)
         ui->QRSClassesToolBox->removeItem(0);
     }
 
+    int totalCount = 0;
+    for(int i = 0 ; i < data->classes->count(); i++)
+    {
+        totalCount += data->classes->at(i).classMembers->count();
+    }
+
     for(int i = 0 ; i < data->classes->count(); i++)
     {
         QString labelText = "";
         labelText.append(data->classes->at(i).classLabel);
-        labelText.append("[ ").append(QString::number(data->classes->at(i).classMembers->count())).append(" ]");
+        labelText.append(" [ ").append(QString::number(data->classes->at(i).classMembers->count())).append(" ][ ").append(QString::number(data->classes->at(i).classMembers->count()*100.0/totalCount)).append("% ]");
         QListWidget* listView = new QListWidget();
 
         int classMembersCnt = data->classes->at(i).classMembers->count();
