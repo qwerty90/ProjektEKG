@@ -1916,23 +1916,22 @@ void AirEcgMain::drawSleep_Apnea(EcgData* data)
 }
 void AirEcgMain::drawVcgLoop(EcgData* data)
 {
-
     ui->pushButton_prev_vcg->setEnabled(true);
     ui->pushButton_next_vcg->setEnabled(true);
 
-    ui->vcg_dea->setText("-");//QString::number(*(data->SD2)));
-    ui->vcg_ma->setText("-");//QString::number(*(data->SD2)));
-    ui->vcg_rmmv->setText("-");//QString::number(*(data->SD2)));
+    ui->vcg_dea->setText(QString::number((data->DEA->at(1)), 'f', 0));
+    ui->vcg_ma->setText(QString::number((data->MA->at(1)), 'f', 0));
+    ui->vcg_rmmv->setText(QString::number((data->RMMV->at(1)), 'f', 0));
 
-    QwtPlot *plotVcgLoop1 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    QwtPlot *plotVcgLoop1 = plotPlot(*(data->X),*(data->Y) );
     ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
     ui->scrollArea_VcgLoop1->show();
 
-    QwtPlot *plotVcgLoop2 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    QwtPlot *plotVcgLoop2 = plotPlot(*(data->X),*(data->Z) );
     ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
     ui->scrollArea_VcgLoop2->show();
 
-    QwtPlot *plotVcgLoop3 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    QwtPlot *plotVcgLoop3 = plotPlot(*(data->Y),*(data->Z) );
     ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
     ui->scrollArea_VcgLoop3->show();
 
@@ -2215,7 +2214,7 @@ void AirEcgMain::on_pushButton_6_clicked()
 
 void AirEcgMain::on_pushButton_10_clicked()
 {
-    emit this->runQrsClass();
+   emit this->runQrsClass();
 }
 
 void AirEcgMain::on_pushButton_12_clicked()
@@ -2288,10 +2287,6 @@ void AirEcgMain::on_qrsSetGMaxClusterSpinBox_valueChanged(int arg1)
     emit qrsGMaxClustersChanged(arg1);
 }
 */
-void AirEcgMain::on_qrsSettingsGMeansParallelCheckBox_toggled(bool checked)
-{
-    emit qrsParallelExecutionChanged(checked);
-}
 
 void AirEcgMain::on_qrsSetKMaxIterSpinBox_valueChanged(int arg1)
 {

@@ -197,7 +197,6 @@ private slots:
 
  //   void on_qrsSetGMaxClusterSpinBox_valueChanged(int arg1);
 
-    void on_qrsSettingsGMeansParallelCheckBox_toggled(bool checked);
 
     void on_qrsSetKMaxIterSpinBox_valueChanged(int arg1);
 
