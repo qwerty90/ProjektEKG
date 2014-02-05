@@ -290,7 +290,7 @@ void AppController::runEcgBaseline()
     emit EcgBaseline_done(this->entity);
     emit busy(false);
 
-         runVcgLoop();//  <- nie odpalajcie tego!
+         //runVcgLoop();//  <- nie odpalajcie tego!
 
 }
 

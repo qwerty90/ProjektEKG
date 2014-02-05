@@ -45,6 +45,7 @@ bool GMeans::classify()
         iters++;
         keepGoing = false;
         clusterer.setCentroids(initCentroids);
+
         // Check errors
 
         for(int i = 0 ; i < clusterer.getNumberOfClusters(); i++)
@@ -60,15 +61,17 @@ bool GMeans::classify()
             KMeans insideClusterer;
             insideClusterer.setClusteringSet(&currClusterInstances);
             insideClusterer.setNumberOfClusters(2);
-
+            QLOG_INFO() << "dupa4.03";
             //if(!insideClusterer.classifyParallel())
                 //return false;
 
             Instance centroid_1 = insideClusterer.getCentroids()->at(0);
+            QLOG_INFO() << "dupa4.04";
             Instance centroid_2 = insideClusterer.getCentroids()->at(1);
-
+            QLOG_INFO() << "dupa4.05";
             double vectorVLength = 0;
             // Centroid_1 is the V vector
+
             for(int j = 0 ; j < numOfAttributes; j++)
             {
                 centroid_1[j] -= centroid_2[j];
@@ -148,7 +151,9 @@ bool GMeans::classify()
     finalCentroids->append(*initCentroids);
 
     this->centroids = finalCentroids;
+
     this->handleArtifacts();
+
     return true;
 }
 
