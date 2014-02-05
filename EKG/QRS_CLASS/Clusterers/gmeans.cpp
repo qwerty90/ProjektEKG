@@ -23,34 +23,29 @@ GMeans::GMeans()
 
 bool GMeans::classify()
 {
-
     if (this->instances == NULL || this->maxNumOfClusters == 0)
         return false;
-QLOG_INFO() << "dupa1";
+
     //Generate initial centroids;
     int numOfAttributes = this->instances->first().numberOfAttributes();
-    QLOG_INFO() << "dupa1.1";
-    QLOG_INFO() << "dupa1.2" << this->minNumOfClusters;
-    QList<Instance>* initCentroids = this->initializeCentroids(RandomPoints, this->minNumOfClusters); //tu sie sypie
-
+    QList<Instance>* initCentroids = this->initializeCentroids(RandomPoints, this->minNumOfClusters);
     bool keepGoing = true;
     int iters = 0;
 
     int currentNoOfClusters = this->minNumOfClusters;
 
-QLOG_INFO() << "dupa2";
     // Run G-Means
     KMeans clusterer;
     clusterer.setClusteringSet(this->instances);
     clusterer.setMaxIterations(this->maxIters);
 
-QLOG_INFO() << "dupa3";
     while(keepGoing && iters < this->maxIters)
     {
         QLOG_INFO() << "dupa4";
         iters++;
         keepGoing = false;
         clusterer.setCentroids(initCentroids);
+
         // Check errors
 
         for(int i = 0 ; i < clusterer.getNumberOfClusters(); i++)
@@ -66,15 +61,17 @@ QLOG_INFO() << "dupa3";
             KMeans insideClusterer;
             insideClusterer.setClusteringSet(&currClusterInstances);
             insideClusterer.setNumberOfClusters(2);
-
+            QLOG_INFO() << "dupa4.03";
             //if(!insideClusterer.classifyParallel())
                 //return false;
 
             Instance centroid_1 = insideClusterer.getCentroids()->at(0);
+            QLOG_INFO() << "dupa4.04";
             Instance centroid_2 = insideClusterer.getCentroids()->at(1);
-
+            QLOG_INFO() << "dupa4.05";
             double vectorVLength = 0;
             // Centroid_1 is the V vector
+
             for(int j = 0 ; j < numOfAttributes; j++)
             {
                 centroid_1[j] -= centroid_2[j];
@@ -154,7 +151,9 @@ QLOG_INFO() << "dupa3";
     finalCentroids->append(*initCentroids);
 
     this->centroids = finalCentroids;
+
     this->handleArtifacts();
+
     return true;
 }
 

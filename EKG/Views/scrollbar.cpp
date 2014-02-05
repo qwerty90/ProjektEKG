@@ -2,10 +2,10 @@
 #include <qstyleoption.h>
 #include "scrollbar.h"
 
-ScrollBar::ScrollBar( QWidget * parent ):
+ScrollBar::ScrollBar( QWidget * parent, ScrollBar *drugi):
     QScrollBar( parent )
 {
-    init();
+    init(drugi);
 }
 
 ScrollBar::ScrollBar( Qt::Orientation o,
@@ -24,7 +24,7 @@ ScrollBar::ScrollBar( double minBase, double maxBase,
     moveSlider( minBase, maxBase );
 }
 
-void ScrollBar::init()
+void ScrollBar::init(ScrollBar *drugi)
 {
     d_inverted = orientation() == Qt::Vertical;
     d_baseTicks = 1000;

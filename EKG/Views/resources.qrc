@@ -2,5 +2,9 @@
     <qresource prefix="/img">
         <file>img/docs.png</file>
         <file>img/icon.png</file>
+        <file>img/legend1.png</file>
+        <file>img/legend1.jpg</file>
+        <file>img/legend_sig_edr.jpg</file>
+        <file>img/legend_signal.png</file>
     </qresource>
 </RCC>

@@ -36,34 +36,36 @@ double correlation(const QVector<double> &v1, const QVector<double> &v2) {
 }
 
 const QVector<double> averagePWave{
-  { -0.0358029, -0.0241104, -0.0281965, -0.0322824, -0.036368, -0.060177,
-    -0.0327043, -0.0367891, -0.0369289, -0.0370685, -0.0372078, -0.0373468,
-    -0.0295962, -0.0297347, -0.0338176, -0.0339556, -0.0301486, -0.0184518,
-    -0.00675482, -0.0068917, -0.0149178, -0.0189988, -0.0191349, -0.0113812,
-    -0.00362731, 0.0238505, 0.0394944, 0.0433044, 0.04317, 0.0745936, 0.0981281,
-    0.101939, 0.0939165, 0.0661704, 0.0463141, 0.0422369, 0.0421047, 0.0498623,
-    0.045786, 0.0417099, 0.0258, 0.00989043, 0.0137047, 0.0135745, 0.0213341,
-    0.00937035, -0.0025931, -0.00666681, -0.0265191, -0.0266475, -0.0464992,
-    -0.0426823, -0.0467546, -0.0389924, -0.0312298, -0.0313565, -0.0393722,
-    -0.043443, -0.0711817, -0.0673624 }
+  { -0.013162, -0.00548262, -0.00963697, -0.0177356, -0.0376679, -0.0339315,
+    -0.0301946, -0.0225126, -0.0306089, -0.0189812, -0.0191872, -0.0312268,
+    -0.015653, -0.0158575, -0.00028264, -0.0083756, -0.000689189, -0.000891704,
+    0.00285101, 0.0144837, 0.0261169, 0.0219717, -0.00189649, 0.0176277,
+    0.0332078, 0.0369542, 0.0209776, 0.0207804, 0.0245285, 0.0401114, 0.0478053,
+    0.0752234, 0.0947527, 0.106393, 0.0983105, 0.0862838, 0.0860918, 0.0898452,
+    0.0778203, 0.0776301, 0.0656064, 0.0614728, 0.0652292, 0.0650415, 0.0530203,
+    0.0409998, 0.0368693, 0.0366842, 0.0364997, 0.0284265, 0.00851975,
+    0.000447824, -0.0155129, -0.0275282, -0.0316534, -0.0436673, -0.0399017,
+    -0.0321907, -0.0442025, -0.0443796 }
 };
 
-bool biggestIteratorTooBig(const QVector<Cit> &pWaveStarts,
+bool biggestIteratorTooBig(const QVector<Cit>::const_iterator &pWaveStartsBegin,
+                           const QVector<Cit>::const_iterator &pWaveStartsEnd,
                            const Cit &endOfSignal) {
-  return any_of(begin(pWaveStarts), end(pWaveStarts), [&](const Cit &it) {
+  return any_of(pWaveStartsBegin, pWaveStartsEnd, [&](const Cit &it) {
     return distance(it + averagePWave.size(), endOfSignal) < 0;
   });
 }
 
-double pWaveOccurenceRatio(const QVector<Cit> &pWaveStarts,
+double pWaveOccurenceRatio(const QVector<Cit>::const_iterator &pWaveStartsBegin,
+                           const QVector<Cit>::const_iterator &pWaveStartsEnd,
                            const Cit &endOfSignal) {
-  if (biggestIteratorTooBig(pWaveStarts, endOfSignal))
+  if (biggestIteratorTooBig(pWaveStartsBegin, pWaveStartsEnd, endOfSignal))
     throw PWaveStartTooCloseToEndOfSignal();
   const int count =
-      count_if(begin(pWaveStarts), end(pWaveStarts), [](const Cit &it) {
+      count_if(pWaveStartsBegin, pWaveStartsEnd, [&](const Cit &it) {
         return 0.2 < correlation(begin(averagePWave), end(averagePWave), it);
       });
-  return double(count) / pWaveStarts.size();
+  return double(count) / distance(pWaveStartsBegin, pWaveStartsEnd);
 }
 }
 }

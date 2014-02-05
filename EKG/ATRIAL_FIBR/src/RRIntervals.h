@@ -22,20 +22,25 @@ enum classification {
   Regular,
   Long
 };
+
+QVector<classification> classifyIntervals(const QVector<int> &RRIntervals,
+                                          int averageInteval);
+int countAverageInterval(const QVector<int> &RRIntervals);
+
 class RRIntervalMethod {
-  double averageInterval;
   Matrix3_3 markovTable;
   double countNormalization();
 
 public:
-  QVector<int> countRRInvervals(const QVector<QVector<double>::const_iterator> &RRtime);
-  QVector<classification>
-  classifyIntervals(const QVector<int> &RRIntervals);
-  void countAverageInterval(const QVector<int> &RRIntervals);
+  QVector<int> countRRInvervals(
+      const QVector<CIterators>::const_iterator &RPeaksIteratorsBegin,
+      const QVector<CIterators>::const_iterator &RPeaksIteratorsEnd);
   void countTransitions(const QVector<classification> &classifiedIntervals);
   void normalizeMarkovTable();
   std::array<std::array<double, 3>, 3> getMarkovTable() { return markovTable; }
-  void RunRRMethod(const QVector<CIterators> &RPeaksIterators);
+  void
+  RunRRMethod(const QVector<CIterators>::const_iterator &RPeaksIteratorsBegin,
+              const QVector<CIterators>::const_iterator &RPeaksIteratorsEnd);
 };
 }
 }

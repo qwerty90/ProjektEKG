@@ -136,18 +136,17 @@ Współczynniki filtru usuwającego szum sieciowy 50 Hz z sygnału próbkowanego
 \end{center}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 	\includegraphics[width=\textwidth]{ECG_BASELINE/figures/50hz_360.eps}
 \caption{Charakterystyka amplitudowa i fazowa filtru Butterwortha do usuwania szumu sieciowego 50 Hz dla $f_s=360 Hz$}
 \label{fig:50hz_360}
 \end{figure}
 
-\newpage{}
 
 Współczynniki filtru usuwającego 3. harmoniczną szumu sieciowego 50 Hz dla częstotliwości próbkowania sygnału $f_s = 360 Hz$ zebrane są w tabeli~\ref{tab:ac_3rd_360}. Charakterystyka amplitudowa i charakterystyka fazowa przedstawione zostały na rysunku~\ref{fig:3rd_360}.
 
-\begin{table}[H]
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -176,7 +175,7 @@ Współczynniki filtru usuwającego 3. harmoniczną szumu sieciowego 50 Hz dla c
 \label{fig:3rd_360}
 \end{figure}
 
-\subsection{Średnia krocząca}
+\subsubsection{Średnia krocząca}
 
 Średnia krocząca (MA -- \emph{Moving Average}) jest jednym z najprostszych filtrów cyfrowych. Równanie średniej kroczącej jest następujące
 
@@ -199,7 +198,7 @@ M = \ceil{t_a \cdot f_s}
 \end{equation}
 
 
-\subsection{Rozszerzony Filtr Kalmana}
+\subsubsection{Rozszerzony Filtr Kalmana}
 Konstrukcja filtru Kalmana powstała w oparciu o \cite{Sameni2005-1, Sameni2005-2} i przedstawiona w formie algorytmicznej. Podstawy teoretyczne metody oraz szczegóły poszczególnych kroków algorytmu znajdują się w dalszej części rozdziału.
 
 Algorytm odszumiania zapisu EKG przy użyciu rozszerzonego filtru Kalmana
@@ -222,8 +221,8 @@ z wyjściem opisanym równaniem:
 Zmienne losowe $w_k, \upsilon_k$ reprezentują odpowiednio szum procesu i pomiaru. Zakładamy, że są one niezależne od siebie i charakteryzują się rozkładem normalnym:
 \begin{equation}
 \begin{split}
- p(w) \backsim N(0,Q) \\
- p(\upsilon) \backsim N(0,R)
+ p(w) \sim N(0,Q) \\
+ p(\upsilon) \sim N(0,R)
  \end{split}
 \end{equation}
 
@@ -298,9 +297,9 @@ Podobnie, układ równań~\ref{eq:model-lin3} to wynik linearyzacji równania~\r
 
 Szum procesowy może być oznaczony jako $\underline{w}_k = \left[ a_P,...,a_T,b_P,...,b_T, \theta_P,...,\theta_T,\omega,N \right]$, a $Q_k = E \{\underline{w}_k, \underline{w}_k^T \}$. Tym samym model dynamiczny jest przygotowany do wykorzystania w rozszerzonym filtrze Kalmana.
 
-\section{Testy filtrów}
+\subsection{Testy filtrów}
 
-\subsection{Filtr Butterwortha}
+\subsubsection{Filtr Butterwortha}
 
 Wyniki części przeprowadzonych testów nowych zestawów współczynników dla fitru Butterwortha przedstawiono na rysunkach~\ref{fig:bw_removal_comparison},~\ref{fig:bw_removal_zoom},~\ref{fig:50hz_comparison},~\ref{fig:50hz_zoom}.
 
@@ -313,21 +312,21 @@ Wyniki części przeprowadzonych testów nowych zestawów współczynników dla 
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\textwidth]{ECG_BASELINE/figures/zoom_butter_sg.eps}
+	\includegraphics[width=0.75\textwidth]{ECG_BASELINE/figures/zoom_butter_sg.eps}
 \caption{Powiększony fragment przebiegów wyjścia filtru S-G i Butterwortha.}
 \label{fig:bw_removal_zoom}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=1.05\textwidth]{ECG_BASELINE/figures/50hz.eps}
+	\includegraphics[width=0.8\textwidth]{ECG_BASELINE/figures/50hz.eps}
 \caption{Zestawienie sygnałów: przed zaszumieniem, sygnału zaszumionego oraz wyjścia filtru Butterwortha dla szumu sieciowego 50 Hz}
 \label{fig:50hz_comparison}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=\textwidth]{ECG_BASELINE/figures/50hz_zoom.eps}
+	\includegraphics[width=0.8\textwidth]{ECG_BASELINE/figures/50hz_zoom.eps}
 \caption{Porównanie wyników filtracji Butterwortha do usuwania szumu sieciowego 50 Hz z sygnałem przed zaszumieniem}
 \label{fig:50hz_zoom}
 \end{figure}
@@ -345,7 +344,7 @@ Rysunek ~\ref{fig:KalmanOutput} przedstawia przykładowy efekt działania rozsze
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.9\textwidth]{ECG_BASELINE/figures/snrInOut.eps}
+	\includegraphics[width=0.7\textwidth]{ECG_BASELINE/figures/snrInOut.eps}
 \caption{Zależność między SNR sygnału wejściowego i wyjściowego filtru Kalmana}
 \label{fig:KalmanSNR}
 \end{figure}
@@ -413,7 +412,7 @@ Podsumowując, dostęp do zaimplementowanych w module metod filtrujących odbywa
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.8\textwidth]{ECG_BASELINE/figures/ma_seq.pdf}
+	\includegraphics[width=0.6\textwidth]{ECG_BASELINE/figures/ma_seq.pdf}
 \caption{Diagram sekwencji dla przypadku użycia średniej kroczącej. Źródło: \cite{Baseline2013}}
 \label{MA-seq}
 \end{figure}
