@@ -121,6 +121,7 @@ public:
     QVector<QVector<double>> *SplitX;
     QVector<QVector<double>> *SplitY;
     QVector<QVector<double>> *SplitZ;
+    unsigned int vcgindex;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;
