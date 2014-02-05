@@ -131,10 +131,36 @@ void AppController::switchWaves_p_onset(bool check)
       //  this->entity->settings->
 }
 
-/*void AppController::sendQRSData(int index, int type)
+void AppController::sendQRSData(int index, int type)
 {
 
-}*/
+    if (!this->entity || !this->entity->classes || !this->entity->Waves->PWaveStart|| !this->entity->ecg_baselined || index < 0)
+        return;
+    QRSClass qrsSegment;
+
+    if (type == 1)
+    {
+        if (this->entity->classes->count() > index)
+        {
+            qrsSegment = this->entity->classes->at(index);
+        }
+        else
+            return;
+    }
+    else
+    {
+        if (this->entity->Waves->Count <= index)
+            return;
+        int begin = (this->entity->Waves->QRS_onset->at(index)-this->entity->ecg_baselined->begin());
+        int end = (this->entity->Waves->QRS_end->at(index)-this->entity->ecg_baselined->begin());
+
+//ecgFrames.PWaveStart->at(i)-ecgSignal.begin()
+        qrsSegment.representative = new QVector<double>();
+        for(int i = begin; i < end; i++)
+            qrsSegment.representative->append(this->entity->ecg_baselined->at(i));
+    }
+    emit sendQRSData(qrsSegment,type);
+}
 
 void AppController::switchTWA(unsigned char type)
 {
