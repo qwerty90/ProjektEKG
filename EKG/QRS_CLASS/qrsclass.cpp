@@ -76,25 +76,24 @@ bool QRSClassModule::setSettings(QRSClassSettings settings)
 {
     switch(settings.clusterer)
     {
-    case KMeansClusterer:
-    {
-        KMeans* clusterer = new KMeans();
-        clusterer->setMaxIterations(settings.maxIterations);
-        //clusterer->setNumberOfClusters(settings.minClusterNo);
-        clusterer->setNumberOfClusters(3);
-        this->clusterer = clusterer;
-        this->runParallel = settings.parallelExecution;
-        break;
-    }
-    default:
-    {
-        GMeans* clusterer = new GMeans();
-        //clusterer->setClusterNumbers(settings.minClusterNo,settings.maxClusterNo);
-        clusterer->setClusterNumbers(3,3);
-        clusterer->setMaxIterations(settings.maxIterations);
-        this->runParallel = false;
-        this->clusterer = clusterer;
-    }
+        case KMeansClusterer:
+        {
+            KMeans* clusterer = new KMeans();
+            clusterer->setMaxIterations(settings.maxIterations);
+            //clusterer->setNumberOfClusters(settings.minClusterNo);
+            clusterer->setNumberOfClusters(3);
+            this->clusterer = clusterer;
+            this->runParallel = settings.parallelExecution;
+            break;
+        }
+        default:
+        {
+            GMeans* clusterer = new GMeans();
+            clusterer->setClusterNumbers(3,3);
+            clusterer->setMaxIterations(settings.maxIterations);
+            this->runParallel = false;
+            this->clusterer = clusterer;
+        }
     }
 
     return true;
@@ -132,14 +131,27 @@ bool QRSClassModule::process()
     extractors->append(new SpeedAmplitudeExtractor());
     extractors->append(new MaxSpeedExceedExtractor());
 
+    // Checking if each onset has a corresponding end and vice versa
+    int completeQRScount = 0;
+    int offsetAdditionalEnd = 0;
+
+    if (this->waves_onset->count() >= this->waves_end->count()) //more onsets - ignore the last one by having only the ends counted, or don't care if they're equal
+    {
+        completeQRScount = this->waves_end->count();
+    }
+    else //less onsets - ignore the leading end by offseting the index by 1
+    {
+        completeQRScount = this->waves_onset->count();
+        offsetAdditionalEnd = 1;
+    }
+
     QList<Instance>* features = new QList<Instance>();
-    for(int i = 0; i < this->waves_onset->count()-1; i++)
-        //pomniejszone o jeden dla sprawdzenia - trzeba rozwazyc przypadki, oni to do sprawdzaja this->entity->Waves->Count, ale chyba sprawdzimy sami
+    for(int i = 0; i < completeQRScount; i++)
     {
         QList<double> currentQRS;
 
         int currentQRSfirstSampleNumber = this->waves_onset->at(i) - this->ecgBaselined->begin();
-        int currentQRSlastSampleNumber = this->waves_end->at(i) - this->ecgBaselined->begin();
+        int currentQRSlastSampleNumber = this->waves_end->at(i+offsetAdditionalEnd) - this->ecgBaselined->begin();
 
         for(int j = currentQRSfirstSampleNumber; j <= currentQRSlastSampleNumber; j++)
         {
