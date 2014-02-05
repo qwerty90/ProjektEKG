@@ -152,7 +152,7 @@ void AppController::sendQRSData(int index, int type)
         if (this->entity->Waves->Count <= index)
             return;
         int begin = (this->entity->Waves->QRS_onset->at(index)-this->entity->ecg_baselined->begin());
-        int end = (this->entity->Waves->QRS_end->at(index+ 1)-this->entity->ecg_baselined->begin());
+        int end = (this->entity->Waves->QRS_end->at(index)-this->entity->ecg_baselined->begin());
 
 //ecgFrames.PWaveStart->at(i)-ecgSignal.begin()
         qrsSegment.representative = new QVector<double>();
