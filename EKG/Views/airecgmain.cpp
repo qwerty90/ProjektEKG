@@ -368,6 +368,60 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     magnifier->setAxisEnabled(QwtPlot::yLeft, false);
     return plot;
 }
+//VCG LOOP
+QwtPlot* AirEcgMain::plotPlotVCG(const QVector<double>& yData,const QVector<double>& xData)
+{
+    double maxy = yData.first();
+    double miny = yData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
+    }
+    double maxx = xData.first();
+    double minx = xData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy,750);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx,750);
+
+    /*QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+    grid->attach(plot);*/
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 2));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(xData, yData);
+    curve->attach(plot);
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(miny,miny,xData.last(),miny);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
 
 QwtPlot* AirEcgMain::plotPlotBSiG(const QVector<double>& yData, float freq)
 {
@@ -1924,15 +1978,15 @@ void AirEcgMain::drawVcgLoop(EcgData* data)
     ui->vcg_rmmv->setText(QString::number((data->RMMV->at(data->vcgindex)), 'f', 0));
     ui->vcg_index->setText(QString::number(data->vcgindex, 'f', 0));
 
-    QwtPlot *plotVcgLoop1 = plotPlot((data->SplitX->at(data->vcgindex)),(data->SplitY->at(data->vcgindex)) );
+    QwtPlot *plotVcgLoop1 = plotPlotVCG((data->SplitX->at(data->vcgindex)),(data->SplitY->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
     ui->scrollArea_VcgLoop1->show();
 
-    QwtPlot *plotVcgLoop2 = plotPlot((data->SplitX->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
+    QwtPlot *plotVcgLoop2 = plotPlotVCG((data->SplitX->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
     ui->scrollArea_VcgLoop2->show();
 
-    QwtPlot *plotVcgLoop3 = plotPlot((data->SplitY->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
+    QwtPlot *plotVcgLoop3 = plotPlotVCG((data->SplitY->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
     ui->scrollArea_VcgLoop3->show();
 

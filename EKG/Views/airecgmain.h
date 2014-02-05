@@ -27,8 +27,6 @@ class AirEcgMain : public QMainWindow
 
     ScrollZoomer *zoom;
 
-    unsigned int index_vcg;
-
     QSignalMapper* baselineSignalMapper;
     QString hash;
 
@@ -54,6 +52,8 @@ public:
     QwtPlot* plotBarChart(QList<unsigned int> &x, QList<int> &y);
     QwtPlot* plotPointsPlot(const QVector<QVector<double>::const_iterator> &p,const QVector<double> &y, float freq);
     QwtPlot* plotPointsPlot_uint(QVector<unsigned int> p, const QVector<double> &yData, float freq);
+
+    QwtPlot* plotPlotVCG(const QVector<double>& yData,const QVector<double>& xData);
 
     //HRV1*****************
     QwtPlot* plotPointsPlotDoubleToDouble(QList<double> &x, QList<double> &y);
