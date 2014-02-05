@@ -131,14 +131,32 @@ void AppController::switchWaves_p_onset(bool check)
 
 void AppController::sendQRSData(int index, int type)
 {
-
     if (!this->entity || !this->entity->classes || !this->entity->ecg_baselined || index < 0)
         return;
 
     QRSClass qrsSegment;
 
-    qrsSegment = this->entity->classes->at(index);
+    if (type == 1)
+    {
+        qrsSegment = this->entity->classes->at(index);
+    }
+    else
+    {
+        // Checking if each onset has a corresponding end and vice versa
+        int offsetAdditionalEnd = 0;
 
+        if (this->entity->Waves->QRS_onset->count() < this->entity->Waves->QRS_end->count()) //less onsets - ignore the leading end by offseting the index by 1
+        {
+            offsetAdditionalEnd = 1;
+        }
+
+        int begin = (this->entity->Waves->QRS_onset->at(index) - this->entity->ecg_baselined->begin());
+        int end = (this->entity->Waves->QRS_end->at(index+offsetAdditionalEnd) - this->entity->ecg_baselined->begin());
+
+        qrsSegment.representative = new QVector<double>();
+        for(int i = begin; i < end; i++)
+            qrsSegment.representative->append(this->entity->ecg_baselined->at(i));
+    }
     emit sendQRSData(qrsSegment,type);
 }
 

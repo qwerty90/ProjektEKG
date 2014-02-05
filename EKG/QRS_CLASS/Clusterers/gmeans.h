@@ -11,7 +11,6 @@ class GMeans : public AbstractClusterer
 public:
     GMeans();
     bool classify();
-    bool classifyParallel();
     bool setClusterNumbers(int min, int max);
     QList<Instance>* getClasses();
     QList<int>* getClassMembers(int classNumber);

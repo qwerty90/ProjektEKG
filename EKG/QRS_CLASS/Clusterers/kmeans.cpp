@@ -26,11 +26,6 @@ bool KMeans::classify()
         return false;
     }
 
-    //
-    this->errMsg = "jebut";
-    return false;
-    //
-
     //Generate initial centroids;
     srand(time(NULL));
     int numOfAttributes = this->instances->first().numberOfAttributes();
@@ -262,7 +257,7 @@ int KMeans::getClassRepresentative(int classNumber)
 
 QList<Instance> *KMeans::getCentroids()
 {
-    return this->centroids; //kopia pomoze?
+    return this->centroids;
 }
 
 QList<Instance> KMeans::getInstancesForCentroid(int centroidIndex)
