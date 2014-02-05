@@ -14,6 +14,8 @@
 #include "HRT/HRTmodule.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
 #include "VCG_T_LOOP/vcg_t_loop.h"
+#include <fstream>
+#include <iostream>
 
 #include <QThread>
 
@@ -555,6 +557,16 @@ void AppController::runVcgLoop()
 
     runStInterval();
 
+
+    QLOG_TRACE() << "Samples for vcg:"
+                 <<this->entity->VCG_raw->I->size()<<"\n"
+                   <<this->entity->VCG_raw->II->size()<<"\n"
+                     <<this->entity->VCG_raw->V1->size()<<"\n"
+                       <<this->entity->VCG_raw->V2->size()<<"\n"
+                         <<this->entity->VCG_raw->V3->size()<<"\n"
+                           <<this->entity->VCG_raw->V4->size()<<"\n"
+                             <<this->entity->VCG_raw->V5->size()<<"\n";
+
     VCG_T_LOOP obiekt(*this->entity->VCG_raw->V1,
                       *this->entity->VCG_raw->V2,
                       *this->entity->VCG_raw->V3,
@@ -1022,7 +1034,6 @@ void AppController::deleteApnea()
         this->entity->SleepApneafreq->clear();
         this->entity->SleepApneafreq=NULL;
     }
-
         QLOG_INFO() << "MVC/ Sleep Apnea deleted";
 
 }
@@ -1076,24 +1087,29 @@ void AppController::load12lead_db(VCG_input &input)
         {
             line=(name).split(",",QString::SkipEmptyParts);
             iter_column=line.begin();
-            iter_column++;
+            //iter_column++;
 
             input.I->append((*iter_column).toDouble());
+            QLOG_TRACE() <<"I sample: " << (*iter_column).toDouble();
             iter_column++;
             input.II->append((*iter_column).toDouble());
-            iter_column++;iter_column++;iter_column++;iter_column++;//iter_column++;iter_column++;
+            QLOG_TRACE() <<"II sample: " << (*iter_column).toDouble();
+            iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;//iter_column++;
             input.V1->append((*iter_column).toDouble());
             QLOG_TRACE() <<"v1 sample: " << (*iter_column).toDouble();
             iter_column++;
             input.V2->append((*iter_column).toDouble());
+            QLOG_TRACE() <<"v2 sample: " << (*iter_column).toDouble();
             iter_column++;
             input.V3->append((*iter_column).toDouble());
+            QLOG_TRACE() <<"v3 sample: " << (*iter_column).toDouble();
             iter_column++;
             input.V4->append((*iter_column).toDouble());
             iter_column++;
             input.V5->append((*iter_column).toDouble());
             iter_column++;
             input.V6->append((*iter_column).toDouble());
+            QLOG_TRACE() <<"v6 sample: " << (*iter_column).toDouble();
 
             line.clear();
             in>>name;
@@ -1105,4 +1121,74 @@ void AppController::load12lead_db(VCG_input &input)
     else
         QLOG_FATAL() <<"VCG_LOOP/ Nie otwarto pliku.";
 
+    //QLOG_TRACE() << "loading started.";
+
+  /*//////////////////////////////////////////////////////////////////////////*/
+ /*   std::ifstream input;
+    try{
+    input.open("D:\\VCG_T_LOOP\\dane.txt",std::ifstream::in);
+    }
+    catch(const std::string& msg)
+    {
+        QLOG_ERROR()<<QString::fromStdString(msg);
+    }
+
+    if (!input)
+        QLOG_TRACE()<<"chuuj!";
+      std::string line;
+      QVector<double> d1;
+      QVector<double> d2;
+      QVector<double> d3;
+      QVector<double> d4;
+      QVector<double> d5;
+      QVector<double> d6;
+      QVector<double> i;
+      QVector<double> ii;
+      std::vector<std::string> samples;
+      char b;
+      while(getline(input,line))
+      {
+          samples = split(line,",");
+          i.append(atof(samples[0].c_str()));
+          ii.append(atof(samples[1].c_str()));
+          d1.append(atof(samples[6].c_str()));
+          d2.append(atof(samples[7].c_str()));
+          d3.append(atof(samples[8].c_str()));
+          d4.append(atof(samples[9].c_str()));
+          d5.append(atof(samples[10].c_str()));
+          d6.append(atof(samples[11].c_str()));
+          QLOG_TRACE()<<"VCG_input loop.";
+      }
+      input.close();
+      this->entity->VCG_raw->I=new QVector<double>(i);
+      this->entity->VCG_raw->II=new QVector<double>(ii);
+      this->entity->VCG_raw->V1=new QVector<double>(d1);
+      this->entity->VCG_raw->V2=new QVector<double>(d2);
+      this->entity->VCG_raw->V3=new QVector<double>(d3);
+      this->entity->VCG_raw->V4=new QVector<double>(d4);
+      this->entity->VCG_raw->V5=new QVector<double>(d5);
+      this->entity->VCG_raw->V6=new QVector<double>(d6);
+*/
+  /*//////////////////////////////////////////////////////////////////////////*/
+  QLOG_TRACE() << "loading done.";
+}
+vector<string> AppController::split(const string& s, const string& delim, const bool keep_empty) {
+    vector<string> result;
+    if (delim.empty()) {
+        result.push_back(s);
+        return result;
+    }
+    string::const_iterator substart = s.begin(), subend;
+    while (true) {
+        subend = search(substart, s.end(), delim.begin(), delim.end());
+        string temp(substart, subend);
+        if (keep_empty || !temp.empty()) {
+            result.push_back(temp);
+        }
+        if (subend == s.end()) {
+            break;
+        }
+        substart = subend + delim.size();
+    }
+    return result;
 }
