@@ -46,7 +46,7 @@ public:
 
 signals:
     void patientData(EcgData *info);
-    //void sendQRSData(QRSClass qrsSegment, int type);
+    void sendQRSData(QRSClass qrsSegment, int type);
 
     void EcgBaseline_done(EcgData *data);
     void AtrialFibr_done (EcgData *data);
@@ -67,7 +67,7 @@ public slots:
     void switchSignal_SIGEDR(int index);
     void switchEcgBaseline(int type);
     void switchRPeaks(unsigned char type);
-    //void sendQRSData(int index, int type);
+    void sendQRSData(int index, int type);
     void switchTWA(unsigned char type);
     void switchWaves_p_onset(bool check);
 
@@ -85,13 +85,13 @@ public slots:
     void stInterval_slopeThresholdChanged(double arg1);
     void stInterval_algorithmChanged(int index);
 
-    /*void qrsClustererChanged(ClustererType type);
-    void qrsMaxIterationsChanged(int maxIters);
-    void qrsParallelExecutionChanged(bool flag);
-    void qrsGMinClustersChanged(int minClusters);
-    void qrsGMaxClustersChanged(int maxClusters);
-    void qrsGMaxKIterations(int maxIters);
-    void qrsKClustersNumberChanged(int noClusters);*/
+  //  void qrsClustererChanged(ClustererType type);
+  //  void qrsMaxIterationsChanged(int maxIters);
+   // void qrsParallelExecutionChanged(bool flag);
+  //  void qrsGMinClustersChanged(int minClusters);
+  //  void qrsGMaxClustersChanged(int maxClusters);
+    //void qrsGMaxKIterations(int maxIters);
+   // void qrsKClustersNumberChanged(int noClusters);
 
     void run();
     void runEcgBaseline();

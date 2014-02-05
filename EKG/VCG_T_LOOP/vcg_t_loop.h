@@ -23,6 +23,9 @@ class VCG_T_LOOP
   QVector<double> MA;
   QVector<double> DEA;
   QVector<double> RMMV;
+  QVector<QVector<double> > splitX;
+  QVector<QVector<double> > splitY;
+  QVector<QVector<double> > splitZ;
 private:
   double MyAbs(double a);
 public:
@@ -55,6 +58,9 @@ public:
     QVector<double> getDEA();
 	//Główna metoda uruchamiająca wszystkie obliczenia
     void Run();
+    QVector<QVector<double> > getSplitX();
+    QVector<QVector<double> > getSplitY();
+    QVector<QVector<double> > getSplitZ();
 };
 
 #endif // VCG_T_LOOP_H
