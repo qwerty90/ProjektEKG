@@ -90,7 +90,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
 
     this->connect(view, SIGNAL(vcg_loop_change(int)),this,SLOT(vcg_loop_change(int)));
-
+    this->connect(this, SIGNAL(drawVcgLoop(EcgData*)),view,SLOT(drawVcgLoop(EcgData*)));
 }
 
 void AppController::loadData(const QString &directory, const QString &name)
@@ -189,14 +189,17 @@ void AppController::switchSignal_SIGEDR(int index)
 }
 void AppController::vcg_loop_change(int index)
 {
-    int ecg_index = 1 ;//tutaj jakies pole z ecgdata
-    if(ecg_index>0)
+    if(index==0&&this->entity->vcgindex>0)
     {
-        if(index==1) ecg_index++;
-        if(index==0) ecg_index--;
+        this->entity->vcgindex--;
     }
-}
+    if(index==1&&this->entity->vcgindex<8)
+    {
+        this->entity->vcgindex++;
+    }
 
+    emit drawVcgLoop(this->entity);
+}
 
 void AppController::deep_copy_vect(QVector<unsigned int> &dest, QVector<unsigned int> &src)
 {
@@ -398,7 +401,7 @@ void AppController::runAtrialFibr()
                          *(this->entity->Rpeaks) ,
                          *(this->entity->Waves->PWaveStart),
                          sig_name)   ;
-    QLOG_TRACE() <<"MVC/ HRV calc done";
+    QLOG_TRACE() <<"MVC/ atrial calc done";
 
     this->entity->PWaveOccurenceRatio= obiekt.GetPWaveAbsenceRatio();
     this->entity->RRIntDivergence    = obiekt.GetRRIntDivergence();
@@ -488,12 +491,13 @@ void AppController::runStInterval()
         QLOG_FATAL() << "ST_INTERVAL/ no Twave_end for me!";
         return;
     }
-
+QLOG_TRACE() <<"MVC/ st_interval calc...";
     bool res = analyzer.analyze(*(this->entity->ecg_baselined),
                                 *(this->entity->Rpeaks),
                                 *(this->entity->Waves->QRS_end),
                                 *(this->entity->Waves->T_end),
                                 static_cast<double>(this->entity->info->frequencyValue));
+    QLOG_TRACE() <<"MVC/ st_interval calc...";
     if (!res)
     {
         EcgStAnalyzer::ErrorType error = analyzer.getLastError();
@@ -604,9 +608,9 @@ void AppController::runVcgLoop()
                       *this->entity->Waves->QRS_onset,
                       *this->entity->TWaveStart,
                       *this->entity->Waves->T_end);
-    QLOG_TRACE() <<"VCG run execute";
+    QLOG_TRACE() <<"MCV/ VCG run execute";
     obiekt.Run();
-QLOG_TRACE() <<"VCG ran";
+QLOG_TRACE() <<"MVC/ VCG ran";
     this->entity->X  = new QVector<double> (obiekt.getX());
     this->entity->Y  = new QVector<double> (obiekt.getY());
     this->entity->Z  = new QVector<double> (obiekt.getZ());
@@ -616,6 +620,8 @@ QLOG_TRACE() <<"VCG ran";
     this->entity->SplitX=new QVector<QVector<double>> (obiekt.getSplitX());
     this->entity->SplitY=new QVector<QVector<double>> (obiekt.getSplitY());
     this->entity->SplitZ=new QVector<QVector<double>> (obiekt.getSplitZ());
+
+this->entity->vcgindex = 0;
 
 for(int i=0;i<this->entity->MA->size();i++)
     QLOG_TRACE()<<this->entity->MA->at(i);
@@ -671,6 +677,7 @@ void AppController::runQtDisp()
     QLOG_INFO() << "MVC/ QT_DISP reslly started.";
     obiekt.Run();    
     obiekt.setOutput(output,T_end);
+QLOG_TRACE() <<"MVC/ QtDisp calc done";
 
 
     this->entity->Waves->T_end = new iters;
@@ -695,9 +702,13 @@ void AppController::runWaves()
     deleteWaves();// to sprawdza, czy zeby nie nadpisac
 
     waves obiekt;
+    QLOG_TRACE() <<"MVC/ Waves calc...";
+
     obiekt.calculate_waves(*(this->entity->ecg_baselined),
                            *(this->entity->Rpeaks),
                            this->entity->info->frequencyValue);
+    QLOG_TRACE() <<"MVC/ Waves calc done";
+
 
     if (this->entity->Waves==NULL)
     {
@@ -833,6 +844,7 @@ void AppController::runSigEdr()
                                     *Qrs_end);
 */
         this->entity->SigEdr_q = new QVector<double>(*obiekt_qrs.retrieveEDR_QVec(2,edr_lead));
+        QLOG_TRACE() <<"MVC/ sigEdrWaves calc done";
 
     }
 
@@ -858,7 +870,11 @@ void AppController::runHRT()
         return;
     }
     HRT::HRTmodule obiekt;
+
+    QLOG_TRACE() <<"MVC/ HRT calc...";
     obiekt.calculateHRT(this->entity->Rpeaks_uint,(int)this->entity->info->frequencyValue);
+    QLOG_TRACE() <<"MVC/ HRT calc done";
+
 
     this->entity->hrt_tachogram = new QVector<double>(obiekt.get_tachogram()); //zwraca vektor reprezentujacy tachogram (25 elementow)
     this->entity->vpbs_detected_count = obiekt.get_VEBcount();//zwraca liczbę znalezionych i zaakceptowanych VEB'ow
@@ -887,8 +903,12 @@ void AppController::runSleepApnea()
         return;
     }
 
+    QLOG_TRACE() <<"MVC/ sleep calc...";
 
     sleep_apnea obiekt((int)this->entity->info->frequencyValue);
+
+    QLOG_TRACE() <<"MVC/ sleep calc done";
+
 
     this->entity->SleepApnea = new QVector<BeginEndPair>(obiekt.sleep_apnea_output(
                                                              this->entity->Rpeaks_uint));
