@@ -41,15 +41,15 @@ bool GMeans::classify()
 
     while(keepGoing && iters < this->maxIters)
     {
-        QLOG_INFO() << "dupa4";
         iters++;
         keepGoing = false;
         clusterer.setCentroids(initCentroids);
+
         // Check errors
+        clusterer.classify();
 
         for(int i = 0 ; i < clusterer.getNumberOfClusters(); i++)
         {
-        //    qDebug() << i;
             QList<Instance> currClusterInstances = clusterer.getInstancesForCentroid(i);
 
             if (currClusterInstances.isEmpty())
@@ -61,14 +61,14 @@ bool GMeans::classify()
             insideClusterer.setClusteringSet(&currClusterInstances);
             insideClusterer.setNumberOfClusters(2);
 
-            //if(!insideClusterer.classifyParallel())
-                //return false;
+            insideClusterer.classify();
 
             Instance centroid_1 = insideClusterer.getCentroids()->at(0);
             Instance centroid_2 = insideClusterer.getCentroids()->at(1);
 
             double vectorVLength = 0;
             // Centroid_1 is the V vector
+
             for(int j = 0 ; j < numOfAttributes; j++)
             {
                 centroid_1[j] -= centroid_2[j];
@@ -130,35 +130,20 @@ bool GMeans::classify()
                 initCentroids->append(insideClusterer.getCentroids()->at(0));
                 currentNoOfClusters++;
             }
-          //  qDebug() << iters << "." << i << "A: " << A;
         }
-
-//        if (!keepGoing)
-//            qDebug() << "Keep Going Stopped Algorithm";
-
-//        if (iters >= this->maxIters)
-//            qDebug() << "Stopped because of iters limit" << iters << this->maxIters;
     }
 
     this->numOfClusters = currentNoOfClusters;
- //   qDebug() << initCentroids->count();
     this->itersPerformed = iters;
     QList<Instance>* finalCentroids = new QList<Instance>();
-
+    QLOG_TRACE() << "trololol 1";
     finalCentroids->append(*initCentroids);
-
+    QLOG_TRACE() << "trololol 2";
     this->centroids = finalCentroids;
+    QLOG_TRACE() << "trololol 3";
     this->handleArtifacts();
+    QLOG_TRACE() << "trololol 4";
     return true;
-}
-
-bool GMeans::classifyParallel()
-{
-    if (this->instances == NULL)
-        return false;
-
-    this->errMsg = "NOT IMPLEMENTED YET";
-    return false;
 }
 
 bool GMeans::setClusterNumbers(int min, int max)

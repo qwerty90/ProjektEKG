@@ -90,7 +90,7 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
 
     this->connect(view, SIGNAL(vcg_loop_change(int)),this,SLOT(vcg_loop_change(int)));
-
+    this->connect(this, SIGNAL(drawVcgLoop(EcgData*)),view,SLOT(drawVcgLoop(EcgData*)));
 }
 
 void AppController::loadData(const QString &directory, const QString &name)
@@ -131,26 +131,27 @@ void AppController::switchWaves_p_onset(bool check)
 
 void AppController::sendQRSData(int index, int type)
 {
-
-    if (!this->entity || !this->entity->classes || !this->entity->Waves->PWaveStart|| !this->entity->ecg_baselined || index < 0)
+    if (!this->entity || !this->entity->classes || !this->entity->ecg_baselined || index < 0)
         return;
+
     QRSClass qrsSegment;
 
     if (type == 1)
     {
-        if (this->entity->classes->count() > index)
-        {
-            qrsSegment = this->entity->classes->at(index);
-        }
-        else
-            return;
+        qrsSegment = this->entity->classes->at(index);
     }
     else
     {
-        if (this->entity->Waves->Count <= index)
-            return;
-        int begin = (this->entity->Waves->QRS_onset->at(index)-this->entity->ecg_baselined->begin());
-        int end = (this->entity->Waves->QRS_end->at(index)-this->entity->ecg_baselined->begin());
+        // Checking if each onset has a corresponding end and vice versa
+        int offsetAdditionalEnd = 0;
+
+        if (this->entity->Waves->QRS_onset->count() < this->entity->Waves->QRS_end->count()) //less onsets - ignore the leading end by offseting the index by 1
+        {
+            offsetAdditionalEnd = 1;
+        }
+
+        int begin = (this->entity->Waves->QRS_onset->at(index) - this->entity->ecg_baselined->begin());
+        int end = (this->entity->Waves->QRS_end->at(index+offsetAdditionalEnd) - this->entity->ecg_baselined->begin());
 
         qrsSegment.representative = new QVector<double>();
         for(int i = begin; i < end; i++)
@@ -188,14 +189,17 @@ void AppController::switchSignal_SIGEDR(int index)
 }
 void AppController::vcg_loop_change(int index)
 {
-    int ecg_index = 1 ;//tutaj jakies pole z ecgdata
-    if(ecg_index>0)
+    if(index==0&&this->entity->vcgindex>0)
     {
-        if(index==1) ecg_index++;
-        if(index==0) ecg_index--;
+        this->entity->vcgindex--;
     }
-}
+    if(index==1&&this->entity->vcgindex<8)
+    {
+        this->entity->vcgindex++;
+    }
 
+    emit drawVcgLoop(this->entity);
+}
 
 void AppController::deep_copy_vect(QVector<unsigned int> &dest, QVector<unsigned int> &src)
 {
@@ -616,6 +620,8 @@ QLOG_TRACE() <<"MVC/ VCG ran";
     this->entity->SplitX=new QVector<QVector<double>> (obiekt.getSplitX());
     this->entity->SplitY=new QVector<QVector<double>> (obiekt.getSplitY());
     this->entity->SplitZ=new QVector<QVector<double>> (obiekt.getSplitZ());
+
+this->entity->vcgindex = 0;
 
 for(int i=0;i<this->entity->MA->size();i++)
     QLOG_TRACE()<<this->entity->MA->at(i);
