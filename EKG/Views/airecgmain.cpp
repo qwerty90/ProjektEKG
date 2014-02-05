@@ -368,6 +368,60 @@ QwtPlot* AirEcgMain::plotPlot(const QVector<double>& yData, float freq)
     magnifier->setAxisEnabled(QwtPlot::yLeft, false);
     return plot;
 }
+//VCG LOOP
+QwtPlot* AirEcgMain::plotPlotVCG(const QVector<double>& yData,const QVector<double>& xData)
+{
+    double maxy = yData.first();
+    double miny = yData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxy = qMax(maxy, yData.at(i));
+        miny = qMin(miny, yData.at(i));
+    }
+    double maxx = xData.first();
+    double minx = xData.first();
+
+    for (int i = 0; i < yData.size(); ++i)
+    {
+        maxx = qMax(maxx, xData.at(i));
+        minx = qMin(minx, xData.at(i));
+    }
+
+    QwtPlot* plot = new QwtPlot();
+    plot->setCanvasBackground(Qt::white);
+    plot->setAxisScale(QwtPlot::yLeft, miny,maxy,750);
+    plot->setAxisScale( QwtPlot::xBottom ,minx , maxx,750);
+
+    /*QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setPen(QPen(QColor(255, 0, 0 ,127)));
+    grid->enableYMin(true);
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::red, 2, Qt::SolidLine));
+    grid->setMinPen(QPen(Qt::red, 0 , Qt::SolidLine));
+    grid->attach(plot);*/
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue, 2));
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
+    curve->setSamples(xData, yData);
+    curve->attach(plot);
+
+    zoom = new ScrollZoomer(plot->canvas());
+    zoom->setRubberBandPen(QPen(Qt::white));
+    //zoom->setZoomBase( false );
+    plot->canvas()->setGeometry(miny,miny,xData.last(),miny);
+    zoom->setZoomBase(plot->canvas()->rect());
+
+    QwtPlotPanner* panner = new QwtPlotPanner(plot->canvas());
+    panner->setMouseButton(Qt::MidButton);
+    panner->setOrientations(Qt::Horizontal);
+
+    QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(plot->canvas());
+    magnifier->setAxisEnabled(QwtPlot::yLeft, false);
+
+    return plot;
+}
 
 QwtPlot* AirEcgMain::plotPlotBSiG(const QVector<double>& yData, float freq)
 {
@@ -1919,25 +1973,26 @@ void AirEcgMain::drawVcgLoop(EcgData* data)
     ui->pushButton_prev_vcg->setEnabled(true);
     ui->pushButton_next_vcg->setEnabled(true);
 
-    ui->vcg_dea->setText(QString::number((data->DEA->at(1)), 'f', 0));
-    ui->vcg_ma->setText(QString::number((data->MA->at(1)), 'f', 0));
-    ui->vcg_rmmv->setText(QString::number((data->RMMV->at(1)), 'f', 0));
+    ui->vcg_dea->setText(QString::number((data->DEA->at(data->vcgindex)), 'f', 0));
+    ui->vcg_ma->setText(QString::number((data->MA->at(data->vcgindex)), 'f', 0));
+    ui->vcg_rmmv->setText(QString::number((data->RMMV->at(data->vcgindex)), 'f', 0));
+    ui->vcg_index->setText(QString::number(data->vcgindex, 'f', 0));
 
-    QwtPlot *plotVcgLoop1 = plotPlot(*(data->X),*(data->Y) );
+    QwtPlot *plotVcgLoop1 = plotPlotVCG((data->SplitX->at(data->vcgindex)),(data->SplitY->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
     ui->scrollArea_VcgLoop1->show();
 
-    QwtPlot *plotVcgLoop2 = plotPlot(*(data->X),*(data->Z) );
+    QwtPlot *plotVcgLoop2 = plotPlotVCG((data->SplitX->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
     ui->scrollArea_VcgLoop2->show();
 
-    QwtPlot *plotVcgLoop3 = plotPlot(*(data->Y),*(data->Z) );
+    QwtPlot *plotVcgLoop3 = plotPlotVCG((data->SplitY->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
     ui->scrollArea_VcgLoop3->show();
 
-    QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
-    ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
-    ui->scrollArea_VcgLoop4->show();
+   // QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    //ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
+   // ui->scrollArea_VcgLoop4->show();
 
 }
 
@@ -2020,11 +2075,17 @@ void AirEcgMain::resetQrsToolbox(EcgData *data)
         ui->QRSClassesToolBox->removeItem(0);
     }
 
+    int totalCount = 0;
+    for(int i = 0 ; i < data->classes->count(); i++)
+    {
+        totalCount += data->classes->at(i).classMembers->count();
+    }
+
     for(int i = 0 ; i < data->classes->count(); i++)
     {
         QString labelText = "";
         labelText.append(data->classes->at(i).classLabel);
-        labelText.append("[ ").append(QString::number(data->classes->at(i).classMembers->count())).append(" ]");
+        labelText.append(" [ ").append(QString::number(data->classes->at(i).classMembers->count())).append(" ][ ").append(QString::number(data->classes->at(i).classMembers->count()*100.0/totalCount)).append("% ]");
         QListWidget* listView = new QListWidget();
 
         int classMembersCnt = data->classes->at(i).classMembers->count();

@@ -26,11 +26,6 @@ bool KMeans::classify()
         return false;
     }
 
-    //
-    this->errMsg = "jebut";
-    return false;
-    //
-
     //Generate initial centroids;
     srand(time(NULL));
     int numOfAttributes = this->instances->first().numberOfAttributes();
