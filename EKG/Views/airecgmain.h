@@ -179,15 +179,12 @@ private slots:
 
     void on_checkBox_toggled(bool checked);
 
+
     void on_qrsSettingsResultsButton_clicked();
 
     void on_qrscClassSettingsButton_clicked();
 
     void on_comboBox_currentIndexChanged(int index);
-
-    void on_qrsSetGMaxItersSpinBox_valueChanged(int arg1);
-
-    void on_qrsSetGinKMaxIterations_valueChanged(int arg1);
 
     void on_qrsSetKMaxIterSpinBox_valueChanged(int arg1);
 

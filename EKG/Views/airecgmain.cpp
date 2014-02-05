@@ -63,7 +63,7 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+O"),this);
     shortcut->setContext(Qt::ApplicationShortcut);
-    connect(shortcut,SIGNAL(activated()), ui->actionWczytaj,SLOT(click()));
+   // connect(shortcut,SIGNAL(activated()), ui->actionWczytaj,SLOT(click()));
 
     // Hide unused controls
   //  ui->label_10->setVisible(false);
@@ -2259,15 +2259,6 @@ void AirEcgMain::on_comboBox_currentIndexChanged(int index)
     }
 }
 
-void AirEcgMain::on_qrsSetGMaxItersSpinBox_valueChanged(int arg1)
-{
-    emit qrsMaxIterationsChanged(arg1);
-}
-
-void AirEcgMain::on_qrsSetGinKMaxIterations_valueChanged(int arg1)
-{
-    emit qrsGMaxKIterations(arg1);
-}
 /*
 void AirEcgMain::on_qrsSetGMinClusterSpinBox_valueChanged(int arg1)
 {
