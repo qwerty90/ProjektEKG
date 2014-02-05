@@ -8,7 +8,7 @@ Zadaniem niniejszego modułu jest klasyfikacja zespołów QRS, polegająca na wy
 \caption{Sygnał EKG wraz z zaznaczonym zespołem QRS (kolor czerwony). Źródło: \cite{QRS_MedicalDictionary}}
 \label{fig:QRS_Segment}
 \end{figure}
-\newline Celem klasyfikacji zespołów QRS jest określenie ośrodków bodźcotwórczych w sercu. Odmienny kształt zespołu wynika z pobudzenia o innym przebiegu, którego źródło położone jest poza podstawowym generatorem rytmu. Grupowanie zespołów odbywa się zatem ze względu na ich morfologię (kształt) przy jednoczesnym określeniu typu pobudzenia (komorowe lub nadkomorowe). Koniecznie jest także wyodrębnienie zespołów, których pobudzenia nie można określić oraz artefaktów – przebiegów omyłkowo rozpoznanych jako zespół QRS.
+\newline Celem klasyfikacji zespołów QRS jest określenie ośrodków bodźcotwórczych w sercu. Odmienny kształt zespołu wynika z pobudzenia o innym przebiegu, którego źródło położone jest poza podstawowym generatorem rytmu. Grupowanie zespołów odbywa się zatem ze względu na ich morfologię (kształt) przy jednoczesnym określeniu typu pobudzenia (komorowe lub nadkomorowe). Koniecznie jest także wyodrębnienie zespołów, których pobudzenia nie można określić oraz artefaktów – przebiegów omyłkowo rozpoznanych jako zespół QRS.\newpage
 
 \subsection{Koncepcja proponowanego rozwiązania}
 Klasyfikacja zespołów QRS może być wykonywana na podstawie przebiegu sygnału w analizowanym przedziale lub z wykorzystaniem wektora cech reprezentujących dany zespół. Ze względu na szybkość obliczeń w opisywanym module wykorzystano drugą metodę, opisując zespół QRS za pomocą trzech współczynników kształtu:
@@ -62,18 +62,72 @@ Rozkład uznaje się za normalny jeżeli wartość statystyki jest mniejsza od z
 Detekcja i eliminacja artefaktów następuje w dwóch etapach:
 \begin{itemize}
 \item wyodrębnienie próbek o zerowej długości (punkty QRS\_onset i QRS\_end pokrywają się ze sobą),
-\item wykreślenie przedstawicieli klas, których odległość od danej centroidy jest większa niż dwukrotność wariancji. 
+\item wykreślenie przedstawicieli klas, których odległość od danej centroidy jest większa niż dwukrotność wariancji. \newpage
 \end{itemize}
 
 \subsection{Diagramy klas}
+Poniżej przedstawiono diagram głównej klasy modułu: \newline\newline
 \begin{tikzpicture}
-  \begin{class}[text width=10cm]{RpeaksModule}{0,0}
-    \attribute{a : static const double = 0.8}
+  \begin{class}[text width=10cm]{QRSClassModule}{0,0}
+    \attribute{extractors : Qlist<AbstractExtractor*>}
+    \attribute{clusterer : AbstractClusterer*}
+    \attribute{errMsg : Qstring}
+    \attribute{ecgBaselined : Qvector<double>*}
+    \attribute{waves\_onset : QVector<QVector<double>::const\_iterator>*}
+    \attribute{waves\_end : QVector<QVector<double>::const\_iterator>*}
+    \attribute{artifactsList : Qlist<int>*}
+    \attribute{runParallel : bool}
     
-	\operation{b(x, result)}
+	\operation{setDefaultConfiguration()}
+	\operation{setClusterer(clustererType : ClustererType)}
+	\operation{setECGBaseline(ecg : QVector<double>*)}
+	\operation{setWaves(waves\_onset : QVector<QVector<double>::const\_iterator>*, waves\_end : QVector<QVector<double>::const\_iterator>*)}
+	\operation{bool setSettings(settings: QRSClassSettingd)}
+	\operation{bool process()}
+	\operation{QVector<QRSClass>* getClasses()}
+	\operation{QString getErrorMessage()}
   \end{class}
 \end{tikzpicture}\\
+\newpage Klasa AbstractClusterer jest klasą bazową dla algorytmów grupowania:\newline\newline
+\begin{tikzpicture}
+  \begin{class}[text width=10cm]{AbstractClusterer}{0,0}
+    \attribute{InitTypes{RandomPoints, KMeansPP} : enum}
+    \attribute{instances : Qlist<instance>*}
+    \attribute{centroids : Qlist<instance>*}
+    \attribute{artifacts : Qlist<int>*}
+    \attribute{initCentroids : bool}
+    \attribute{maxIters : int}
+    \attribute{errMsg : QString}
+    \attribute{itersPerformed : int}
+    \attribute{numOfClusters : int}
+    
+	\operation{Qlist<instance>* initializeKMeansPPCentroids(numberOfClusters : int)}
+	\operation{Qlist<instance>* initializeRandomPointsCentroids(numberOfClusters : int)}
+	\operation{Qlist<instance>* initializeCentroids(type : InitTypes, numberOfClusters : int)}
+	\operation{virtual bool classify() = 0}
+	\operation{handleArtifacts()}
+	\operation{Qlist<int>* getArtifacts()}
+	\operation{virtual Qlist<Instance>* getClasses() = 0}
+	\operation{virtual Qlist<int>* getClassMembers(ClassNumber : int) = 0}
+	\operation{virtual int getClassRepresentative(ClassNumber : int) = 0}
+	\operation{virtual setInitCentroids(flag : bool)}
+	\operation{virtual setInitCentroids(centroids : Qlist<Instance>*)}
+	\operation{setClusteringSet(set : Qlist<Instance>*)}
+	\operation{setMaxIterations(iters : int)}
+	\operation{QString getErrorMessage()}
+	\operation{int getPerformedIterations()}
+  \end{class}
+\end{tikzpicture}\\\newpage
 \subsection{Rezultaty i wnioski}
+\subsubsection{Działanie programu}
+W zakładce "QRS Classification" wybieramy metodę klasyfikacji (G-Means lub K-Means), określając jednocześnie liczbę iteracji dla każdego algorytmu (domyślnie 1000). Algorytm wykonuje się po naciśnięciu przycisku RUN QRS\_CLASS.\newline
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth,keepaspectratio] {QRS_CLASS/img/screen.png}
+\caption{Okno programu po wykonaniu algorytmu K-Means.}
+\label{fig:QRS_Screen}
+\end{figure}
+
 \subsubsection{Możliwości rozszerzenia}
 W celu  ulepszenia modułu (poprawy klasyfikacji zespołów QRS) możliwe jest dodanie kolejnego algorytmu grupującego, który dawałby możliwość porównania otrzymanych wyników. Przykładowym rozwiązaniem jest zastosowanie metody Expectation Maximization – algorytmu iteracyjnego stosowanego do tworzenia modeli danych statystycznych, możliwego do wykorzystania także gdy istnieje ryzyko niekompletnych danych.
 \newline\newline Wejścia metody Expectation Maximization (EM) stanowią: wektor danych (\textit{x}), liczba klas (\textit{M}), dopuszczalny błąd (\textit{e}) oraz maksymalna liczba iteracji. Algorytm może być podzielony na dwa etapy: etap inicjalizacji i etap iteracyjny, który składa się z dwóch kroków: estymacji - expectation step (E-step) i maksymalizacji - maximization step (M-step), wykonywany iteracyjnie do czasu osiągnięcia zbieżności.
