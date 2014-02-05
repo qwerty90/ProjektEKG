@@ -104,13 +104,9 @@ signals:
     void runHRT();
 
     void qrsClassChanged(int index, int type);
-    void qrsClustererChanged(ClustererType type);
     void qrsMaxIterationsChanged(int maxIters);
-    void qrsParallelExecutionChanged(bool flag);
-    void qrsGMinClustersChanged(int minClusters);
-    void qrsGMaxClustersChanged(int maxClusters);
     void qrsGMaxKIterations(int maxIters);
-    void qrsKClustersNumberChanged(int noClusters);
+    void qrsClustererChanged(ClustererType type);
 
     void ecgBase_CzasUsrednieniaChanged(const QString &arg1);
     void ecgBase_WindowSizeChanged(const QString &arg1);
@@ -193,16 +189,7 @@ private slots:
 
     void on_qrsSetGinKMaxIterations_valueChanged(int arg1);
 
-  //  void on_qrsSetGMinClusterSpinBox_valueChanged(int arg1);
-
- //   void on_qrsSetGMaxClusterSpinBox_valueChanged(int arg1);
-
-
     void on_qrsSetKMaxIterSpinBox_valueChanged(int arg1);
-
-  //  void on_qrsSetKClusterNumSpinBox_valueChanged(int arg1);
-
-    void on_qrsSetKMeansParallelCheckBox_toggled(bool checked);
 
     void on_pushButton_2_clicked();
 
@@ -285,6 +272,12 @@ private slots:
     void prevStAbnormality();
 
     void on_G_QRS_toggled(bool checked);
+
+    void on_K_Iteration_valueChanged(int arg1);
+
+    void on_G_Iteration_valueChanged(int arg1);
+
+    void on_K_QRS_toggled(bool checked);
 
 private:
     Ui::AirEcgMain *ui;

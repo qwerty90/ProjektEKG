@@ -2122,7 +2122,7 @@ void AirEcgMain::receiveQRSData(QRSClass currClass, int type)
     {
         if(currentQrsClassPlot != NULL)
         {
-            int delta = this->qrsClassCurveMaxIndex - maxIndex;
+            int delta =1;// this->qrsClassCurveMaxIndex - maxIndex;
 
             for(int j = 0 ; j < xAxis.count(); j++)
             {
@@ -2247,21 +2247,15 @@ void AirEcgMain::on_comboBox_currentIndexChanged(int index)
 
     if(index == 0)
     {
-        /*emit qrsClustererChanged(KMeansClusterer);
-        emit qrsMaxIterationsChanged(ui->qrsSetKMaxIterSpinBox->value());
-        emit qrsParallelExecutionChanged(ui->qrsSetKMeansParallelCheckBox->isEnabled());
-        emit qrsKClustersNumberChanged(ui->qrsSetKClusterNumSpinBox->value());
-        */
+        emit qrsClustererChanged(KMeansClusterer);
+        emit qrsMaxIterationsChanged(ui->K_Iteration->value());
+
     }
     else
     {
-        /*emit qrsClustererChanged(GMeansClusterer);
-        emit qrsMaxIterationsChanged(ui->qrsSetGMaxItersSpinBox->value());
-        emit qrsGMaxKIterations(ui->qrsSetGinKMaxIterations->value());
-        emit qrsGMinClustersChanged(ui->qrsSetGMinClusterSpinBox->value());
-        emit qrsGMaxClustersChanged(ui->qrsSetGMaxClusterSpinBox->value());
-        emit qrsParallelExecutionChanged(ui->qrsSettingsGMeansParallelCheckBox->isEnabled());
-        */
+        emit qrsClustererChanged(GMeansClusterer);
+        emit qrsMaxIterationsChanged(ui->G_Iteration->value());
+        emit qrsGMaxKIterations(ui->G_Iteration->value());
     }
 }
 
@@ -2298,10 +2292,7 @@ void AirEcgMain::on_qrsSetKClusterNumSpinBox_valueChanged(int arg1)
     emit qrsKClustersNumberChanged(arg1);
 }
 */
-void AirEcgMain::on_qrsSetKMeansParallelCheckBox_toggled(bool checked)
-{
-    emit qrsParallelExecutionChanged(checked);
-}
+
 
 void AirEcgMain::on_radioButton_clicked()
 {
@@ -3505,4 +3496,25 @@ void AirEcgMain::on_G_QRS_toggled(bool checked)
 {
     ui->KGroupBox->setEnabled(!checked);
     ui->GGroupBox->setEnabled(checked);
+
+    emit qrsClustererChanged(GMeansClusterer);
+    emit qrsMaxIterationsChanged(ui->G_Iteration->value());
+    emit qrsGMaxKIterations(ui->G_Iteration->value());
+}
+
+void AirEcgMain::on_K_QRS_toggled(bool checked)
+{
+    emit qrsClustererChanged(KMeansClusterer);
+    emit qrsMaxIterationsChanged(ui->K_Iteration->value());
+}
+
+void AirEcgMain::on_K_Iteration_valueChanged(int arg1)
+{
+    emit qrsMaxIterationsChanged(arg1);
+}
+
+void AirEcgMain::on_G_Iteration_valueChanged(int arg1)
+{
+    emit (arg1);
+    emit qrsMaxIterationsChanged(arg1);
 }
