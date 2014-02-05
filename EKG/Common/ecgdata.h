@@ -118,6 +118,9 @@ public:
     QVector<double> *MA;
     QVector<double> *RMMV;
     QVector<double> *DEA;
+    QVector<QVector<double>> *SplitX;
+    QVector<QVector<double>> *SplitY;
+    QVector<QVector<double>> *SplitZ;
 
     QList<EcgAnnotation> *annotations;
     EcgInfo *info;
