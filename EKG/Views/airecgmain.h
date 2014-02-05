@@ -27,6 +27,8 @@ class AirEcgMain : public QMainWindow
 
     ScrollZoomer *zoom;
 
+    unsigned int index_vcg;
+
     QSignalMapper* baselineSignalMapper;
     QString hash;
 

@@ -61,6 +61,7 @@ signals:
     void QtDisp_done(EcgData *data);
     void HRT_done(EcgData *data);
     void busy(bool);
+    void drawVcgLoop(EcgData *data);
 public slots:
     void loadData(const QString &directory, const QString &name);
     void switchSignal(int index);

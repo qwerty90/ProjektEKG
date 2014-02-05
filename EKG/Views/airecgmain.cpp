@@ -1919,25 +1919,26 @@ void AirEcgMain::drawVcgLoop(EcgData* data)
     ui->pushButton_prev_vcg->setEnabled(true);
     ui->pushButton_next_vcg->setEnabled(true);
 
-    ui->vcg_dea->setText(QString::number((data->DEA->at(1)), 'f', 0));
-    ui->vcg_ma->setText(QString::number((data->MA->at(1)), 'f', 0));
-    ui->vcg_rmmv->setText(QString::number((data->RMMV->at(1)), 'f', 0));
+    ui->vcg_dea->setText(QString::number((data->DEA->at(data->vcgindex)), 'f', 0));
+    ui->vcg_ma->setText(QString::number((data->MA->at(data->vcgindex)), 'f', 0));
+    ui->vcg_rmmv->setText(QString::number((data->RMMV->at(data->vcgindex)), 'f', 0));
+    ui->vcg_index->setText(QString::number(data->vcgindex, 'f', 0));
 
-    QwtPlot *plotVcgLoop1 = plotPlot(*(data->X),*(data->Y) );
+    QwtPlot *plotVcgLoop1 = plotPlot((data->SplitX->at(data->vcgindex)),(data->SplitY->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop1->setWidget(plotVcgLoop1);
     ui->scrollArea_VcgLoop1->show();
 
-    QwtPlot *plotVcgLoop2 = plotPlot(*(data->X),*(data->Z) );
+    QwtPlot *plotVcgLoop2 = plotPlot((data->SplitX->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop2->setWidget(plotVcgLoop2);
     ui->scrollArea_VcgLoop2->show();
 
-    QwtPlot *plotVcgLoop3 = plotPlot(*(data->Y),*(data->Z) );
+    QwtPlot *plotVcgLoop3 = plotPlot((data->SplitY->at(data->vcgindex)),(data->SplitZ->at(data->vcgindex)) );
     ui->scrollArea_VcgLoop3->setWidget(plotVcgLoop3);
     ui->scrollArea_VcgLoop3->show();
 
-    QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
-    ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
-    ui->scrollArea_VcgLoop4->show();
+   // QwtPlot *plotVcgLoop4 = plotPlot(*(data->ecg_baselined),*(data->ecg_baselined) );
+    //ui->scrollArea_VcgLoop4->setWidget(plotVcgLoop4);
+   // ui->scrollArea_VcgLoop4->show();
 
 }
 
