@@ -14,6 +14,8 @@
 #include "HRT/HRTmodule.h"
 #include "SLEEP_APNEA/src/sleep_apnea.h"
 #include "VCG_T_LOOP/vcg_t_loop.h"
+#include <fstream>
+#include <iostream>
 
 #include <QThread>
 
@@ -83,13 +85,9 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(busy(bool))                ,view, SLOT(busy(bool)))              ;
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
 
-    this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
-    this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
     this->connect(view, SIGNAL(qrsGMaxKIterations(int)),this,SLOT(qrsGMaxKIterations(int)));
-    this->connect(view, SIGNAL(qrsGMinClustersChanged(int)),this,SLOT(qrsGMinClustersChanged(int)));
-    this->connect(view, SIGNAL(qrsKClustersNumberChanged(int)),this,SLOT(qrsKClustersNumberChanged(int)));
     this->connect(view, SIGNAL(qrsMaxIterationsChanged(int)),this,SLOT(qrsMaxIterationsChanged(int)));
-    this->connect(view, SIGNAL(qrsParallelExecutionChanged(bool)),this,SLOT(qrsParallelExecutionChanged(bool)));
+    this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
 
     this->connect(view, SIGNAL(vcg_loop_change(int)),this,SLOT(vcg_loop_change(int)));
 
@@ -325,8 +323,10 @@ void AppController::runHRV1()
     }
 
     HRV1MainModule obiekt;
+    QLOG_TRACE <<"MVC/ HRV calc...";
     obiekt.prepare(wektor,(int)this->entity->info->frequencyValue);
     HRV1BundleStatistical results = obiekt.evaluateStatistical();
+    QLOG_TRACE <<"MVC/ HRV calc done";
     this->entity->Mean = results.RRMean;
     this->entity->SDNN = results.SDNN;
     this->entity->RMSSD= results.RMSSD;
@@ -375,11 +375,12 @@ void AppController::runAtrialFibr()
     QString sig_name;
     this->entity->settings->signalIndex?sig_name=this->entity->info->secondaryName
                                         :sig_name=this->entity->info->primaryName;
-
+    QLOG_TRACE <<"MVC/ atrial calc...";
     AtrialFibrApi obiekt(*(this->entity->ecg_baselined),
                          *(this->entity->Rpeaks) ,
                          *(this->entity->Waves->PWaveStart),
                          sig_name)   ;
+    QLOG_TRACE <<"MVC/ HRV calc done";
 
     this->entity->PWaveOccurenceRatio= obiekt.GetPWaveAbsenceRatio();
     this->entity->RRIntDivergence    = obiekt.GetRRIntDivergence();
@@ -426,6 +427,7 @@ void AppController::runRPeaks()
         QLOG_INFO() << "RPeaks/ using default (PanTompkins)";
         obiekt.panTompkins();
     }
+    QLOG_TRACE <<"MVC/ rpiks calc done";
     //this->entity->Rpeaks = new iters (obiekt.getPeaksIter());
     this->entity->Rpeaks_uint = obiekt.getPeaksIndex();
     iters tmp_it;
@@ -563,6 +565,16 @@ void AppController::runVcgLoop()
 
     runStInterval();
 
+
+    QLOG_TRACE() << "Samples for vcg:"
+                 <<this->entity->VCG_raw->I->size()<<"\n"
+                   <<this->entity->VCG_raw->II->size()<<"\n"
+                     <<this->entity->VCG_raw->V1->size()<<"\n"
+                       <<this->entity->VCG_raw->V2->size()<<"\n"
+                         <<this->entity->VCG_raw->V3->size()<<"\n"
+                           <<this->entity->VCG_raw->V4->size()<<"\n"
+                             <<this->entity->VCG_raw->V5->size()<<"\n";
+
     VCG_T_LOOP obiekt(*this->entity->VCG_raw->V1,
                       *this->entity->VCG_raw->V2,
                       *this->entity->VCG_raw->V3,
@@ -583,6 +595,9 @@ QLOG_TRACE() <<"VCG ran";
     this->entity->MA = new QVector<double> (obiekt.getMA());
     this->entity->RMMV=new QVector<double> (obiekt.getRMMV());
     this->entity->DEA= new QVector<double> (obiekt.getDEA());
+    this->entity->SplitX=new QVector<QVector<double>> (obiekt.getSplitX());
+    this->entity->SplitY=new QVector<QVector<double>> (obiekt.getSplitY());
+    this->entity->SplitZ=new QVector<QVector<double>> (obiekt.getSplitZ());
 
 for(int i=0;i<this->entity->MA->size();i++)
     QLOG_TRACE()<<this->entity->MA->at(i);
@@ -942,6 +957,26 @@ void AppController::stInterval_algorithmChanged(int index)
     this->entity->settings->quadratic = (index == 1);
 //    QLOG_INFO() << "algorithm" << index;
 }
+/************************************************************/
+//QRS
+void AppController::qrsMaxIterationsChanged(int maxIters)
+{
+    if(this->entity)
+        this->entity->settings->QRSClass_maxIterations = maxIters;
+}
+
+void AppController::qrsGMaxKIterations(int maxIters)
+{
+    if(this->entity)
+        this->entity->settings->QRSClass_maxIterations = maxIters;
+}
+void AppController::qrsClustererChanged(ClustererType type)
+{
+    if(this->entity)
+        this->entity->settings->QRSClass_clusterer = type;
+}
+
+
 
 /************************************************************/
 //useful functions
@@ -1030,7 +1065,6 @@ void AppController::deleteApnea()
         this->entity->SleepApneafreq->clear();
         this->entity->SleepApneafreq=NULL;
     }
-
         QLOG_INFO() << "MVC/ Sleep Apnea deleted";
 
 }
@@ -1065,7 +1099,6 @@ void AppController::deleteHRV1(void)
 
 void AppController::load12lead_db(VCG_input &input)
 {
-
     QLOG_TRACE() << "loading started.";
     QStringList line;
     QStringList::iterator iter_column;
@@ -1084,24 +1117,28 @@ void AppController::load12lead_db(VCG_input &input)
         {
             line=(name).split(",",QString::SkipEmptyParts);
             iter_column=line.begin();
-            iter_column++;
 
             input.I->append((*iter_column).toDouble());
+            //QLOG_TRACE() <<"I sample: " << (*iter_column).toDouble();
             iter_column++;
             input.II->append((*iter_column).toDouble());
-            iter_column++;iter_column++;iter_column++;iter_column++;//iter_column++;iter_column++;
+            //QLOG_TRACE() <<"II sample: " << (*iter_column).toDouble();
+            iter_column++;iter_column++;iter_column++;iter_column++;iter_column++;//iter_column++;
             input.V1->append((*iter_column).toDouble());
-            QLOG_TRACE() <<"v1 sample: " << (*iter_column).toDouble();
+            //QLOG_TRACE() <<"v1 sample: " << (*iter_column).toDouble();
             iter_column++;
             input.V2->append((*iter_column).toDouble());
+           // QLOG_TRACE() <<"v2 sample: " << (*iter_column).toDouble();
             iter_column++;
             input.V3->append((*iter_column).toDouble());
+            //QLOG_TRACE() <<"v3 sample: " << (*iter_column).toDouble();
             iter_column++;
             input.V4->append((*iter_column).toDouble());
             iter_column++;
             input.V5->append((*iter_column).toDouble());
             iter_column++;
             input.V6->append((*iter_column).toDouble());
+            //QLOG_TRACE() <<"v6 sample: " << (*iter_column).toDouble();
 
             line.clear();
             in>>name;
@@ -1112,5 +1149,5 @@ void AppController::load12lead_db(VCG_input &input)
     }
     else
         QLOG_FATAL() <<"VCG_LOOP/ Nie otwarto pliku.";
-
+  QLOG_TRACE() << "loading done.";
 }

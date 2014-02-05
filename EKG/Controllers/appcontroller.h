@@ -41,6 +41,7 @@ public:
     void deleteHRV1(void);
 
     void load12lead_db(VCG_input &input);
+    vector<string> split(const string& s, const string& delim, const bool keep_empty = true);
 
 
 signals:
@@ -84,13 +85,9 @@ public slots:
     void stInterval_slopeThresholdChanged(double arg1);
     void stInterval_algorithmChanged(int index);
 
-  //  void qrsClustererChanged(ClustererType type);
-  //  void qrsMaxIterationsChanged(int maxIters);
-   // void qrsParallelExecutionChanged(bool flag);
-  //  void qrsGMinClustersChanged(int minClusters);
-  //  void qrsGMaxClustersChanged(int maxClusters);
-    //void qrsGMaxKIterations(int maxIters);
-   // void qrsKClustersNumberChanged(int noClusters);
+    void qrsMaxIterationsChanged(int maxIters);
+    void qrsGMaxKIterations(int maxIters);
+    void qrsClustererChanged(ClustererType type);
 
     void run();
     void runEcgBaseline();

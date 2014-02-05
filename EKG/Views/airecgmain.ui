@@ -347,7 +347,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_10">
          <attribute name="title">
@@ -1635,7 +1635,7 @@
                              </widget>
                             </item>
                             <item row="0" column="1">
-                             <widget class="QSpinBox" name="spinBox">
+                             <widget class="QSpinBox" name="G_Iteration">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -1664,7 +1664,7 @@
                              </widget>
                             </item>
                             <item row="0" column="1">
-                             <widget class="QSpinBox" name="spinBox_2">
+                             <widget class="QSpinBox" name="K_Iteration">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                 <horstretch>0</horstretch>
