@@ -85,13 +85,9 @@ void AppController::BindView(AirEcgMain *view)
     this->connect(this, SIGNAL(busy(bool))                ,view, SLOT(busy(bool)))              ;
     this->connect(this, SIGNAL(QrsClass_done(EcgData*))   ,view, SLOT(drawQrsClass(EcgData*)))  ;
 
-    this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
-    this->connect(view, SIGNAL(qrsGMaxClustersChanged(int)),this,SLOT(qrsGMaxClustersChanged(int)));
     this->connect(view, SIGNAL(qrsGMaxKIterations(int)),this,SLOT(qrsGMaxKIterations(int)));
-    this->connect(view, SIGNAL(qrsGMinClustersChanged(int)),this,SLOT(qrsGMinClustersChanged(int)));
-    this->connect(view, SIGNAL(qrsKClustersNumberChanged(int)),this,SLOT(qrsKClustersNumberChanged(int)));
     this->connect(view, SIGNAL(qrsMaxIterationsChanged(int)),this,SLOT(qrsMaxIterationsChanged(int)));
-    this->connect(view, SIGNAL(qrsParallelExecutionChanged(bool)),this,SLOT(qrsParallelExecutionChanged(bool)));
+    this->connect(view, SIGNAL(qrsClustererChanged(ClustererType)),this,SLOT(qrsClustererChanged(ClustererType)));
 
     this->connect(view, SIGNAL(vcg_loop_change(int)),this,SLOT(vcg_loop_change(int)));
 
@@ -156,7 +152,6 @@ void AppController::sendQRSData(int index, int type)
         int begin = (this->entity->Waves->QRS_onset->at(index)-this->entity->ecg_baselined->begin());
         int end = (this->entity->Waves->QRS_end->at(index)-this->entity->ecg_baselined->begin());
 
-//ecgFrames.PWaveStart->at(i)-ecgSignal.begin()
         qrsSegment.representative = new QVector<double>();
         for(int i = begin; i < end; i++)
             qrsSegment.representative->append(this->entity->ecg_baselined->at(i));
@@ -979,6 +974,26 @@ void AppController::stInterval_algorithmChanged(int index)
     this->entity->settings->quadratic = (index == 1);
 //    QLOG_INFO() << "algorithm" << index;
 }
+/************************************************************/
+//QRS
+void AppController::qrsMaxIterationsChanged(int maxIters)
+{
+    if(this->entity)
+        this->entity->settings->QRSClass_maxIterations = maxIters;
+}
+
+void AppController::qrsGMaxKIterations(int maxIters)
+{
+    if(this->entity)
+        this->entity->settings->QRSClass_maxIterations = maxIters;
+}
+void AppController::qrsClustererChanged(ClustererType type)
+{
+    if(this->entity)
+        this->entity->settings->QRSClass_clusterer = type;
+}
+
+
 
 /************************************************************/
 //useful functions
