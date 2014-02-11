@@ -1340,7 +1340,7 @@ QwtPlot *AirEcgMain::plotWavesPlot(const QVector<double> &ecgSignal, Waves_struc
     //zoom->setZoomBase( false );
     plot->canvas()->setGeometry(0,0,ecgSignal.size()*dt,0);
 
-    QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
+    //QLOG_INFO() << "GUI/  ecgFrames.Count..."<<QString::number(ecgFrames.Count);
 
     QVector<unsigned int> P_onsetData;
     QVector<unsigned int> P_endData;
@@ -1640,8 +1640,6 @@ void AirEcgMain::drawRPeaks(EcgData *data)
 
 void AirEcgMain::drawHrv1(EcgData *data)
 {
-   // QLOG_DEBUG() << "GUI/HRV1 0";
-   // QLOG_INFO() << "GUI/ drawing hrv1..."<<QString::number(data->Mean);
     ui->Mean->setText("Mean = " % QString::number((data->Mean), 'f', 2) + " ms");
     ui->SDNN->setText("SDNN = " %QString::number((data->SDNN), 'f', 2) + " ms");
     ui->RMSSD->setText("RMSSD = " %QString::number((data->RMSSD), 'f', 2) + " ms");
@@ -1651,7 +1649,6 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->SDANNindex->setText("SDANN Index = " %QString::number((data->SDANNindex), 'f', 2) + " ms");
     ui->SDSD->setText("SDSD = " %QString::number((data->SDSD), 'f', 2) + " ms");
 
-    //QLOG_DEBUG() << "GUI/HRV1 1";
 
     //RR
     QwtPlot *plotRR = plotPlotRR(*(data->RR_y),*(data->RR_x));
@@ -1662,7 +1659,6 @@ void AirEcgMain::drawHrv1(EcgData *data)
     QwtPlot *plotFT = plotPlot(*(data->fft_y),*(data->fft_x));
     ui->scrollAreaFT->setWidget(plotFT);
     ui->scrollAreaFT->show();
-    //QLOG_DEBUG() << "GUI/HRV1 2";
     //Frequency Coefficients
     ui->TP->setText("TP=" %QString::number(((long)data->TP), 'f', 2) + " ms^2");
     ui->HF->setText("HF=" %QString::number(((long)data->HF), 'f', 2) + " ms^2");
@@ -1670,7 +1666,6 @@ void AirEcgMain::drawHrv1(EcgData *data)
     ui->VLF->setText("VLF=" %QString::number(((long)data->VLF), 'd', 2) + " ms^2");
     ui->ULF->setText("ULF=" %QString::number(((long)data->ULF), 'c', 2) + " ms^2");
     ui->LFHF->setText("LFHF=" %QString::number(100*(data->LFHF), 'f', 2) + " %");
-    //QLOG_DEBUG() << "GUI/HRV1 3";
 }
 
 void AirEcgMain::drawSigEdr(EcgData *data)
@@ -1704,8 +1699,6 @@ void AirEcgMain::drawSigEdr(EcgData *data)
         ui->scrollArea_2->setWidget(plotEDR);
         ui->scrollArea_2->show();
     }
-
-   // QLOG_TRACE() << "GUI/ SigEdr has "<<QString::number(data->SigEdr_r->size())<< " points.";
 
 }
 
@@ -1973,9 +1966,9 @@ void AirEcgMain::drawVcgLoop(EcgData* data)
     ui->pushButton_prev_vcg->setEnabled(true);
     ui->pushButton_next_vcg->setEnabled(true);
 
-    ui->vcg_dea->setText(QString::number((data->DEA->at(data->vcgindex)), 'f', 0));
-    ui->vcg_ma->setText(QString::number((data->MA->at(data->vcgindex)), 'f', 0));
-    ui->vcg_rmmv->setText(QString::number((data->RMMV->at(data->vcgindex)), 'f', 0));
+    ui->vcg_dea->setText(QString::number((data->DEA->at(data->vcgindex)), 'f', 3));
+    ui->vcg_ma->setText(QString::number((data->MA->at(data->vcgindex)), 'f', 3));
+    ui->vcg_rmmv->setText(QString::number((data->RMMV->at(data->vcgindex)), 'f', 3));
     ui->vcg_index->setText(QString::number(data->vcgindex, 'f', 0));
 
     QwtPlot *plotVcgLoop1 = plotPlotVCG((data->SplitX->at(data->vcgindex)),(data->SplitY->at(data->vcgindex)) );
@@ -2048,7 +2041,6 @@ void AirEcgMain::drawQtDisp(EcgData *data)
     ui->avQTdis->setText((QString::number((data->evaluations->at(3).averageQT ), 'f', 4)));
     ui->deviationQtdis->setText(QString::number((data->evaluations->at(3).standardDeviationQT ), 'f', 4));
 
-    QLOG_ERROR() << "GUI/ QtDist needs to be drawn.";
 }
 void AirEcgMain::drawWaves(EcgData *data)
 {
