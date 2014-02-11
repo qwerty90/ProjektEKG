@@ -603,7 +603,12 @@ void AppController::runVcgLoop()
     this->entity->VCG_raw->V5 = new QVector<double>;
     this->entity->VCG_raw->V6 = new QVector<double>;
 
-    load12lead_db(*(this->entity->VCG_raw));
+    if( !load12lead_db(*(this->entity->VCG_raw)) )
+    {
+        QLOG_FATAL()<<"File \"samples.txt\" must exist "
+                      <<" in default (.exe) folder to run VCG_LOOP_T module.";
+        return;
+    };
 
     QVector<double> *tmp;
 
@@ -793,6 +798,7 @@ void AppController::runSigEdr()
 {
 
     QTime obj;
+    QTime obj2;
     QLOG_INFO() << "SigEdr started.";
 
     ifWavesExists();
@@ -856,7 +862,7 @@ void AppController::runSigEdr()
 */
         this->entity->SigEdr_r = new QVector<double>(*(obiekt.retrieveEDR_QVec(1,this->entity->settings->SigEdr_lead)));
 
-        QLOG_TRACE()<< "Execution time of SigEdr: " << obj.elapsed() << "[ms]";
+        QLOG_TRACE()<< "Execution time of SigEdr running on RPeaks: " << obj.elapsed() << "[ms]";
 
         QLOG_INFO() << "SigEdr_r/ calculated from RPeaks " <<QString::number(this->entity->SigEdr_r->size())<<" samples.";
     }
@@ -881,6 +887,8 @@ void AppController::runSigEdr()
                    <<QString::number(Qrs_on->size()) << "entity-q_on\n"
                    <<QString::number(Qrs_end->size()) << "entity-q_end\n";
 
+        obj2.start();
+
         sig_edr obiekt_qrs(*(this->entity->ecg_baselined),
                            *(this->entity->Waves->QRS_onset),
                            *(this->entity->Waves->QRS_end  ),
@@ -894,7 +902,7 @@ void AppController::runSigEdr()
                                     *Qrs_end);
 */
         this->entity->SigEdr_q = new QVector<double>(*obiekt_qrs.retrieveEDR_QVec(2,edr_lead));
-
+        QLOG_TRACE()<< "Execution time of SigEdr running on Waves: " << obj2.elapsed() << "[ms]";
     }
 
 //przywrocenie odpowiedniego sygnalu
@@ -1195,7 +1203,7 @@ void AppController::deleteHRV1(void)
     }
 }
 
-void AppController::load12lead_db(VCG_input &input)
+bool AppController::load12lead_db(VCG_input &input)
 {
     QLOG_TRACE() << "loading started.";
     QStringList line;
@@ -1246,6 +1254,10 @@ void AppController::load12lead_db(VCG_input &input)
         f.close();
     }
     else
+    {
         QLOG_FATAL() <<"VCG_LOOP/ Nie otwarto pliku.";
+        return false;
+    }
+
   QLOG_TRACE() << "loading done.";
 }

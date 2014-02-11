@@ -40,7 +40,7 @@ public:
     void deleteApnea(void);
     void deleteHRV1(void);
 
-    void load12lead_db(VCG_input &input);
+    bool load12lead_db(VCG_input &input);
     vector<string> split(const string& s, const string& delim, const bool keep_empty = true);
 
 
