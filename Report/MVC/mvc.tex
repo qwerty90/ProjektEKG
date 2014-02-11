@@ -15,8 +15,8 @@ Istotnym z punktu widzenia rozwoju aplikacji zagadnieniem są współzależnośc
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{MVC/img/EKG}
-\label{fig:zaleznosci}
 \caption{Schemat zależności modułow aplikacji}
+\label{fig:zaleznosci}
 \end{figure}
 
 Poza modułami w projekcie występują następujące klasy:
@@ -31,10 +31,39 @@ Całość projektu jest tworzona według wzorca Model-View-Controller. Oznacza t
 
 \subsection{Logi}
 
-Poza normalnym działaniem aplikacja oferuje również logowanie przebiegu ostatniego wywołania aplikacji z użyciem pakietu QsLog. Do logu zapisywane są najważniejsze zdarzenia i błędy. Raportowany jest także czas wykonania wpisu, co pozwala na oszacowanie szybkości działania poszczególnych modułów, w zależności od wybranych w GUI parametrów. Przykładowy log przedstawiony jest poniżej. Logger można wykorzystać także do pomiaru czasów wykonywania poszczególnych elementów programu. Przykładowe czasy, uzyskane dla sygnału złożonego z 649999 próbek, zamieszczono w tabeli ref!!!!.
+Poza normalnym działaniem aplikacja oferuje również logowanie przebiegu ostatniego wywołania aplikacji z użyciem pakietu QsLog. Do logu zapisywane są najważniejsze zdarzenia i błędy. Raportowany jest także czas wykonania wpisu, co pozwala na oszacowanie szybkości działania poszczególnych modułów, w zależności od wybranych w GUI parametrów. Przykładowy log przedstawiony jest poniżej. Logger można wykorzystać także do pomiaru czasów wykonywania poszczególnych elementów programu. Przykładowe czasy, uzyskane dla sygnału złożonego z 649999 próbek, zamieszczono w tabeli \ref{tab:czasy}.
 
 \begin{table}
-|ECG_BASELINE | 0.538 |
+\centering
+\begin{tabular}{|r|l|}
+
+\hline
+ECG\_BASELINE & $0.538$\\
+\hline
+R\_PEAKS & $19.063$	\\
+\hline
+Waves & $13.852$		\\
+\hline
+HRV & $0.004$		\\
+\hline
+HRT & $0.001$		\\
+\hline
+QT\_DISP &$ 0.272 $	 \\
+\hline
+ST\_INTERVAL &$ 0.426$	\\
+\hline
+SIG\_EDR & $0.0008$	\\
+\hline
+VCG\_LOOP\_T & $0.031$	\\
+\hline
+ATRIAL\_FIBR & $0.013$	\\
+\hline
+SLEEP\_APNEA & $0.001$	 \\
+\hline
+
+\end{tabular}
+\caption {Czasy.}
+\label{tab:czasy}
 \end{table}
 
 \begin{minipage}{\textwidth}
@@ -109,3 +138,12 @@ GOTO loop
 ECHO All records converted
 \end{verbatim}
 \end{minipage}
+\subsection{Diagram klas}
+Poniżej zamieszczony jest diagram klas obsługujących wczotywanie danych i zarządzanie nimi.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{MVC/img/diagram_klas}
+\label{fig:diagrami}
+\caption{Diagram klas.}
+\end{figure}
