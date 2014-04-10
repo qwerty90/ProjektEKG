@@ -1,4 +1,4 @@
-\documentclass[openright]{book}
+\documentclass[openright]{report}
 \usepackage{tocloft}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
@@ -24,6 +24,8 @@
 
 \usepackage[margin=2.5cm]{geometry}
 \geometry{bindingoffset=1cm}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
 \newcommand\abs[1]{\left|#1\right|}
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
@@ -51,19 +53,24 @@
 
 \begin{document}
 
-\author{Neurocybernetyka}
-\title{\Huge{Elektroniczne systemy diagnostyki medycznej i terapii}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\maketitle
+\input{titlepage}
+
 \tableofcontents{}
+
 \newpage{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Lista modułów}
+\chapter{Wstęp}
+\input{WSTEP/abstrakt}
+\input{WSTEP/uruchomienie}
+
+\chapter{Dokumentacja modułów aplikacji}
 \include{GUI/gui}
 \include{MVC/mvc}
-%\include{ECG_BASELINE/ecg_baseline}
+\include{ECG_BASELINE/ecg_baseline}
 \include{R_PEAKS/r_peaks}
 \include{VCG_T_LOOP/vcg_t_loop}
 \include{SIG_EDR/sig_edr}
@@ -76,47 +83,9 @@
 \include{QT_DISP/qt_disp}
 \include{HRT/hrt}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{tikzpicture}
-  \begin{abstractclass}[text width=5cm]{ExampleClass}{0,0}
-    \attribute{exampleVar : String}
-    \attribute{exampleVar2 : int = 0}
-
-    \operation{exampleMethod(num : int)}
-    \operation[0]{exampleMethod2(num : int)}
-  \end{abstractclass}
-\end{tikzpicture}
-
-\begin{sequencediagram}
-  \newthread{ss}{:SimulationServer}
-  \newinst{ctr}{:SimControlNode}
-  \newinst{ps}{:PhysicsServer}
-  \newinst[1]{sense}{:SenseServer}
-  
-  \begin{call}{ss}{Initialize()}{sense}{}
-  \end{call}
-  \begin{sdblock}{Run Loop}{The main loop}
-    \begin{call}{ss}{StartCycle()}{ctr}{}
-      \begin{call}{ctr}{ActAgent()}{sense}{}
-      \end{call}
-    \end{call}
-    \begin{call}{ss}{Update()}{ps}{}
-      \begin{messcall}{ps}{PrePhysicsUpdate()}{sense}{state}
-      \end{messcall}
-      \begin{sdblock}{Physics Loop}{}
-        \begin{call}{ps}{PhysicsUpdate()}{ps}{}
-        \end{call}
-      \end{sdblock}
-      \begin{call}{ps}{PostPhysicsUpdate()}{sense}{}
-      \end{call}
-    \end{call}
-    \begin{call}{ss}{EndCycle()}{ctr}{}
-      \begin{call}{ctr}{SenseAgent()}{sense}{}
-      \end{call}
-    \end{call}
-  \end{sdblock}
-\end{sequencediagram}
+\chapter{Podsumowanie}
+\input{PODSUMOWANIE/przebieg_pracy}
+\input{PODSUMOWANIE/zawartosc_plyty}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

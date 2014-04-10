@@ -1,0 +1,23 @@
+\section{Uruchomienie aplikacji}
+Na płycie dołączonej do raportu znajdują się kompletne pliki źródłowe programu, oraz skompilowane wersje dla systemów Windows i Linux. Poniżej zamieszczono instrukcje uruchamiania obu wersji, oraz kompilacji.
+
+\subsection{Windows}
+Aby uruchomić aplikację pod systemem Windows wystarczy włączyć plik \emph{EKG.exe}.
+
+\subsection{Linux}
+Aby uruchomić aplikację pod systemem Linux należy:
+\begin{itemize}
+\item zainstalować bibliotekę \emph{libfftw3} poleceniem \begin{verbatim}sudo apt-get install libfftw3,\end{verbatim}
+\item zainstalować bibliotekę \emph{libqt4} poleceniem \begin{verbatim}sudo apt-get install libqt4.\end{verbatim}
+\end{itemize}
+Po zainstalowaniu wymaganych pakietów można uruchomić aplikację poprzez wykonanie skryptu \emph{run.sh}.
+
+\subsection{Kompilacja plików źródłowych}
+Do skompilowania plików źródłowych projektu wymagane są:
+\begin{itemize}
+\item biblioteka \emph{Qt 4.8.5},
+\item biblioteka \emph{Qwt 6.0.2},
+\item kompilator \emph{gcc 4.6.2} będący częścią środowiska \emph{MinGW},
+\item środowisko programistyczne \emph{Qt Creator}.
+\end{itemize}
+Wszystkie biblioteki należy poprawnie zainstalować. W środowisku \emph{Qt Creator} należy zaimportować projekt i skonfigurować opcje budowania aplikacji.
