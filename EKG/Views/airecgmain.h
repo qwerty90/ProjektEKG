@@ -35,6 +35,10 @@ class AirEcgMain : public QMainWindow
     QwtPlot *stIntervalPlot;
     ScrollZoomer *stIntervalZoomer;
 
+    QwtPlot *BaseLinePlot;
+    ScrollZoomer *BaseLineZoomer;
+
+
     void resetQrsToolbox(EcgData* data);
     void populareQRSClassBox(QRSClass currentClass, int type);
 public:

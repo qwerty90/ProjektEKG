@@ -49,6 +49,9 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
     this->stIntervalPlot = NULL;
     this->stIntervalZoomer = NULL;
 
+    this->BaseLinePlot = NULL;
+    this->BaseLineZoomer =NULL;
+
     connect(ui->butterworthRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->movingAverageRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
     connect(ui->savitzkyGolayRadioButton, SIGNAL(clicked()), baselineSignalMapper, SLOT(map()));
@@ -70,8 +73,7 @@ AirEcgMain::AirEcgMain(QWidget *parent) :
   //  ui->qrsSettingsGMeansParallelCheckBox->setVisible(false);
     ui->qrsFeaturesSettingsGroupBox->setVisible(false);
    ui->QRSSampleDataGroupBox->setVisible(false);
-    ui->progressBar->setVisible(false);
-    ui->busy_label->setVisible(false);
+
     initEcgBaselineGui();
     initStIntervalGui();
 }
@@ -1598,6 +1600,11 @@ void AirEcgMain::drawEcgBaseline(EcgData *data)
     QwtPlot *plotMLII = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
     ui->baselinedArea->setWidget(plotMLII);
     ui->baselinedArea->show();
+
+    BaseLinePlot = plotPlot(*(data->ecg_baselined),data->info->frequencyValue);
+    BaseLineZoomer = zoom;
+    ui->baselinedArea->setWidget(BaseLinePlot);
+
 }
 
 void AirEcgMain::drawAtrialFibr(EcgData *data)
@@ -2052,8 +2059,7 @@ void AirEcgMain::drawWaves(EcgData *data)
 }
 void AirEcgMain::busy(bool state)
 {
-    ui->progressBar->setVisible(state);
-    ui->busy_label->setVisible(state);
+
 }
 
 void AirEcgMain::resetQrsToolbox(EcgData *data)
@@ -2273,7 +2279,7 @@ void AirEcgMain::on_pushButton_10_clicked()
 void AirEcgMain::on_pushButton_12_clicked()
 {
     emit this->run();
-    ui->progressBar->setVisible(true);
+
 }
 
 void AirEcgMain::on_checkBox_toggled(bool checked)
